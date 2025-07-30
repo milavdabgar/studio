@@ -27,7 +27,9 @@ export default function CourseOfferingsPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [batches, setBatches] = useState<Batch[]>([]);
   const [faculties, setFaculties] = useState<Faculty[]>([]);
+  const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingCourses, setLoadingCourses] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     academicYear: 'all',
@@ -115,6 +117,54 @@ export default function CourseOfferingsPage() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Fetch filtered courses based on batch and semester selection
+  const fetchFilteredCourses = async (batchId: string, semester?: number) => {
+    if (!batchId) {
+      setFilteredCourses([]);
+      return;
+    }
+
+    setLoadingCourses(true);
+    try {
+      const params = new URLSearchParams({ batchId });
+      if (semester) {
+        params.append('semester', semester.toString());
+      }
+
+      const response = await fetch(`/api/courses/filtered?${params}`);
+      const data = await response.json();
+
+      if (data.success) {
+        setFilteredCourses(data.data.courses);
+        
+        // Auto-populate academic year from batch info
+        if (data.data.batchInfo && !formData.academicYear) {
+          const currentYear = new Date().getFullYear();
+          const batchStartYear = data.data.batchInfo.startAcademicYear;
+          const academicYear = `${currentYear}-${currentYear + 1}`;
+          
+          setFormData(prev => ({
+            ...prev,
+            academicYear: academicYear
+          }));
+        }
+      } else {
+        console.error('Error fetching filtered courses:', data.error);
+        setFilteredCourses([]);
+      }
+    } catch (error) {
+      console.error('Error fetching filtered courses:', error);
+      setFilteredCourses([]);
+      toast({
+        title: "Error",
+        description: "Failed to load courses for selected batch",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingCourses(false);
     }
   };
 
@@ -215,6 +265,8 @@ export default function CourseOfferingsPage() {
       endDate: '',
       maxEnrollments: 60
     });
+    setFilteredCourses([]);
+    setEditingOffering(null);
   };
 
   const openEditDialog = (offering: CourseOfferingWithDetails) => {
@@ -230,6 +282,12 @@ export default function CourseOfferingsPage() {
       endDate: offering.endDate ? new Date(offering.endDate).toISOString().split('T')[0] : '',
       maxEnrollments: offering.maxEnrollments || 60
     });
+    
+    // Load filtered courses for the selected batch and semester
+    if (offering.batchId) {
+      fetchFilteredCourses(offering.batchId, offering.semester);
+    }
+    
     setShowCreateDialog(true);
   };
 
@@ -500,56 +558,52 @@ export default function CourseOfferingsPage() {
               </DialogTitle>
             </DialogHeader>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+              {/* Step 1: Select Batch First */}
               <div>
-                <Label htmlFor="courseId">Course</Label>
-                <Select value={formData.courseId} onValueChange={(value) => setFormData({...formData, courseId: value})}>
+                <Label htmlFor="batchId">
+                  Batch <span className="text-red-500">*</span>
+                  <span className="text-xs text-muted-foreground ml-2">(Select batch first to filter courses)</span>
+                </Label>
+                <Select 
+                  value={formData.batchId} 
+                  onValueChange={(value) => {
+                    setFormData({...formData, batchId: value, courseId: ''}); // Reset course when batch changes
+                    fetchFilteredCourses(value, formData.semester);
+                  }}
+                >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select course" />
+                    <SelectValue placeholder="Select batch" />
                   </SelectTrigger>
                   <SelectContent>
-                    {courses.map((course) => (
-                      <SelectItem key={course.id} value={course.id}>
+                    {batches.filter(batch => batch.status === 'active').map((batch) => (
+                      <SelectItem key={batch.id} value={batch.id}>
                         <div className="flex flex-col">
-                          <span className="font-medium">{course.subjectName}</span>
-                          <span className="text-xs text-muted-foreground">({course.subcode})</span>
+                          <span className="font-medium">{batch.name}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {batch.startAcademicYear}-{batch.endAcademicYear}
+                          </span>
                         </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
-              
-              <div>
-                <Label htmlFor="batchId">Batch</Label>
-                <Select value={formData.batchId} onValueChange={(value) => setFormData({...formData, batchId: value})}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select batch" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {batches.map((batch) => (
-                      <SelectItem key={batch.id} value={batch.id}>
-                        {batch.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
 
+              {/* Step 2: Select Semester (affects course filtering) */}
               <div>
-                <Label htmlFor="academicYear">Academic Year</Label>
-                <Input
-                  id="academicYear"
-                  value={formData.academicYear}
-                  onChange={(e) => setFormData({...formData, academicYear: e.target.value})}
-                  placeholder="e.g., 2025-26"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="semester">Semester</Label>
-                <Select value={formData.semester.toString()} onValueChange={(value) => setFormData({...formData, semester: parseInt(value)})}>
+                <Label htmlFor="semester">Semester <span className="text-red-500">*</span></Label>
+                <Select 
+                  value={formData.semester.toString()} 
+                  onValueChange={(value) => {
+                    const newSemester = parseInt(value);
+                    setFormData({...formData, semester: newSemester, courseId: ''}); // Reset course when semester changes
+                    if (formData.batchId) {
+                      fetchFilteredCourses(formData.batchId, newSemester);
+                    }
+                  }}
+                >
                   <SelectTrigger className="w-full">
-                    <SelectValue />
+                    <SelectValue placeholder="Select semester" />
                   </SelectTrigger>
                   <SelectContent>
                     {[1, 2, 3, 4, 5, 6].map((sem) => (
@@ -559,6 +613,99 @@ export default function CourseOfferingsPage() {
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+
+              {/* Step 3: Select Course (filtered based on batch & semester) */}
+              <div className="md:col-span-2">
+                <Label htmlFor="courseId">
+                  Course <span className="text-red-500">*</span>
+                  {formData.batchId && (
+                    <span className="text-xs text-green-600 ml-2">
+                      ({filteredCourses.length} courses available for selected batch & semester)
+                    </span>
+                  )}
+                </Label>
+                <Select 
+                  value={formData.courseId} 
+                  onValueChange={(value) => setFormData({...formData, courseId: value})}
+                  disabled={!formData.batchId || loadingCourses}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue 
+                      placeholder={
+                        !formData.batchId 
+                          ? "Select batch first" 
+                          : loadingCourses 
+                            ? "Loading courses..." 
+                            : filteredCourses.length === 0 
+                              ? "No courses available"
+                              : "Select course"
+                      } 
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {filteredCourses.length > 0 && (
+                      <>
+                        {/* Group core courses */}
+                        {filteredCourses.filter(course => !course.isElective).length > 0 && (
+                          <>
+                            <div className="px-2 py-1 text-xs font-semibold text-blue-600 bg-blue-50">
+                              Core Courses
+                            </div>
+                            {filteredCourses
+                              .filter(course => !course.isElective)
+                              .map((course) => (
+                                <SelectItem key={course.id} value={course.id}>
+                                  <div className="flex flex-col">
+                                    <span className="font-medium">{course.subjectName}</span>
+                                    <span className="text-xs text-muted-foreground">
+                                      {course.subcode} • {course.credits} credits • Semester {course.semester}
+                                    </span>
+                                  </div>
+                                </SelectItem>
+                              ))
+                            }
+                          </>
+                        )}
+                        
+                        {/* Group elective courses */}
+                        {filteredCourses.filter(course => course.isElective).length > 0 && (
+                          <>
+                            <div className="px-2 py-1 text-xs font-semibold text-orange-600 bg-orange-50">
+                              Elective Courses
+                            </div>
+                            {filteredCourses
+                              .filter(course => course.isElective)
+                              .map((course) => (
+                                <SelectItem key={course.id} value={course.id}>
+                                  <div className="flex flex-col">
+                                    <span className="font-medium">{course.subjectName}</span>
+                                    <span className="text-xs text-muted-foreground">
+                                      {course.subcode} • {course.credits} credits • Semester {course.semester}
+                                    </span>
+                                  </div>
+                                </SelectItem>
+                              ))
+                            }
+                          </>
+                        )}
+                      </>
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="academicYear">
+                  Academic Year <span className="text-red-500">*</span>
+                  <span className="text-xs text-muted-foreground ml-2">(Auto-populated from batch)</span>
+                </Label>
+                <Input
+                  id="academicYear"
+                  value={formData.academicYear}
+                  onChange={(e) => setFormData({...formData, academicYear: e.target.value})}
+                  placeholder="e.g., 2025-26"
+                />
               </div>
 
               <div>
