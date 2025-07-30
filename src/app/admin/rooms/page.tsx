@@ -591,7 +591,100 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,"New Academic Complex","NAC",1,Lectu
             </div>
           )}
 
-          <Table>
+          {/* Mobile View */}
+          <div className="block lg:hidden space-y-3">
+            {paginatedRooms.map((room) => {
+              const building = buildings.find(b => b.id === room.buildingId);
+              return (
+                <Card key={room.id} className="shadow-sm">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <Checkbox
+                          checked={selectedRoomIds.includes(room.id)}
+                          onCheckedChange={(checked) => handleSelectRoom(room.id, !!checked)}
+                          aria-labelledby={`room-number-mobile-${room.id}`}
+                        />
+                        <div className="min-w-0 flex-1">
+                          <h4 id={`room-number-mobile-${room.id}`} className="font-semibold text-sm leading-tight">
+                            {room.roomNumber} {room.name && `- ${room.name}`}
+                          </h4>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {building?.name || 'N/A'} • {room.type}
+                          </p>
+                        </div>
+                      </div>
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${
+                          room.status === 'available' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
+                          : room.status === 'occupied' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+                          : room.status === 'under_maintenance' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                          : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' /* unavailable */
+                      }`}>
+                        {ROOM_STATUS_OPTIONS.find(s => s.value === room.status)?.label || room.status}
+                      </span>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-y-2 text-xs mb-3">
+                      <div>
+                        <span className="text-muted-foreground">Building:</span>
+                        <p className="font-medium truncate">{building?.name || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Floor:</span>
+                        <p className="font-medium">{room.floor !== undefined ? room.floor : 'N/A'}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Capacity:</span>
+                        <p className="font-medium">{room.capacity || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">CCTV:</span>
+                        <div className="flex items-center gap-1">
+                          {room.cctv?.installed ? (
+                            <>
+                              <Video className="h-3 w-3 text-green-600" />
+                              <span className="text-xs text-green-600 font-medium">
+                                {room.cctv.status?.toUpperCase() || 'N/A'}
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <VideoOff className="h-3 w-3 text-gray-400" />
+                              <span className="text-xs text-muted-foreground">No</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" onClick={() => handleViewDetails(room)} disabled={isSubmitting} className="flex-1 min-h-[44px]">
+                        <Eye className="h-4 w-4 mr-1" /> View
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => handleEdit(room)} disabled={isSubmitting} className="flex-1 min-h-[44px]">
+                        <Edit className="h-4 w-4 mr-1" /> Edit
+                      </Button>
+                      <Button variant="destructive" size="sm" onClick={() => handleDelete(room.id)} disabled={isSubmitting} className="min-h-[44px]">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+            {paginatedRooms.length === 0 && (
+              <Card className="shadow-sm">
+                <CardContent className="p-8 text-center text-muted-foreground">
+                  No rooms found. Adjust filters or add a new room.
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden lg:block">
+            <div className="overflow-x-auto border rounded-lg">
+              <Table>
             <TableHeader>
               <TableRow>
                  <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedRooms.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all rooms on this page"/></TableHead>
@@ -658,6 +751,8 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,"New Academic Complex","NAC",1,Lectu
               )}
             </TableBody>
           </Table>
+            </div>
+          </div>
         </CardContent>
          <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
             <div className="text-sm text-muted-foreground">
