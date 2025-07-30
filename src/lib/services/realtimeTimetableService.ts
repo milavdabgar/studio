@@ -63,6 +63,7 @@ export class RealtimeTimetableService {
     private wsUrl: string = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3001/timetable'
   ) {
     this.notificationService = new TimetableNotificationService(baseNotificationService);
+    console.info('🚀 Initializing RealtimeTimetableService (WebSocket server optional)');
     this.initializeConnection();
   }
 
@@ -71,6 +72,8 @@ export class RealtimeTimetableService {
 
     try {
       this.connectionState = 'connecting';
+      console.info(`🔌 Attempting WebSocket connection to: ${this.wsUrl}`);
+      
       this.ws = new WebSocket(this.wsUrl);
       
       this.ws.onopen = this.handleOpen.bind(this);
@@ -80,8 +83,9 @@ export class RealtimeTimetableService {
       
     } catch (error) {
       console.error('Failed to initialize WebSocket connection:', error);
+      console.info('💡 Real-time updates will be disabled. The app will continue to work normally.');
       this.connectionState = 'error';
-      this.scheduleReconnect();
+      // Don't schedule reconnect on initialization failure to avoid spam
     }
   }
 
@@ -123,11 +127,19 @@ export class RealtimeTimetableService {
   }
 
   private handleClose(event: CloseEvent) {
-    console.log('WebSocket connection closed:', event.code, event.reason);
+    const isNormalClosure = event.code === 1000;
+    const isConnectionRefused = event.code === 1006; // Connection refused/failed
+    
+    if (isConnectionRefused) {
+      console.info('🔌 WebSocket server not available (connection refused). Real-time updates disabled.');
+    } else {
+      console.log('WebSocket connection closed:', event.code, event.reason);
+    }
+    
     this.connectionState = 'disconnected';
     this.stopHeartbeat();
     
-    if (event.code !== 1000) { // Not a normal closure
+    if (!isNormalClosure && !isConnectionRefused) {
       this.scheduleReconnect();
     }
     
@@ -135,9 +147,19 @@ export class RealtimeTimetableService {
   }
 
   private handleError(error: Event) {
-    console.error('WebSocket error:', error);
+    // Extract meaningful error information from WebSocket Event
+    const errorInfo = {
+      type: error.type,
+      timestamp: new Date().toISOString(),
+      readyState: this.ws?.readyState,
+      url: this.wsUrl
+    };
+    
+    console.error('WebSocket connection error:', errorInfo);
+    console.info('💡 This is expected if no WebSocket server is running. The app will continue to work without real-time updates.');
+    
     this.connectionState = 'error';
-    this.emit('error', { error });
+    this.emit('error', { error: errorInfo });
   }
 
   private handleTimetableChange(event: TimetableChangeEvent) {
@@ -350,13 +372,14 @@ export class RealtimeTimetableService {
 
   private scheduleReconnect() {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.error('Max reconnection attempts reached');
+      console.warn(`⚠️ Max WebSocket reconnection attempts (${this.maxReconnectAttempts}) reached. Real-time updates disabled.`);
+      console.info('💡 The app will continue to work normally without real-time timetable updates.');
       this.connectionState = 'error';
       return;
     }
     
     const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts);
-    console.log(`Scheduling reconnection attempt ${this.reconnectAttempts + 1} in ${delay}ms`);
+    console.log(`🔄 Scheduling WebSocket reconnection attempt ${this.reconnectAttempts + 1} in ${delay}ms`);
     
     setTimeout(() => {
       this.reconnectAttempts++;
