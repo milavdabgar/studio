@@ -502,72 +502,156 @@ evt_s1,TechFest 2025,"Annual technical festival",2024-25,2025-03-15T10:00:00Z,20
             </div>
           )}
 
-          <Table>
-            <TableHeader>
-              <TableRow>
-                 <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedEvents.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all events on this page"/></TableHead>
-                <SortableTableHeader field="name" label="Event Name" />
-                <SortableTableHeader field="academicYear" label="Academic Year" />
-                <SortableTableHeader field="eventDate" label="Event Date" />
-                <SortableTableHeader field="registrationEndDate" label="Reg. Ends" />
-                <SortableTableHeader field="status" label="Status" />
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedEvents.map((eventItem) => (
-                <TableRow key={eventItem.id} data-state={selectedEventIds.includes(eventItem.id) ? "selected" : undefined}>
-                  <TableCell><Checkbox checked={selectedEventIds.includes(eventItem.id)} onCheckedChange={(checked) => handleSelectEvent(eventItem.id, !!checked)} aria-labelledby={`event-name-${eventItem.id}`}/></TableCell>
-                  <TableCell id={`event-name-${eventItem.id}`} className="font-medium">{eventItem.name}</TableCell>
-                  <TableCell>{eventItem.academicYear}</TableCell>
-                  <TableCell>{eventItem.eventDate && isValid(parseISO(eventItem.eventDate)) ? format(parseISO(eventItem.eventDate), 'dd MMM yyyy') : '-'}</TableCell>
-                  <TableCell>{eventItem.registrationEndDate && isValid(parseISO(eventItem.registrationEndDate)) ? format(parseISO(eventItem.registrationEndDate), 'dd MMM yyyy') : '-'}</TableCell>
-                  <TableCell>
+          {/* Mobile View */}
+          <div className="block lg:hidden space-y-3">
+            {paginatedEvents.map((eventItem) => (
+              <Card key={eventItem.id} className="shadow-sm">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <Checkbox 
+                        checked={selectedEventIds.includes(eventItem.id)} 
+                        onCheckedChange={(checked) => handleSelectEvent(eventItem.id, !!checked)}
+                        className="flex-shrink-0"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-semibold text-sm leading-tight">{eventItem.name}</h4>
+                        <p className="text-xs text-muted-foreground">{eventItem.academicYear}</p>
+                      </div>
+                    </div>
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
                         eventItem.status === 'ongoing' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' 
                         : eventItem.status === 'upcoming' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
                         : eventItem.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                        : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' /* cancelled */
+                        : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
                     }`}>
                       {EVENT_STATUS_OPTIONS.find(s => s.value === eventItem.status)?.label || eventItem.status}
                     </span>
-                  </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Link
-                      href={`/admin/project-fair/events/${eventItem.id}/dashboard`}
-                      >
-                        <Button variant="ghost" size="sm" title="Event Dashboard"><Briefcase className="h-4 w-4" /></Button>
+                  </div>
+                  
+                  <div className="space-y-2 text-xs text-muted-foreground mb-3">
+                    <div><span className="font-medium">Event Date:</span> {eventItem.eventDate && isValid(parseISO(eventItem.eventDate)) ? format(parseISO(eventItem.eventDate), 'dd MMM yyyy') : '-'}</div>
+                    <div><span className="font-medium">Registration Ends:</span> {eventItem.registrationEndDate && isValid(parseISO(eventItem.registrationEndDate)) ? format(parseISO(eventItem.registrationEndDate), 'dd MMM yyyy') : '-'}</div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-1 mb-3">
+                    <Link href={`/admin/project-fair/events/${eventItem.id}/dashboard`}>
+                      <Button variant="outline" size="sm" className="min-h-[44px] w-full" title="Dashboard">
+                        <Briefcase className="h-3 w-3" />
+                      </Button>
                     </Link>
-                     <Link
-                       href={`/admin/project-fair/events/${eventItem.id}/projects`}
-                       >
-                        <Button variant="ghost" size="sm" title="Manage Projects"><UsersIcon className="h-4 w-4" /></Button>
+                    <Link href={`/admin/project-fair/events/${eventItem.id}/projects`}>
+                      <Button variant="outline" size="sm" className="min-h-[44px] w-full" title="Projects">
+                        <UsersIcon className="h-3 w-3" />
+                      </Button>
                     </Link>
-                     <Link
-                       href={`/admin/project-fair/events/${eventItem.id}/locations`}
-                       >
-                        <Button variant="ghost" size="sm" title="Manage Locations"><MapPin className="h-4 w-4" /></Button>
+                    <Link href={`/admin/project-fair/events/${eventItem.id}/locations`}>
+                      <Button variant="outline" size="sm" className="min-h-[44px] w-full" title="Locations">
+                        <MapPin className="h-3 w-3" />
+                      </Button>
                     </Link>
-                     <Link
-                       href={`/admin/project-fair/events/${eventItem.id}/schedule`}
-                       >
-                        <Button variant="ghost" size="sm" title="Manage Schedule"><ListChecks className="h-4 w-4" /></Button>
+                  </div>
+
+                  <div className="grid grid-cols-4 gap-1">
+                    <Link href={`/admin/project-fair/events/${eventItem.id}/schedule`}>
+                      <Button variant="outline" size="sm" className="min-h-[44px] w-full" title="Schedule">
+                        <ListChecks className="h-3 w-3" />
+                      </Button>
                     </Link>
-                     <Link
-                       href={`/admin/project-fair/events/${eventItem.id}/results`}
-                       >
-                        <Button variant="ghost" size="sm" title="Manage Results"><AwardIcon className="h-4 w-4" /></Button>
+                    <Link href={`/admin/project-fair/events/${eventItem.id}/results`}>
+                      <Button variant="outline" size="sm" className="min-h-[44px] w-full" title="Results">
+                        <AwardIcon className="h-3 w-3" />
+                      </Button>
                     </Link>
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(eventItem)} disabled={isSubmitting}><Edit className="h-4 w-4" /><span className="sr-only">Edit Event</span></Button>
-                    <Button variant="destructive" size="icon" onClick={() => handleDelete(eventItem.id)} disabled={isSubmitting}><Trash2 className="h-4 w-4" /><span className="sr-only">Delete Event</span></Button>
-                  </TableCell>
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(eventItem)} disabled={isSubmitting} className="min-h-[44px] w-full">
+                      <Edit className="h-3 w-3" />
+                    </Button>
+                    <Button variant="destructive" size="sm" onClick={() => handleDelete(eventItem.id)} disabled={isSubmitting} className="min-h-[44px] w-full">
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+            
+            {paginatedEvents.length === 0 && (
+              <Card>
+                <CardContent className="text-center py-12">
+                  <p className="text-muted-foreground">No events found. Adjust filters or add a new event.</p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Desktop View */}
+          <div className="hidden lg:block">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                   <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedEvents.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all events on this page"/></TableHead>
+                  <SortableTableHeader field="name" label="Event Name" />
+                  <SortableTableHeader field="academicYear" label="Academic Year" />
+                  <SortableTableHeader field="eventDate" label="Event Date" />
+                  <SortableTableHeader field="registrationEndDate" label="Reg. Ends" />
+                  <SortableTableHeader field="status" label="Status" />
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              ))}
-              {paginatedEvents.length === 0 && (
-                 <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No events found. Adjust filters or add a new event.</TableCell></TableRow>
-              )}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {paginatedEvents.map((eventItem) => (
+                  <TableRow key={eventItem.id} data-state={selectedEventIds.includes(eventItem.id) ? "selected" : undefined}>
+                    <TableCell><Checkbox checked={selectedEventIds.includes(eventItem.id)} onCheckedChange={(checked) => handleSelectEvent(eventItem.id, !!checked)} aria-labelledby={`event-name-${eventItem.id}`}/></TableCell>
+                    <TableCell id={`event-name-${eventItem.id}`} className="font-medium">{eventItem.name}</TableCell>
+                    <TableCell>{eventItem.academicYear}</TableCell>
+                    <TableCell>{eventItem.eventDate && isValid(parseISO(eventItem.eventDate)) ? format(parseISO(eventItem.eventDate), 'dd MMM yyyy') : '-'}</TableCell>
+                    <TableCell>{eventItem.registrationEndDate && isValid(parseISO(eventItem.registrationEndDate)) ? format(parseISO(eventItem.registrationEndDate), 'dd MMM yyyy') : '-'}</TableCell>
+                    <TableCell>
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                          eventItem.status === 'ongoing' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' 
+                          : eventItem.status === 'upcoming' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                          : eventItem.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                          : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' /* cancelled */
+                      }`}>
+                        {EVENT_STATUS_OPTIONS.find(s => s.value === eventItem.status)?.label || eventItem.status}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right space-x-2">
+                      <Link
+                        href={`/admin/project-fair/events/${eventItem.id}/dashboard`}
+                        >
+                          <Button variant="ghost" size="sm" title="Event Dashboard"><Briefcase className="h-4 w-4" /></Button>
+                      </Link>
+                       <Link
+                         href={`/admin/project-fair/events/${eventItem.id}/projects`}
+                         >
+                          <Button variant="ghost" size="sm" title="Manage Projects"><UsersIcon className="h-4 w-4" /></Button>
+                      </Link>
+                       <Link
+                         href={`/admin/project-fair/events/${eventItem.id}/locations`}
+                         >
+                          <Button variant="ghost" size="sm" title="Manage Locations"><MapPin className="h-4 w-4" /></Button>
+                      </Link>
+                       <Link
+                         href={`/admin/project-fair/events/${eventItem.id}/schedule`}
+                         >
+                          <Button variant="ghost" size="sm" title="Manage Schedule"><ListChecks className="h-4 w-4" /></Button>
+                      </Link>
+                       <Link
+                         href={`/admin/project-fair/events/${eventItem.id}/results`}
+                         >
+                          <Button variant="ghost" size="sm" title="Manage Results"><AwardIcon className="h-4 w-4" /></Button>
+                      </Link>
+                      <Button variant="outline" size="icon" onClick={() => handleEdit(eventItem)} disabled={isSubmitting}><Edit className="h-4 w-4" /><span className="sr-only">Edit Event</span></Button>
+                      <Button variant="destructive" size="icon" onClick={() => handleDelete(eventItem.id)} disabled={isSubmitting}><Trash2 className="h-4 w-4" /><span className="sr-only">Delete Event</span></Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {paginatedEvents.length === 0 && (
+                   <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No events found. Adjust filters or add a new event.</TableCell></TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
          <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
             <div className="text-sm text-muted-foreground">

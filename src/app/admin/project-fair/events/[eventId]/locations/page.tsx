@@ -265,37 +265,100 @@ export default function EventLocationsPage() {
                 </div>
             )}
 
-            {isLoading ? <div className="text-center py-8"><Loader2 className="h-8 w-8 animate-spin mx-auto my-4 text-primary" /></div> :
-                paginatedLocations.length === 0 ? <p className="text-center text-muted-foreground py-8">No locations found for this event or matching your filters.</p> :
-            <Table>
-              <TableHeader><TableRow>
-                <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedLocations.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(val) => handleSelectAll(val as boolean | 'indeterminate')}/></TableHead>
-                <SortableTableHeader field="locationId" label="Location ID" />
-                <SortableTableHeader field="section" label="Section" />
-                <SortableTableHeader field="position" label="Position" />
-                <SortableTableHeader field="departmentName" label="Department" />
-                <SortableTableHeader field="projectName" label="Assigned Project" />
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow></TableHeader>
-              <TableBody>
-                {paginatedLocations.map((loc) => {
+            {isLoading ? (
+              <div className="text-center py-8"><Loader2 className="h-8 w-8 animate-spin mx-auto my-4 text-primary" /></div>
+            ) : paginatedLocations.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8">No locations found for this event or matching your filters.</p>
+            ) : (
+              <>
+                {/* Mobile View */}
+                <div className="block lg:hidden space-y-3">
+                  {paginatedLocations.map((loc) => {
                     const project = loc.projectId ? projects.find(p => p.id === loc.projectId) : null;
                     const department = loc.department ? departments.find(d => d.id === loc.department) : null;
                     return (
-                        <TableRow key={loc.id} data-state={selectedLocationIds.includes(loc.id) ? "selected" : undefined}>
-                            <TableCell><Checkbox checked={selectedLocationIds.includes(loc.id)} onCheckedChange={(checked) => setSelectedLocationIds(prev => checked ? [...prev, loc.id] : prev.filter(id => id !== loc.id))}/></TableCell>
-                            <TableCell className="font-medium">{loc.locationId}</TableCell>
-                            <TableCell>{loc.section}</TableCell>
-                            <TableCell>{loc.position}</TableCell>
-                            <TableCell>{department?.name || 'N/A'}</TableCell>
-                            <TableCell>{project ? project.title : <span className="text-muted-foreground italic">Unassigned</span>}</TableCell>
-                            <TableCell className="text-right space-x-1"><Button variant="outline" size="icon" className="h-7 w-7" onClick={() => handleEditLocation(loc)}><Edit className="h-4 w-4" /></Button><Button variant="destructive" size="icon" className="h-7 w-7" onClick={() => handleDeleteLocation(loc.id)}><Trash2 className="h-4 w-4" /></Button></TableCell>
-                        </TableRow>
+                      <Card key={loc.id} className="shadow-sm">
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-center gap-3 min-w-0 flex-1">
+                              <Checkbox 
+                                checked={selectedLocationIds.includes(loc.id)} 
+                                onCheckedChange={(checked) => setSelectedLocationIds(prev => checked ? [...prev, loc.id] : prev.filter(id => id !== loc.id))}
+                                className="flex-shrink-0"
+                              />
+                              <div className="min-w-0 flex-1">
+                                <h4 className="font-semibold text-sm leading-tight">{loc.locationId}</h4>
+                                <p className="text-xs text-muted-foreground">Section {loc.section}, Position {loc.position}</p>
+                              </div>
+                            </div>
+                            {project ? (
+                              <div className="text-xs text-right">
+                                <div className="font-medium text-green-600">Assigned</div>
+                                <div className="text-muted-foreground">Project</div>
+                              </div>
+                            ) : (
+                              <div className="text-xs text-right">
+                                <div className="font-medium text-orange-600">Unassigned</div>
+                                <div className="text-muted-foreground">Location</div>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="space-y-2 text-xs text-muted-foreground mb-3">
+                            <div><span className="font-medium">Department:</span> {department?.name || 'N/A'}</div>
+                            <div>
+                              <span className="font-medium">Project:</span> 
+                              {project ? project.title : <span className="italic">Unassigned</span>}
+                            </div>
+                          </div>
+
+                          <div className="flex gap-2">
+                            <Button variant="outline" size="sm" onClick={() => handleEditLocation(loc)} className="min-h-[44px] flex-1">
+                              <Edit className="h-3 w-3 mr-1" />Edit
+                            </Button>
+                            <Button variant="destructive" size="sm" onClick={() => handleDeleteLocation(loc.id)} className="min-h-[44px] flex-1">
+                              <Trash2 className="h-3 w-3 mr-1" />Delete
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
                     );
-                })}
-              </TableBody>
-            </Table>
-            }
+                  })}
+                </div>
+
+                {/* Desktop View */}
+                <div className="hidden lg:block">
+                  <Table>
+                    <TableHeader><TableRow>
+                      <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedLocations.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(val) => handleSelectAll(val as boolean | 'indeterminate')}/></TableHead>
+                      <SortableTableHeader field="locationId" label="Location ID" />
+                      <SortableTableHeader field="section" label="Section" />
+                      <SortableTableHeader field="position" label="Position" />
+                      <SortableTableHeader field="departmentName" label="Department" />
+                      <SortableTableHeader field="projectName" label="Assigned Project" />
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow></TableHeader>
+                    <TableBody>
+                      {paginatedLocations.map((loc) => {
+                          const project = loc.projectId ? projects.find(p => p.id === loc.projectId) : null;
+                          const department = loc.department ? departments.find(d => d.id === loc.department) : null;
+                          return (
+                              <TableRow key={loc.id} data-state={selectedLocationIds.includes(loc.id) ? "selected" : undefined}>
+                                  <TableCell><Checkbox checked={selectedLocationIds.includes(loc.id)} onCheckedChange={(checked) => setSelectedLocationIds(prev => checked ? [...prev, loc.id] : prev.filter(id => id !== loc.id))}/></TableCell>
+                                  <TableCell className="font-medium">{loc.locationId}</TableCell>
+                                  <TableCell>{loc.section}</TableCell>
+                                  <TableCell>{loc.position}</TableCell>
+                                  <TableCell>{department?.name || 'N/A'}</TableCell>
+                                  <TableCell>{project ? project.title : <span className="text-muted-foreground italic">Unassigned</span>}</TableCell>
+                                  <TableCell className="text-right space-x-1"><Button variant="outline" size="icon" className="h-7 w-7" onClick={() => handleEditLocation(loc)}><Edit className="h-4 w-4" /></Button><Button variant="destructive" size="icon" className="h-7 w-7" onClick={() => handleDeleteLocation(loc.id)}><Trash2 className="h-4 w-4" /></Button></TableCell>
+                              </TableRow>
+                          );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              </>
+            )}
         </CardContent>
          <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-t dark:border-gray-700">
             <div className="text-sm text-muted-foreground">Showing {paginatedLocations.length > 0 ? Math.min((currentPage -1) * itemsPerPage + 1, filteredAndSortedLocations.length): 0} to {Math.min(currentPage * itemsPerPage, filteredAndSortedLocations.length)} of {filteredAndSortedLocations.length} locations.</div>

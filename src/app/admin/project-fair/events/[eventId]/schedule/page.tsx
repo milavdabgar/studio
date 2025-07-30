@@ -193,31 +193,67 @@ export default function EventSchedulePage() {
               <p className="text-sm text-muted-foreground">Click &quot;Add Schedule Item&quot; to start building the event timeline.</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-1/4">Time</TableHead>
-                  <TableHead className="w-2/5">Activity</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Coordinator</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <>
+              {/* Mobile View */}
+              <div className="block lg:hidden space-y-3">
                 {schedule.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">{item.time}</TableCell>
-                    <TableCell>{item.activity}</TableCell>
-                    <TableCell>{item.location}</TableCell>
-                    <TableCell>{item.coordinator.name}</TableCell>
-                    <TableCell className="text-right space-x-1">
-                        <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => handleOpenForm(item, index)}><Edit2 className="h-4 w-4"/></Button>
-                        <Button variant="destructive" size="icon" className="h-7 w-7" onClick={() => handleDeleteItem(index)}><Trash2 className="h-4 w-4"/></Button>
-                    </TableCell>
-                  </TableRow>
+                  <Card key={index} className="shadow-sm">
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-semibold text-sm leading-tight">{item.activity}</h4>
+                          <p className="text-xs text-muted-foreground font-medium">{item.time}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2 text-xs text-muted-foreground mb-3">
+                        <div><span className="font-medium">Location:</span> {item.location}</div>
+                        <div><span className="font-medium">Coordinator:</span> {item.coordinator.name}</div>
+                        {item.notes && <div><span className="font-medium">Notes:</span> {item.notes}</div>}
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => handleOpenForm(item, index)} className="min-h-[44px] flex-1">
+                          <Edit2 className="h-3 w-3 mr-1" />Edit
+                        </Button>
+                        <Button variant="destructive" size="sm" onClick={() => handleDeleteItem(index)} className="min-h-[44px] flex-1">
+                          <Trash2 className="h-3 w-3 mr-1" />Delete
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
-              </TableBody>
-            </Table>
+              </div>
+
+              {/* Desktop View */}
+              <div className="hidden lg:block">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-1/4">Time</TableHead>
+                      <TableHead className="w-2/5">Activity</TableHead>
+                      <TableHead>Location</TableHead>
+                      <TableHead>Coordinator</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {schedule.map((item, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="font-medium">{item.time}</TableCell>
+                        <TableCell>{item.activity}</TableCell>
+                        <TableCell>{item.location}</TableCell>
+                        <TableCell>{item.coordinator.name}</TableCell>
+                        <TableCell className="text-right space-x-1">
+                            <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => handleOpenForm(item, index)}><Edit2 className="h-4 w-4"/></Button>
+                            <Button variant="destructive" size="icon" className="h-7 w-7" onClick={() => handleDeleteItem(index)}><Trash2 className="h-4 w-4"/></Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>

@@ -284,23 +284,78 @@ export default function RoomAllocationManagementPage() {
             <div><Label htmlFor="filterDate">Filter by Date</Label><Popover><PopoverTrigger asChild><Button variant="outline" className={cn("w-full justify-start text-left font-normal", !filterDate && "text-muted-foreground")}><CalendarIcon className="mr-2 h-4 w-4" />{filterDate ? format(filterDate, "PPP") : <span>Pick a date</span>}</Button></PopoverTrigger><PopoverContent className="w-auto p-0"><Calendar mode="single" selected={filterDate} onSelect={setFilterDate} initialFocus /></PopoverContent></Popover></div>
           </div>
 
-          <Table>
-            <TableHeader><TableRow><SortableTableHeader field="roomNumber" label="Room" /><SortableTableHeader field="title" label="Title" /><SortableTableHeader field="purpose" label="Purpose" /><SortableTableHeader field="startTime" label="Start Time" /><SortableTableHeader field="endTime" label="End Time" /><SortableTableHeader field="status" label="Status" /><TableHead className="text-right">Actions</TableHead></TableRow></TableHeader>
-            <TableBody>
-              {paginatedAllocations.map((alloc) => (
-                <TableRow key={alloc.id}>
-                  <TableCell>{rooms.find(r=>r.id === alloc.roomId)?.roomNumber || 'N/A'}</TableCell>
-                  <TableCell>{alloc.title || '-'}</TableCell>
-                  <TableCell>{alloc.purpose}</TableCell>
-                  <TableCell>{format(parseISO(alloc.startTime), "Pp")}</TableCell>
-                  <TableCell>{format(parseISO(alloc.endTime), "Pp")}</TableCell>
-                  <TableCell><span className={`px-2 py-1 text-xs font-semibold rounded-full ${alloc.status === 'scheduled' ? 'bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-200' : alloc.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-200' : alloc.status === 'cancelled' ? 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-200'}`}>{STATUS_OPTIONS.find(s => s.value === alloc.status)?.label || alloc.status}</span></TableCell>
-                  <TableCell className="text-right space-x-2"><Button variant="outline" size="icon" onClick={() => handleEdit(alloc)}><Edit className="h-4 w-4" /></Button><Button variant="destructive" size="icon" onClick={() => handleDelete(alloc.id)}><Trash2 className="h-4 w-4" /></Button></TableCell>
-                </TableRow>
-              ))}
-              {paginatedAllocations.length === 0 && <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No allocations found. Try adjusting filters.</TableCell></TableRow>}
-            </TableBody>
-          </Table>
+          {/* Mobile View */}
+          <div className="block lg:hidden space-y-3">
+            {paginatedAllocations.map((alloc) => {
+              const room = rooms.find(r => r.id === alloc.roomId);
+              return (
+                <Card key={alloc.id} className="shadow-sm">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-semibold text-sm leading-tight">
+                          {room?.roomNumber || 'N/A'} - {alloc.title || 'Untitled'}
+                        </h4>
+                        <p className="text-xs text-muted-foreground">{alloc.purpose}</p>
+                      </div>
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        alloc.status === 'scheduled' ? 'bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-200' : 
+                        alloc.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-200' : 
+                        alloc.status === 'cancelled' ? 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200' : 
+                        'bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-200'
+                      }`}>
+                        {STATUS_OPTIONS.find(s => s.value === alloc.status)?.label || alloc.status}
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-2 text-xs text-muted-foreground mb-3">
+                      <div><span className="font-medium">Start:</span> {format(parseISO(alloc.startTime), "Pp")}</div>
+                      <div><span className="font-medium">End:</span> {format(parseISO(alloc.endTime), "Pp")}</div>
+                      {alloc.notes && <div><span className="font-medium">Notes:</span> {alloc.notes}</div>}
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" onClick={() => handleEdit(alloc)} className="min-h-[44px] flex-1">
+                        <Edit className="h-3 w-3 mr-1" />Edit
+                      </Button>
+                      <Button variant="destructive" size="sm" onClick={() => handleDelete(alloc.id)} className="min-h-[44px] flex-1">
+                        <Trash2 className="h-3 w-3 mr-1" />Delete
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+            
+            {paginatedAllocations.length === 0 && (
+              <Card>
+                <CardContent className="text-center py-12">
+                  <p className="text-muted-foreground">No allocations found. Try adjusting filters.</p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Desktop View */}
+          <div className="hidden lg:block">
+            <Table>
+              <TableHeader><TableRow><SortableTableHeader field="roomNumber" label="Room" /><SortableTableHeader field="title" label="Title" /><SortableTableHeader field="purpose" label="Purpose" /><SortableTableHeader field="startTime" label="Start Time" /><SortableTableHeader field="endTime" label="End Time" /><SortableTableHeader field="status" label="Status" /><TableHead className="text-right">Actions</TableHead></TableRow></TableHeader>
+              <TableBody>
+                {paginatedAllocations.map((alloc) => (
+                  <TableRow key={alloc.id}>
+                    <TableCell>{rooms.find(r=>r.id === alloc.roomId)?.roomNumber || 'N/A'}</TableCell>
+                    <TableCell>{alloc.title || '-'}</TableCell>
+                    <TableCell>{alloc.purpose}</TableCell>
+                    <TableCell>{format(parseISO(alloc.startTime), "Pp")}</TableCell>
+                    <TableCell>{format(parseISO(alloc.endTime), "Pp")}</TableCell>
+                    <TableCell><span className={`px-2 py-1 text-xs font-semibold rounded-full ${alloc.status === 'scheduled' ? 'bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-200' : alloc.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-200' : alloc.status === 'cancelled' ? 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-200'}`}>{STATUS_OPTIONS.find(s => s.value === alloc.status)?.label || alloc.status}</span></TableCell>
+                    <TableCell className="text-right space-x-2"><Button variant="outline" size="icon" onClick={() => handleEdit(alloc)}><Edit className="h-4 w-4" /></Button><Button variant="destructive" size="icon" onClick={() => handleDelete(alloc.id)}><Trash2 className="h-4 w-4" /></Button></TableCell>
+                  </TableRow>
+                ))}
+                {paginatedAllocations.length === 0 && <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No allocations found. Try adjusting filters.</TableCell></TableRow>}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
          <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
             <div className="text-sm text-muted-foreground">Showing {paginatedAllocations.length > 0 ? Math.min((currentPage -1) * itemsPerPage + 1, filteredAndSortedAllocations.length): 0} to {Math.min(currentPage * itemsPerPage, filteredAndSortedAllocations.length)} of {filteredAndSortedAllocations.length} allocations.</div>

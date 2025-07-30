@@ -230,35 +230,94 @@ export default function EventProjectsPage() {
                 </div>
             )}
 
-            {isLoading ? <div className="text-center py-8"><Loader2 className="h-8 w-8 animate-spin mx-auto my-4 text-primary" /></div> :
-                paginatedProjects.length === 0 ? <p className="text-center text-muted-foreground py-8">No projects found for this event or matching your filters.</p> :
-            <Table>
-              <TableHeader><TableRow>
-                <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedProjects.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(val) => handleSelectAll(val as boolean | 'indeterminate')}/></TableHead>
-                <SortableTableHeader field="id" label="Project ID" />
-                <SortableTableHeader field="title" label="Title" />
-                <SortableTableHeader field="category" label="Category" />
-                <SortableTableHeader field="departmentName" label="Department" />
-                <SortableTableHeader field="teamName" label="Team" />
-                <SortableTableHeader field="status" label="Status" />
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow></TableHeader>
-              <TableBody>
-                {paginatedProjects.map((project) => (
-                  <TableRow key={project.id} data-state={selectedProjectIds.includes(project.id) ? "selected" : undefined}>
-                    <TableCell><Checkbox checked={selectedProjectIds.includes(project.id)} onCheckedChange={(checked) => setSelectedProjectIds(prev => checked ? [...prev, project.id] : prev.filter(id => id !== project.id))}/></TableCell>
-                    <TableCell>{project.id}</TableCell>
-                    <TableCell className="font-medium">{project.title}</TableCell>
-                    <TableCell>{project.category}</TableCell>
-                    <TableCell>{departments.find(d => d.id === project.department)?.name || 'N/A'}</TableCell>
-                    <TableCell>{teams.find(t => t.id === project.teamId)?.name || 'N/A'}</TableCell>
-                    <TableCell><span className={`px-2 py-0.5 text-xs rounded-full font-medium bg-${project.status === 'approved' ? 'green' : project.status === 'rejected' ? 'red' : project.status === 'submitted' ? 'blue' : 'yellow'}-100 text-${project.status === 'approved' ? 'green' : project.status === 'rejected' ? 'red' : project.status === 'submitted' ? 'blue' : 'yellow'}-700`}>{project.status.charAt(0).toUpperCase() + project.status.slice(1)}</span></TableCell>
-                    <TableCell className="text-right space-x-1"><Button variant="outline" size="icon" className="h-7 w-7" onClick={() => handleEditProject(project)}><Edit className="h-4 w-4" /></Button><Button variant="destructive" size="icon" className="h-7 w-7" onClick={() => handleDeleteProject(project.id)}><Trash2 className="h-4 w-4" /></Button></TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            }
+            {isLoading ? (
+              <div className="text-center py-8"><Loader2 className="h-8 w-8 animate-spin mx-auto my-4 text-primary" /></div>
+            ) : paginatedProjects.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8">No projects found for this event or matching your filters.</p>
+            ) : (
+              <>
+                {/* Mobile View */}
+                <div className="block lg:hidden space-y-3">
+                  {paginatedProjects.map((project) => (
+                    <Card key={project.id} className="shadow-sm">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
+                            <Checkbox 
+                              checked={selectedProjectIds.includes(project.id)} 
+                              onCheckedChange={(checked) => setSelectedProjectIds(prev => checked ? [...prev, project.id] : prev.filter(id => id !== project.id))}
+                              className="flex-shrink-0"
+                            />
+                            <div className="min-w-0 flex-1">
+                              <h4 className="font-semibold text-sm leading-tight">{project.title}</h4>
+                              <p className="text-xs text-muted-foreground">ID: {project.id}</p>
+                            </div>
+                          </div>
+                          <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                            project.status === 'approved' ? 'bg-green-100 text-green-800' :
+                            project.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                            project.status === 'submitted' ? 'bg-blue-100 text-blue-800' :
+                            'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                          </span>
+                        </div>
+                        
+                        <div className="space-y-2 text-xs text-muted-foreground mb-3">
+                          <div><span className="font-medium">Category:</span> {project.category}</div>
+                          <div><span className="font-medium">Department:</span> {departments.find(d => d.id === project.department)?.name || 'N/A'}</div>
+                          <div><span className="font-medium">Team:</span> {teams.find(t => t.id === project.teamId)?.name || 'N/A'}</div>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={() => handleEditProject(project)} className="min-h-[44px] flex-1">
+                            <Edit className="h-3 w-3 mr-1" />Edit
+                          </Button>
+                          <Button variant="destructive" size="sm" onClick={() => handleDeleteProject(project.id)} className="min-h-[44px] flex-1">
+                            <Trash2 className="h-3 w-3 mr-1" />Delete
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                {/* Desktop View */}
+                <div className="hidden lg:block">
+                  <Table>
+                    <TableHeader><TableRow>
+                      <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedProjects.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(val) => handleSelectAll(val as boolean | 'indeterminate')}/></TableHead>
+                      <SortableTableHeader field="id" label="Project ID" />
+                      <SortableTableHeader field="title" label="Title" />
+                      <SortableTableHeader field="category" label="Category" />
+                      <SortableTableHeader field="departmentName" label="Department" />
+                      <SortableTableHeader field="teamName" label="Team" />
+                      <SortableTableHeader field="status" label="Status" />
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow></TableHeader>
+                    <TableBody>
+                      {paginatedProjects.map((project) => (
+                        <TableRow key={project.id} data-state={selectedProjectIds.includes(project.id) ? "selected" : undefined}>
+                          <TableCell><Checkbox checked={selectedProjectIds.includes(project.id)} onCheckedChange={(checked) => setSelectedProjectIds(prev => checked ? [...prev, project.id] : prev.filter(id => id !== project.id))}/></TableCell>
+                          <TableCell>{project.id}</TableCell>
+                          <TableCell className="font-medium">{project.title}</TableCell>
+                          <TableCell>{project.category}</TableCell>
+                          <TableCell>{departments.find(d => d.id === project.department)?.name || 'N/A'}</TableCell>
+                          <TableCell>{teams.find(t => t.id === project.teamId)?.name || 'N/A'}</TableCell>
+                          <TableCell><span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
+                            project.status === 'approved' ? 'bg-green-100 text-green-700' :
+                            project.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                            project.status === 'submitted' ? 'bg-blue-100 text-blue-700' :
+                            'bg-yellow-100 text-yellow-700'
+                          }`}>{project.status.charAt(0).toUpperCase() + project.status.slice(1)}</span></TableCell>
+                          <TableCell className="text-right space-x-1"><Button variant="outline" size="icon" className="h-7 w-7" onClick={() => handleEditProject(project)}><Edit className="h-4 w-4" /></Button><Button variant="destructive" size="icon" className="h-7 w-7" onClick={() => handleDeleteProject(project.id)}><Trash2 className="h-4 w-4" /></Button></TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </>
+            )}
         </CardContent>
         <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-t dark:border-gray-700">
             <div className="text-sm text-muted-foreground">Showing {paginatedProjects.length > 0 ? Math.min((currentPage -1) * itemsPerPage + 1, filteredAndSortedProjects.length): 0} to {Math.min(currentPage * itemsPerPage, filteredAndSortedProjects.length)} of {filteredAndSortedProjects.length} projects.</div>
