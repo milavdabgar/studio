@@ -469,7 +469,88 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
             </div>
           )}
 
-          <Table>
+          {/* Mobile Card View */}
+          <div className="block lg:hidden space-y-3">
+            {paginatedInstitutes.map((institute) => {
+              const principal = institute.principalId ? facultyUsers.find(u => u.id === institute.principalId) : null;
+              
+              return (
+                <Card key={institute.id} className="p-4">
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <Checkbox 
+                        checked={selectedInstituteIds.includes(institute.id)} 
+                        onCheckedChange={(checked) => handleSelectInstitute(institute.id, !!checked)}
+                        className="flex-shrink-0"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-medium text-sm leading-tight">{institute.name}</h3>
+                        <p className="text-xs text-muted-foreground">{institute.code}</p>
+                      </div>
+                    </div>
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full flex-shrink-0 ${
+                      institute.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
+                      'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                    }`}>
+                      {institute.status === 'active' ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 gap-2 text-xs mb-3">
+                    <div>
+                      <span className="text-muted-foreground">Principal:</span>
+                      <p className="font-medium">{principal?.displayName || `${principal?.firstName || ''} ${principal?.lastName || ''}`.trim() || 'Not assigned'}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Contact:</span>
+                      <p className="font-medium">{institute.contactEmail || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Established:</span>
+                      <p className="font-medium">{institute.establishmentYear || 'N/A'}</p>
+                    </div>
+                    {institute.website && (
+                      <div>
+                        <span className="text-muted-foreground">Website:</span>
+                        <a href={institute.website} target="_blank" rel="noopener noreferrer" className="font-medium text-primary hover:underline ml-1">
+                          {institute.website.replace(/^https?:\/\//, '')}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="flex gap-1">
+                    <Button variant="outline" size="sm" onClick={() => handleView(institute)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
+                      <Eye className="h-3 w-3" />
+                      <span className="ml-1">View</span>
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(institute)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
+                      <Edit className="h-3 w-3" />
+                      <span className="ml-1">Edit</span>
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      size="sm" 
+                      onClick={() => handleDelete(institute.id)} 
+                      disabled={isSubmitting}
+                      className="min-h-[44px] flex-1 text-xs"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                      <span className="ml-1">Delete</span>
+                    </Button>
+                  </div>
+                </Card>
+              );
+            })}
+            {paginatedInstitutes.length === 0 && (
+              <Card className="p-8 text-center text-muted-foreground">
+                No institutes found. Adjust filters or add a new institute.
+              </Card>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <Table className="hidden lg:table">
             <TableHeader>
               <TableRow>
                  <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedInstitutes.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={handleSelectAll} aria-label="Select all institutes on this page"/></TableHead>

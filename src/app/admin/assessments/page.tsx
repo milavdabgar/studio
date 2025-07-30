@@ -668,7 +668,95 @@ asm_s1,Midterm 1,crs1,CS101,prog1,DCE,batch1,2024-2027,Midterm,"Covers first 3 u
             </div>
           )}
 
-          <Table>
+          {/* Mobile Card View */}
+          <div className="block lg:hidden space-y-3">
+            {paginatedAssessments.map((assessment) => {
+              const course = courses.find(c => c.id === assessment.courseId);
+              const program = programs.find(p => p.id === assessment.programId);
+              
+              return (
+                <Card key={assessment.id} className="p-4">
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <Checkbox 
+                        checked={selectedAssessmentIds.includes(assessment.id)} 
+                        onCheckedChange={(checked) => handleSelectAssessment(assessment.id, !!checked)}
+                        className="flex-shrink-0"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-medium text-sm leading-tight">{assessment.name}</h3>
+                        <p className="text-xs text-muted-foreground">{course?.subjectName || 'N/A'}</p>
+                      </div>
+                    </div>
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full flex-shrink-0 ${
+                      assessment.status === 'Published' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
+                      : assessment.status === 'Ongoing' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+                      : assessment.status === 'Completed' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300'
+                      : assessment.status === 'Draft' ? 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300'
+                      : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                    }`}>
+                      {ASSESSMENT_STATUS_OPTIONS.find(s => s.value === assessment.status)?.label || assessment.status}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3 text-xs mb-3">
+                    <div>
+                      <span className="text-muted-foreground">Program:</span>
+                      <p className="font-medium">{program?.code || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Type:</span>
+                      <p className="font-medium">{assessment.type}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Max Marks:</span>
+                      <p className="font-medium">{assessment.maxMarks}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Course Code:</span>
+                      <p className="font-medium">{course?.subcode || 'N/A'}</p>
+                    </div>
+                  </div>
+                  
+                  {assessment.description && (
+                    <div className="mb-3">
+                      <span className="text-xs text-muted-foreground">Description:</span>
+                      <p className="text-xs font-medium truncate">{assessment.description}</p>
+                    </div>
+                  )}
+                  
+                  <div className="flex gap-1">
+                    <Button variant="outline" size="sm" onClick={() => handleView(assessment)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
+                      <Eye className="h-3 w-3" />
+                      <span className="ml-1">View</span>
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(assessment)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
+                      <Edit className="h-3 w-3" />
+                      <span className="ml-1">Edit</span>
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      size="sm" 
+                      onClick={() => handleDelete(assessment.id)} 
+                      disabled={isSubmitting}
+                      className="min-h-[44px] flex-1 text-xs"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                      <span className="ml-1">Delete</span>
+                    </Button>
+                  </div>
+                </Card>
+              );
+            })}
+            {paginatedAssessments.length === 0 && (
+              <Card className="p-8 text-center text-muted-foreground">
+                No assessments found. Adjust filters or add a new assessment.
+              </Card>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <Table className="hidden lg:table">
             <TableHeader>
               <TableRow>
                  <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedAssessments.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all assessments on this page"/></TableHead>

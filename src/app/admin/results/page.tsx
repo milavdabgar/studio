@@ -242,27 +242,27 @@ export default function AdminResultsPage() {
 
   const renderResultsTab = () => (
     <>
-      <div className="mb-6 p-4 border rounded-lg grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 dark:border-gray-700">
+      <div className="mb-6 p-3 sm:p-4 border rounded-lg grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 dark:border-gray-700">
         <div>
-          <Label htmlFor="searchTermResults">Search Student</Label>
-          <Input id="searchTermResults" placeholder="ID, Name, Exam..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="mt-1"/>
+          <Label htmlFor="searchTermResults" className="text-sm font-medium">Search Student</Label>
+          <Input id="searchTermResults" placeholder="ID, Name, Exam..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="mt-1 min-h-[44px]"/>
         </div>
         <div>
-          <Label htmlFor="filterBranchName">Branch</Label>
-          <Input id="filterBranchName" name="branchName" value={filters.branchName || ''} onChange={handleFilterChange} placeholder="e.g. Computer Engg" className="mt-1"/>
+          <Label htmlFor="filterBranchName" className="text-sm font-medium">Branch</Label>
+          <Input id="filterBranchName" name="branchName" value={filters.branchName || ''} onChange={handleFilterChange} placeholder="e.g. Computer Engg" className="mt-1 min-h-[44px]"/>
         </div>
         <div>
-          <Label htmlFor="filterSemester">Semester</Label>
-          <Input id="filterSemester" name="semester" type="number" value={filters.semester || ''} onChange={handleNumericFilterChange} placeholder="e.g. 3" className="mt-1"/>
+          <Label htmlFor="filterSemester" className="text-sm font-medium">Semester</Label>
+          <Input id="filterSemester" name="semester" type="number" value={filters.semester || ''} onChange={handleNumericFilterChange} placeholder="e.g. 3" className="mt-1 min-h-[44px]"/>
         </div>
         <div>
-          <Label htmlFor="filterAcademicYear">Academic Year</Label>
-          <Input id="filterAcademicYear" name="academicYear" value={filters.academicYear || ''} onChange={handleFilterChange} placeholder="e.g. 2023-24" className="mt-1"/>
+          <Label htmlFor="filterAcademicYear" className="text-sm font-medium">Academic Year</Label>
+          <Input id="filterAcademicYear" name="academicYear" value={filters.academicYear || ''} onChange={handleFilterChange} placeholder="e.g. 2023-24" className="mt-1 min-h-[44px]"/>
         </div>
         <div>
-            <Label htmlFor="filterExamIdResults">Examination</Label>
+            <Label htmlFor="filterExamIdResults" className="text-sm font-medium">Examination</Label>
             <Select name="examId" value={filters.examId || "all"} onValueChange={(val) => setFilters(prev => ({...prev, examId: val === "all" ? undefined : val, examid: undefined}))}>
-                <SelectTrigger id="filterExamIdResults" className="mt-1"><SelectValue placeholder="Select Examination" /></SelectTrigger>
+                <SelectTrigger id="filterExamIdResults" className="mt-1 min-h-[44px]"><SelectValue placeholder="Select Examination" /></SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">All Examinations</SelectItem>
                     {examinations.map(exam => <SelectItem key={exam.id} value={exam.id}>{exam.name} ({exam.academicYear})</SelectItem>)}
@@ -270,51 +270,127 @@ export default function AdminResultsPage() {
             </Select>
         </div>
          <div className="lg:col-start-6 lg:col-end-7 flex items-end">
-            <Button onClick={applyFilters} className="w-full mt-1"><Filter className="mr-2 h-4 w-4"/>Apply Filters</Button>
+            <Button onClick={applyFilters} className="w-full mt-1 min-h-[44px]"><Filter className="mr-2 h-4 w-4"/>Apply Filters</Button>
         </div>
       </div>
 
-      <Table>
-        <TableHeader><TableRow>
-          <SortableTableHeader field="enrollmentNo" label="Enrollment No" />
-          <SortableTableHeader field="name" label="Name" />
-          <SortableTableHeader field="branchName" label="Branch" />
-          <SortableTableHeader field="semester" label="Sem" />
-          <SortableTableHeader field="exam" label="Exam" />
-          <SortableTableHeader field="spi" label="SPI" />
-          <SortableTableHeader field="cpi" label="CPI" />
-          <SortableTableHeader field="result" label="Result" />
-          <TableHead className="text-right">Actions</TableHead>
-        </TableRow></TableHeader>
-        <TableBody>
-          {isLoading ? (
-            <TableRow><TableCell colSpan={9} className="text-center"><Loader2 className="h-8 w-8 animate-spin mx-auto my-4 text-primary" /></TableCell></TableRow>
-          ) : results.length === 0 ? (
-            <TableRow><TableCell colSpan={9} className="text-center text-muted-foreground py-8">No results found.</TableCell></TableRow>
-          ) : (
-            results.map(result => (
-              <TableRow key={result._id}>
-                <TableCell>{result.enrollmentNo}</TableCell>
-                <TableCell className="font-medium">{result.name}</TableCell>
-                <TableCell>{result.branchName}</TableCell>
-                <TableCell>{result.semester}</TableCell>
-                <TableCell>{result.exam}</TableCell>
-                <TableCell>{result.spi?.toFixed(2)}</TableCell>
-                <TableCell>{result.cpi?.toFixed(2)}</TableCell>
-                <TableCell><span className={`px-2 py-1 text-xs font-semibold rounded-full ${result.result === 'PASS' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{result.result}</span></TableCell>
-                <TableCell className="text-right space-x-1">
-                  <Link href={`/admin/results/detailed/${result._id}`} passHref>
-                    <Button variant="outline" size="icon" className="h-7 w-7"><ExternalLink className="h-4 w-4" /></Button>
+      {/* Mobile View */}
+      <div className="block lg:hidden space-y-3">
+        {isLoading ? (
+          <Card className="shadow-sm">
+            <CardContent className="p-8 text-center">
+              <Loader2 className="h-8 w-8 animate-spin mx-auto my-4 text-primary" />
+            </CardContent>
+          </Card>
+        ) : results.length === 0 ? (
+          <Card className="shadow-sm">
+            <CardContent className="p-8 text-center text-muted-foreground">
+              No results found.
+            </CardContent>
+          </Card>
+        ) : (
+          results.map(result => (
+            <Card key={result._id} className="shadow-sm">
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="min-w-0 flex-1">
+                    <h4 className="font-semibold text-sm leading-tight">
+                      {result.name}
+                    </h4>
+                    <p className="text-xs text-muted-foreground">{result.enrollmentNo}</p>
+                    <p className="text-xs text-muted-foreground truncate">{result.branchName} - Semester {result.semester}</p>
+                  </div>
+                  <span className={`px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${
+                    result.result === 'PASS' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                    : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                  }`}>
+                    {result.result}
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-y-2 text-xs mb-3">
+                  <div>
+                    <span className="text-muted-foreground">Exam:</span>
+                    <p className="font-medium truncate">{result.exam}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">SPI:</span>
+                    <p className="font-medium">{result.spi?.toFixed(2) || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">CPI:</span>
+                    <p className="font-medium">{result.cpi?.toFixed(2) || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Percentage:</span>
+                    <p className="font-medium">
+                      {result.spi ? ((result.spi - 0.5) * 10).toFixed(1) + '%' : 'N/A'}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Link href={`/admin/results/detailed/${result._id}`} className="flex-1">
+                    <Button variant="outline" size="sm" className="w-full min-h-[44px]">
+                      <ExternalLink className="h-4 w-4 mr-2" /> View Details
+                    </Button>
                   </Link>
-                  <Link href={`/admin/results/history/${result.enrollmentNo}`} passHref>
-                     <Button variant="outline" size="icon" className="h-7 w-7"><User className="h-4 w-4" /></Button>
+                  <Link href={`/admin/results/history/${result.enrollmentNo}`} className="flex-1">
+                    <Button variant="outline" size="sm" className="w-full min-h-[44px]">
+                      <User className="h-4 w-4 mr-2" /> History
+                    </Button>
                   </Link>
-                </TableCell>
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </div>
+
+      {/* Desktop Table View */}
+      <div className="hidden lg:block">
+        <Table>
+          <TableHeader><TableRow>
+            <SortableTableHeader field="enrollmentNo" label="Enrollment No" />
+            <SortableTableHeader field="name" label="Name" />
+            <SortableTableHeader field="branchName" label="Branch" />
+            <SortableTableHeader field="semester" label="Sem" />
+            <SortableTableHeader field="exam" label="Exam" />
+            <SortableTableHeader field="spi" label="SPI" />
+            <SortableTableHeader field="cpi" label="CPI" />
+            <SortableTableHeader field="result" label="Result" />
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow></TableHeader>
+          <TableBody>
+            {isLoading ? (
+              <TableRow><TableCell colSpan={9} className="text-center"><Loader2 className="h-8 w-8 animate-spin mx-auto my-4 text-primary" /></TableCell></TableRow>
+            ) : results.length === 0 ? (
+              <TableRow><TableCell colSpan={9} className="text-center text-muted-foreground py-8">No results found.</TableCell></TableRow>
+            ) : (
+              results.map(result => (
+                <TableRow key={result._id}>
+                  <TableCell>{result.enrollmentNo}</TableCell>
+                  <TableCell className="font-medium">{result.name}</TableCell>
+                  <TableCell>{result.branchName}</TableCell>
+                  <TableCell>{result.semester}</TableCell>
+                  <TableCell>{result.exam}</TableCell>
+                  <TableCell>{result.spi?.toFixed(2)}</TableCell>
+                  <TableCell>{result.cpi?.toFixed(2)}</TableCell>
+                  <TableCell><span className={`px-2 py-1 text-xs font-semibold rounded-full ${result.result === 'PASS' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{result.result}</span></TableCell>
+                  <TableCell className="text-right space-x-1">
+                    <Link href={`/admin/results/detailed/${result._id}`} passHref>
+                      <Button variant="outline" size="icon" className="h-7 w-7"><ExternalLink className="h-4 w-4" /></Button>
+                    </Link>
+                    <Link href={`/admin/results/history/${result.enrollmentNo}`} passHref>
+                       <Button variant="outline" size="icon" className="h-7 w-7"><User className="h-4 w-4" /></Button>
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </>
   );
   
@@ -356,15 +432,15 @@ export default function AdminResultsPage() {
 
   const renderAnalysisTab = () => (
     <>
-     <div className="mb-6 p-4 border rounded-lg grid grid-cols-1 sm:grid-cols-2 gap-4 dark:border-gray-700">
+     <div className="mb-6 p-3 sm:p-4 border rounded-lg grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 dark:border-gray-700">
         <div>
-          <Label htmlFor="analysisAcademicYear">Academic Year</Label>
-          <Input id="analysisAcademicYear" name="academicYear" value={filters.academicYear || ''} onChange={handleFilterChange} placeholder="e.g. 2023-24" className="mt-1"/>
+          <Label htmlFor="analysisAcademicYear" className="text-sm font-medium">Academic Year</Label>
+          <Input id="analysisAcademicYear" name="academicYear" value={filters.academicYear || ''} onChange={handleFilterChange} placeholder="e.g. 2023-24" className="mt-1 min-h-[44px]"/>
         </div>
         <div>
-            <Label htmlFor="analysisExamId">Examination (GTU Exam ID or Formal Exam)</Label>
+            <Label htmlFor="analysisExamId" className="text-sm font-medium">Examination (GTU Exam ID or Formal Exam)</Label>
             <Select name="examid" value={filters.examid?.toString() || filters.examId || "all"} onValueChange={(val) => setFilters(prev => ({...prev, examid: val === "all" ? undefined : parseInt(val), examId: val === "all" ? undefined : val }))}>
-                <SelectTrigger id="analysisExamId" className="mt-1"><SelectValue placeholder="Select Examination" /></SelectTrigger>
+                <SelectTrigger id="analysisExamId" className="mt-1 min-h-[44px]"><SelectValue placeholder="Select Examination" /></SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">All Examinations</SelectItem>
                     {/* Combine GTU style exam IDs (if any known/used) and our formal exams */}
@@ -374,7 +450,7 @@ export default function AdminResultsPage() {
             </Select>
         </div>
          <div className="sm:col-span-2 flex justify-end">
-            <Button onClick={fetchBranchAnalysisData} className="mt-1"><Filter className="mr-2 h-4 w-4"/>Fetch Analysis</Button>
+            <Button onClick={fetchBranchAnalysisData} className="mt-1 min-h-[44px] w-full sm:w-auto"><Filter className="mr-2 h-4 w-4"/>Fetch Analysis</Button>
         </div>
       </div>
     <div className="overflow-x-auto">
@@ -411,23 +487,33 @@ export default function AdminResultsPage() {
   );
   
   return (
-    <div className="space-y-6">
-      <Card className="shadow-xl">
-        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-                <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
-                    <BookCheck className="h-6 w-6" /> Result Management
+    <div className="space-y-4 sm:space-y-6 lg:space-y-8 px-3 sm:px-4 py-4 sm:py-6">
+      <Card className="shadow-lg sm:shadow-xl">
+        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-6">
+            <div className="w-full sm:w-auto">
+                <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold text-primary flex items-center gap-2">
+                    <BookCheck className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <span className="sm:hidden">Results</span>
+                    <span className="hidden sm:inline">Result Management</span>
                 </CardTitle>
-                <CardDescription>View, manage, and analyze student academic results.</CardDescription>
+                <CardDescription className="text-sm sm:text-base">View, manage, and analyze student academic results.</CardDescription>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                  <Link href="/admin/results/import" passHref>
-                    <Button variant="outline"><UploadCloud className="mr-2 h-4 w-4"/> Import Results Page</Button>
+                    <Button variant="outline" className="w-full sm:w-auto min-h-[44px]">
+                      <UploadCloud className="mr-2 h-4 w-4"/>
+                      <span className="sm:hidden">Import</span>
+                      <span className="hidden sm:inline">Import Results Page</span>
+                    </Button>
                  </Link>
-                <Button onClick={handleExportResults} variant="outline" disabled={results.length === 0 || isLoading}><Download className="mr-2 h-4 w-4"/> Export Filtered CSV</Button>
+                <Button onClick={handleExportResults} variant="outline" disabled={results.length === 0 || isLoading} className="w-full sm:w-auto min-h-[44px]">
+                  <Download className="mr-2 h-4 w-4"/>
+                  <span className="sm:hidden">Export</span>
+                  <span className="hidden sm:inline">Export Filtered CSV</span>
+                </Button>
             </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 sm:p-6">
           <div className="mb-6 border-b border-border dark:border-gray-700">
             <nav className="-mb-px flex space-x-6">
               {([
@@ -455,21 +541,21 @@ export default function AdminResultsPage() {
 
         </CardContent>
         {activeTab === 'results' && (
-             <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-t dark:border-gray-700">
-                <div className="text-sm text-muted-foreground">
+             <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-4 sm:px-6 border-t dark:border-gray-700">
+                <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
                     Showing {pagination.total > 0 ? Math.min((pagination.page -1) * pagination.limit + 1, pagination.total): 0} to {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} results.
                 </div>
                 <div className="flex items-center gap-2">
                     <Select value={String(pagination.limit)} onValueChange={(value) => handleItemsPerPageChange(Number(value))}>
-                        <SelectTrigger className="w-[70px] h-8 text-xs"><SelectValue /></SelectTrigger>
+                        <SelectTrigger className="w-[70px] h-8 sm:h-10 text-xs"><SelectValue /></SelectTrigger>
                         <SelectContent side="top">{ITEMS_PER_PAGE_OPTIONS.map(sz => <SelectItem key={sz} value={String(sz)} className="text-xs">{sz}</SelectItem>)}</SelectContent>
                     </Select>
-                    <span className="text-sm text-muted-foreground">Page {pagination.page} of {pagination.pages > 0 ? pagination.pages : 1}</span>
+                    <span className="text-xs sm:text-sm text-muted-foreground">Page {pagination.page} of {pagination.pages > 0 ? pagination.pages : 1}</span>
                     <div className="flex items-center gap-1">
-                        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handlePageChange(1)} disabled={pagination.page === 1}><ChevronsLeft className="h-4 w-4" /></Button>
-                        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handlePageChange(pagination.page - 1)} disabled={pagination.page === 1}><ChevronLeft className="h-4 w-4" /></Button>
-                        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handlePageChange(pagination.page + 1)} disabled={pagination.page === pagination.pages || pagination.pages === 0}><ChevronRight className="h-4 w-4" /></Button>
-                        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handlePageChange(pagination.pages)} disabled={pagination.page === pagination.pages || pagination.pages === 0}><ChevronsRight className="h-4 w-4" /></Button>
+                        <Button variant="outline" size="icon" className="h-8 w-8 sm:h-10 sm:w-10" onClick={() => handlePageChange(1)} disabled={pagination.page === 1}><ChevronsLeft className="h-3 w-3 sm:h-4 sm:w-4" /></Button>
+                        <Button variant="outline" size="icon" className="h-8 w-8 sm:h-10 sm:w-10" onClick={() => handlePageChange(pagination.page - 1)} disabled={pagination.page === 1}><ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" /></Button>
+                        <Button variant="outline" size="icon" className="h-8 w-8 sm:h-10 sm:w-10" onClick={() => handlePageChange(pagination.page + 1)} disabled={pagination.page === pagination.pages || pagination.pages === 0}><ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" /></Button>
+                        <Button variant="outline" size="icon" className="h-8 w-8 sm:h-10 sm:w-10" onClick={() => handlePageChange(pagination.pages)} disabled={pagination.page === pagination.pages || pagination.pages === 0}><ChevronsRight className="h-3 w-3 sm:h-4 sm:w-4" /></Button>
                     </div>
                 </div>
             </CardFooter>

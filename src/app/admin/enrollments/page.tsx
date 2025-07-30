@@ -198,40 +198,129 @@ export default function EnrollmentManagementPage() {
         ) : paginatedEnrollments.length === 0 ? (
           <p className="text-center text-muted-foreground py-8">No enrollment records found matching your criteria.</p>
         ) : (
-          <Table>
-            <TableHeader><TableRow>
-              <SortableTableHeader field="studentEnrollmentNo" label="Enroll. No" />
-              <SortableTableHeader field="studentName" label="Student" />
-              <SortableTableHeader field="courseName" label="Course" />
-              <SortableTableHeader field="batchName" label="Batch" />
-              <SortableTableHeader field="createdAt" label="Request Date" />
-              <SortableTableHeader field="status" label="Status" />
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow></TableHeader>
-            <TableBody>
+          <>
+            {/* Mobile Card View */}
+            <div className="block lg:hidden space-y-3">
               {paginatedEnrollments.map(enroll => (
-                <TableRow key={enroll.id}>
-                  <TableCell>{enroll.studentEnrollmentNo}</TableCell>
-                  <TableCell>{enroll.studentName}</TableCell>
-                  <TableCell>{enroll.courseName}</TableCell>
-                  <TableCell>{enroll.batchName} ({enroll.programName})</TableCell>
-                  <TableCell>{enroll.createdAt ? format(parseISO(enroll.createdAt), "PPP") : 'N/A'}</TableCell>
-                  <TableCell><span className={`capitalize px-2 py-0.5 text-xs rounded-full font-medium bg-${enroll.status === 'enrolled' ? 'green' : enroll.status === 'requested' ? 'yellow' : enroll.status === 'rejected' || enroll.status === 'withdrawn' ? 'red' : 'slate'}-100 text-${enroll.status === 'enrolled' ? 'green' : enroll.status === 'requested' ? 'yellow' : enroll.status === 'rejected' || enroll.status === 'withdrawn' ? 'red' : 'slate'}-700`}>{enroll.status}</span></TableCell>
-                  <TableCell className="text-right space-x-1">
-                    {enroll.status === 'requested' && (
-                      <>
-                        <Button size="xs" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50 hover:text-green-700 dark:border-gray-700" onClick={() => handleUpdateStatus(enroll.id, 'enrolled')} disabled={isSubmitting}><CheckCircle className="mr-1 h-3 w-3"/>Approve</Button>
-                        <Button size="xs" variant="outline" className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700 dark:border-gray-700" onClick={() => handleUpdateStatus(enroll.id, 'rejected')} disabled={isSubmitting}><XCircle className="mr-1 h-3 w-3"/>Reject</Button>
-                      </>
-                    )}
-                    {enroll.status === 'enrolled' && (
-                         <Button size="xs" variant="outline" className="text-orange-600 border-orange-600 hover:bg-orange-50 hover:text-orange-700 dark:border-gray-700" onClick={() => handleUpdateStatus(enroll.id, 'withdrawn')} disabled={isSubmitting}><XCircle className="mr-1 h-3 w-3"/>Withdraw</Button>
-                    )}
-                  </TableCell>
-                </TableRow>
+                <Card key={enroll.id} className="shadow-sm">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-semibold text-sm leading-tight">
+                          {enroll.studentName}
+                        </h4>
+                        <p className="text-xs text-muted-foreground">{enroll.studentEnrollmentNo}</p>
+                        <p className="text-xs text-muted-foreground truncate">{enroll.courseName}</p>
+                      </div>
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap capitalize ${
+                        enroll.status === 'enrolled' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                        : enroll.status === 'requested' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                        : enroll.status === 'rejected' || enroll.status === 'withdrawn' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                        : 'bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-300'
+                      }`}>
+                        {enroll.status}
+                      </span>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-y-2 text-xs mb-3">
+                      <div>
+                        <span className="text-muted-foreground">Batch:</span>
+                        <p className="font-medium truncate">{enroll.batchName}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Program:</span>
+                        <p className="font-medium truncate">{enroll.programName}</p>
+                      </div>
+                      <div className="col-span-2">
+                        <span className="text-muted-foreground">Request Date:</span>
+                        <p className="font-medium">{enroll.createdAt ? format(parseISO(enroll.createdAt), "PPP") : 'N/A'}</p>
+                      </div>
+                    </div>
+
+                    {/* Mobile Action Buttons */}
+                    <div className="flex gap-2 mt-3">
+                      {enroll.status === 'requested' && (
+                        <>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="text-green-600 border-green-600 hover:bg-green-50 hover:text-green-700 dark:border-green-600 dark:hover:bg-green-900/20 min-h-[44px] flex-1 text-xs" 
+                            onClick={() => handleUpdateStatus(enroll.id, 'enrolled')} 
+                            disabled={isSubmitting}
+                          >
+                            <CheckCircle className="mr-1 h-3 w-3"/>
+                            Approve
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-600 dark:hover:bg-red-900/20 min-h-[44px] flex-1 text-xs" 
+                            onClick={() => handleUpdateStatus(enroll.id, 'rejected')} 
+                            disabled={isSubmitting}
+                          >
+                            <XCircle className="mr-1 h-3 w-3"/>
+                            Reject
+                          </Button>
+                        </>
+                      )}
+                      {enroll.status === 'enrolled' && (
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="text-orange-600 border-orange-600 hover:bg-orange-50 hover:text-orange-700 dark:border-orange-600 dark:hover:bg-orange-900/20 min-h-[44px] flex-1 text-xs" 
+                          onClick={() => handleUpdateStatus(enroll.id, 'withdrawn')} 
+                          disabled={isSubmitting}
+                        >
+                          <XCircle className="mr-1 h-3 w-3"/>
+                          Withdraw
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
-            </TableBody>
-          </Table>
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden lg:block">
+              <div className="overflow-x-auto border rounded-lg">
+                <Table>
+                  <TableHeader><TableRow>
+                    <SortableTableHeader field="studentEnrollmentNo" label="Enroll. No" />
+                    <SortableTableHeader field="studentName" label="Student" />
+                    <SortableTableHeader field="courseName" label="Course" />
+                    <SortableTableHeader field="batchName" label="Batch" />
+                    <SortableTableHeader field="createdAt" label="Request Date" />
+                    <SortableTableHeader field="status" label="Status" />
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow></TableHeader>
+                  <TableBody>
+                    {paginatedEnrollments.map(enroll => (
+                      <TableRow key={enroll.id}>
+                        <TableCell>{enroll.studentEnrollmentNo}</TableCell>
+                        <TableCell>{enroll.studentName}</TableCell>
+                        <TableCell>{enroll.courseName}</TableCell>
+                        <TableCell>{enroll.batchName} ({enroll.programName})</TableCell>
+                        <TableCell>{enroll.createdAt ? format(parseISO(enroll.createdAt), "PPP") : 'N/A'}</TableCell>
+                        <TableCell><span className={`capitalize px-2 py-0.5 text-xs rounded-full font-medium bg-${enroll.status === 'enrolled' ? 'green' : enroll.status === 'requested' ? 'yellow' : enroll.status === 'rejected' || enroll.status === 'withdrawn' ? 'red' : 'slate'}-100 text-${enroll.status === 'enrolled' ? 'green' : enroll.status === 'requested' ? 'yellow' : enroll.status === 'rejected' || enroll.status === 'withdrawn' ? 'red' : 'slate'}-700`}>{enroll.status}</span></TableCell>
+                        <TableCell className="text-right space-x-1">
+                          {enroll.status === 'requested' && (
+                            <>
+                              <Button size="xs" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50 hover:text-green-700 dark:border-gray-700" onClick={() => handleUpdateStatus(enroll.id, 'enrolled')} disabled={isSubmitting}><CheckCircle className="mr-1 h-3 w-3"/>Approve</Button>
+                              <Button size="xs" variant="outline" className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700 dark:border-gray-700" onClick={() => handleUpdateStatus(enroll.id, 'rejected')} disabled={isSubmitting}><XCircle className="mr-1 h-3 w-3"/>Reject</Button>
+                            </>
+                          )}
+                          {enroll.status === 'enrolled' && (
+                               <Button size="xs" variant="outline" className="text-orange-600 border-orange-600 hover:bg-orange-50 hover:text-orange-700 dark:border-gray-700" onClick={() => handleUpdateStatus(enroll.id, 'withdrawn')} disabled={isSubmitting}><XCircle className="mr-1 h-3 w-3"/>Withdraw</Button>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </>
         )}
       </CardContent>
       <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-t dark:border-gray-700">
