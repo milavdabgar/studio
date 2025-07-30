@@ -60,15 +60,23 @@ export class RealtimeTimetableService {
 
   constructor(
     private baseNotificationService: NotificationService,
-    private wsUrl: string = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3001/timetable'
+    private wsUrl: string = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3001/timetable',
+    private enableWebSocket: boolean = process.env.NEXT_PUBLIC_ENABLE_WEBSOCKET === 'true'
   ) {
     this.notificationService = new TimetableNotificationService(baseNotificationService);
-    console.info('🚀 Initializing RealtimeTimetableService (WebSocket server optional)');
-    this.initializeConnection();
+    console.info('🚀 Initializing RealtimeTimetableService');
+    
+    if (this.enableWebSocket) {
+      console.info('🔌 WebSocket enabled, attempting connection...');
+      this.initializeConnection();
+    } else {
+      console.info('📱 WebSocket disabled, running in polling mode only');
+      this.connectionState = 'disconnected';
+    }
   }
 
   private initializeConnection() {
-    if (typeof window === 'undefined') return; // Skip in SSR
+    if (typeof window === 'undefined' || !this.enableWebSocket) return; // Skip in SSR or if disabled
 
     try {
       this.connectionState = 'connecting';
@@ -394,6 +402,11 @@ export class RealtimeTimetableService {
   }
 
   private send(message: WebSocketMessage) {
+    if (!this.enableWebSocket) {
+      // WebSocket is disabled, silently ignore
+      return;
+    }
+    
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message));
     } else {
@@ -437,7 +450,7 @@ export class RealtimeTimetableService {
     
     this.subscriptions.set(subscriptionId, subscription);
     
-    if (this.connectionState === 'connected') {
+    if (this.enableWebSocket && this.connectionState === 'connected') {
       this.sendSubscription(subscription);
     }
     
