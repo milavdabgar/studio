@@ -6,43 +6,10 @@ import { AssessmentModel } from '@/lib/models';
 
 // Initialize default assessments if none exist
 async function initializeDefaultAssessments() {
-  await connectMongoose();
-  const assessmentCount = await AssessmentModel.countDocuments();
-  
-  if (assessmentCount === 0) {
-    const now = new Date().toISOString();
-    const defaultAssessments = [
-      {
-        id: "asmnt_quiz1_cs101_gpp",
-        name: "Quiz 1: Basics of C",
-        courseId: "course_cs101_dce_gpp",
-        programId: "prog_dce_gpp",
-        batchId: "batch_dce_2022_gpp",
-        type: "Quiz",
-        maxMarks: 20,
-        status: "Completed",
-        assessmentDate: "2023-09-15T10:00:00.000Z",
-        createdAt: now,
-        updatedAt: now,
-      },
-      {
-        id: "asmnt_midterm_me101_gpp",
-        name: "Midterm Exam - Mechanics",
-        courseId: "course_me101_dme_gpp",
-        programId: "prog_dme_gpp",
-        batchId: "batch_dme_2023_gpp",
-        type: "Midterm",
-        maxMarks: 50,
-        passingMarks: 17,
-        status: "Published",
-        assessmentDate: "2023-10-20T14:00:00.000Z",
-        createdAt: now,
-        updatedAt: now,
-      }
-    ];
-    
-    await AssessmentModel.insertMany(defaultAssessments);
-  }
+  // DISABLED: Auto-initialization disabled due to references to non-existent course IDs
+  // (course_cs101_dce_gpp, course_me101_dme_gpp, course_math1_gen_gpp)
+  // This was causing database integrity issues and application errors
+  return;
 }
 
 const generateId = (): string => `asmnt_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;

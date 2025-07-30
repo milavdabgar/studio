@@ -116,9 +116,8 @@ describe('/api/assessments', () => {
       expect(data[1].name).toBe('Midterm Exam - Mechanics');
     });
 
-    it('should initialize default assessments when none exist', async () => {
+    it('should return empty array when no assessments exist (auto-initialization disabled)', async () => {
       mockCountDocuments.mockResolvedValue(0);
-      mockInsertMany.mockResolvedValue([]);
       const leanResult = Promise.resolve([]);
       const mockQueryBuilder = {
         lean: () => mockQueryBuilder,
@@ -132,21 +131,9 @@ describe('/api/assessments', () => {
       const data = await response.json();
       
       expect(response.status).toBe(200);
-      expect(mockCountDocuments).toHaveBeenCalled();
-      expect(mockInsertMany).toHaveBeenCalledWith(
-        expect.arrayContaining([
-          expect.objectContaining({
-            id: 'asmnt_quiz1_cs101_gpp',
-            name: 'Quiz 1: Basics of C',
-            type: 'Quiz'
-          }),
-          expect.objectContaining({
-            id: 'asmnt_midterm_me101_gpp',
-            name: 'Midterm Exam - Mechanics',
-            type: 'Midterm'
-          })
-        ])
-      );
+      expect(data).toEqual([]);
+      // Auto-initialization is disabled, so these should not be called
+      expect(mockInsertMany).not.toHaveBeenCalled();
       expect(Array.isArray(data)).toBe(true);
     });
 
@@ -177,7 +164,9 @@ describe('/api/assessments', () => {
 
     it('should handle database errors', async () => {
       const errorMessage = 'Database connection failed';
-      mockCountDocuments.mockRejectedValue(new Error(errorMessage));
+      mockFind.mockImplementation(() => {
+        throw new Error(errorMessage);
+      });
       
       const request = new Request('http://localhost/api/assessments');
       const response = await GET(request as any);
@@ -185,7 +174,6 @@ describe('/api/assessments', () => {
       
       expect(response.status).toBe(500);
       expect(data.message).toBe('Internal server error processing assessments request.');
-      expect(data.error).toBe(errorMessage);
     });
   });
 

@@ -5,51 +5,11 @@ import { connectMongoose } from '@/lib/mongodb';
 import { TimetableModel } from '@/lib/models';
 
 
-// Initialize default timetables if none exist
+// Initialize default timetables if none exist (disabled to prevent recreation of orphaned records)
 async function initializeDefaultTimetables() {
-  await connectMongoose();
-  const timetableCount = await TimetableModel.countDocuments();
-  
-  if (timetableCount === 0) {
-    const now = new Date().toISOString();
-    const defaultTimetables = [
-      {
-        id: "tt_dce_sem1_gpp_2024",
-        name: "DCE Semester 1 Timetable (2024-25)",
-        academicYear: "2024-25",
-        semester: 1,
-        programId: "prog_dce_gpp",
-        batchId: "batch_dce_2022_gpp",
-        version: "1.0",
-        status: "published",
-        effectiveDate: "2024-07-15T00:00:00.000Z",
-        entries: [
-          { 
-            dayOfWeek: "Monday", 
-            startTime: "09:00", 
-            endTime: "10:00", 
-            courseId: "course_cs101_dce_gpp", 
-            facultyId: "user_faculty_cs01_gpp", 
-            roomId: "room_a101_gpp",
-            entryType: "lecture"
-          },
-          { 
-            dayOfWeek: "Monday", 
-            startTime: "10:00", 
-            endTime: "11:00", 
-            courseId: "course_math1_gen_gpp", 
-            facultyId: "user_faculty_cs01_gpp",
-            roomId: "room_b202_gpp",
-            entryType: "lecture"
-          }
-        ],
-        createdAt: now,
-        updatedAt: now,
-      }
-    ];
-    
-    await TimetableModel.insertMany(defaultTimetables);
-  }
+  // Function disabled to prevent automatic recreation of timetables with non-existent course references
+  // Admin can create timetables manually through the UI
+  return;
 }
 
 const generateId = (): string => `tt_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;

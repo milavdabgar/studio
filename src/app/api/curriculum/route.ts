@@ -6,29 +6,10 @@ import { CurriculumModel } from '@/lib/models';
 
 // Initialize default curriculum if none exist
 async function initializeDefaultCurriculum() {
-  await connectMongoose();
-  const curriculumCount = await CurriculumModel.countDocuments();
-  
-  if (curriculumCount === 0) {
-    const now = new Date().toISOString();
-    const defaultCurriculum = [
-      {
-        id: "curr_dce_v1_gpp",
-        programId: "prog_dce_gpp",
-        version: "1.0",
-        effectiveDate: "2024-07-01",
-        courses: [
-          { courseId: "course_cs101_dce_gpp", semester: 1, isElective: false },
-          { courseId: "course_math1_gen_gpp", semester: 1, isElective: false },
-        ],
-        status: "active",
-        createdAt: now,
-        updatedAt: now,
-      },
-    ];
-    
-    await CurriculumModel.insertMany(defaultCurriculum);
-  }
+  // DISABLED: Auto-initialization disabled due to references to non-existent course IDs
+  // (course_cs101_dce_gpp, course_me101_dme_gpp, course_math1_gen_gpp)
+  // This was causing database integrity issues and application errors
+  return;
 }
 
 const generateId = (): string => `curr_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;

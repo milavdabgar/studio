@@ -3,60 +3,11 @@ import { isValid, parseISO } from 'date-fns';
 import { connectMongoose } from '@/lib/mongodb';
 import { CourseOfferingModel } from '@/lib/models';
 
-// Initialize default course offerings if none exist
+// Initialize default course offerings if none exist (disabled to prevent recreation of orphaned records)
 async function initializeDefaultCourseOfferings() {
-  await connectMongoose();
-  const courseOfferingCount = await CourseOfferingModel.countDocuments();
-  
-  if (courseOfferingCount === 0) {
-    const now = new Date().toISOString();
-    const defaultCourseOfferings = [
-      { 
-        id: "co_cs101_b2022_sem1_gpp", 
-        courseId: "course_cs101_dce_gpp", 
-        batchId: "batch_dce_2022_gpp", 
-        academicYear: "2024-25", 
-        semester: 1, 
-        facultyIds: ["user_faculty_cs01_gpp", "fac_cs01_gpp"], 
-        roomIds: ["room_a101_gpp"], 
-        startDate: "2024-07-15T00:00:00.000Z",
-        endDate: "2024-11-15T00:00:00.000Z",
-        status: "scheduled", 
-        createdAt: now, 
-        updatedAt: now 
-      },
-      { 
-        id: "co_me101_b2023_sem1_gpp", 
-        courseId: "course_me101_dme_gpp", 
-        batchId: "batch_dme_2023_gpp", 
-        academicYear: "2024-25", 
-        semester: 1, 
-        facultyIds: ["user_faculty_me01_gpp", "fac_me01_gpp"], 
-        roomIds: ["room_b202_gpp"], 
-        startDate: "2024-07-15T00:00:00.000Z",
-        endDate: "2024-11-15T00:00:00.000Z",
-        status: "ongoing", 
-        createdAt: now, 
-        updatedAt: now 
-      },
-       { 
-        id: "co_math1_b2022_sem1_gpp", 
-        courseId: "course_math1_gen_gpp", 
-        batchId: "batch_dce_2022_gpp", 
-        academicYear: "2024-25", 
-        semester: 1, 
-        facultyIds: ["user_faculty_cs01_gpp", "fac_cs01_gpp"], 
-        roomIds: ["room_b202_gpp"], 
-        startDate: "2024-07-15T00:00:00.000Z",
-        endDate: "2024-11-15T00:00:00.000Z",
-        status: "scheduled", 
-        createdAt: now, 
-        updatedAt: now 
-      },
-    ];
-    
-    await CourseOfferingModel.insertMany(defaultCourseOfferings);
-  }
+  // Function disabled to prevent automatic recreation of orphaned course offerings
+  // Admin can create course offerings manually through the UI
+  return;
 }
 
 const generateId = (): string => `co_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;

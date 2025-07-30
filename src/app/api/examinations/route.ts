@@ -12,56 +12,10 @@ type ExaminationLean = Omit<Examination, 'id'> & {
 
 // Initialize default examinations if none exist
 async function initializeDefaultExaminations() {
-  await connectMongoose();
-  const examinationCount = await ExaminationModel.countDocuments();
-  
-  if (examinationCount === 0) {
-    const now = new Date().toISOString();
-    const defaultExaminations = [
-      {
-        id: "exam_midsem_2024_fall_gpp",
-        name: "Mid Semester Examination - Fall 2024",
-        gtuExamCode: "GTU_MIDSEM_2024_FALL",
-        academicYear: "2024-25",
-        examType: "Mid Semester",
-        startDate: "2024-10-15",
-        endDate: "2024-10-25",
-        programIds: ["prog_dce_gpp", "prog_dme_gpp"],
-        status: "scheduled",
-        examinationTimeTable: [
-          {
-            id: "ette_1",
-            examinationId: "exam_midsem_2024_fall_gpp",
-            courseId: "course_cs101_dce_gpp",
-            courseName: "Data Structures",
-            date: "2024-10-16",
-            startTime: "09:00",
-            endTime: "12:00",
-            roomIds: ["room_a101_gpp", "room_a102_gpp"],
-            invigilatorIds: ["user_faculty_cs01_gpp"],
-            notes: "Bring calculator and ID card"
-          }
-        ],
-        createdAt: now,
-        updatedAt: now,
-      },
-      {
-        id: "exam_endsem_2024_fall_gpp",
-        name: "End Semester Theory Examination - Fall 2024",
-        gtuExamCode: "GTU_ENDSEM_2024_FALL",
-        academicYear: "2024-25",
-        examType: "End Semester Theory",
-        startDate: "2024-12-01",
-        endDate: "2024-12-15",
-        programIds: ["prog_dce_gpp"],
-        status: "scheduled",
-        createdAt: now,
-        updatedAt: now,
-      }
-    ];
-    
-    await ExaminationModel.insertMany(defaultExaminations);
-  }
+  // DISABLED: Auto-initialization disabled due to references to non-existent course IDs
+  // (course_cs101_dce_gpp, course_me101_dme_gpp, course_math1_gen_gpp)
+  // This was causing database integrity issues and application errors
+  return;
 }
 
 const generateId = (): string => `exam_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
