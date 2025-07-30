@@ -12,7 +12,7 @@ import { projectLocationService } from '@/lib/api/projectLocations';
 import { projectEventService } from '@/lib/api/projectEvents';
 import { departmentService } from '@/lib/api/departments';
 import { projectService } from '@/lib/api/projects';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
