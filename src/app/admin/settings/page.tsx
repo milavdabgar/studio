@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Settings, Save, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import React, { useState, FormEvent } from "react";
+import { DomainMigrationButton } from "@/components/admin/DomainMigrationButton";
 
 // Placeholder for actual settings, load from/save to a config service or API
 interface SystemSettings {
@@ -131,6 +132,8 @@ export default function AdminSettingsPage() {
           </form>
         </CardContent>
       </Card>
+
+      <DomainMigrationButton />
     </div>
   );
 }
