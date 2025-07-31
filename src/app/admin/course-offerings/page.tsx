@@ -56,15 +56,11 @@ export default function CourseOfferingsPage() {
   // Form state for creating/editing course offerings
   const [formData, setFormData] = useState({
     courseId: '',
-    batchId: '',
-    academicYear: '',
-    semester: 1,
+    academicTermId: '',
     facultyIds: [] as string[],
-    status: 'scheduled' as CourseOffering['status'],
-    startDate: '',
-    endDate: '',
-    maxEnrollments: 60
+    status: 'scheduled' as CourseOffering['status']
   });
+  const [academicTerms, setAcademicTerms] = useState<any[]>([]);
 
   // Fetch all data
   useEffect(() => {
@@ -74,18 +70,20 @@ export default function CourseOfferingsPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [offeringsRes, coursesRes, batchesRes, facultiesRes] = await Promise.all([
+      const [offeringsRes, coursesRes, batchesRes, facultiesRes, termsRes] = await Promise.all([
         fetch('/api/course-offerings'),
         fetch('/api/courses'),
         fetch('/api/batches'),
-        fetch('/api/faculty')
+        fetch('/api/faculty'),
+        fetch('/api/academic-terms')
       ]);
 
-      const [offeringsData, coursesData, batchesData, facultiesData] = await Promise.all([
+      const [offeringsData, coursesData, batchesData, facultiesData, termsData] = await Promise.all([
         offeringsRes.json(),
         coursesRes.json(),
         batchesRes.json(),
-        facultiesRes.json()
+        facultiesRes.json(),
+        termsRes.json()
       ]);
 
       // Enrich course offerings with additional details
@@ -108,6 +106,7 @@ export default function CourseOfferingsPage() {
       setCourses(coursesData);
       setBatches(batchesData);
       setFaculties(facultiesData);
+      setAcademicTerms(termsData.success ? termsData.data : []);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast({
@@ -120,37 +119,20 @@ export default function CourseOfferingsPage() {
     }
   };
 
-  // Fetch filtered courses based on batch and semester selection
-  const fetchFilteredCourses = async (batchId: string, semester?: number) => {
-    if (!batchId) {
+  // Fetch filtered courses based on academic term selection
+  const fetchFilteredCourses = async (termId: string) => {
+    if (!termId) {
       setFilteredCourses([]);
       return;
     }
 
     setLoadingCourses(true);
     try {
-      const params = new URLSearchParams({ batchId });
-      if (semester) {
-        params.append('semester', semester.toString());
-      }
-
-      const response = await fetch(`/api/courses/filtered?${params}`);
+      const response = await fetch(`/api/courses/by-term?termId=${termId}`);
       const data = await response.json();
 
       if (data.success) {
         setFilteredCourses(data.data.courses);
-        
-        // Auto-populate academic year from batch info
-        if (data.data.batchInfo && !formData.academicYear) {
-          const currentYear = new Date().getFullYear();
-          const batchStartYear = data.data.batchInfo.startAcademicYear;
-          const academicYear = `${currentYear}-${currentYear + 1}`;
-          
-          setFormData(prev => ({
-            ...prev,
-            academicYear: academicYear
-          }));
-        }
       } else {
         console.error('Error fetching filtered courses:', data.error);
         setFilteredCourses([]);
@@ -160,7 +142,7 @@ export default function CourseOfferingsPage() {
       setFilteredCourses([]);
       toast({
         title: "Error",
-        description: "Failed to load courses for selected batch",
+        description: "Failed to load courses for selected term",
         variant: "destructive",
       });
     } finally {
@@ -170,10 +152,10 @@ export default function CourseOfferingsPage() {
 
   const handleCreateOrUpdate = async () => {
     // Validation
-    if (!formData.courseId || !formData.batchId || !formData.academicYear || formData.facultyIds.length === 0) {
+    if (!formData.courseId || !formData.academicTermId || formData.facultyIds.length === 0) {
       toast({
         title: "Validation Error",
-        description: "Please fill in all required fields including course, batch, academic year, and at least one faculty member.",
+        description: "Please fill in all required fields including course, academic term, and at least one faculty member.",
         variant: "destructive",
       });
       return;
@@ -190,11 +172,7 @@ export default function CourseOfferingsPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
-          endDate: formData.endDate ? new Date(formData.endDate).toISOString() : undefined
-        }),
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
@@ -256,14 +234,9 @@ export default function CourseOfferingsPage() {
   const resetForm = () => {
     setFormData({
       courseId: '',
-      batchId: '',
-      academicYear: '',
-      semester: 1,
+      academicTermId: '',
       facultyIds: [],
-      status: 'scheduled',
-      startDate: '',
-      endDate: '',
-      maxEnrollments: 60
+      status: 'scheduled'
     });
     setFilteredCourses([]);
     setEditingOffering(null);
@@ -273,19 +246,14 @@ export default function CourseOfferingsPage() {
     setEditingOffering(offering);
     setFormData({
       courseId: offering.courseId,
-      batchId: offering.batchId,
-      academicYear: offering.academicYear,
-      semester: offering.semester,
+      academicTermId: offering.academicTermId || '',
       facultyIds: offering.facultyIds || [],
-      status: offering.status,
-      startDate: offering.startDate ? new Date(offering.startDate).toISOString().split('T')[0] : '',
-      endDate: offering.endDate ? new Date(offering.endDate).toISOString().split('T')[0] : '',
-      maxEnrollments: offering.maxEnrollments || 60
+      status: offering.status
     });
     
-    // Load filtered courses for the selected batch and semester
-    if (offering.batchId) {
-      fetchFilteredCourses(offering.batchId, offering.semester);
+    // Load filtered courses for the selected academic term
+    if (offering.academicTermId) {
+      fetchFilteredCourses(offering.academicTermId);
     }
     
     setShowCreateDialog(true);
@@ -353,7 +321,7 @@ export default function CourseOfferingsPage() {
 
       const matchesFilters = 
         (filters.academicYear === 'all' || offering.academicYear === filters.academicYear) &&
-        (filters.semester === 'all' || offering.semester.toString() === filters.semester) &&
+        (filters.semester === 'all' || offering.semester?.toString() === filters.semester) &&
         (filters.status === 'all' || offering.status === filters.status) &&
         (filters.batchId === 'all' || offering.batchId === filters.batchId);
 
@@ -558,83 +526,60 @@ export default function CourseOfferingsPage() {
               </DialogTitle>
             </DialogHeader>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
-              {/* Step 1: Select Batch First */}
-              <div>
-                <Label htmlFor="batchId">
-                  Batch <span className="text-red-500">*</span>
-                  <span className="text-xs text-muted-foreground ml-2">(Select batch first to filter courses)</span>
+              {/* Step 1: Select Academic Term */}
+              <div className="md:col-span-2">
+                <Label htmlFor="academicTermId">
+                  Academic Term <span className="text-red-500">*</span>
+                  <span className="text-xs text-muted-foreground ml-2">(Select term to filter available courses)</span>
                 </Label>
                 <Select 
-                  value={formData.batchId} 
+                  value={formData.academicTermId} 
                   onValueChange={(value) => {
-                    setFormData({...formData, batchId: value, courseId: ''}); // Reset course when batch changes
-                    fetchFilteredCourses(value, formData.semester);
+                    setFormData({...formData, academicTermId: value, courseId: ''}); // Reset course when term changes
+                    fetchFilteredCourses(value);
                   }}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select batch" />
+                    <SelectValue placeholder="Select academic term" />
                   </SelectTrigger>
                   <SelectContent>
-                    {batches.filter(batch => batch.status === 'active').map((batch) => (
-                      <SelectItem key={batch.id} value={batch.id}>
-                        <div className="flex flex-col">
-                          <span className="font-medium">{batch.name}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {batch.startAcademicYear}-{batch.endAcademicYear}
-                          </span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Step 2: Select Semester (affects course filtering) */}
-              <div>
-                <Label htmlFor="semester">Semester <span className="text-red-500">*</span></Label>
-                <Select 
-                  value={formData.semester.toString()} 
-                  onValueChange={(value) => {
-                    const newSemester = parseInt(value);
-                    setFormData({...formData, semester: newSemester, courseId: ''}); // Reset course when semester changes
-                    if (formData.batchId) {
-                      fetchFilteredCourses(formData.batchId, newSemester);
+                    {academicTerms
+                      .filter(term => ['active', 'draft'].includes(term.status))
+                      .map((term) => (
+                        <SelectItem key={term.id} value={term.id}>
+                          <div className="flex flex-col">
+                            <span className="font-medium">{term.name}</span>
+                            <span className="text-xs text-muted-foreground">
+                              {term.program?.name} • {term.semesters.join(',')} • {term.academicYear}
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ))
                     }
-                  }}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select semester" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {[1, 2, 3, 4, 5, 6].map((sem) => (
-                      <SelectItem key={sem} value={sem.toString()}>
-                        Semester {sem}
-                      </SelectItem>
-                    ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Step 3: Select Course (filtered based on batch & semester) */}
+              {/* Step 2: Select Course (filtered based on academic term) */}
               <div className="md:col-span-2">
                 <Label htmlFor="courseId">
                   Course <span className="text-red-500">*</span>
-                  {formData.batchId && (
+                  {formData.academicTermId && (
                     <span className="text-xs text-green-600 ml-2">
-                      ({filteredCourses.length} courses available for selected batch & semester)
+                      ({filteredCourses.length} courses available for selected term)
                     </span>
                   )}
                 </Label>
                 <Select 
                   value={formData.courseId} 
                   onValueChange={(value) => setFormData({...formData, courseId: value})}
-                  disabled={!formData.batchId || loadingCourses}
+                  disabled={!formData.academicTermId || loadingCourses}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue 
                       placeholder={
-                        !formData.batchId 
-                          ? "Select batch first" 
+                        !formData.academicTermId 
+                          ? "Select academic term first" 
                           : loadingCourses 
                             ? "Loading courses..." 
                             : filteredCourses.length === 0 
@@ -696,19 +641,6 @@ export default function CourseOfferingsPage() {
               </div>
 
               <div>
-                <Label htmlFor="academicYear">
-                  Academic Year <span className="text-red-500">*</span>
-                  <span className="text-xs text-muted-foreground ml-2">(Auto-populated from batch)</span>
-                </Label>
-                <Input
-                  id="academicYear"
-                  value={formData.academicYear}
-                  onChange={(e) => setFormData({...formData, academicYear: e.target.value})}
-                  placeholder="e.g., 2025-26"
-                />
-              </div>
-
-              <div>
                 <Label htmlFor="status">Status</Label>
                 <Select value={formData.status} onValueChange={(value: CourseOffering['status']) => setFormData({...formData, status: value})}>
                   <SelectTrigger className="w-full">
@@ -721,36 +653,6 @@ export default function CourseOfferingsPage() {
                     <SelectItem value="cancelled">Cancelled</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="maxEnrollments">Max Enrollments</Label>
-                <Input
-                  id="maxEnrollments"
-                  type="number"
-                  value={formData.maxEnrollments}
-                  onChange={(e) => setFormData({...formData, maxEnrollments: parseInt(e.target.value) || 60})}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="startDate">Start Date</Label>
-                <Input
-                  id="startDate"
-                  type="date"
-                  value={formData.startDate}
-                  onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="endDate">End Date</Label>
-                <Input
-                  id="endDate"
-                  type="date"
-                  value={formData.endDate}
-                  onChange={(e) => setFormData({...formData, endDate: e.target.value})}
-                />
               </div>
               
               <div className="md:col-span-2">

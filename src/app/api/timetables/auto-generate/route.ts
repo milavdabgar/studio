@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
 
     // Filter data for the specific request
     const relevantCourseOfferings = courseOfferings.filter(co => 
-      body.batchIds.includes(co.batchId) &&
+      co.batchId && body.batchIds.includes(co.batchId) &&
       co.academicYear === body.academicYear &&
       co.semester === body.semester
     );

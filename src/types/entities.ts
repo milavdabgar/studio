@@ -1,5 +1,23 @@
 export type Timestamp = string; // ISO 8601 format: "YYYY-MM-DDTHH:mm:ss.sssZ"
 
+// Academic Term
+export interface AcademicTerm {
+    id: string;
+    name: string; // "Odd Term 2024-25 - ECE" or "Even Term 2024-25 - ECE"
+    academicYear: string; // "2024-25"
+    programId: string; // Links to specific program
+    term: 'Odd' | 'Even'; // Odd = Semesters 1,3,5 | Even = Semesters 2,4,6
+    semesters: number[]; // [1,3,5] for Odd or [2,4,6] for Even
+    startDate: string; // ISO date string
+    endDate: string; // ISO date string
+    maxEnrollmentPerCourse: number; // Default for all courses in this term
+    status: 'draft' | 'active' | 'completed' | 'cancelled';
+    gtuCalendarUrl?: string; // Link to GTU academic calendar
+    notes?: string;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+}
+
 // User and Authentication
 export type UserRole = 
   | 'admin' 
@@ -753,20 +771,23 @@ export type CourseOfferingStatus = 'scheduled' | 'ongoing' | 'completed' | 'canc
 export interface CourseOffering {
     id: string;
     courseId: string;
-    batchId: string; 
-    academicYear: string; 
-    semester: number; 
+    academicTermId: string; // Reference to AcademicTerm (replaces batchId, academicYear, semester, startDate, endDate, maxEnrollments)
     facultyIds: string[]; 
     roomIds?: string[]; 
-    startDate?: Timestamp; 
-    endDate?: Timestamp;   
     status: CourseOfferingStatus;
-    programId?: string; 
-    maxEnrollments?: number;
     currentEnrollments?: number;
     description?: string;
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
+    
+    // Legacy fields for backward compatibility - will be populated from AcademicTerm
+    batchId?: string; 
+    academicYear?: string; 
+    semester?: number; 
+    startDate?: Timestamp; 
+    endDate?: Timestamp;   
+    programId?: string; 
+    maxEnrollments?: number;
 }
 
 export type EnrollmentStatus = 'requested' | 'enrolled' | 'withdrawn' | 'completed' | 'failed' | 'incomplete' | 'rejected';

@@ -117,7 +117,7 @@ export default function EnrollmentManagementPage() {
     }
     if (filterProgramId !== 'all') {
         const programBatches = batches.filter(b => b.programId === filterProgramId).map(b => b.id);
-        const programOfferings = courseOfferings.filter(co => programBatches.includes(co.batchId)).map(co => co.id);
+        const programOfferings = courseOfferings.filter(co => co.batchId && programBatches.includes(co.batchId)).map(co => co.id);
         result = result.filter(e => programOfferings.includes(e.courseOfferingId));
     }
     if (filterBatchId !== 'all') {

@@ -29,7 +29,8 @@ describe('ConstraintSolver', () => {
         semester: 1,
         facultyIds: ['faculty1', 'faculty2'],
         roomIds: ['room1', 'room2'],
-        status: 'scheduled'
+        status: 'scheduled',
+        academicTermId: 'test_term_123'
       },
       {
         id: 'co2',
@@ -39,7 +40,8 @@ describe('ConstraintSolver', () => {
         semester: 1,
         facultyIds: ['faculty2'],
         roomIds: ['room2'],
-        status: 'scheduled'
+        status: 'scheduled',
+        academicTermId: 'test_term_123'
       }
     ];
 

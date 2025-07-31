@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
   User, Role, Permission, Department, Course, Batch, Program, 
-  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, Project, Assessment, Result, Enrollment, CourseOffering, Notification, StudentAssessmentScore, CourseMaterial, AttendanceRecord, Timetable, ProjectLocation, Curriculum, RoomAllocation, Examination
+  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, Project, Assessment, Result, Enrollment, CourseOffering, Notification, StudentAssessmentScore, CourseMaterial, AttendanceRecord, Timetable, ProjectLocation, Curriculum, RoomAllocation, Examination, AcademicTerm
 } from '@/types/entities';
 
 // Institute Schema
@@ -179,6 +179,48 @@ const committeeSchema = new Schema<ICommittee>({
       return ret;
     }
   }
+});
+
+// Academic Term Schema
+interface IAcademicTerm extends Omit<AcademicTerm, 'id'>, Document {
+  _id: string;
+}
+
+const academicTermSchema = new Schema<IAcademicTerm>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  name: { type: String, required: true },
+  academicYear: { type: String, required: true },
+  programId: { type: String, required: true },
+  term: { type: String, enum: ['Odd', 'Even'], required: true },
+  semesters: [{ type: Number, required: true }],
+  startDate: { type: String, required: true },
+  endDate: { type: String, required: true },
+  maxEnrollmentPerCourse: { type: Number, required: true, default: 60 },
+  status: { type: String, enum: ['draft', 'active', 'completed', 'cancelled'], required: true, default: 'draft' },
+  gtuCalendarUrl: { type: String },
+  notes: { type: String },
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+academicTermSchema.pre('save', function(next) {
+  // Generate custom ID if not provided
+  if (!this.id) {
+    this.id = this._id.toString();
+  }
+  (this as IAcademicTerm).updatedAt = new Date().toISOString();
+  next();
 });
 
 // User Schema
@@ -1483,22 +1525,27 @@ interface ICourseOffering extends Omit<CourseOffering, 'id'>, Document {
 const courseOfferingSchema = new Schema<ICourseOffering>({
   id: { type: String, unique: true, sparse: true }, // Custom ID field
   courseId: { type: String, required: true },
-  batchId: { type: String, required: true },
-  academicYear: { type: String, required: true },
-  semester: { type: Number, required: true },
+  academicTermId: { type: String, required: true }, // New primary field
   facultyIds: [{ type: String }],
   roomIds: [{ type: String }],
-  startDate: { type: String },
-  endDate: { type: String },
   status: { 
     type: String, 
     enum: ['scheduled', 'ongoing', 'completed', 'cancelled'], 
     required: true, 
     default: 'scheduled' 
   },
-  maxEnrollments: { type: Number },
   currentEnrollments: { type: Number, default: 0 },
   description: { type: String },
+  
+  // Legacy fields for backward compatibility (optional)
+  batchId: { type: String },
+  academicYear: { type: String },
+  semester: { type: Number },
+  startDate: { type: String },
+  endDate: { type: String },
+  programId: { type: String },
+  maxEnrollments: { type: Number },
+  
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
 }, {
@@ -1982,6 +2029,7 @@ export const InstituteModel = mongoose.models.Institute || mongoose.model<IInsti
 export const BuildingModel = mongoose.models.Building || mongoose.model<IBuilding>('Building', buildingSchema);
 export const RoomModel = mongoose.models.Room || mongoose.model<IRoom>('Room', roomSchema);
 export const CommitteeModel = mongoose.models.Committee || mongoose.model<ICommittee>('Committee', committeeSchema);
+export const AcademicTermModel = mongoose.models.AcademicTerm || mongoose.model<IAcademicTerm>('AcademicTerm', academicTermSchema, 'academicterms');
 export const UserModel = mongoose.models.User || mongoose.model<IUser>('User', userSchema);
 export const RoleModel = mongoose.models.Role || mongoose.model<IRole>('Role', roleSchema);
 export const PermissionModel = mongoose.models.Permission || mongoose.model<IPermission>('Permission', permissionSchema);
@@ -2010,4 +2058,4 @@ export const ProjectLocationModel = mongoose.models.ProjectLocation || mongoose.
 export const FeedbackAnalysisModel = mongoose.models.FeedbackAnalysis || mongoose.model<IFeedbackAnalysis>('FeedbackAnalysis', feedbackAnalysisSchema, 'feedbackanalyses');
 
 // Export types
-export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, ICurriculum, IRoomAllocation, IExamination, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification, IStudentAssessmentScore, ICourseMaterial, IAttendanceRecord, ITimetable, IProjectLocation, IFeedbackAnalysis };
+export type { IInstitute, IBuilding, IRoom, ICommittee, IAcademicTerm, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, ICurriculum, IRoomAllocation, IExamination, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification, IStudentAssessmentScore, ICourseMaterial, IAttendanceRecord, ITimetable, IProjectLocation, IFeedbackAnalysis };

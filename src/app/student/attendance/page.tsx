@@ -29,8 +29,8 @@ interface EnrichedAttendanceRecord extends AttendanceRecord {
 
 // Placeholder MOCK_COURSE_OFFERINGS if not fetching from API
 const MOCK_COURSE_OFFERINGS: CourseOffering[] = [
-    { id: "co_cs101_b2022_sem1_gpp", courseId: "course_cs101_dce_gpp", batchId: "batch_dce_2022_gpp", academicYear: "2023-24", semester: 1, facultyIds: ["user_faculty_cs01_gpp"], status: "ongoing", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    { id: "co_me101_b2023_sem1_gpp", courseId: "course_me101_dme_gpp", batchId: "batch_dme_2023_gpp", academicYear: "2023-24", semester: 1, facultyIds: ["user_faculty_me01_gpp"], status: "ongoing", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    { id: "co_cs101_b2022_sem1_gpp", courseId: "course_cs101_dce_gpp", academicTermId: "term_dce_2023_odd", facultyIds: ["user_faculty_cs01_gpp"], status: "ongoing", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), batchId: "batch_dce_2022_gpp", academicYear: "2023-24", semester: 1 },
+    { id: "co_me101_b2023_sem1_gpp", courseId: "course_me101_dme_gpp", academicTermId: "term_dme_2023_odd", facultyIds: ["user_faculty_me01_gpp"], status: "ongoing", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), batchId: "batch_dme_2023_gpp", academicYear: "2023-24", semester: 1 },
 ];
 
 

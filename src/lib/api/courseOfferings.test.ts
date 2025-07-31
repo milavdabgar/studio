@@ -36,6 +36,7 @@ describe('CourseOfferingService API Tests', () => {
     semester: 1,
     facultyIds: ["fac1"],
     status: "scheduled",
+    academicTermId: "test_term_123",
     createdAt: now,
     updatedAt: now,
   };
@@ -50,6 +51,7 @@ describe('CourseOfferingService API Tests', () => {
       semester: 2,
       facultyIds: ["fac2"],
       status: "ongoing",
+      academicTermId: "test_term_123",
       createdAt: now,
       updatedAt: now,
     },
@@ -95,6 +97,7 @@ describe('CourseOfferingService API Tests', () => {
       semester: 1,
       facultyIds: ["fac3"],
       status: "scheduled",
+      academicTermId: "test_term_123",
     };
     const createdOffering: CourseOffering = { ...newOfferingData, id: 'co3', createdAt: now, updatedAt: now };
 

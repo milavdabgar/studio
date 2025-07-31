@@ -143,18 +143,20 @@ export async function POST(request: NextRequest) {
 
       const courseOfferingData: Omit<CourseOffering, 'id'> = {
         courseId: foundCourse.id,
-        batchId: foundBatch.id,
-        academicYear,
-        semester,
+        academicTermId: '', // TODO: Map to appropriate academic term during migration
         facultyIds,
         roomIds: row.roomids ? row.roomids.toString().split(',').map(id => id.trim()).filter(id => id) : [],
-        startDate,
-        endDate,
         status: (row.status?.toString().trim() as CourseOffering['status']) || 'scheduled',
-        maxEnrollments: row.maxenrollments ? parseInt(row.maxenrollments.toString()) : 60,
         currentEnrollments: row.currentenrollments ? parseInt(row.currentenrollments.toString()) : 0,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        // Legacy fields for backward compatibility during migration
+        batchId: foundBatch.id,
+        academicYear,
+        semester,
+        startDate,
+        endDate,
+        maxEnrollments: row.maxenrollments ? parseInt(row.maxenrollments.toString()) : 60,
       };
 
       const idFromCsv = row.id?.toString().trim();

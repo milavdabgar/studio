@@ -1,5 +1,4 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { isValid, parseISO } from 'date-fns';
 import { connectMongoose } from '@/lib/mongodb';
 import { CourseOfferingModel } from '@/lib/models';
 
@@ -60,37 +59,18 @@ export async function POST(request: NextRequest) {
       delete offeringData.facultyId;
     }
     
-    // Convert dates to ISO format if needed for test compatibility
-    if (offeringData.startDate && !offeringData.startDate.includes('T')) {
-      offeringData.startDate = `${offeringData.startDate}T00:00:00.000Z`;
-    }
-    if (offeringData.endDate && !offeringData.endDate.includes('T')) {
-      offeringData.endDate = `${offeringData.endDate}T23:59:59.999Z`;
-    }
-
-    if (!offeringData.courseId || !offeringData.batchId || !offeringData.academicYear || !offeringData.semester || !offeringData.facultyIds || offeringData.facultyIds.length === 0) {
-      return NextResponse.json({ message: 'Missing required fields: courseId, batchId, academicYear, semester, facultyIds.' }, { status: 400 });
-    }
-    if (offeringData.startDate && !isValid(parseISO(offeringData.startDate))) {
-      return NextResponse.json({ message: 'Invalid startDate format. Use ISO 8601.' }, { status: 400 });
-    }
-    if (offeringData.endDate && !isValid(parseISO(offeringData.endDate))) {
-      return NextResponse.json({ message: 'Invalid startDate format. Use ISO 8601.' }, { status: 400 });
-    }
-    if (offeringData.startDate && offeringData.endDate && parseISO(offeringData.startDate) >= parseISO(offeringData.endDate)) {
-      return NextResponse.json({ message: 'End date must be after start date.' }, { status: 400 });
+    if (!offeringData.courseId || !offeringData.academicTermId || !offeringData.facultyIds || offeringData.facultyIds.length === 0) {
+      return NextResponse.json({ message: 'Missing required fields: courseId, academicTermId, facultyIds.' }, { status: 400 });
     }
 
     // Check for duplicate course offering
     const existingOffering = await CourseOfferingModel.findOne({
       courseId: offeringData.courseId,
-      batchId: offeringData.batchId,
-      academicYear: offeringData.academicYear,
-      semester: offeringData.semester
+      academicTermId: offeringData.academicTermId
     });
     
     if (existingOffering) {
-      return NextResponse.json({ message: 'Course offering already exists for this course, batch, academic year, and semester.' }, { status: 409 });
+      return NextResponse.json({ message: 'Course offering already exists for this course and academic term.' }, { status: 409 });
     }
 
     const currentTimestamp = new Date().toISOString();

@@ -218,7 +218,7 @@ export class ConstraintSolver {
         for (const faculty of availableFaculties) {
           for (const room of availableRooms) {
             // Check faculty availability
-            if (this.isFacultyAvailable(faculty.id, day, timeSlot, courseOffering.academicYear, courseOffering.semester)) {
+            if (this.isFacultyAvailable(faculty.id, day, timeSlot, courseOffering.academicYear || '', courseOffering.semester || 0)) {
               domain.push({
                 dayOfWeek: day,
                 timeSlot,
@@ -428,8 +428,8 @@ export class ConstraintSolver {
     const timetable: Timetable = {
       id: `csp_${Date.now()}_${Math.random()}`,
       name: `${batch.name} - CSP Generated`,
-      academicYear: sampleCourseOffering.academicYear,
-      semester: sampleCourseOffering.semester,
+      academicYear: sampleCourseOffering.academicYear || '',
+      semester: sampleCourseOffering.semester || 0,
       programId: batch.programId,
       batchId: batch.id,
       version: '1.0',

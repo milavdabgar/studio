@@ -90,7 +90,7 @@ export default function FacultyWorkloadPage() {
                   courseCode: course.subcode,
                   batchName: batch?.name || 'N/A',
                   programCode: program?.code || 'N/A',
-                  semester: offering.semester,
+                  semester: offering.semester || 0,
                   hours: offeringHours,
                 });
               }

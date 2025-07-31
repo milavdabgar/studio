@@ -7,7 +7,7 @@ import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
 import { 
-    Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, Plane, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Clock, ListChecks, BookOpenCheck, FilePieChart, Paperclip, UserPlus, BellRing, NotebookPen, BookOpenText, Newspaper} from 'lucide-react';
+    Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, Plane, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Clock, ListChecks, BookOpenCheck, FilePieChart, Paperclip, UserPlus, BellRing, NotebookPen, BookOpenText, Newspaper, Calendar} from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -60,6 +60,7 @@ const adminNavItems = [
   { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches-link' },
   { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses-link' },
   { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Mgt.', id: 'admin-curriculum-link' },
+  { href: '/admin/academic-terms', icon: Calendar, label: 'Academic Terms', id: 'admin-academic-terms-link' },
   { href: '/admin/course-offerings', icon: BookOpenCheck, label: 'Course Offerings', id: 'admin-course-offerings-link' },
   { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments-link' },
   { href: '/admin/examinations', icon: Award, label: 'Examination Mgt.', id: 'admin-examinations-link'},

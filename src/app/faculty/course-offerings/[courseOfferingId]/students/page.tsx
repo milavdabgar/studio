@@ -42,7 +42,7 @@ export default function CourseOfferingStudentsPage() {
         if (offeringData) {
           const [courseData, batchData] = await Promise.all([
             courseService.getCourseById(offeringData.courseId),
-            batchService.getBatchById(offeringData.batchId)
+            offeringData.batchId ? batchService.getBatchById(offeringData.batchId) : Promise.resolve(null)
           ]);
           setCourse(courseData);
           setBatch(batchData);
