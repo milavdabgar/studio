@@ -194,3 +194,5 @@ texput.log
 *.swo
 *~
 slidev-failed-builds.json
+
+venv/
