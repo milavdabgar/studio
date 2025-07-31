@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
         middleName: row.middlename?.toString().trim() || parsedFromName.middleName || undefined,
         lastName: row.lastname?.toString().trim() || parsedFromName.lastName || undefined,
         personalEmail: row.personalemail?.toString().trim() || undefined,
-        instituteEmail: row.instituteemail?.toString().trim() || `${enrollmentNumber}@gppalanpur.in`, // Default, should be derived based on institute
+        instituteEmail: row.instituteemail?.toString().trim() || `${enrollmentNumber}@gppalanpur..ac.in`, // Default, should be derived based on institute
         programId: programId!, // studentProgram is checked
         currentSemester, status,
         contactNumber: row.contactnumber?.toString().trim() || undefined,

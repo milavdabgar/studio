@@ -44,8 +44,8 @@ export async function GET() {
         gtuName: 'Dr. Faculty User',
         gtuFacultyId: 'GTU001',
         personalEmail: 'faculty.user@gmail.com',
-        instituteEmail: 'faculty@gppalanpur.in',
-        email: 'faculty@gppalanpur.in',
+        instituteEmail: 'faculty@gppalanpur..ac.in',
+        email: 'faculty@gppalanpur..ac.in',
         contactNumber: '+91-9876543210',
         address: '123 Faculty Street, Palanpur',
         department: 'Computer Engineering',
@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Institute ID is required for creating staff.' }, { status: 400 });
     }
     
-    const instituteDomain = 'gppalanpur.in'; // Default domain
+    const instituteDomain = 'gppalanpur..ac.in'; // Default domain
     // Skip institute service call temporarily as it causes timeouts
     // TODO: Fix institute service timeout issue
     // try {
@@ -221,7 +221,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-const generateInstituteEmailForFaculty = (firstName?: string, lastName?: string, instituteDomain: string = "gppalanpur.in"): string => {
+const generateInstituteEmailForFaculty = (firstName?: string, lastName?: string, instituteDomain: string = "gppalanpur..ac.in"): string => {
   const fn = (firstName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   const ln = (lastName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   if (fn && ln) return `${fn}.${ln}@${instituteDomain}`;

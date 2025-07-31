@@ -46,7 +46,7 @@ describe('ResumeGenerator', () => {
     middleName: 'Michael',
     lastName: 'Doe',
     personalEmail: 'john.doe@gmail.com',
-    instituteEmail: '220123456789@gppalanpur.in',
+    instituteEmail: '220123456789@gppalanpur..ac.in',
     contactNumber: '+91-9876543210',
     address: '123 Main Street, Palanpur, Gujarat',
     dateOfBirth: '2002-05-15T00:00:00.000Z',
@@ -199,7 +199,7 @@ describe('ResumeGenerator', () => {
       expect(resumeData.address).toBe('123 Main Street, Palanpur, Gujarat');
       expect(resumeData.enrollmentNumber).toBe('220123456789');
       expect(resumeData.currentSemester).toBe(6);
-      expect(resumeData.instituteEmail).toBe('220123456789@gppalanpur.in');
+      expect(resumeData.instituteEmail).toBe('220123456789@gppalanpur..ac.in');
     });
 
     it('should include program information when provided', () => {
@@ -300,7 +300,7 @@ describe('ResumeGenerator', () => {
         enrollmentNumber: '220123456789',
         program: 'Computer Engineering',
         currentSemester: 6,
-        instituteEmail: '220123456789@gppalanpur.in',
+        instituteEmail: '220123456789@gppalanpur..ac.in',
         overallCPI: 9.12,
         earnedCredits: 25,
         totalCredits: 180,
@@ -342,7 +342,7 @@ describe('ResumeGenerator', () => {
         enrollmentNumber: '220123456789',
         program: 'Computer Engineering',
         currentSemester: 6,
-        instituteEmail: '220123456789@gppalanpur.in',
+        instituteEmail: '220123456789@gppalanpur..ac.in',
         semesterResults: [],
         skills: [
           { name: 'JavaScript', category: 'technical', proficiency: 'advanced' },
@@ -424,7 +424,7 @@ describe('ResumeGenerator', () => {
         enrollmentNumber: '220123456789',
         program: 'Computer Engineering',
         currentSemester: 6,
-        instituteEmail: '220123456789@gppalanpur.in',
+        instituteEmail: '220123456789@gppalanpur..ac.in',
         overallCPI: 9.12,
         earnedCredits: 25,
         totalCredits: 180,

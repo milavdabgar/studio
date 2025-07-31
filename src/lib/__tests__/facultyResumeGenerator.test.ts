@@ -37,7 +37,7 @@ describe('FacultyResumeGenerator', () => {
     gtuName: 'DOE JOHN MICHAEL',
     email: 'john.doe@gpp.edu',
     personalEmail: 'john.doe@gmail.com',
-    instituteEmail: 'john.doe@gppalanpur.in',
+    instituteEmail: 'john.doe@gppalanpur..ac.in',
     contactNumber: '+91-9876543210',
     address: '123 Faculty Colony, Palanpur, Gujarat',
     department: 'Computer Engineering',
@@ -101,7 +101,7 @@ describe('FacultyResumeGenerator', () => {
       expect(resumeData.designation).toBe('Assistant Professor');
       expect(resumeData.jobType).toBe('Regular');
       expect(resumeData.staffCategory).toBe('Academic');
-      expect(resumeData.instituteEmail).toBe('john.doe@gppalanpur.in');
+      expect(resumeData.instituteEmail).toBe('john.doe@gppalanpur..ac.in');
     });
 
     it('should include specializations from array', () => {
@@ -279,7 +279,7 @@ describe('FacultyResumeGenerator', () => {
         designation: 'Assistant Professor',
         jobType: 'Regular' as const,
         staffCategory: 'Academic',
-        instituteEmail: 'john.doe@gppalanpur.in',
+        instituteEmail: 'john.doe@gppalanpur..ac.in',
         specializations: ['Machine Learning', 'Data Science'],
         qualifications: [
           {
@@ -319,7 +319,7 @@ describe('FacultyResumeGenerator', () => {
         staffCode: 'FAC001',
         department: 'Computer Engineering',
         designation: 'Assistant Professor',
-        instituteEmail: 'john.doe@gppalanpur.in',
+        instituteEmail: 'john.doe@gppalanpur..ac.in',
         specializations: [],
         qualifications: [],
         experience: [
@@ -419,7 +419,7 @@ describe('FacultyResumeGenerator', () => {
         staffCode: 'FAC001',
         department: 'Computer Engineering',
         designation: 'Assistant Professor',
-        instituteEmail: 'john.doe@gppalanpur.in',
+        instituteEmail: 'john.doe@gppalanpur..ac.in',
         specializations: ['Machine Learning', 'Data Science'],
         qualifications: [
           {

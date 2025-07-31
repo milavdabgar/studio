@@ -34,7 +34,7 @@ test.describe('Faculty Profile Debug', () => {
     // Check for various possible faculty profile elements
     const profileElements = await Promise.all([
       page.locator('text=Dr. Faculty User').isVisible().catch(() => false),
-      page.locator('text=faculty@gppalanpur.in').isVisible().catch(() => false),
+      page.locator('text=faculty@gppalanpur..ac.in').isVisible().catch(() => false),
       page.locator('text=Computer Engineering').isVisible().catch(() => false),
       page.locator('text=Faculty Profile').isVisible().catch(() => false),
       page.locator('text=Profile').isVisible().catch(() => false),
@@ -44,7 +44,7 @@ test.describe('Faculty Profile Debug', () => {
     
     console.log('Profile elements found:', {
       'Dr. Faculty User': profileElements[0],
-      'faculty@gppalanpur.in': profileElements[1], 
+      'faculty@gppalanpur..ac.in': profileElements[1], 
       'Computer Engineering': profileElements[2],
       'Faculty Profile': profileElements[3],
       'Profile': profileElements[4],

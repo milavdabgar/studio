@@ -13,10 +13,10 @@ export const EMAIL_CONFIG = {
   
   // Default sender addresses
   senders: {
-    noreply: 'noreply@gppalanpur.in',
-    admin: 'admin@gppalanpur.in',
-    info: 'info@gppalanpur.in',
-    support: 'support@gppalanpur.in',
+    noreply: 'noreply@gppalanpur..ac.in',
+    admin: 'admin@gppalanpur..ac.in',
+    info: 'info@gppalanpur..ac.in',
+    support: 'support@gppalanpur..ac.in',
   },
   
   // Email templates
@@ -27,7 +27,7 @@ export const EMAIL_CONFIG = {
   },
   
   // Institute domain
-  instituteDomain: 'gppalanpur.in',
+  instituteDomain: 'gppalanpur..ac.in',
 };
 
 // Helper function to generate institute email

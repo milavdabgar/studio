@@ -8,7 +8,7 @@ test('Admin Login Flow', async ({ page }) => {
   await page.waitForTimeout(2000);
   
   // Fill in login credentials
-  await page.fill('input[type="email"], input[name="email"], #email', 'admin@gppalanpur.in');
+  await page.fill('input[type="email"], input[name="email"], #email', 'admin@gppalanpur..ac.in');
   await page.fill('input[type="password"], input[name="password"], #password', 'Admin@123');
   
   // Submit the form

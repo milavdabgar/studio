@@ -39,7 +39,7 @@ export function generateSEOMetadata({
     }
     
     if (process.env.NODE_ENV === 'production') {
-      return 'https://gppalanpur.in';
+      return 'https://gppalanpur..ac.in';
     }
     
     return 'http://localhost:3000';
@@ -115,7 +115,7 @@ export function generateSEOMetadata({
 
 // JSON-LD Structured Data Component
 export function generateArticleJsonLD(post: PostData, lang: string, url: string) {
-  const baseUrl = 'https://gppalanpur.in';
+  const baseUrl = 'https://gppalanpur..ac.in';
   
   return {
     '@context': 'https://schema.org',

@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
             fullName: 'Student CE003',
             firstName: 'Student',
             lastName: 'CE003',
-            email: 'student.ce003@gppalanpur.in',
+            email: 'student.ce003@gppalanpur..ac.in',
             roles: ['student'],
             isActive: true,
             instituteId: 'inst_gpp_001',
@@ -235,7 +235,7 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await bcrypt.hash(userData.password, 12);
     
-    let instituteDomain = 'gppalanpur.in'; // Default domain
+    let instituteDomain = 'gppalanpur..ac.in'; // Default domain
     if (userData.instituteId) {
         try {
             const institute = await instituteService.getInstituteById(userData.instituteId);

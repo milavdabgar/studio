@@ -385,7 +385,7 @@ describe('/api/users', () => {
       mockUserInstance.toJSON.mockReturnValue({
         ...validUserData,
         id: 'user_12345_abcdef',
-        instituteEmail: 'alice.wilson@gppalanpur.in', // Default domain
+        instituteEmail: 'alice.wilson@gppalanpur..ac.in', // Default domain
         createdAt: expect.any(String),
         updatedAt: expect.any(String)
       });
@@ -399,7 +399,7 @@ describe('/api/users', () => {
       const data = await response.json();
       
       expect(response.status).toBe(201);
-      expect(data.instituteEmail).toBe('alice.wilson@gppalanpur.in');
+      expect(data.instituteEmail).toBe('alice.wilson@gppalanpur..ac.in');
     });
 
     it('should handle institute email conflicts by adding suffix', async () => {
@@ -443,7 +443,7 @@ describe('/api/users', () => {
       mockUserInstance.toJSON.mockReturnValue({
         ...dataWithoutInstitute,
         id: 'user_12345_abcdef',
-        instituteEmail: 'alice.wilson@gppalanpur.in', // Default domain
+        instituteEmail: 'alice.wilson@gppalanpur..ac.in', // Default domain
         createdAt: expect.any(String),
         updatedAt: expect.any(String)
       });
@@ -457,7 +457,7 @@ describe('/api/users', () => {
       const data = await response.json();
       
       expect(response.status).toBe(201);
-      expect(data.instituteEmail).toBe('alice.wilson@gppalanpur.in');
+      expect(data.instituteEmail).toBe('alice.wilson@gppalanpur..ac.in');
     });
 
     it('should handle names with special characters in institute email generation', async () => {
@@ -655,7 +655,7 @@ describe('/api/users', () => {
       mockUserInstance.toJSON.mockReturnValue({
         ...validUserData,
         id: 'user_12345_abcdef',
-        instituteEmail: 'alice.wilson@gppalanpur.in', // Default domain
+        instituteEmail: 'alice.wilson@gppalanpur..ac.in', // Default domain
         createdAt: expect.any(String),
         updatedAt: expect.any(String)
       });
@@ -669,7 +669,7 @@ describe('/api/users', () => {
       const data = await response.json();
       
       expect(response.status).toBe(201);
-      expect(data.instituteEmail).toBe('alice.wilson@gppalanpur.in');
+      expect(data.instituteEmail).toBe('alice.wilson@gppalanpur..ac.in');
     });
 
     it('should handle empty trimmed names', async () => {

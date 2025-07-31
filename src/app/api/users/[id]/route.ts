@@ -193,7 +193,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
     
     // Prevent deletion of a super_admin or a primary admin email
-    if (userToDelete.roles.includes('super_admin') || userToDelete.email === "admin@gppalanpur.in" || userToDelete.instituteEmail === "admin@gppalanpur.in") {
+    if (userToDelete.roles.includes('super_admin') || userToDelete.email === "admin@gppalanpur..ac.in" || userToDelete.instituteEmail === "admin@gppalanpur..ac.in") {
         return NextResponse.json({ message: 'Cannot delete this administrative user.' }, { status: 403 });
     }
 

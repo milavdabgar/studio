@@ -745,10 +745,10 @@ export const newsletterData2021_22: NewsletterData = {
   ],
   
   reachout: {
-    email: 'ec@gppalanpur.in',
-    newsletterEmail: 'spectrum@gppalanpur.in',
+    email: 'ec@gppalanpur..ac.in',
+    newsletterEmail: 'spectrum@gppalanpur..ac.in',
     phone: '02742-245219',
     address: 'Opp. Malan Darwaja, Ambaji Road, Palanpur - 385001, Gujarat',
-    website: 'ec.gppalanpur.in'
+    website: 'ec.gppalanpur..ac.in'
   }
 };

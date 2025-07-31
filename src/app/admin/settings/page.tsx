@@ -24,7 +24,7 @@ export default function AdminSettingsPage() {
     maintenanceMode: false,
     defaultTheme: 'system',
     registrationOpen: true,
-    notificationsEmail: "admin@gppalanpur.in",
+    notificationsEmail: "admin@gppalanpur..ac.in",
   });
 
   // In a real app, useEffect would fetch current settings
@@ -74,7 +74,7 @@ export default function AdminSettingsPage() {
                 type="email"
                 value={settings.notificationsEmail}
                 onChange={(e) => handleInputChange('notificationsEmail', e.target.value)}
-                placeholder="e.g., notifications@gppalanpur.in"
+                placeholder="e.g., notifications@gppalanpur..ac.in"
                 disabled={isLoading}
               />
               <p className="text-xs text-muted-foreground">Email address used for sending system notifications.</p>

@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   
   try {
     const posts = await getSortedPostsData(lang);
-    const baseUrl = 'https://gppalanpur.in';
+    const baseUrl = 'https://gppalanpur..ac.in';
     
     const feedTitle = lang === 'gu' ? 'મિલાવ દબગર - બ્લોગ' : 'Milav Dabgar - Blog';
     const feedDescription = lang === 'gu' 

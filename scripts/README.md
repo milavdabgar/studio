@@ -79,9 +79,9 @@ docker-compose up -d
 
 | Role | Email | Password | Purpose |
 |------|-------|----------|---------|
-| Admin | admin@gppalanpur.in | Admin@123 | System administration |
-| Faculty | faculty@gppalanpur.in | Faculty@123 | Faculty features & resume |
-| Student | 086260306003@gppalanpur.in | 086260306003 | Student features & resume |
+| Admin | admin@gppalanpur..ac.in | Admin@123 | System administration |
+| Faculty | faculty@gppalanpur..ac.in | Faculty@123 | Faculty features & resume |
+| Student | 086260306003@gppalanpur..ac.in | 086260306003 | Student features & resume |
 
 ## 🧹 **Cleanup Plan**
 

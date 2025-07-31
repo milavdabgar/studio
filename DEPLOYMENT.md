@@ -146,7 +146,7 @@ This document outlines the improved deployment workflow for GPP Studio, supporti
 
 ### Health Check Endpoint
 ```bash
-curl https://gppalanpur.in/api/health
+curl https://gppalanpur..ac.in/api/health
 ```
 
 Response includes:

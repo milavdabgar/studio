@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
       const convocationYearStr = String(row.convoyear).trim();
       const convocationYear = convocationYearStr && !isNaN(parseInt(convocationYearStr, 10)) ? parseInt(convocationYearStr, 10) : undefined;
       
-      let instituteDomain = "gppalanpur.in"; // Default domain
+      let instituteDomain = "gppalanpur..ac.in"; // Default domain
       if (studentInstituteId) {
           try {
               const inst = await instituteService.getInstituteById(studentInstituteId);

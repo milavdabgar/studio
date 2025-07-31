@@ -1442,10 +1442,10 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
   ],
   
   reachout: {
-    email: 'ec@gppalanpur.in',
-    newsletterEmail: 'spectrum@gppalanpur.in',
+    email: 'ec@gppalanpur..ac.in',
+    newsletterEmail: 'spectrum@gppalanpur..ac.in',
     phone: '02742-245219',
     address: 'Opp. Malan Darwaja, Ambaji Road, Palanpur - 385001, Gujarat',
-    website: 'ec.gppalanpur.in'
+    website: 'ec.gppalanpur..ac.in'
   }
 };

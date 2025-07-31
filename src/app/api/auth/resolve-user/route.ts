@@ -27,12 +27,12 @@ export async function POST(request: NextRequest) {
     await connectMongoose();
 
     if (identification.type === UserType.STUDENT) {
-      // For students, email is simply enrollmentNo@gppalanpur.in
+      // For students, email is simply enrollmentNo@gppalanpur..ac.in
       return NextResponse.json({
         success: true,
         userType: 'student',
         identifier: identification.identifier,
-        instituteEmail: `${identification.identifier}@gppalanpur.in`,
+        instituteEmail: `${identification.identifier}@gppalanpur..ac.in`,
       });
 
     } else if (identification.type === UserType.FACULTY) {
