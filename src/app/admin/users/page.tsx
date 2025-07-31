@@ -182,7 +182,7 @@ export default function UserManagementPage() {
 
   const handleDelete = async (userId: string) => {
     const userToDelete = users.find(u => u.id === userId);
-    if (userToDelete?.email === "admin@gppalanpur..ac.in" || userToDelete?.instituteEmail === "admin@gppalanpur..ac.in") { 
+    if (userToDelete?.email === "admin@gppalanpur.ac.in" || userToDelete?.instituteEmail === "admin@gppalanpur.ac.in") { 
         toast({ variant: "destructive", title: "Action Forbidden", description: "Cannot delete the primary admin user." });
         return;
     }
@@ -489,7 +489,7 @@ export default function UserManagementPage() {
 
     for (const id of selectedUserIds) {
         const user = users.find(u => u.id === id);
-        if (user?.email === "admin@gppalanpur..ac.in" || user?.instituteEmail === "admin@gppalanpur..ac.in") {
+        if (user?.email === "admin@gppalanpur.ac.in" || user?.instituteEmail === "admin@gppalanpur.ac.in") {
             adminSkipped = true;
             continue;
         }
@@ -505,7 +505,7 @@ export default function UserManagementPage() {
     setSelectedUserIds([]);
     const description = `${deletedCount} user(s) have been successfully deleted.`;
     if(adminSkipped){
-      toast({ variant: "warning", title: "Admin User Protected", description: "The primary admin user (admin@gppalanpur..ac.in) cannot be deleted." });
+      toast({ variant: "warning", title: "Admin User Protected", description: "The primary admin user (admin@gppalanpur.ac.in) cannot be deleted." });
     }
     if (deletedCount > 0) {
         toast({ title: "Users Deleted", description });
@@ -756,7 +756,7 @@ export default function UserManagementPage() {
                       <Checkbox 
                         checked={selectedUserIds.includes(user.id)} 
                         onCheckedChange={(checked) => handleSelectUser(user.id, !!checked)}
-                        disabled={user.email === "admin@gppalanpur..ac.in" || user.instituteEmail === "admin@gppalanpur..ac.in"}
+                        disabled={user.email === "admin@gppalanpur.ac.in" || user.instituteEmail === "admin@gppalanpur.ac.in"}
                         className="flex-shrink-0"
                       />
                       <div className="min-w-0 flex-1">
@@ -796,7 +796,7 @@ export default function UserManagementPage() {
                       variant="destructive" 
                       size="sm" 
                       onClick={() => handleDelete(user.id)} 
-                      disabled={isSubmitting || user.email === "admin@gppalanpur..ac.in" || user.instituteEmail === "admin@gppalanpur..ac.in"}
+                      disabled={isSubmitting || user.email === "admin@gppalanpur.ac.in" || user.instituteEmail === "admin@gppalanpur.ac.in"}
                       className="min-h-[44px] flex-1 text-xs"
                     >
                       <Trash2 className="h-3 w-3" />
@@ -841,7 +841,7 @@ export default function UserManagementPage() {
                         checked={selectedUserIds.includes(user.id)}
                         onCheckedChange={(checked) => handleSelectUser(user.id, !!checked)}
                         aria-labelledby={`user-name-${user.id}`}
-                        disabled={user.email === "admin@gppalanpur..ac.in" || user.instituteEmail === "admin@gppalanpur..ac.in"}
+                        disabled={user.email === "admin@gppalanpur.ac.in" || user.instituteEmail === "admin@gppalanpur.ac.in"}
                        />
                   </TableCell>
                   <TableCell id={`user-name-${user.id}`} className="font-medium">{user.displayName}</TableCell>
@@ -870,7 +870,7 @@ export default function UserManagementPage() {
                           variant="destructive" 
                           size="icon" 
                           onClick={() => handleDelete(user.id)} 
-                          disabled={isSubmitting || user.email === "admin@gppalanpur..ac.in" || user.instituteEmail === "admin@gppalanpur..ac.in"}
+                          disabled={isSubmitting || user.email === "admin@gppalanpur.ac.in" || user.instituteEmail === "admin@gppalanpur.ac.in"}
                       >
                         <Trash2 className="h-4 w-4" />
                         <span className="sr-only">Delete User</span>

@@ -369,7 +369,7 @@ describe('/api/students', () => {
       mockStudentInstance.toJSON.mockReturnValue({
         ...validStudentData,
         id: 'student_125',
-        instituteEmail: 'GP24CE001@gppalanpur..ac.in',
+        instituteEmail: 'GP24CE001@gppalanpur.ac.in',
         instituteId: 'inst_gpp',
         userId: 'user_123',
         createdAt: expect.any(String),
@@ -385,7 +385,7 @@ describe('/api/students', () => {
       const data = await response.json();
       
       expect(response.status).toBe(201);
-      expect(data.instituteEmail).toBe('GP24CE001@gppalanpur..ac.in'); // Default domain
+      expect(data.instituteEmail).toBe('GP24CE001@gppalanpur.ac.in'); // Default domain
     });
 
     it('should handle existing user linking when user creation fails with "already exists"', async () => {
@@ -504,7 +504,7 @@ describe('/api/students', () => {
       mockStudentInstance.toJSON.mockReturnValue({
         ...validStudentData,
         id: 'student_125',
-        instituteEmail: 'GP24CE001@gppalanpur..ac.in',
+        instituteEmail: 'GP24CE001@gppalanpur.ac.in',
         instituteId: undefined,
         userId: 'user_123',
         createdAt: expect.any(String),
@@ -520,7 +520,7 @@ describe('/api/students', () => {
       const data = await response.json();
       
       expect(response.status).toBe(201);
-      expect(data.instituteEmail).toBe('GP24CE001@gppalanpur..ac.in'); // Default domain used
+      expect(data.instituteEmail).toBe('GP24CE001@gppalanpur.ac.in'); // Default domain used
     });
 
     it('should warn when program does not have instituteId', async () => {

@@ -882,7 +882,7 @@ export default function InteractiveNewsletterPage() {
                         </div>
                         <div className="flex justify-between items-center border-b border-blue-100 pb-2 dark:border-gray-700">
                           <span className="font-medium text-blue-800">Website:</span>
-                          <span className="font-semibold text-blue-900">{currentData.reachout?.website || 'ec.gppalanpur..ac.in'}</span>
+                          <span className="font-semibold text-blue-900">{currentData.reachout?.website || 'ec.gppalanpur.ac.in'}</span>
                         </div>
                         {currentData.reachout?.newsletterEmail && (
                           <div className="flex justify-between items-center pb-2">

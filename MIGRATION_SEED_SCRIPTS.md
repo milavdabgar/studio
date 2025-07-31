@@ -45,9 +45,9 @@ npm run seed:database
 
 | Role | Email | Password | Features |
 |------|-------|----------|----------|
-| Admin | admin@gppalanpur..ac.in | Admin@123 | Full system access |
-| Faculty | faculty@gppalanpur..ac.in | Faculty@123 | **Resume generation** ✅ |
-| Student | 086260306003@gppalanpur..ac.in | 086260306003 | Resume generation |
+| Admin | admin@gppalanpur.ac.in | Admin@123 | Full system access |
+| Faculty | faculty@gppalanpur.ac.in | Faculty@123 | **Resume generation** ✅ |
+| Student | 086260306003@gppalanpur.ac.in | 086260306003 | Resume generation |
 
 ## 📂 **New File Structure**
 

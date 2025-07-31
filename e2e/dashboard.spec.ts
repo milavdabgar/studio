@@ -2,7 +2,7 @@ import { test, expect, Page } from '@playwright/test';
 
 // Test data
 const validUser = {
-  email: 'admin@gppalanpur..ac.in',
+  email: 'admin@gppalanpur.ac.in',
   password: 'Admin@123',
   role: 'Administrator'
 };

@@ -552,9 +552,9 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
   const showHeroImage = hasHeroImage(postData);
 
   // Generate structured data
-  const currentUrl = `https://gppalanpur..ac.in/posts/${langForLinks}/${slugPartsForLinks.join('/')}`;
+  const currentUrl = `https://gppalanpur.ac.in/posts/${langForLinks}/${slugPartsForLinks.join('/')}`;
   const articleJsonLD = generateArticleJsonLD(postData, langForLinks, currentUrl);
-  const breadcrumbJsonLD = generateBreadcrumbJsonLD(breadcrumbItems, 'https://gppalanpur..ac.in');
+  const breadcrumbJsonLD = generateBreadcrumbJsonLD(breadcrumbItems, 'https://gppalanpur.ac.in');
 
   return (
     <BlogLayout currentLang={langForLinks}>

@@ -2904,7 +2904,7 @@ ${item.type === 'poem' ? (item.content || '').trim() : (item.content || '')}</di
                                 </div>
                                 <div class="contact-item">
                                     <span class="contact-label">Website:</span>
-                                    <span class="contact-value">${data.reachout?.website || 'ec.gppalanpur..ac.in'}</span>
+                                    <span class="contact-value">${data.reachout?.website || 'ec.gppalanpur.ac.in'}</span>
                                 </div>
                                 ${data.reachout?.newsletterEmail ? `
                                 <div class="contact-item">

@@ -44,7 +44,7 @@ async function fixInstituteDomain() {
         ]
       },
       { 
-        domain: "gppalanpur..ac.in",
+        domain: "gppalanpur.ac.in",
         updatedAt: new Date().toISOString() 
       },
       { new: true }

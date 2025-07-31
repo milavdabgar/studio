@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/', '/admin/', '/dashboard/'],
     },
-    sitemap: 'https://gppalanpur..ac.in/sitemap.xml',
+    sitemap: 'https://gppalanpur.ac.in/sitemap.xml',
   };
 }

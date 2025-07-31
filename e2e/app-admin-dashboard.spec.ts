@@ -1,7 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
 
 const adminUserCredentials = {
-  email: 'admin@gppalanpur..ac.in',
+  email: 'admin@gppalanpur.ac.in',
   password: 'Admin@123',
   role: 'Administrator',
 };

@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
   },
   // Environment variables for build-time optimization
   env: {
-    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || 'https://gppalanpur..ac.in',
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || 'https://gppalanpur.ac.in',
   },
   // Set metadataBase to fix the metadataBase warning
   experimental: {

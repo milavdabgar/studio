@@ -47,7 +47,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
     
     // Prevent removal of super_admin role or removal from primary admin
-    if (roleToRemove === 'super_admin' || user.email === "admin@gppalanpur..ac.in" || user.instituteEmail === "admin@gppalanpur..ac.in") {
+    if (roleToRemove === 'super_admin' || user.email === "admin@gppalanpur.ac.in" || user.instituteEmail === "admin@gppalanpur.ac.in") {
       return NextResponse.json({ message: 'Cannot remove administrative privileges from this user.' }, { status: 403 });
     }
     

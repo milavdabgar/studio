@@ -160,7 +160,7 @@ describe('Login Page', () => {
     const usernameInput = screen.getByLabelText('Username');
     const passwordInput = screen.getByLabelText('Password');
     
-    await user.type(usernameInput, 'admin@gppalanpur..ac.in');
+    await user.type(usernameInput, 'admin@gppalanpur.ac.in');
     await user.type(passwordInput, 'Admin@123');
     
     const submitButton = screen.getByRole('button', { name: /login/i });
@@ -216,9 +216,9 @@ describe('Login Page', () => {
     const passwordInput = screen.getByLabelText(/password/i);
     const submitButton = screen.getByRole('button', { name: /login/i });
 
-    // Use inactive user credentials (inactive.user@gppalanpur..ac.in is inactive in mock data)
+    // Use inactive user credentials (inactive.user@gppalanpur.ac.in is inactive in mock data)
     await user.clear(identifierInput);
-    await user.type(identifierInput, 'inactive.user@gppalanpur..ac.in');
+    await user.type(identifierInput, 'inactive.user@gppalanpur.ac.in');
     await user.clear(passwordInput);
     await user.type(passwordInput, 'password');
     
@@ -305,7 +305,7 @@ describe('Login Page', () => {
     const identifierInput = screen.getByLabelText('Username');
     const passwordInput = screen.getByLabelText('Password');
     
-    await user.type(identifierInput, 'admin@gppalanpur..ac.in');
+    await user.type(identifierInput, 'admin@gppalanpur.ac.in');
     await user.type(passwordInput, 'Admin@123');
 
     const roleSelect = screen.getByRole('combobox');
@@ -334,7 +334,7 @@ describe('Login Page', () => {
     const identifierInput = screen.getByLabelText('Username');
     const passwordInput = screen.getByLabelText('Password');
     
-    await user.type(identifierInput, 'admin@gppalanpur..ac.in');
+    await user.type(identifierInput, 'admin@gppalanpur.ac.in');
     await user.type(passwordInput, 'Admin@123');
 
     const submitButton = screen.getByRole('button', { name: /login/i });
@@ -572,7 +572,7 @@ describe('Login Page', () => {
       const usernameInput = screen.getByLabelText(/username/i);
       const passwordInput = screen.getByLabelText('Password');
       
-      await user.type(usernameInput, 'admin@gppalanpur..ac.in');
+      await user.type(usernameInput, 'admin@gppalanpur.ac.in');
       await user.type(passwordInput, 'Admin@123');
 
       const submitButton = screen.getByRole('button', { name: /login/i });

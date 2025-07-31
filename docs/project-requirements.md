@@ -37,7 +37,7 @@ Users can have multiple roles and switch between them after login.
    - Multi-provider login (Email/Password, Google, Microsoft)
    - Role-based access control
    - Role switching within the application
-   - Institute domain-specific login (e.g., @gppalanpur..ac.in)
+   - Institute domain-specific login (e.g., @gppalanpur.ac.in)
 
 2. **Dashboard System**
    - Role-specific dashboards

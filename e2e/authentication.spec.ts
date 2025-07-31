@@ -3,7 +3,7 @@ import { test, expect, Page } from '@playwright/test';
 const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000';
 
 const adminUser = {
-  email: 'admin@gppalanpur..ac.in',
+  email: 'admin@gppalanpur.ac.in',
   password: 'Admin@123',
   role: 'Administrator',
   expectedDashboardText: /Welcome to your Dashboard, Super Admin!/i,

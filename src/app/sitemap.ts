@@ -3,7 +3,7 @@ import { getSortedPostsData, getAllTags, getAllCategories, getAllAuthors } from 
 import { languages } from '@/lib/config';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://gppalanpur..ac.in';
+  const baseUrl = 'https://gppalanpur.ac.in';
   const currentDate = new Date();
   
   const sitemap: MetadataRoute.Sitemap = [

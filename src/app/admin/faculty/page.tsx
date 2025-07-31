@@ -80,7 +80,7 @@ const parseGtuFacultyName = (gtuNameInput: string | undefined): { title?: string
     return { title, lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') }; 
 };
 
-const generateInstituteEmail = (firstName?: string, lastName?: string, instituteDomain: string = "gppalanpur..ac.in"): string => {
+const generateInstituteEmail = (firstName?: string, lastName?: string, instituteDomain: string = "gppalanpur.ac.in"): string => {
   const fn = (firstName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   const ln = (lastName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   if (fn && ln) {
@@ -275,7 +275,7 @@ export default function FacultyManagementPage() {
     setIsSubmitting(true);
       
     const selectedInstitute = institutes.find(inst => inst.id === formInstituteId);
-    const instituteDomain = selectedInstitute?.domain || "gppalanpur..ac.in";
+    const instituteDomain = selectedInstitute?.domain || "gppalanpur.ac.in";
 
 
     const facultyData: Omit<Faculty, 'id' > & { instituteId: string } = { // Ensure instituteId is part of the payload
@@ -403,9 +403,9 @@ export default function FacultyManagementPage() {
 
   const handleDownloadSampleCsv = () => {
     const sampleCsvContent = `id,staffCode,gtuName,title,firstName,middleName,lastName,personalEmail,instituteEmail,contactNumber,department,designation,jobType,staffCategory,instType,dateOfBirth,joiningDate,gender,maritalStatus,status,aadharNumber,panCardNumber,gpfNpsNumber,placeOfBirth,nationality,knownAs,userId,instituteId
-faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@example.com,anil.sharma@gppalanpur..ac.in,9876543210,Computer Engineering,Professor,Regular,Teaching,DI,1975-05-15,2005-08-01,Male,Married,active,123456789012,ABCDE1234F,GPF123,Palanpur,Indian,"Anil S.",user_id_link,inst1
-,S002,"Ms. PATEL PRIYA RAJESH",Ms.,PRIYA,RAJESH,PATEL,priya.patel@example.com,priya.patel@gppalanpur..ac.in,9876543211,Mechanical Engineering,Lecturer,Adhoc,Teaching,DI,1988-11-20,2015-06-10,Female,Single,active,,,,,,,user_id_link2,inst1
-,C001,"Mr. Admin Clerk",Mr.,Admin,,Clerk,clerk.admin@example.com,clerk.admin@gppalanpur..ac.in,9876500000,Administration,Clerk,Regular,Clerical,DI,1990-01-01,2018-01-01,Male,Single,active,,,,,,,user_clerk_1,inst1
+faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@example.com,anil.sharma@gppalanpur.ac.in,9876543210,Computer Engineering,Professor,Regular,Teaching,DI,1975-05-15,2005-08-01,Male,Married,active,123456789012,ABCDE1234F,GPF123,Palanpur,Indian,"Anil S.",user_id_link,inst1
+,S002,"Ms. PATEL PRIYA RAJESH",Ms.,PRIYA,RAJESH,PATEL,priya.patel@example.com,priya.patel@gppalanpur.ac.in,9876543211,Mechanical Engineering,Lecturer,Adhoc,Teaching,DI,1988-11-20,2015-06-10,Female,Single,active,,,,,,,user_id_link2,inst1
+,C001,"Mr. Admin Clerk",Mr.,Admin,,Clerk,clerk.admin@example.com,clerk.admin@gppalanpur.ac.in,9876500000,Administration,Clerk,Regular,Clerical,DI,1990-01-01,2018-01-01,Male,Single,active,,,,,,,user_clerk_1,inst1
 `;
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");

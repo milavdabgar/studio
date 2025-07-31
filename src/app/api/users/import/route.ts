@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
       middleName = row.middlename?.toString().trim() || middleName;
       const displayName = displayNameFromCSV || `${firstName || ''} ${lastName || ''}`.trim() || personalEmail;
 
-      let instituteDomain = 'gppalanpur..ac.in'; 
+      let instituteDomain = 'gppalanpur.ac.in'; 
       if (currentInstitute && currentInstitute.domain) {
           instituteDomain = currentInstitute.domain;
       } else if (currentInstitute) {
@@ -196,7 +196,7 @@ export async function POST(request: NextRequest) {
       };
 
       if (existingUser) {
-        if (existingUser.email === "admin@gppalanpur..ac.in" || existingUser.instituteEmail === "admin@gppalanpur..ac.in") {
+        if (existingUser.email === "admin@gppalanpur.ac.in" || existingUser.instituteEmail === "admin@gppalanpur.ac.in") {
            importErrors.push({row: rowIndex, message: "Cannot modify primary admin user via CSV import.", data: row});
            skippedCount++; continue;
         }

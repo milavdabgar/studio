@@ -71,13 +71,13 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
     
     // Seed test users that match existing patterns from project teams store
     const users = [
-      { id: 'user_student_ce001_gpp', displayName: 'Student CE001', fullName: 'Student CE001', email: 'student.ce001@gppalanpur..ac.in', username: 'student_ce001', enrollmentNo: '220010107001', role: 'student', roles: ['student'] },
-      { id: 'user_student_me002_gpp', displayName: 'Student ME002', fullName: 'Student ME002', email: 'student.me002@gppalanpur..ac.in', username: 'student_me002', enrollmentNo: '220010108002', role: 'student', roles: ['student'] },
-      { id: 'user_student_ce003_gpp', displayName: 'Student CE003', fullName: 'Student CE003', email: 'student.ce003@gppalanpur..ac.in', username: 'student_ce003', enrollmentNo: '220010107003', role: 'student', roles: ['student'] },
-      { id: 'user_student_ce004_gpp', displayName: 'Student CE004', fullName: 'Student CE004', email: 'student.ce004@gppalanpur..ac.in', username: 'student_ce004', enrollmentNo: '220010107004', role: 'student', roles: ['student'] },
-      { id: 'user_student_ce005_gpp', displayName: 'Student CE005', fullName: 'Student CE005', email: 'student.ce005@gppalanpur..ac.in', username: 'student_ce005', enrollmentNo: '220010107005', role: 'student', roles: ['student'] },
-      { id: 'user_student_ce006_gpp', displayName: 'Student CE006', fullName: 'Student CE006', email: 'student.ce006@gppalanpur..ac.in', username: 'student_ce006', enrollmentNo: '220010107006', role: 'student', roles: ['student'] },
-      { id: 'user_student_ce007_gpp', displayName: 'Student CE007', fullName: 'Student CE007', email: 'student.ce007@gppalanpur..ac.in', username: 'student_ce007', enrollmentNo: '220010107007', role: 'student', roles: ['student'] }
+      { id: 'user_student_ce001_gpp', displayName: 'Student CE001', fullName: 'Student CE001', email: 'student.ce001@gppalanpur.ac.in', username: 'student_ce001', enrollmentNo: '220010107001', role: 'student', roles: ['student'] },
+      { id: 'user_student_me002_gpp', displayName: 'Student ME002', fullName: 'Student ME002', email: 'student.me002@gppalanpur.ac.in', username: 'student_me002', enrollmentNo: '220010108002', role: 'student', roles: ['student'] },
+      { id: 'user_student_ce003_gpp', displayName: 'Student CE003', fullName: 'Student CE003', email: 'student.ce003@gppalanpur.ac.in', username: 'student_ce003', enrollmentNo: '220010107003', role: 'student', roles: ['student'] },
+      { id: 'user_student_ce004_gpp', displayName: 'Student CE004', fullName: 'Student CE004', email: 'student.ce004@gppalanpur.ac.in', username: 'student_ce004', enrollmentNo: '220010107004', role: 'student', roles: ['student'] },
+      { id: 'user_student_ce005_gpp', displayName: 'Student CE005', fullName: 'Student CE005', email: 'student.ce005@gppalanpur.ac.in', username: 'student_ce005', enrollmentNo: '220010107005', role: 'student', roles: ['student'] },
+      { id: 'user_student_ce006_gpp', displayName: 'Student CE006', fullName: 'Student CE006', email: 'student.ce006@gppalanpur.ac.in', username: 'student_ce006', enrollmentNo: '220010107006', role: 'student', roles: ['student'] },
+      { id: 'user_student_ce007_gpp', displayName: 'Student CE007', fullName: 'Student CE007', email: 'student.ce007@gppalanpur.ac.in', username: 'student_ce007', enrollmentNo: '220010107007', role: 'student', roles: ['student'] }
     ];
     
     // Create test users if they don't exist

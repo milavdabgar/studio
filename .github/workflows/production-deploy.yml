@@ -70,12 +70,12 @@ jobs:
       - name: Add SSH known hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -H server.gppalanpur..ac.in >> ~/.ssh/known_hosts
+          ssh-keyscan -H server.gppalanpur.ac.in >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
       - name: Production Deployment with Slidev Build
         env:
-          REMOTE_HOST: milav@server.gppalanpur..ac.in
+          REMOTE_HOST: milav@server.gppalanpur.ac.in
           FORCE_REBUILD: ${{ github.event.inputs.force_rebuild || 'false' }}
           SKIP_SLIDEV: ${{ github.event.inputs.skip_slidev || 'false' }}
         run: |

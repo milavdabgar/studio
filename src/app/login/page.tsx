@@ -27,29 +27,29 @@ interface MockUser {
 
 const getMockUsers = async (): Promise<MockUser[]> => {
   const baseUsers: MockUser[] = [
-    { id: "u1", email: "admin@gppalanpur..ac.in", password: "Admin@123", roles: ["admin", "super_admin"], name: "Super Admin", status: "active", instituteId: "inst1" },
+    { id: "u1", email: "admin@gppalanpur.ac.in", password: "Admin@123", roles: ["admin", "super_admin"], name: "Super Admin", status: "active", instituteId: "inst1" },
     { id: "u2", email: "student@example.com", password: "password", roles: ["student"], name: "Alice Student", status: "active", instituteId: "inst1" },
     { id: "u3", email: "faculty@example.com", password: "password", roles: ["faculty"], name: "Bob Faculty", status: "active", instituteId: "inst1" },
-    { id: "u3b", email: "faculty@gppalanpur..ac.in", password: "Faculty@123", roles: ["faculty"], name: "Dr. Faculty User", status: "active", instituteId: "inst1" },
+    { id: "u3b", email: "faculty@gppalanpur.ac.in", password: "Faculty@123", roles: ["faculty"], name: "Dr. Faculty User", status: "active", instituteId: "inst1" },
     { id: "u4", email: "hod@example.com", password: "password", roles: ["hod", "faculty"], name: "Charlie HOD", status: "active", instituteId: "inst1" },
     { id: "u5", email: "jury@example.com", password: "password", roles: ["jury", "faculty"], name: "Diana Jury", status: "inactive", instituteId: "inst1" },
-    { id: "u5b", email: "inactive.user@gppalanpur..ac.in", password: "password", roles: ["admin"], name: "Inactive User", status: "inactive", instituteId: "inst1" },
+    { id: "u5b", email: "inactive.user@gppalanpur.ac.in", password: "password", roles: ["admin"], name: "Inactive User", status: "inactive", instituteId: "inst1" },
     { id: "u6", email: "multi@example.com", password: "password", roles: ["student", "jury"], name: "Multi Role User", status: "active", instituteId: "inst1" },
-    { email: "086260306003@gppalanpur..ac.in", roles: ["student"], name: "DOE JOHN MICHAEL (from import)", status: "active", password: "086260306003", instituteId: "inst1"},
+    { email: "086260306003@gppalanpur.ac.in", roles: ["student"], name: "DOE JOHN MICHAEL (from import)", status: "active", password: "086260306003", instituteId: "inst1"},
     
     // Test users with enrollment numbers (12-digit format)
-    { id: "s1", email: "236260332001@gppalanpur..ac.in", password: "password", roles: ["student"], name: "Milap Acharya", status: "active", instituteId: "inst1" },
-    { id: "s2", email: "236260332003@gppalanpur..ac.in", password: "password", roles: ["student"], name: "Anasulla Belim", status: "active", instituteId: "inst1" },
-    { id: "s3", email: "236260332004@gppalanpur..ac.in", password: "password", roles: ["student"], name: "Prachi Bhavsar", status: "active", instituteId: "inst1" },
+    { id: "s1", email: "236260332001@gppalanpur.ac.in", password: "password", roles: ["student"], name: "Milap Acharya", status: "active", instituteId: "inst1" },
+    { id: "s2", email: "236260332003@gppalanpur.ac.in", password: "password", roles: ["student"], name: "Anasulla Belim", status: "active", instituteId: "inst1" },
+    { id: "s3", email: "236260332004@gppalanpur.ac.in", password: "password", roles: ["student"], name: "Prachi Bhavsar", status: "active", instituteId: "inst1" },
     
     // Test users with staff codes (4-5 digit format) - using actual name-based emails
     { id: "f1", email: "narendrarajgor@yahoo.com", password: "71396", roles: ["faculty"], name: "Mr. Rajgor Narendrakumar", status: "active", instituteId: "inst1" },
     { id: "f2", email: "maheshftank@gmail.com", password: "5595", roles: ["faculty"], name: "Dr. Tank Maheshkumar", status: "active", instituteId: "inst1" },
     { id: "f3", email: "chiragpandya23@gmail.com", password: "12725", roles: ["faculty", "hod"], name: "Dr. Pandya Chiragkumar", status: "active", instituteId: "inst1" },
     
-    // Test faculty with proper institute email format (firstname.lastname@gppalanpur..ac.in)
-    { id: "f4", email: "jignaben.modi@gppalanpur..ac.in", password: "45174", roles: ["faculty"], name: "Jignaben Modi", status: "active", instituteId: "inst1" },
-    { id: "f5", email: "milav.dabgar@gppalanpur..ac.in", password: "62283", roles: ["faculty"], name: "Milav Dabgar", status: "active", instituteId: "inst1" },
+    // Test faculty with proper institute email format (firstname.lastname@gppalanpur.ac.in)
+    { id: "f4", email: "jignaben.modi@gppalanpur.ac.in", password: "45174", roles: ["faculty"], name: "Jignaben Modi", status: "active", instituteId: "inst1" },
+    { id: "f5", email: "milav.dabgar@gppalanpur.ac.in", password: "62283", roles: ["faculty"], name: "Milav Dabgar", status: "active", instituteId: "inst1" },
   ];
 
   if (typeof window !== 'undefined') {

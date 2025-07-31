@@ -465,7 +465,7 @@ export default function StudentResourcesPage() {
                   <CardContent className="space-y-3">
                     <div className="space-y-2 text-sm">
                       <p>• Office hours: Monday-Friday, 10 AM - 4 PM</p>
-                      <p>• Email support: academic@gppalanpur..ac.in</p>
+                      <p>• Email support: academic@gppalanpur.ac.in</p>
                       <p>• Peer tutoring program available</p>
                       <p>• Academic counseling sessions</p>
                       <p>• Learning disability support services</p>

@@ -53,7 +53,7 @@ Your LaTeX integration is **production-ready** for:
 ### Business Documents
 ```bash
 # Generate professional invoice
-curl -X POST https://gppalanpur..ac.in/api/test-latex \
+curl -X POST https://gppalanpur.ac.in/api/test-latex \
   -H "Content-Type: application/json" \
   -d '{"texContent": "...invoice_template...", "engine": "xelatex"}'
 ```
@@ -61,7 +61,7 @@ curl -X POST https://gppalanpur..ac.in/api/test-latex \
 ### Academic Papers
 ```bash
 # Generate research paper with math
-curl -X POST https://gppalanpur..ac.in/api/test-latex \
+curl -X POST https://gppalanpur.ac.in/api/test-latex \
   -H "Content-Type: application/json" \
   -d '{"texContent": "...paper_template...", "engine": "pdflatex"}'
 ```
@@ -69,7 +69,7 @@ curl -X POST https://gppalanpur..ac.in/api/test-latex \
 ### Resume/CV Generation
 ```bash
 # Generate your detailed CV
-curl -X POST https://gppalanpur..ac.in/api/generate-cv \
+curl -X POST https://gppalanpur.ac.in/api/generate-cv \
   -H "Content-Type: application/json" \
   -d '{"type": "detailed"}'
 ```

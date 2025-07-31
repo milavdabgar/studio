@@ -41,7 +41,7 @@ type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
 
-const generateInstituteEmail = (firstName?: string, lastName?: string, instituteDomain: string = "gppalanpur..ac.in"): string => {
+const generateInstituteEmail = (firstName?: string, lastName?: string, instituteDomain: string = "gppalanpur.ac.in"): string => {
   const fn = (firstName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   const ln = (lastName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   if (fn && ln) {
@@ -270,7 +270,7 @@ export default function AdminStudentsPage() {
       
     const selectedProgram = programs.find(prog => prog.id === formProgramId);
     const selectedInstitute = institutes.find(inst => inst.id === selectedProgram?.instituteId);
-    const instituteDomain = selectedInstitute?.domain || "gppalanpur..ac.in";
+    const instituteDomain = selectedInstitute?.domain || "gppalanpur.ac.in";
 
     const studentData: Omit<Student, 'id'> & { instituteId?: string } = {
       enrollmentNumber: formEnrollmentNumber.trim(),

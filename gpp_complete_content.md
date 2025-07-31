@@ -1,10 +1,10 @@
 # GP Palanpur - Complete Website Content
 **Source**: WordPress XML Export
-**Site**: https://gppalanpur..ac.in
+**Site**: https://gppalanpur.ac.in
 **Export Date**: 2025-06-26
 
 ## Home
-**URL**: https://gppalanpur..ac.in/
+**URL**: https://gppalanpur.ac.in/
 **Slug**: `home`
 **Last Modified**: Tue, 11 Mar 2025 17:07:20 +0000
 
@@ -109,7 +109,7 @@ Join Us Today
 ---
 
 ## About
-**URL**: https://gppalanpur..ac.in/about/
+**URL**: https://gppalanpur.ac.in/about/
 **Slug**: `about`
 **Last Modified**: Tue, 11 Mar 2025 17:07:20 +0000
 
@@ -270,7 +270,7 @@ Join Us Today
 ---
 
 ## Contact
-**URL**: https://gppalanpur..ac.in/contact/
+**URL**: https://gppalanpur.ac.in/contact/
 **Slug**: `contact`
 **Last Modified**: Tue, 11 Mar 2025 17:07:20 +0000
 
@@ -306,7 +306,7 @@ Power up your career with our Electrical Engineering program.
 ---
 
 ## Services
-**URL**: https://gppalanpur..ac.in/services/
+**URL**: https://gppalanpur.ac.in/services/
 **Slug**: `services`
 **Last Modified**: Tue, 11 Mar 2025 17:07:20 +0000
 
@@ -364,7 +364,7 @@ Join Us Today
 ---
 
 ## Blog
-**URL**: https://gppalanpur..ac.in/blog/
+**URL**: https://gppalanpur.ac.in/blog/
 **Slug**: `blog`
 **Last Modified**: Tue, 11 Mar 2025 17:07:24 +0000
 
@@ -373,7 +373,7 @@ Join Us Today
 ---
 
 ## Admissions
-**URL**: https://gppalanpur..ac.in/admissions/
+**URL**: https://gppalanpur.ac.in/admissions/
 **Slug**: `admissions`
 **Last Modified**: Fri, 11 Apr 2025 18:01:56 +0000
 
@@ -608,7 +608,7 @@ Take the first step toward your engineering career by applying to Government Pol
 ---
 
 ## Academic Programs
-**URL**: https://gppalanpur..ac.in/academic-programs/
+**URL**: https://gppalanpur.ac.in/academic-programs/
 **Slug**: `academic-programs`
 **Last Modified**: Fri, 11 Apr 2025 18:26:27 +0000
 
@@ -827,7 +827,7 @@ Join GPP Palanpur for a transformative educational journey that prepares you for
 ---
 
 ## Facilities & Infrastructure
-**URL**: https://gppalanpur..ac.in/facilities-infrastructure/
+**URL**: https://gppalanpur.ac.in/facilities-infrastructure/
 **Slug**: `facilities-infrastructure`
 **Last Modified**: Fri, 11 Apr 2025 18:27:56 +0000
 
@@ -1098,7 +1098,7 @@ Our commitment to providing excellent infrastructure supports our mission of del
 ---
 
 ## Student Life
-**URL**: https://gppalanpur..ac.in/student-life/
+**URL**: https://gppalanpur.ac.in/student-life/
 **Slug**: `student-life`
 **Last Modified**: Fri, 11 Apr 2025 18:34:21 +0000
 
@@ -1637,7 +1637,7 @@ Experience the perfect balance of academic excellence, practical skills, and per
 ---
 
 ## Placements
-**URL**: https://gppalanpur..ac.in/placements/
+**URL**: https://gppalanpur.ac.in/placements/
 **Slug**: `placements`
 **Last Modified**: Fri, 11 Apr 2025 18:36:09 +0000
 
@@ -1926,7 +1926,7 @@ Join Government Polytechnic Palanpur for quality education that leads to rewardi
 ---
 
 ## SSIP
-**URL**: https://gppalanpur..ac.in/ssip/
+**URL**: https://gppalanpur.ac.in/ssip/
 **Slug**: `ssip`
 **Last Modified**: Fri, 11 Apr 2025 18:37:32 +0000
 
@@ -2230,17 +2230,17 @@ Join us in creating an innovation ecosystem that transforms ideas into impactful
 # Site Structure and Navigation
 
 ## Page Structure
-- **Home** (`home`) - https://gppalanpur..ac.in/
-- **About** (`about`) - https://gppalanpur..ac.in/about/
-- **Contact** (`contact`) - https://gppalanpur..ac.in/contact/
-- **Services** (`services`) - https://gppalanpur..ac.in/services/
-- **Blog** (`blog`) - https://gppalanpur..ac.in/blog/
-- **Admissions** (`admissions`) - https://gppalanpur..ac.in/admissions/
-- **Academic Programs** (`academic-programs`) - https://gppalanpur..ac.in/academic-programs/
-- **Facilities & Infrastructure** (`facilities-infrastructure`) - https://gppalanpur..ac.in/facilities-infrastructure/
-- **Student Life** (`student-life`) - https://gppalanpur..ac.in/student-life/
-- **Placements** (`placements`) - https://gppalanpur..ac.in/placements/
-- **SSIP** (`ssip`) - https://gppalanpur..ac.in/ssip/
+- **Home** (`home`) - https://gppalanpur.ac.in/
+- **About** (`about`) - https://gppalanpur.ac.in/about/
+- **Contact** (`contact`) - https://gppalanpur.ac.in/contact/
+- **Services** (`services`) - https://gppalanpur.ac.in/services/
+- **Blog** (`blog`) - https://gppalanpur.ac.in/blog/
+- **Admissions** (`admissions`) - https://gppalanpur.ac.in/admissions/
+- **Academic Programs** (`academic-programs`) - https://gppalanpur.ac.in/academic-programs/
+- **Facilities & Infrastructure** (`facilities-infrastructure`) - https://gppalanpur.ac.in/facilities-infrastructure/
+- **Student Life** (`student-life`) - https://gppalanpur.ac.in/student-life/
+- **Placements** (`placements`) - https://gppalanpur.ac.in/placements/
+- **SSIP** (`ssip`) - https://gppalanpur.ac.in/ssip/
 
 ## Suggested Navigation Menu
 Based on the extracted content, here's a suggested navigation structure:
