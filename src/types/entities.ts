@@ -2304,3 +2304,120 @@ export interface CategoryCounts {
   [category: string]: number;
 }
 
+// ===============================
+// ALLOCATION TYPES (Phase 2)
+// ===============================
+
+export interface AllocationSession {
+  id: string;
+  name: string;
+  academicYear: string;
+  semesters: number[];
+  targetPrograms: string[]; // Program IDs for ECE/ICT
+  status: 'draft' | 'in_progress' | 'completed' | 'archived';
+  createdBy: string; // User ID
+  allocationMethod: 'preference_based' | 'manual' | 'hybrid';
+  
+  // Algorithm parameters
+  algorithmSettings: {
+    prioritizeSeniority: boolean;
+    expertiseWeightage: number; // 0-1
+    preferencePriorityWeightage: number; // 0-1
+    workloadBalanceWeightage: number; // 0-1
+    minimizeConflicts: boolean;
+  };
+  
+  // Statistics
+  statistics: {
+    totalCourses: number;
+    totalFaculty: number;
+    allocatedCourses: number;
+    unallocatedCourses: number;
+    facultyWithFullLoad: number;
+    conflictsDetected: number;
+    averageSatisfactionScore: number;
+  };
+  
+  // Session metadata
+  startedAt?: string;
+  completedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+  notes?: string;
+}
+
+export interface CourseAllocation {
+  id: string;
+  sessionId: string; // Reference to AllocationSession
+  courseOfferingId: string; // Reference to CourseOffering
+  facultyId: string; // Assigned faculty
+  
+  // Assignment details
+  assignmentType: 'theory' | 'lab' | 'tutorial' | 'project';
+  hoursPerWeek: number;
+  
+  // Assignment metadata
+  allocationScore: number; // Algorithm-calculated score (0-100)
+  preferenceMatch: 'high' | 'medium' | 'low' | 'none'; // How well it matches faculty preference
+  expertiseLevel: number; // Faculty expertise for this course (1-10)
+  conflictLevel: 'none' | 'minor' | 'major'; // Conflict assessment
+  
+  // Manual adjustments
+  isManualAssignment: boolean;
+  originalFacultyId?: string; // If manually reassigned
+  reassignmentReason?: string;
+  
+  // Approval workflow
+  status: 'pending' | 'approved' | 'rejected' | 'needs_review';
+  reviewedBy?: string; // HOD or admin user ID
+  reviewedAt?: string;
+  reviewComments?: string;
+  
+  // Timestamps
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AllocationConflict {
+  id: string;
+  sessionId: string;
+  conflictType: 'time_overlap' | 'overload' | 'underload' | 'expertise_mismatch' | 'preference_violation';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  
+  // Conflict details
+  facultyId?: string;
+  courseOfferingIds: string[];
+  description: string;
+  
+  // Resolution
+  status: 'unresolved' | 'resolved' | 'ignored';
+  resolutionSuggestion?: string;
+  resolvedBy?: string;
+  resolvedAt?: string;
+  resolutionNotes?: string;
+  
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Extended interfaces for UI display
+export interface AllocationSessionWithDetails extends AllocationSession {
+  createdByName?: string;
+  programNames?: string[];
+  totalAllocations?: number;
+}
+
+export interface CourseAllocationWithDetails extends CourseAllocation {
+  courseName?: string;
+  facultyName?: string;
+  facultyDepartment?: string;
+  programName?: string;
+  semesterLabel?: string;
+}
+
+export interface AllocationConflictWithDetails extends AllocationConflict {
+  facultyName?: string;
+  courseNames?: string[];
+  sessionName?: string;
+}
+

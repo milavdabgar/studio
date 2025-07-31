@@ -2203,5 +2203,269 @@ export const ProjectLocationModel = mongoose.models.ProjectLocation || mongoose.
 export const FeedbackAnalysisModel = mongoose.models.FeedbackAnalysis || mongoose.model<IFeedbackAnalysis>('FeedbackAnalysis', feedbackAnalysisSchema, 'feedbackanalyses');
 export const FacultyPreferenceModel = mongoose.models.FacultyPreference || mongoose.model<IFacultyPreference>('FacultyPreference', facultyPreferenceSchema, 'facultypreferences');
 
+// ===============================
+// ALLOCATION MODELS (Phase 2)
+// ===============================
+
+interface IAllocationSession extends Document {
+  id: string;
+  name: string;
+  academicYear: string;
+  semesters: number[];
+  targetPrograms: string[]; // Program IDs for ECE/ICT
+  status: 'draft' | 'in_progress' | 'completed' | 'archived';
+  createdBy: string; // User ID
+  allocationMethod: 'preference_based' | 'manual' | 'hybrid';
+  
+  // Algorithm parameters
+  algorithmSettings: {
+    prioritizeSeniority: boolean;
+    expertiseWeightage: number; // 0-1
+    preferencePriorityWeightage: number; // 0-1
+    workloadBalanceWeightage: number; // 0-1
+    minimizeConflicts: boolean;
+  };
+  
+  // Statistics
+  statistics: {
+    totalCourses: number;
+    totalFaculty: number;
+    allocatedCourses: number;
+    unallocatedCourses: number;
+    facultyWithFullLoad: number;
+    conflictsDetected: number;
+    averageSatisfactionScore: number;
+  };
+  
+  // Session metadata
+  startedAt?: string;
+  completedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+  notes?: string;
+}
+
+interface ICourseAllocation extends Document {
+  id: string;
+  sessionId: string; // Reference to AllocationSession
+  courseOfferingId: string; // Reference to CourseOffering
+  facultyId: string; // Assigned faculty
+  
+  // Assignment details
+  assignmentType: 'theory' | 'lab' | 'tutorial' | 'project';
+  hoursPerWeek: number;
+  
+  // Assignment metadata
+  allocationScore: number; // Algorithm-calculated score (0-100)
+  preferenceMatch: 'high' | 'medium' | 'low' | 'none'; // How well it matches faculty preference
+  expertiseLevel: number; // Faculty expertise for this course (1-10)
+  conflictLevel: 'none' | 'minor' | 'major'; // Conflict assessment
+  
+  // Manual adjustments
+  isManualAssignment: boolean;
+  originalFacultyId?: string; // If manually reassigned
+  reassignmentReason?: string;
+  
+  // Approval workflow
+  status: 'pending' | 'approved' | 'rejected' | 'needs_review';
+  reviewedBy?: string; // HOD or admin user ID
+  reviewedAt?: string;
+  reviewComments?: string;
+  
+  // Timestamps
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface IAllocationConflict extends Document {
+  id: string;
+  sessionId: string;
+  conflictType: 'time_overlap' | 'overload' | 'underload' | 'expertise_mismatch' | 'preference_violation';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  
+  // Conflict details
+  facultyId?: string;
+  courseOfferingIds: string[];
+  description: string;
+  
+  // Resolution
+  status: 'unresolved' | 'resolved' | 'ignored';
+  resolutionSuggestion?: string;
+  resolvedBy?: string;
+  resolvedAt?: string;
+  resolutionNotes?: string;
+  
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Allocation Session Schema
+const allocationSessionSchema = new Schema<IAllocationSession>({
+  id: { type: String, unique: true, sparse: true },
+  name: { type: String, required: true },
+  academicYear: { type: String, required: true },
+  semesters: [{ type: Number, required: true, min: 1, max: 6 }],
+  targetPrograms: [{ type: String, required: true }],
+  status: { 
+    type: String, 
+    enum: ['draft', 'in_progress', 'completed', 'archived'],
+    default: 'draft'
+  },
+  createdBy: { type: String, required: true },
+  allocationMethod: {
+    type: String,
+    enum: ['preference_based', 'manual', 'hybrid'],
+    default: 'preference_based'
+  },
+  
+  algorithmSettings: {
+    prioritizeSeniority: { type: Boolean, default: true },
+    expertiseWeightage: { type: Number, default: 0.4, min: 0, max: 1 },
+    preferencePriorityWeightage: { type: Number, default: 0.3, min: 0, max: 1 },
+    workloadBalanceWeightage: { type: Number, default: 0.2, min: 0, max: 1 },
+    minimizeConflicts: { type: Boolean, default: true }
+  },
+  
+  statistics: {
+    totalCourses: { type: Number, default: 0 },
+    totalFaculty: { type: Number, default: 0 },
+    allocatedCourses: { type: Number, default: 0 },
+    unallocatedCourses: { type: Number, default: 0 },
+    facultyWithFullLoad: { type: Number, default: 0 },
+    conflictsDetected: { type: Number, default: 0 },
+    averageSatisfactionScore: { type: Number, default: 0 }
+  },
+  
+  startedAt: { type: String },
+  completedAt: { type: String },
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() },
+  notes: { type: String }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+// Course Allocation Schema
+const courseAllocationSchema = new Schema<ICourseAllocation>({
+  id: { type: String, unique: true, sparse: true },
+  sessionId: { type: String, required: true },
+  courseOfferingId: { type: String, required: true },
+  facultyId: { type: String, required: true },
+  
+  assignmentType: {
+    type: String,
+    enum: ['theory', 'lab', 'tutorial', 'project'],
+    default: 'theory'
+  },
+  hoursPerWeek: { type: Number, required: true, min: 1, max: 20 },
+  
+  allocationScore: { type: Number, default: 0, min: 0, max: 100 },
+  preferenceMatch: {
+    type: String,
+    enum: ['high', 'medium', 'low', 'none'],
+    default: 'none'
+  },
+  expertiseLevel: { type: Number, default: 5, min: 1, max: 10 },
+  conflictLevel: {
+    type: String,
+    enum: ['none', 'minor', 'major'],
+    default: 'none'
+  },
+  
+  isManualAssignment: { type: Boolean, default: false },
+  originalFacultyId: { type: String },
+  reassignmentReason: { type: String },
+  
+  status: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected', 'needs_review'],
+    default: 'pending'
+  },
+  reviewedBy: { type: String },
+  reviewedAt: { type: String },
+  reviewComments: { type: String },
+  
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+// Allocation Conflict Schema
+const allocationConflictSchema = new Schema<IAllocationConflict>({
+  id: { type: String, unique: true, sparse: true },
+  sessionId: { type: String, required: true },
+  conflictType: {
+    type: String,
+    enum: ['time_overlap', 'overload', 'underload', 'expertise_mismatch', 'preference_violation'],
+    required: true
+  },
+  severity: {
+    type: String,
+    enum: ['low', 'medium', 'high', 'critical'],
+    default: 'medium'
+  },
+  
+  facultyId: { type: String },
+  courseOfferingIds: [{ type: String, required: true }],
+  description: { type: String, required: true },
+  
+  status: {
+    type: String,
+    enum: ['unresolved', 'resolved', 'ignored'],
+    default: 'unresolved'
+  },
+  resolutionSuggestion: { type: String },
+  resolvedBy: { type: String },
+  resolvedAt: { type: String },
+  resolutionNotes: { type: String },
+  
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+// Indexes for better performance
+allocationSessionSchema.index({ academicYear: 1, status: 1 });
+allocationSessionSchema.index({ createdBy: 1 });
+
+courseAllocationSchema.index({ sessionId: 1 });
+courseAllocationSchema.index({ facultyId: 1 });
+courseAllocationSchema.index({ courseOfferingId: 1 });
+courseAllocationSchema.index({ status: 1 });
+
+allocationConflictSchema.index({ sessionId: 1 });
+allocationConflictSchema.index({ status: 1, severity: 1 });
+
+// Allocation Models
+export const AllocationSessionModel = mongoose.models.AllocationSession || mongoose.model<IAllocationSession>('AllocationSession', allocationSessionSchema, 'allocationsessions');
+export const CourseAllocationModel = mongoose.models.CourseAllocation || mongoose.model<ICourseAllocation>('CourseAllocation', courseAllocationSchema, 'courseallocations');
+export const AllocationConflictModel = mongoose.models.AllocationConflict || mongoose.model<IAllocationConflict>('AllocationConflict', allocationConflictSchema, 'allocationconflicts');
+
 // Export types
-export type { IInstitute, IBuilding, IRoom, ICommittee, IAcademicTerm, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, ICurriculum, IRoomAllocation, IExamination, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification, IStudentAssessmentScore, ICourseMaterial, IAttendanceRecord, ITimetable, IProjectLocation, IFeedbackAnalysis, IFacultyPreference };
+export type { IInstitute, IBuilding, IRoom, ICommittee, IAcademicTerm, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, ICurriculum, IRoomAllocation, IExamination, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification, IStudentAssessmentScore, ICourseMaterial, IAttendanceRecord, ITimetable, IProjectLocation, IFeedbackAnalysis, IFacultyPreference, IAllocationSession, ICourseAllocation, IAllocationConflict };
