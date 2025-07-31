@@ -19,6 +19,10 @@ interface CourseOfferingWithDetails extends CourseOffering {
   courseName?: string;
   batchName?: string;
   facultyNames?: string[];
+  academicYear?: string;
+  semester?: number;
+  semesterDisplay?: string;
+  programId?: string;
 }
 
 export default function CourseOfferingsPage() {
@@ -57,10 +61,15 @@ export default function CourseOfferingsPage() {
   const [formData, setFormData] = useState({
     courseId: '',
     academicTermId: '',
+    programId: '',
+    semester: '',
     facultyIds: [] as string[],
     status: 'scheduled' as CourseOffering['status']
   });
   const [academicTerms, setAcademicTerms] = useState<any[]>([]);
+  const [availablePrograms, setAvailablePrograms] = useState<any[]>([]);
+  const [availableSemesters, setAvailableSemesters] = useState<number[]>([]);
+  const [termInfo, setTermInfo] = useState<any>(null);
 
   // Fetch all data
   useEffect(() => {
@@ -89,7 +98,8 @@ export default function CourseOfferingsPage() {
       // Enrich course offerings with additional details
       const enrichedOfferings = offeringsData.map((offering: CourseOffering) => {
         const course = coursesData.find((c: Course) => c.id === offering.courseId);
-        const batch = batchesData.find((b: Batch) => b.id === offering.batchId);
+        const academicTerm = termsData?.data?.find((t: any) => t.id === offering.academicTermId);
+        const batch = batchesData.find((b: Batch) => b.id === offering.batchId); // Legacy support
         const offeringFaculties = facultiesData.filter((f: Faculty) => 
           offering.facultyIds?.includes(f.id)
         );
@@ -97,7 +107,10 @@ export default function CourseOfferingsPage() {
         return {
           ...offering,
           courseName: course?.subjectName || 'Unknown Course',
-          batchName: batch?.name || 'Unknown Batch',
+          batchName: batch?.name || (academicTerm ? `${academicTerm.name} Batch` : 'Unknown Batch'),
+          academicYear: offering.academicYear || academicTerm?.academicYear || 'Unknown Year',
+          semester: offering.semester || academicTerm?.semesters?.[0] || 0, // Keep as number for form compatibility
+          semesterDisplay: offering.semester ? `Sem ${offering.semester}` : (academicTerm?.semesters?.[0] ? `Sem ${academicTerm.semesters[0]}` : 'Unknown'), // For display only
           facultyNames: offeringFaculties.map((f: any) => f.displayName || f.fullName || f.firstName) || []
         };
       });
@@ -119,9 +132,12 @@ export default function CourseOfferingsPage() {
     }
   };
 
-  // Fetch filtered courses based on academic term selection
-  const fetchFilteredCourses = async (termId: string) => {
+  // Fetch term info and set up programs/semesters
+  const fetchTermInfo = async (termId: string) => {
     if (!termId) {
+      setAvailablePrograms([]);
+      setAvailableSemesters([]);
+      setTermInfo(null);
       setFilteredCourses([]);
       return;
     }
@@ -132,7 +148,61 @@ export default function CourseOfferingsPage() {
       const data = await response.json();
 
       if (data.success) {
+        const termInfo = data.data.termInfo;
+        
+        setTermInfo(termInfo);
+        setAvailablePrograms(termInfo?.programs || []);
+        setAvailableSemesters(termInfo?.semesters || []);
+        
+        // Only reset form data if this is not for editing (i.e. when editing, don't reset)
+        if (!editingOffering) {
+          setFormData(prev => ({ ...prev, programId: '', semester: '', courseId: '' }));
+        }
+        setFilteredCourses([]);
+      } else {
+        console.error('Error fetching term info:', data.error);
+        setAvailablePrograms([]);
+        setAvailableSemesters([]);
+        setTermInfo(null);
+        setFilteredCourses([]);
+      }
+    } catch (error) {
+      console.error('Error fetching term info:', error);
+      setAvailablePrograms([]);
+      setAvailableSemesters([]);
+      setTermInfo(null);
+      setFilteredCourses([]);
+      toast({
+        title: "Error",
+        description: "Failed to load term information",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingCourses(false);
+    }
+  };
+
+  // Fetch filtered courses based on term, program, and semester selection
+  const fetchFilteredCourses = async (termId: string, programId: string, semester: string, selectedCourseId?: string) => {
+    if (!termId || !programId || !semester) {
+      setFilteredCourses([]);
+      return;
+    }
+
+    setLoadingCourses(true);
+    try {
+      // Call API with specific program and semester parameters for precise filtering
+      const response = await fetch(`/api/courses/by-term?termId=${termId}&programId=${programId}&semester=${semester}`);
+      const data = await response.json();
+
+      if (data.success && data.data.courses) {
+        // API now returns only courses for the specific program and semester
         setFilteredCourses(data.data.courses);
+        
+        // If a specific course ID was provided (for editing), ensure it's selected
+        if (selectedCourseId) {
+          setFormData(prev => ({ ...prev, courseId: selectedCourseId }));
+        }
       } else {
         console.error('Error fetching filtered courses:', data.error);
         setFilteredCourses([]);
@@ -142,7 +212,7 @@ export default function CourseOfferingsPage() {
       setFilteredCourses([]);
       toast({
         title: "Error",
-        description: "Failed to load courses for selected term",
+        description: "Failed to load courses",
         variant: "destructive",
       });
     } finally {
@@ -152,10 +222,10 @@ export default function CourseOfferingsPage() {
 
   const handleCreateOrUpdate = async () => {
     // Validation
-    if (!formData.courseId || !formData.academicTermId || formData.facultyIds.length === 0) {
+    if (!formData.courseId || !formData.academicTermId || !formData.programId || !formData.semester || formData.facultyIds.length === 0) {
       toast({
         title: "Validation Error",
-        description: "Please fill in all required fields including course, academic term, and at least one faculty member.",
+        description: "Please fill in all required fields including academic term, program, semester, course, and at least one faculty member.",
         variant: "destructive",
       });
       return;
@@ -235,25 +305,53 @@ export default function CourseOfferingsPage() {
     setFormData({
       courseId: '',
       academicTermId: '',
+      programId: '',
+      semester: '',
       facultyIds: [],
       status: 'scheduled'
     });
     setFilteredCourses([]);
+    setAvailablePrograms([]);
+    setAvailableSemesters([]);
+    setTermInfo(null);
     setEditingOffering(null);
   };
 
   const openEditDialog = (offering: CourseOfferingWithDetails) => {
     setEditingOffering(offering);
-    setFormData({
+    
+    // For new course offerings, programId and semester should be available directly
+    // For legacy offerings, we might need to derive them from the academic term
+    let programId = offering.programId || '';
+    let semester = offering.semester?.toString() || '';
+
+    const newFormData = {
       courseId: offering.courseId,
       academicTermId: offering.academicTermId || '',
+      programId,
+      semester,
       facultyIds: offering.facultyIds || [],
       status: offering.status
-    });
+    };
+
+    setFormData(newFormData);
     
-    // Load filtered courses for the selected academic term
+    // Load term info and then filtered courses
     if (offering.academicTermId) {
-      fetchFilteredCourses(offering.academicTermId);
+      fetchTermInfo(offering.academicTermId).then(() => {
+        // Update form data again after term info is loaded, preserving the courseId
+        setFormData(prev => ({
+          ...prev,
+          programId,
+          semester,
+          courseId: offering.courseId // Ensure courseId is preserved
+        }));
+        
+        // After term info is loaded, if we have program/semester, load courses
+        if (programId && semester) {
+          fetchFilteredCourses(offering.academicTermId, programId, semester, offering.courseId);
+        }
+      });
     }
     
     setShowCreateDialog(true);
@@ -530,13 +628,13 @@ export default function CourseOfferingsPage() {
               <div className="md:col-span-2">
                 <Label htmlFor="academicTermId">
                   Academic Term <span className="text-red-500">*</span>
-                  <span className="text-xs text-muted-foreground ml-2">(Select term to filter available courses)</span>
+                  <span className="text-xs text-muted-foreground ml-2">(Select term to show available programs and semesters)</span>
                 </Label>
                 <Select 
                   value={formData.academicTermId} 
                   onValueChange={(value) => {
-                    setFormData({...formData, academicTermId: value, courseId: ''}); // Reset course when term changes
-                    fetchFilteredCourses(value);
+                    setFormData({...formData, academicTermId: value, programId: '', semester: '', courseId: ''}); // Reset downstream selections
+                    fetchTermInfo(value);
                   }}
                 >
                   <SelectTrigger className="w-full">
@@ -550,7 +648,7 @@ export default function CourseOfferingsPage() {
                           <div className="flex flex-col">
                             <span className="font-medium">{term.name}</span>
                             <span className="text-xs text-muted-foreground">
-                              {term.program?.name} • {term.semesters.join(',')} • {term.academicYear}
+                              {term.academicYear}
                             </span>
                           </div>
                         </SelectItem>
@@ -560,31 +658,126 @@ export default function CourseOfferingsPage() {
                 </Select>
               </div>
 
-              {/* Step 2: Select Course (filtered based on academic term) */}
-              <div className="md:col-span-2">
-                <Label htmlFor="courseId">
-                  Course <span className="text-red-500">*</span>
-                  {formData.academicTermId && (
+              {/* Step 2: Select Program */}
+              <div>
+                <Label htmlFor="programId">
+                  Program <span className="text-red-500">*</span>
+                  {availablePrograms.length > 0 && (
                     <span className="text-xs text-green-600 ml-2">
-                      ({filteredCourses.length} courses available for selected term)
+                      ({availablePrograms.length} available)
                     </span>
                   )}
                 </Label>
                 <Select 
-                  value={formData.courseId} 
-                  onValueChange={(value) => setFormData({...formData, courseId: value})}
-                  disabled={!formData.academicTermId || loadingCourses}
+                  value={formData.programId} 
+                  onValueChange={(value) => {
+                    // Only reset courseId if the program is actually changing (not just being set to initial value)
+                    const shouldResetCourse = formData.programId !== '' && formData.programId !== value;
+                    setFormData({...formData, programId: value, ...(shouldResetCourse && {courseId: ''})}); 
+                    if (formData.semester) {
+                      fetchFilteredCourses(formData.academicTermId, value, formData.semester);
+                    }
+                  }}
+                  disabled={!formData.academicTermId || availablePrograms.length === 0}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue 
                       placeholder={
                         !formData.academicTermId 
                           ? "Select academic term first" 
-                          : loadingCourses 
-                            ? "Loading courses..." 
-                            : filteredCourses.length === 0 
-                              ? "No courses available"
-                              : "Select course"
+                          : availablePrograms.length === 0 
+                            ? "No programs available"
+                            : "Select program"
+                      } 
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availablePrograms.map((program) => (
+                      <SelectItem key={program.id} value={program.id}>
+                        <div className="flex flex-col">
+                          <span className="font-medium">{program.name}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {program.code}
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Step 3: Select Semester */}
+              <div>
+                <Label htmlFor="semester">
+                  Semester <span className="text-red-500">*</span>
+                  {availableSemesters.length > 0 && (
+                    <span className="text-xs text-green-600 ml-2">
+                      ({availableSemesters.length} available)
+                    </span>
+                  )}
+                </Label>
+                <Select 
+                  value={formData.semester} 
+                  onValueChange={(value) => {
+                    // Only reset courseId if the semester is actually changing (not just being set to initial value)
+                    const shouldResetCourse = formData.semester !== '' && formData.semester !== value;
+                    setFormData({...formData, semester: value, ...(shouldResetCourse && {courseId: ''})}); 
+                    if (formData.programId) {
+                      fetchFilteredCourses(formData.academicTermId, formData.programId, value);
+                    }
+                  }}
+                  disabled={!formData.academicTermId || availableSemesters.length === 0}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue 
+                      placeholder={
+                        !formData.academicTermId 
+                          ? "Select academic term first" 
+                          : availableSemesters.length === 0 
+                            ? "No semesters available"
+                            : "Select semester"
+                      } 
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableSemesters.map((semester) => (
+                      <SelectItem key={semester} value={semester.toString()}>
+                        Semester {semester}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Step 4: Select Course (filtered based on term, program, and semester) */}
+              <div className="md:col-span-2">
+                <Label htmlFor="courseId">
+                  Course <span className="text-red-500">*</span>
+                  {formData.programId && formData.semester && (
+                    <span className="text-xs text-green-600 ml-2">
+                      ({filteredCourses.length} courses available for {availablePrograms.find(p => p.id === formData.programId)?.name} - Semester {formData.semester})
+                    </span>
+                  )}
+                </Label>
+                <Select 
+                  value={formData.courseId} 
+                  onValueChange={(value) => setFormData({...formData, courseId: value})}
+                  disabled={!formData.programId || !formData.semester || loadingCourses}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue 
+                      placeholder={
+                        !formData.academicTermId 
+                          ? "Select academic term first" 
+                          : !formData.programId
+                            ? "Select program first"
+                            : !formData.semester
+                              ? "Select semester first"
+                              : loadingCourses 
+                                ? "Loading courses..." 
+                                : filteredCourses.length === 0 
+                                  ? "No courses available"
+                                  : "Select course"
                       } 
                     />
                   </SelectTrigger>
@@ -872,7 +1065,7 @@ export default function CourseOfferingsPage() {
                         <div className="min-w-0 flex-1">
                           <h3 className="font-medium text-sm">{offering.courseName}</h3>
                           <p className="text-xs text-muted-foreground mt-1">
-                            {offering.batchName} • {offering.academicYear} • Sem {offering.semester}
+                            {offering.batchName} • {offering.academicYear} • {offering.semesterDisplay}
                           </p>
                         </div>
                       </div>
@@ -891,7 +1084,7 @@ export default function CourseOfferingsPage() {
                         <span className="text-muted-foreground">Faculty:</span>
                         <div className="mt-1 space-y-1">
                           {offering.facultyNames?.map((name, index) => (
-                            <Badge key={index} variant="secondary" className="text-xs mr-1">
+                            <Badge key={`${offering.id}-faculty-${index}`} variant="secondary" className="text-xs mr-1">
                               {name}
                             </Badge>
                           ))}
@@ -975,12 +1168,12 @@ export default function CourseOfferingsPage() {
                       <TableCell>{offering.batchName}</TableCell>
                       <TableCell>{offering.academicYear}</TableCell>
                       <TableCell>
-                        <Badge variant="outline">Sem {offering.semester}</Badge>
+                        <Badge variant="outline">{offering.semesterDisplay}</Badge>
                       </TableCell>
                       <TableCell>
                         <div className="space-y-1">
                           {offering.facultyNames?.map((name, index) => (
-                            <Badge key={index} variant="secondary" className="text-xs mr-1">
+                            <Badge key={`${offering.id}-faculty-${index}`} variant="secondary" className="text-xs mr-1">
                               {name}
                             </Badge>
                           ))}

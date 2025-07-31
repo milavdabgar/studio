@@ -63,6 +63,41 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Missing required fields: courseId, academicTermId, facultyIds.' }, { status: 400 });
     }
 
+    // Get additional data for legacy field population
+    let academicYear = '';
+    let semester = 0;
+    let programId = '';
+
+    // If programId and semester are provided in the request, use them
+    if (offeringData.programId && offeringData.semester) {
+      programId = offeringData.programId;
+      semester = parseInt(offeringData.semester);
+    }
+
+    // Get academic year from academic term
+    if (offeringData.academicTermId) {
+      try {
+        const { AcademicTermModel } = await import('@/lib/models');
+        let academicTerm = await AcademicTermModel.findOne({ id: offeringData.academicTermId });
+        if (!academicTerm) {
+          academicTerm = await AcademicTermModel.findById(offeringData.academicTermId);
+        }
+        if (academicTerm) {
+          academicYear = academicTerm.academicYear || '';
+          // If semester not provided, try to get from term (legacy format)
+          if (!semester && academicTerm.semesters && academicTerm.semesters.length > 0) {
+            semester = academicTerm.semesters[0]; // Use first semester as default
+          }
+          // If programId not provided, try to get from term (legacy format)
+          if (!programId && academicTerm.programId) {
+            programId = academicTerm.programId;
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching academic term:', error);
+      }
+    }
+
     // Check for duplicate course offering
     const existingOffering = await CourseOfferingModel.findOne({
       courseId: offeringData.courseId,
@@ -77,6 +112,10 @@ export async function POST(request: NextRequest) {
     const newOfferingData = {
       id: generateId(),
       ...offeringData,
+      // Add legacy fields for backward compatibility and table display
+      academicYear,
+      semester,
+      programId,
       status: offeringData.status || 'scheduled',
       createdAt: currentTimestamp,
       updatedAt: currentTimestamp,

@@ -46,6 +46,41 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ message: 'Course offering not found' }, { status: 404 });
     }
 
+    // Get additional data for legacy field population (similar to POST logic)
+    let academicYear = '';
+    let semester = 0;
+    let programId = '';
+
+    // If programId and semester are provided in the request, use them
+    if (offeringDataToUpdate.programId && offeringDataToUpdate.semester) {
+      programId = offeringDataToUpdate.programId;
+      semester = parseInt(offeringDataToUpdate.semester.toString());
+    }
+
+    // Get academic year from academic term
+    if (offeringDataToUpdate.academicTermId) {
+      try {
+        const { AcademicTermModel } = await import('@/lib/models');
+        let academicTerm = await AcademicTermModel.findOne({ id: offeringDataToUpdate.academicTermId });
+        if (!academicTerm) {
+          academicTerm = await AcademicTermModel.findById(offeringDataToUpdate.academicTermId);
+        }
+        if (academicTerm) {
+          academicYear = academicTerm.academicYear || '';
+          // If semester not provided, try to get from term (legacy format)
+          if (!semester && academicTerm.semesters && academicTerm.semesters.length > 0) {
+            semester = academicTerm.semesters[0]; // Use first semester as default
+          }
+          // If programId not provided, try to get from term (legacy format)
+          if (!programId && academicTerm.programId) {
+            programId = academicTerm.programId;
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching academic term:', error);
+      }
+    }
+
     if (offeringDataToUpdate.startDate && !isValid(parseISO(offeringDataToUpdate.startDate))) {
       return NextResponse.json({ message: 'Invalid startDate format for update. Use ISO 8601.' }, { status: 400 });
     }
@@ -81,6 +116,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       { id },
       { 
         ...offeringDataToUpdate,
+        // Add legacy fields for backward compatibility and table display
+        ...(academicYear && { academicYear }),
+        ...(semester && { semester }),
+        ...(programId && { programId }),
         updatedAt: new Date().toISOString()
       },
       { new: true, lean: true }
