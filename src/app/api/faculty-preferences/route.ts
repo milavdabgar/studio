@@ -1,34 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { connectMongoose } from '@/lib/mongodb';
+import { FacultyPreferenceModel } from '@/lib/models';
 import type { FacultyPreference } from '@/types/entities';
 
-// Simulated database - replace with actual database calls
-let facultyPreferences: FacultyPreference[] = [];
+const generateId = (): string => `fp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const facultyId = searchParams.get('facultyId');
-  const academicYear = searchParams.get('academicYear');
-  const semester = searchParams.get('semester');
-
   try {
-    let filteredPreferences = facultyPreferences;
+    await connectMongoose();
+    
+    const { searchParams } = new URL(request.url);
+    const facultyId = searchParams.get('facultyId');
+    const academicYear = searchParams.get('academicYear');
+    const semester = searchParams.get('semester');
 
-    if (facultyId) {
-      filteredPreferences = filteredPreferences.filter(fp => fp.facultyId === facultyId);
-    }
+    // Build filter query
+    const filter: Record<string, unknown> = {};
+    if (facultyId) filter.facultyId = facultyId;
+    if (academicYear) filter.academicYear = academicYear;
+    if (semester) filter.semester = parseInt(semester, 10);
 
-    if (academicYear) {
-      filteredPreferences = filteredPreferences.filter(fp => fp.academicYear === academicYear);
-    }
+    const preferences = await FacultyPreferenceModel.find(filter).lean();
+    
+    // Format preferences to ensure proper id field
+    const preferencesWithId = preferences.map(pref => ({
+      ...pref,
+      id: pref.id || (pref as unknown as { _id: { toString(): string } })._id.toString()
+    }));
 
-    if (semester) {
-      filteredPreferences = filteredPreferences.filter(fp => fp.semester === parseInt(semester));
-    }
-
-    return NextResponse.json(filteredPreferences);
+    return NextResponse.json({
+      success: true,
+      data: preferencesWithId
+    });
   } catch (error) {
+    console.error('Error in GET /api/faculty-preferences:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch faculty preferences' },
+      { success: false, error: 'Internal server error fetching faculty preferences.' }, 
       { status: 500 }
     );
   }
@@ -36,42 +43,69 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body: Omit<FacultyPreference, 'id' | 'createdAt' | 'updatedAt'> = await request.json();
+    await connectMongoose();
     
+    const preferenceData = await request.json() as Omit<FacultyPreference, 'id' | 'createdAt' | 'updatedAt'>;
+
     // Validation
-    if (!body.facultyId || !body.academicYear || !body.semester) {
+    if (!preferenceData.facultyId || !preferenceData.academicYear || !preferenceData.semester) {
       return NextResponse.json(
-        { error: 'Faculty ID, academic year, and semester are required' },
+        { success: false, error: 'Missing required fields: facultyId, academicYear, semester.' }, 
         { status: 400 }
       );
     }
 
-    // Check for existing preference for same faculty/term
-    const existingPreference = facultyPreferences.find(fp => 
-      fp.facultyId === body.facultyId && 
-      fp.academicYear === body.academicYear && 
-      fp.semester === body.semester
-    );
-
+    // Check for duplicate preference (one per faculty per academic term)
+    const existingPreference = await FacultyPreferenceModel.findOne({
+      facultyId: preferenceData.facultyId,
+      academicYear: preferenceData.academicYear,
+      semester: preferenceData.semester
+    });
+    
     if (existingPreference) {
       return NextResponse.json(
-        { error: 'Faculty preference already exists for this term' },
+        { success: false, error: 'Faculty preference already exists for this academic term and semester.' }, 
         { status: 409 }
       );
     }
 
-    const newPreference: FacultyPreference = {
-      ...body,
-      id: `fp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+    const currentTimestamp = new Date().toISOString();
+    const newPreferenceData = {
+      id: generateId(),
+      ...preferenceData,
+      preferredCourses: preferenceData.preferredCourses || [],
+      timePreferences: preferenceData.timePreferences || [],
+      roomPreferences: preferenceData.roomPreferences || [],
+      unavailableSlots: preferenceData.unavailableSlots || [],
+      workingDays: preferenceData.workingDays || ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      maxHoursPerWeek: preferenceData.maxHoursPerWeek || 18,
+      maxConsecutiveHours: preferenceData.maxConsecutiveHours || 4,
+      priority: preferenceData.priority || 5, // Default to medium priority
+      createdAt: currentTimestamp,
+      updatedAt: currentTimestamp,
     };
-
-    facultyPreferences.push(newPreference);
-    return NextResponse.json(newPreference, { status: 201 });
+    
+    const newPreference = new FacultyPreferenceModel(newPreferenceData);
+    await newPreference.save();
+    
+    return NextResponse.json({
+      success: true,
+      data: newPreference.toJSON()
+    }, { status: 201 });
   } catch (error) {
+    console.error('Error creating faculty preference:', error);
+    
+    // Handle validation errors
+    if (error instanceof Error && error.message.includes('validation failed')) {
+      return NextResponse.json({ 
+        success: false,
+        error: 'Validation failed. Please check your input data.', 
+        details: error.message 
+      }, { status: 400 });
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to create faculty preference' },
+      { success: false, error: 'Error creating faculty preference' }, 
       { status: 500 }
     );
   }
@@ -79,33 +113,47 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
+    await connectMongoose();
+    
     const body: Partial<FacultyPreference> & { id: string } = await request.json();
     
     if (!body.id) {
       return NextResponse.json(
-        { error: 'Preference ID is required' },
+        { success: false, error: 'Preference ID is required' },
         { status: 400 }
       );
     }
 
-    const index = facultyPreferences.findIndex(fp => fp.id === body.id);
-    if (index === -1) {
+    const updatedPreference = await FacultyPreferenceModel.findOneAndUpdate(
+      { id: body.id },
+      { 
+        ...body,
+        updatedAt: new Date().toISOString()
+      },
+      { new: true, lean: true }
+    );
+
+    if (!updatedPreference) {
       return NextResponse.json(
-        { error: 'Faculty preference not found' },
+        { success: false, error: 'Faculty preference not found' },
         { status: 404 }
       );
     }
 
-    facultyPreferences[index] = {
-      ...facultyPreferences[index],
-      ...body,
-      updatedAt: new Date().toISOString()
+    // Format preference to ensure proper id field
+    const preferenceWithId = {
+      ...updatedPreference,
+      id: (updatedPreference as unknown as { id?: string; _id: { toString(): string } }).id || (updatedPreference as unknown as { id?: string; _id: { toString(): string } })._id.toString()
     };
 
-    return NextResponse.json(facultyPreferences[index]);
+    return NextResponse.json({
+      success: true,
+      data: preferenceWithId
+    });
   } catch (error) {
+    console.error('Error updating faculty preference:', error);
     return NextResponse.json(
-      { error: 'Failed to update faculty preference' },
+      { success: false, error: 'Failed to update faculty preference' },
       { status: 500 }
     );
   }

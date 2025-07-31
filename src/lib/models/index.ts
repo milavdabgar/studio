@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
   User, Role, Permission, Department, Course, Batch, Program, 
-  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, Project, Assessment, Result, Enrollment, CourseOffering, Notification, StudentAssessmentScore, CourseMaterial, AttendanceRecord, Timetable, ProjectLocation, Curriculum, RoomAllocation, Examination, AcademicTerm, ProgramSemesterDateEntry
+  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, Project, Assessment, Result, Enrollment, CourseOffering, Notification, StudentAssessmentScore, CourseMaterial, AttendanceRecord, Timetable, ProjectLocation, Curriculum, RoomAllocation, Examination, AcademicTerm, ProgramSemesterDateEntry, FacultyPreference, CoursePreference, TimePreference, TimeSlot
 } from '@/types/entities';
 
 // Institute Schema
@@ -1240,6 +1240,72 @@ facultySchema.pre('save', function(next) {
   next();
 });
 
+// FacultyPreference Schema
+interface IFacultyPreference extends Omit<FacultyPreference, 'id'>, Document {
+  _id: string;
+}
+
+const coursePreferenceSchema = new Schema({
+  courseId: { type: String, required: true },
+  preference: { type: String, enum: ['high', 'medium', 'low'], required: true },
+  expertise: { type: Number, required: true, min: 1, max: 10 },
+  previouslyTaught: { type: Boolean, required: true, default: false },
+  maxSections: { type: Number, min: 1 }
+}, { _id: false });
+
+const timePreferenceSchema = new Schema({
+  dayOfWeek: { type: String, enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], required: true },
+  startTime: { type: String, required: true },
+  endTime: { type: String, required: true },
+  preference: { type: String, enum: ['preferred', 'available', 'avoid'], required: true }
+}, { _id: false });
+
+const timeSlotSchema = new Schema({
+  dayOfWeek: { type: String, enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], required: true },
+  startTime: { type: String, required: true },
+  endTime: { type: String, required: true }
+}, { _id: false });
+
+const facultyPreferenceSchema = new Schema<IFacultyPreference>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  facultyId: { type: String, required: true },
+  academicYear: { type: String, required: true },
+  semester: { type: Number, required: true, min: 1, max: 6 },
+  preferredCourses: [coursePreferenceSchema],
+  timePreferences: [timePreferenceSchema],
+  roomPreferences: [{ type: String }], // Room IDs
+  maxHoursPerWeek: { type: Number, required: true, default: 18, min: 1, max: 50 },
+  maxConsecutiveHours: { type: Number, required: true, default: 4, min: 1, max: 8 },
+  unavailableSlots: [timeSlotSchema],
+  workingDays: [{ 
+    type: String, 
+    enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    required: true 
+  }],
+  priority: { type: Number, required: true, default: 5, min: 1, max: 10 }, // Based on seniority, 1-10
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+// Add compound index for uniqueness (one preference per faculty per academic term and semester)
+facultyPreferenceSchema.index({ facultyId: 1, academicYear: 1, semester: 1 }, { unique: true });
+
+facultyPreferenceSchema.pre('save', function(next) {
+  (this as IFacultyPreference).updatedAt = new Date().toISOString();
+  next();
+});
+
 // ProjectTeam Schema
 interface IProjectTeam extends Omit<ProjectTeam, 'id'>, Document {
   _id: string;
@@ -2135,6 +2201,7 @@ export const AttendanceRecordModel = mongoose.models.AttendanceRecord || mongoos
 export const TimetableModel = mongoose.models.Timetable || mongoose.model<ITimetable>('Timetable', timetableSchema, 'timetables');
 export const ProjectLocationModel = mongoose.models.ProjectLocation || mongoose.model<IProjectLocation>('ProjectLocation', projectLocationSchema, 'projectlocations');
 export const FeedbackAnalysisModel = mongoose.models.FeedbackAnalysis || mongoose.model<IFeedbackAnalysis>('FeedbackAnalysis', feedbackAnalysisSchema, 'feedbackanalyses');
+export const FacultyPreferenceModel = mongoose.models.FacultyPreference || mongoose.model<IFacultyPreference>('FacultyPreference', facultyPreferenceSchema, 'facultypreferences');
 
 // Export types
-export type { IInstitute, IBuilding, IRoom, ICommittee, IAcademicTerm, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, ICurriculum, IRoomAllocation, IExamination, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification, IStudentAssessmentScore, ICourseMaterial, IAttendanceRecord, ITimetable, IProjectLocation, IFeedbackAnalysis };
+export type { IInstitute, IBuilding, IRoom, ICommittee, IAcademicTerm, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, ICurriculum, IRoomAllocation, IExamination, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification, IStudentAssessmentScore, ICourseMaterial, IAttendanceRecord, ITimetable, IProjectLocation, IFeedbackAnalysis, IFacultyPreference };
