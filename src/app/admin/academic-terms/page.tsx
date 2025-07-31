@@ -14,6 +14,21 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import type { AcademicTerm, Program, ProgramSemesterDateEntry } from '@/types/entities';
 
+// Extended interfaces for API responses with populated data
+interface ProgramDetails {
+  id: string;
+  name: string;
+  code: string;
+}
+
+interface ExtendedProgramSemesterDateEntry extends ProgramSemesterDateEntry {
+  programsWithDetails?: ProgramDetails[];
+}
+
+interface ExtendedAcademicTerm extends Omit<AcademicTerm, 'dateEntries'> {
+  dateEntries: ExtendedProgramSemesterDateEntry[];
+}
+
 // Academic year options
 const ACADEMIC_YEARS = [
   '2025-26', '2024-25', '2023-24', '2022-23', '2021-22', 
@@ -36,15 +51,15 @@ const getAvailableSemesters = (termType: 'Odd' | 'Even'): number[] => {
 };
 
 export default function AcademicTermManagementPage() {
-  const [academicTerms, setAcademicTerms] = useState<AcademicTerm[]>([]);
+  const [academicTerms, setAcademicTerms] = useState<ExtendedAcademicTerm[]>([]);
   const [programs, setPrograms] = useState<Program[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
-  const [currentTerm, setCurrentTerm] = useState<Partial<AcademicTerm> | null>(null);
-  const [viewTerm, setViewTerm] = useState<AcademicTerm | null>(null);
+  const [currentTerm, setCurrentTerm] = useState<Partial<ExtendedAcademicTerm> | null>(null);
+  const [viewTerm, setViewTerm] = useState<ExtendedAcademicTerm | null>(null);
 
   // Form state for table-style academic terms
   const [formAcademicYear, setFormAcademicYear] = useState('');
@@ -155,7 +170,15 @@ export default function AcademicTermManagementPage() {
     setCurrentTerm(term);
     setFormAcademicYear(term.academicYear);
     setFormTerm(term.term);
-    setFormDateEntries(term.dateEntries || []);
+    
+    // Convert ISO date strings to date input format (YYYY-MM-DD)
+    const formattedDateEntries = (term.dateEntries || []).map(entry => ({
+      ...entry,
+      startDate: entry.startDate ? new Date(entry.startDate).toISOString().split('T')[0] : '',
+      endDate: entry.endDate ? new Date(entry.endDate).toISOString().split('T')[0] : ''
+    }));
+    
+    setFormDateEntries(formattedDateEntries);
     setFormStatus(term.status);
     setFormGtuCalendarUrl(term.gtuCalendarUrl || '');
     setFormNotes(term.notes || '');
@@ -493,92 +516,145 @@ export default function AcademicTermManagementPage() {
                 </div>
                 
                 <div className="border rounded-lg overflow-hidden">
-                  <div className="grid grid-cols-12 gap-2 p-3 bg-muted font-medium text-sm border-b">
-                    <div className="col-span-3">Programs</div>
-                    <div className="col-span-2">Semesters</div>
-                    <div className="col-span-3">Start Date</div>
-                    <div className="col-span-3">End Date</div>
-                    <div className="col-span-1">Action</div>
+                  {/* Table Header */}
+                  <div className="bg-muted/50 px-3 py-2 border-b">
+                    <div className="grid grid-cols-12 gap-2 text-xs font-medium text-muted-foreground">
+                      <div className="col-span-1">#</div>
+                      <div className="col-span-2">Programs</div>
+                      <div className="col-span-2">Semesters</div>
+                      <div className="col-span-3">Start Date</div>
+                      <div className="col-span-3">End Date</div>
+                      <div className="col-span-1">Actions</div>
+                    </div>
                   </div>
-                  
+
+                  {/* Table Body */}
                   <div className="divide-y">
                     {formDateEntries.map((entry, index) => (
-                      <div key={index} className="grid grid-cols-12 gap-2 p-3 items-center">
-                        {/* Programs Column */}
-                        <div className="col-span-3">
-                          <div className="space-y-2">
-                            {programs.map((program) => (
-                              <label key={program.id} className="flex items-center space-x-2">
-                                <input
-                                  type="checkbox"
-                                  checked={entry.programs?.includes(program.id) || false}
-                                  onChange={(e) => {
-                                    const programs = e.target.checked
-                                      ? [...(entry.programs || []), program.id]
-                                      : (entry.programs || []).filter(p => p !== program.id);
-                                    updateDateEntry(index, 'programs', programs);
-                                  }}
-                                  className="rounded border-gray-300"
-                                />
-                                <span className="text-sm">{program.code}</span>
-                              </label>
-                            ))}
+                      <div key={index} className="px-3 py-2 hover:bg-muted/30">
+                        <div className="grid grid-cols-12 gap-2 items-center">
+                          {/* Row Number */}
+                          <div className="col-span-1">
+                            <span className="text-xs font-medium text-muted-foreground">{index + 1}</span>
                           </div>
-                        </div>
-                        
-                        {/* Semesters Column */}
-                        <div className="col-span-2">
-                          <div className="space-y-2">
-                            {getAvailableSemesters(formTerm).map((semester) => (
-                              <label key={semester} className="flex items-center space-x-2">
-                                <input
-                                  type="checkbox"
-                                  checked={entry.semesters?.includes(semester) || false}
-                                  onChange={(e) => {
-                                    const semesters = e.target.checked
-                                      ? [...(entry.semesters || []), semester]
-                                      : (entry.semesters || []).filter(s => s !== semester);
-                                    updateDateEntry(index, 'semesters', semesters);
-                                  }}
-                                  className="rounded border-gray-300"
-                                />
-                                <span className="text-sm">Sem {semester}</span>
-                              </label>
-                            ))}
+
+                          {/* Programs */}
+                          <div className="col-span-2">
+                            <div className="space-y-1">
+                              <div className="flex flex-wrap gap-1">
+                                {(entry.programs || []).map(programId => {
+                                  const program = programs.find(p => p.id === programId || (p as any)._id === programId);
+                                  return (
+                                    <span key={programId} className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-primary/10 text-primary rounded text-xs font-medium">
+                                      {program?.code || programId}
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const newPrograms = (entry.programs || []).filter(p => p !== programId);
+                                          updateDateEntry(index, 'programs', newPrograms);
+                                        }}
+                                        className="hover:bg-primary/20 rounded-full p-0.5"
+                                      >
+                                        ×
+                                      </button>
+                                    </span>
+                                  );
+                                })}
+                              </div>
+                              <Select onValueChange={(value) => {
+                                if (value && !(entry.programs || []).includes(value)) {
+                                  updateDateEntry(index, 'programs', [...(entry.programs || []), value]);
+                                }
+                              }}>
+                                <SelectTrigger className="h-6 text-xs">
+                                  <SelectValue placeholder="+ Add" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {programs.filter(p => !(entry.programs || []).includes(p.id) && !(entry.programs || []).includes((p as any)._id)).map((program) => (
+                                    <SelectItem key={program.id} value={program.id || (program as any)._id}>
+                                      {program.code}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
                           </div>
-                        </div>
-                        
-                        {/* Start Date Column */}
-                        <div className="col-span-3">
-                          <Input
-                            type="date"
-                            value={entry.startDate || ''}
-                            onChange={(e) => updateDateEntry(index, 'startDate', e.target.value)}
-                            required
-                          />
-                        </div>
-                        
-                        {/* End Date Column */}
-                        <div className="col-span-3">
-                          <Input
-                            type="date"
-                            value={entry.endDate || ''}
-                            onChange={(e) => updateDateEntry(index, 'endDate', e.target.value)}
-                            required
-                          />
-                        </div>
-                        
-                        {/* Action Column */}
-                        <div className="col-span-1">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => removeDateEntry(index)}
-                            disabled={formDateEntries.length === 1}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+
+                          {/* Semesters */}
+                          <div className="col-span-2">
+                            <div className="space-y-1">
+                              <div className="flex flex-wrap gap-1">
+                                {(entry.semesters || []).map(semester => (
+                                  <span key={semester} className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-secondary/80 text-secondary-foreground rounded text-xs font-medium">
+                                    {semester}
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const newSemesters = (entry.semesters || []).filter(s => s !== semester);
+                                        updateDateEntry(index, 'semesters', newSemesters);
+                                      }}
+                                      className="hover:bg-secondary rounded-full p-0.5"
+                                    >
+                                      ×
+                                    </button>
+                                  </span>
+                                ))}
+                              </div>
+                              <Select onValueChange={(value) => {
+                                const semesterNum = parseInt(value);
+                                if (semesterNum && !(entry.semesters || []).includes(semesterNum)) {
+                                  updateDateEntry(index, 'semesters', [...(entry.semesters || []), semesterNum]);
+                                }
+                              }}>
+                                <SelectTrigger className="h-6 text-xs">
+                                  <SelectValue placeholder="+ Add" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {getAvailableSemesters(formTerm).filter(s => !(entry.semesters || []).includes(s)).map((semester) => (
+                                    <SelectItem key={semester} value={semester.toString()}>
+                                      {semester}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+
+                          {/* Start Date */}
+                          <div className="col-span-3">
+                            <Input
+                              type="date"
+                              value={entry.startDate || ''}
+                              onChange={(e) => updateDateEntry(index, 'startDate', e.target.value)}
+                              required
+                              className="h-8 text-xs font-medium w-full min-w-0"
+                            />
+                          </div>
+
+                          {/* End Date */}
+                          <div className="col-span-3">
+                            <Input
+                              type="date"
+                              value={entry.endDate || ''}
+                              onChange={(e) => updateDateEntry(index, 'endDate', e.target.value)}
+                              required
+                              className="h-8 text-xs font-medium w-full min-w-0"
+                            />
+                          </div>
+
+                          {/* Actions */}
+                          <div className="col-span-1 flex items-center justify-center">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeDateEntry(index)}
+                              disabled={formDateEntries.length === 1}
+                              className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -836,17 +912,24 @@ export default function AcademicTermManagementPage() {
                       <TableCell>{term.academicYear}</TableCell>
                       <TableCell>
                         <div className="space-y-1">
-                          {(term.programAssignments || []).map((assignment, index) => {
-                            const program = programs.find(p => p.id === assignment.programId);
-                            return (
-                              <div key={assignment.programId} className={index > 0 ? "border-t pt-1 mt-1" : ""}>
-                                <div className="font-medium">{program?.name}</div>
-                                <div className="text-sm text-muted-foreground">
-                                  {program?.code} - Sem {assignment.semesters.join(', ')}
-                                </div>
-                              </div>
-                            );
-                          })}
+                          {term.dateEntries && term.dateEntries.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {[...new Set(term.dateEntries.flatMap(entry => 
+                                (entry.programsWithDetails || entry.programs || []).map((programOrId: any) => {
+                                  const program = typeof programOrId === 'object' && programOrId?.name 
+                                    ? programOrId 
+                                    : programs.find(p => p.id === programOrId || (p as any)._id === programOrId);
+                                  return program?.code || programOrId;
+                                })
+                              ))].map((programCode, index) => (
+                                <span key={index} className="inline-flex items-center px-2 py-1 bg-primary/10 text-primary rounded-md text-xs font-medium">
+                                  {programCode}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="text-xs text-muted-foreground">No programs</div>
+                          )}
                         </div>
                       </TableCell>
                       <TableCell>
@@ -856,27 +939,31 @@ export default function AcademicTermManagementPage() {
                       </TableCell>
                       <TableCell>
                         <div className="text-sm">
-                          {term.semesterDates?.map(sd => sd.semester).join(', ') || 'N/A'}
+                          {term.dateEntries && term.dateEntries.length > 0 
+                            ? [...new Set(term.dateEntries.flatMap(entry => entry.semesters || []))].sort((a, b) => a - b).join(', ')
+                            : 'N/A'
+                          }
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="text-sm">
-                          {term.semesterDates && term.semesterDates.length > 0 ? (
+                        <div className="text-xs">
+                          {term.dateEntries && term.dateEntries.length > 0 ? (
                             <div className="space-y-1">
-                              {term.semesterDates.map(sd => (
-                                <div key={sd.semester} className="flex justify-between text-xs">
-                                  <span className="font-medium">Sem {sd.semester}:</span>
-                                  <span>{new Date(sd.startDate).toLocaleDateString()} - {new Date(sd.endDate).toLocaleDateString()}</span>
+                              {term.dateEntries.map((entry, index) => (
+                                <div key={index} className="text-muted-foreground">
+                                  {entry.startDate && entry.endDate 
+                                    ? `${new Date(entry.startDate).toLocaleDateString()} - ${new Date(entry.endDate).toLocaleDateString()}`
+                                    : 'No dates'
+                                  }
                                 </div>
                               ))}
                             </div>
                           ) : term.startDate && term.endDate ? (
-                            <div>
-                              <div>{new Date(term.startDate).toLocaleDateString()}</div>
-                              <div className="text-muted-foreground">to {new Date(term.endDate).toLocaleDateString()}</div>
+                            <div className="text-muted-foreground">
+                              {new Date(term.startDate).toLocaleDateString()} - {new Date(term.endDate).toLocaleDateString()}
                             </div>
                           ) : (
-                            <span className="text-muted-foreground">No dates configured</span>
+                            <span className="text-muted-foreground">No dates</span>
                           )}
                         </div>
                       </TableCell>
@@ -1012,20 +1099,62 @@ export default function AcademicTermManagementPage() {
                   <Label>Academic Year</Label>
                   <div className="font-medium">{viewTerm.academicYear}</div>
                 </div>
-                <div>
-                  <Label>Programs</Label>
-                  <div className="space-y-2 mt-1">
-                    {(viewTerm.programAssignments || []).map((assignment) => {
-                      const program = programs.find(p => p.id === assignment.programId);
-                      return (
-                        <div key={assignment.programId} className="p-2 bg-muted rounded">
-                          <div className="font-medium">{program?.name} ({program?.code})</div>
-                          <div className="text-sm text-muted-foreground">
-                            Semesters: {assignment.semesters.join(', ')}
+                <div className="md:col-span-2">
+                  <Label>Programs & Schedules</Label>
+                  <div className="mt-2">
+                    {viewTerm.dateEntries && viewTerm.dateEntries.length > 0 ? (
+                      <div className="space-y-3">
+                        {viewTerm.dateEntries.map((entry, index) => (
+                          <div key={index} className="border rounded-lg p-3 bg-card">
+                            <div className="flex justify-between items-start mb-3">
+                              <div className="font-medium text-sm text-primary">
+                                Schedule {index + 1}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                Semesters: {(entry.semesters || []).join(', ')}
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                              <div>
+                                <div className="text-xs font-medium text-muted-foreground mb-1">Programs</div>
+                                <div className="space-y-1">
+                                  {(entry.programsWithDetails || entry.programs || []).map((programOrId: any, pIndex: number) => {
+                                    const program = typeof programOrId === 'object' && programOrId?.name 
+                                      ? programOrId 
+                                      : programs.find(p => p.id === programOrId || (p as any)._id === programOrId);
+                                    
+                                    const programKey = typeof programOrId === 'object' ? programOrId.id || pIndex : programOrId;
+                                    
+                                    return (
+                                      <div key={programKey} className="flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                                        <div className="text-sm">
+                                          <span className="font-medium">{program?.name || 'Unknown Program'}</span>
+                                          <span className="text-muted-foreground ml-1">({program?.code || programKey})</span>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                              
+                              <div>
+                                <div className="text-xs font-medium text-muted-foreground mb-1">Duration</div>
+                                <div className="text-sm font-medium">
+                                  {entry.startDate && entry.endDate 
+                                    ? `${new Date(entry.startDate).toLocaleDateString()} - ${new Date(entry.endDate).toLocaleDateString()}`
+                                    : 'No dates configured'
+                                  }
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-sm text-muted-foreground">No programs configured</div>
+                    )}
                   </div>
                 </div>
                 <div>
@@ -1036,7 +1165,12 @@ export default function AcademicTermManagementPage() {
                 </div>
                 <div>
                   <Label>Configured Semesters</Label>
-                  <div className="font-medium">{viewTerm.semesterDates?.map(sd => sd.semester).join(', ') || 'N/A'}</div>
+                  <div className="font-medium">
+                    {viewTerm.dateEntries && viewTerm.dateEntries.length > 0 
+                      ? [...new Set(viewTerm.dateEntries.flatMap(entry => entry.semesters || []))].sort((a, b) => a - b).join(', ')
+                      : 'N/A'
+                    }
+                  </div>
                 </div>
                 <div>
                   <Label>Status</Label>
@@ -1049,28 +1183,6 @@ export default function AcademicTermManagementPage() {
                   >
                     {viewTerm.status.charAt(0).toUpperCase() + viewTerm.status.slice(1)}
                   </Badge>
-                </div>
-                <div className="md:col-span-2">
-                  <Label>Term Duration</Label>
-                  <div className="text-sm mt-2">
-                    {viewTerm.semesterDates && viewTerm.semesterDates.length > 0 ? (
-                      <div className="space-y-2">
-                        {viewTerm.semesterDates.map(sd => (
-                          <div key={sd.semester} className="flex justify-between items-center p-2 bg-muted rounded">
-                            <span className="font-medium">Semester {sd.semester}:</span>
-                            <span>{new Date(sd.startDate).toLocaleDateString()} - {new Date(sd.endDate).toLocaleDateString()}</span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : viewTerm.startDate && viewTerm.endDate ? (
-                      <div className="p-2 bg-muted rounded">
-                        <div>{new Date(viewTerm.startDate).toLocaleDateString()}</div>
-                        <div className="text-muted-foreground">to {new Date(viewTerm.endDate).toLocaleDateString()}</div>
-                      </div>
-                    ) : (
-                      <span className="text-muted-foreground">No dates configured</span>
-                    )}
-                  </div>
                 </div>
                 <div>
                   <Label>Max Enrollment Per Course</Label>

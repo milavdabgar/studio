@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
             );
 
             return {
-              ...entry,
+              ...entry.toObject(), // Convert Mongoose document to plain object
               programsWithDetails: programsWithDetails.filter(p => p !== null)
             };
           })
