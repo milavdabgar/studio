@@ -1,21 +1,37 @@
 export type Timestamp = string; // ISO 8601 format: "YYYY-MM-DDTHH:mm:ss.sssZ"
 
-// Academic Term
+// Program-Semester-Date Entry for Academic Terms
+export interface ProgramSemesterDateEntry {
+    programs: string[]; // Array of program IDs (multiselect)
+    semesters: number[]; // Array of semester numbers (multiselect, filtered by term type)
+    startDate: string; // ISO date string for this specific group
+    endDate: string; // ISO date string for this specific group
+}
+
+// Academic Term (Table-style entries)
 export interface AcademicTerm {
     id: string;
-    name: string; // "Odd Term 2024-25 - ECE" or "Even Term 2024-25 - ECE"
+    name: string; // "Odd Term 2024-25" or "Even Term 2024-25" (no program-specific name)
     academicYear: string; // "2024-25"
-    programId: string; // Links to specific program
     term: 'Odd' | 'Even'; // Odd = Semesters 1,3,5 | Even = Semesters 2,4,6
-    semesters: number[]; // [1,3,5] for Odd or [2,4,6] for Even
-    startDate: string; // ISO date string
-    endDate: string; // ISO date string
-    maxEnrollmentPerCourse: number; // Default for all courses in this term
+    
+    // Multiple entries - each can have different programs, semesters, and dates
+    dateEntries: ProgramSemesterDateEntry[]; // Table-like structure
+    
     status: 'draft' | 'active' | 'completed' | 'cancelled';
     gtuCalendarUrl?: string; // Link to GTU academic calendar
     notes?: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
+    
+    // Legacy fields (kept for backward compatibility - will be removed in future)
+    programId?: string; // Deprecated
+    semesters?: number[]; // Deprecated
+    startDate?: string; // Deprecated
+    endDate?: string; // Deprecated
+    semesterDates?: any[]; // Deprecated
+    programAssignments?: any[]; // Deprecated
+    maxEnrollmentPerCourse?: number; // Deprecated
 }
 
 // User and Authentication

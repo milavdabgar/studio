@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
   User, Role, Permission, Department, Course, Batch, Program, 
-  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, Project, Assessment, Result, Enrollment, CourseOffering, Notification, StudentAssessmentScore, CourseMaterial, AttendanceRecord, Timetable, ProjectLocation, Curriculum, RoomAllocation, Examination, AcademicTerm
+  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, Project, Assessment, Result, Enrollment, CourseOffering, Notification, StudentAssessmentScore, CourseMaterial, AttendanceRecord, Timetable, ProjectLocation, Curriculum, RoomAllocation, Examination, AcademicTerm, ProgramSemesterDateEntry
 } from '@/types/entities';
 
 // Institute Schema
@@ -186,21 +186,37 @@ interface IAcademicTerm extends Omit<AcademicTerm, 'id'>, Document {
   _id: string;
 }
 
+// Program-semester-date entry sub-schema
+const programSemesterDateEntrySchema = new Schema({
+  programs: [{ type: String, required: true }], // Array of program IDs (multiselect)
+  semesters: [{ type: Number, required: true }], // Array of semester numbers (multiselect, filtered by term type)
+  startDate: { type: String, required: true }, // ISO date string for this specific group
+  endDate: { type: String, required: true } // ISO date string for this specific group
+}, { _id: false });
+
 const academicTermSchema = new Schema<IAcademicTerm>({
   id: { type: String, unique: true, sparse: true }, // Custom ID field
-  name: { type: String, required: true },
+  name: { type: String, required: true }, // "Odd Term 2024-25" (no program-specific)
   academicYear: { type: String, required: true },
-  programId: { type: String, required: true },
   term: { type: String, enum: ['Odd', 'Even'], required: true },
-  semesters: [{ type: Number, required: true }],
-  startDate: { type: String, required: true },
-  endDate: { type: String, required: true },
-  maxEnrollmentPerCourse: { type: Number, required: true, default: 60 },
+  
+  // Multiple entries - each can have different programs, semesters, and dates (table-like structure)
+  dateEntries: [programSemesterDateEntrySchema],
+  
   status: { type: String, enum: ['draft', 'active', 'completed', 'cancelled'], required: true, default: 'draft' },
   gtuCalendarUrl: { type: String },
   notes: { type: String },
   createdAt: { type: String, default: () => new Date().toISOString() },
-  updatedAt: { type: String, default: () => new Date().toISOString() }
+  updatedAt: { type: String, default: () => new Date().toISOString() },
+  
+  // Legacy fields (for backward compatibility - will be removed in future)
+  programId: { type: String }, // Deprecated
+  semesters: [{ type: Number }], // Deprecated
+  startDate: { type: String }, // Deprecated
+  endDate: { type: String }, // Deprecated
+  semesterDates: { type: Schema.Types.Mixed }, // Deprecated
+  programAssignments: { type: Schema.Types.Mixed }, // Deprecated
+  maxEnrollmentPerCourse: { type: Number } // Deprecated
 }, {
   timestamps: false,
   toJSON: {
@@ -219,6 +235,69 @@ academicTermSchema.pre('save', function(next) {
   if (!this.id) {
     this.id = this._id.toString();
   }
+  
+  // Generate name if not provided
+  if (!this.name) {
+    this.name = `${this.term} Term ${this.academicYear}`;
+  }
+  
+  // Set updatedAt timestamp
+  this.updatedAt = new Date().toISOString();
+  
+  // Validate date entries
+  if (this.dateEntries && this.dateEntries.length > 0) {
+    for (let i = 0; i < this.dateEntries.length; i++) {
+      const entry = this.dateEntries[i];
+      
+      // Validate required fields
+      if (!entry.programs || entry.programs.length === 0) {
+        return next(new Error(`Date entry ${i + 1}: At least one program must be selected`));
+      }
+      
+      if (!entry.semesters || entry.semesters.length === 0) {
+        return next(new Error(`Date entry ${i + 1}: At least one semester must be selected`));
+      }
+      
+      if (!entry.startDate || !entry.endDate) {
+        return next(new Error(`Date entry ${i + 1}: Start date and end date are required`));
+      }
+      
+      // Validate date formats and order
+      const startDate = new Date(entry.startDate);
+      const endDate = new Date(entry.endDate);
+      
+      if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        return next(new Error(`Date entry ${i + 1}: Invalid date format`));
+      }
+      
+      if (startDate >= endDate) {
+        return next(new Error(`Date entry ${i + 1}: Start date must be before end date`));
+      }
+      
+      // Validate semester numbers (1-6 for diploma programs)
+      const invalidSemesters = entry.semesters.filter(sem => sem < 1 || sem > 6);
+      if (invalidSemesters.length > 0) {
+        return next(new Error(`Date entry ${i + 1}: Invalid semester numbers: ${invalidSemesters.join(', ')}. Must be between 1 and 6`));
+      }
+      
+      // Validate semester numbers match term type
+      const termType = this.term;
+      if (termType === 'Odd') {
+        // Odd terms should only have odd semesters (1, 3, 5)
+        const nonOddSemesters = entry.semesters.filter(sem => sem % 2 === 0);
+        if (nonOddSemesters.length > 0) {
+          return next(new Error(`Date entry ${i + 1}: Odd terms can only include odd semesters (1, 3, 5). Found: ${nonOddSemesters.join(', ')}`));
+        }
+      } else if (termType === 'Even') {
+        // Even terms should only have even semesters (2, 4, 6)
+        const nonEvenSemesters = entry.semesters.filter(sem => sem % 2 === 1);
+        if (nonEvenSemesters.length > 0) {
+          return next(new Error(`Date entry ${i + 1}: Even terms can only include even semesters (2, 4, 6). Found: ${nonEvenSemesters.join(', ')}`));
+        }
+      }
+    }
+  }
+  
   (this as IAcademicTerm).updatedAt = new Date().toISOString();
   next();
 });

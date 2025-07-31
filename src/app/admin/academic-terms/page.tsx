@@ -12,7 +12,7 @@ import { PlusCircle, Edit, Trash2, Loader2, Search, ArrowUpDown, ChevronsLeft, C
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import type { AcademicTerm, Program } from '@/types/entities';
+import type { AcademicTerm, Program, ProgramSemesterDateEntry } from '@/types/entities';
 
 // Academic year options
 const ACADEMIC_YEARS = [
@@ -26,8 +26,17 @@ type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
 
+// Helper function to get available semesters based on term type
+const getAvailableSemesters = (termType: 'Odd' | 'Even'): number[] => {
+  if (termType === 'Odd') {
+    return [1, 3, 5]; // Odd semesters
+  } else {
+    return [2, 4, 6]; // Even semesters
+  }
+};
+
 export default function AcademicTermManagementPage() {
-  const [academicTerms, setAcademicTerms] = useState<(AcademicTerm & { program?: { id: string; name: string; code: string } })[]>([]);
+  const [academicTerms, setAcademicTerms] = useState<AcademicTerm[]>([]);
   const [programs, setPrograms] = useState<Program[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -35,15 +44,12 @@ export default function AcademicTermManagementPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentTerm, setCurrentTerm] = useState<Partial<AcademicTerm> | null>(null);
-  const [viewTerm, setViewTerm] = useState<(AcademicTerm & { program?: { id: string; name: string; code: string } }) | null>(null);
+  const [viewTerm, setViewTerm] = useState<AcademicTerm | null>(null);
 
-  // Form state
+  // Form state for table-style academic terms
   const [formAcademicYear, setFormAcademicYear] = useState('');
-  const [formProgramId, setFormProgramId] = useState('');
   const [formTerm, setFormTerm] = useState<'Odd' | 'Even'>('Odd');
-  const [formStartDate, setFormStartDate] = useState('');
-  const [formEndDate, setFormEndDate] = useState('');
-  const [formMaxEnrollmentPerCourse, setFormMaxEnrollmentPerCourse] = useState<number>(60);
+  const [formDateEntries, setFormDateEntries] = useState<ProgramSemesterDateEntry[]>([]);
   const [formStatus, setFormStatus] = useState<'draft' | 'active' | 'completed' | 'cancelled'>('draft');
   const [formGtuCalendarUrl, setFormGtuCalendarUrl] = useState('');
   const [formNotes, setFormNotes] = useState('');
@@ -97,20 +103,50 @@ export default function AcademicTermManagementPage() {
   // Reset form
   const resetForm = () => {
     setFormAcademicYear('');
-    setFormProgramId('');
     setFormTerm('Odd');
-    setFormStartDate('');
-    setFormEndDate('');
-    setFormMaxEnrollmentPerCourse(60);
+    setFormDateEntries([]);
     setFormStatus('draft');
     setFormGtuCalendarUrl('');
     setFormNotes('');
     setCurrentTerm(null);
   };
 
+  // Handle term change and filter semester options accordingly
+  const handleTermChange = (newTerm: 'Odd' | 'Even') => {
+    setFormTerm(newTerm);
+    
+    // Filter existing date entries to only include valid semesters for the new term
+    const availableSemesters = getAvailableSemesters(newTerm);
+    const updatedEntries = formDateEntries.map(entry => ({
+      ...entry,
+      semesters: (entry.semesters || []).filter(sem => availableSemesters.includes(sem))
+    })).filter(entry => entry.semesters.length > 0); // Remove entries with no valid semesters
+    
+    setFormDateEntries(updatedEntries);
+  };
+
+  // Add date entry
+  const addDateEntry = () => {
+    setFormDateEntries([...formDateEntries, { programs: [], semesters: [], startDate: '', endDate: '' }]);
+  };
+
+  // Remove date entry
+  const removeDateEntry = (index: number) => {
+    const updated = formDateEntries.filter((_, i) => i !== index);
+    setFormDateEntries(updated);
+  };
+
+  // Update date entry
+  const updateDateEntry = (index: number, field: keyof ProgramSemesterDateEntry, value: string | string[] | number[]) => {
+    const updated = [...formDateEntries];
+    updated[index] = { ...updated[index], [field]: value };
+    setFormDateEntries(updated);
+  };
+
   // Open create dialog
   const openCreateDialog = () => {
     resetForm();
+    setFormDateEntries([{ programs: [], semesters: [], startDate: '', endDate: '' }]); // Initialize with one empty entry
     setIsDialogOpen(true);
   };
 
@@ -118,11 +154,8 @@ export default function AcademicTermManagementPage() {
   const openEditDialog = (term: AcademicTerm) => {
     setCurrentTerm(term);
     setFormAcademicYear(term.academicYear);
-    setFormProgramId(term.programId);
     setFormTerm(term.term);
-    setFormStartDate(term.startDate.split('T')[0]);
-    setFormEndDate(term.endDate.split('T')[0]);
-    setFormMaxEnrollmentPerCourse(term.maxEnrollmentPerCourse);
+    setFormDateEntries(term.dateEntries || []);
     setFormStatus(term.status);
     setFormGtuCalendarUrl(term.gtuCalendarUrl || '');
     setFormNotes(term.notes || '');
@@ -130,7 +163,7 @@ export default function AcademicTermManagementPage() {
   };
 
   // Open view dialog
-  const openViewDialog = (term: AcademicTerm & { program?: { id: string; name: string; code: string } }) => {
+  const openViewDialog = (term: AcademicTerm) => {
     setViewTerm(term);
     setIsViewDialogOpen(true);
   };
@@ -139,13 +172,68 @@ export default function AcademicTermManagementPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formAcademicYear || !formProgramId || !formStartDate || !formEndDate) {
+    if (!formAcademicYear || !formTerm) {
       toast({
         title: "Validation Error",
-        description: "Please fill in all required fields",
+        description: "Please fill in academic year and term",
         variant: "destructive",
       });
       return;
+    }
+
+    // Validate date entries
+    if (!formDateEntries || formDateEntries.length === 0) {
+      toast({
+        title: "Validation Error",
+        description: "Please add at least one date entry",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate each date entry
+    for (let i = 0; i < formDateEntries.length; i++) {
+      const entry = formDateEntries[i];
+      
+      if (!entry.programs || entry.programs.length === 0) {
+        toast({
+          title: "Validation Error",
+          description: `Entry ${i + 1}: Please select at least one program`,
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!entry.semesters || entry.semesters.length === 0) {
+        toast({
+          title: "Validation Error",
+          description: `Entry ${i + 1}: Please select at least one semester`,
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!entry.startDate || !entry.endDate) {
+        toast({
+          title: "Validation Error",
+          description: `Entry ${i + 1}: Please fill in both start and end dates`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Validate that start date is before end date
+      const startDate = new Date(entry.startDate);
+      const endDate = new Date(entry.endDate);
+      
+      if (startDate >= endDate) {
+        toast({
+          title: "Validation Error",
+          description: `Entry ${i + 1}: Start date must be before end date`,
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -153,11 +241,13 @@ export default function AcademicTermManagementPage() {
     try {
       const termData = {
         academicYear: formAcademicYear,
-        programId: formProgramId,
         term: formTerm,
-        startDate: new Date(formStartDate).toISOString(),
-        endDate: new Date(formEndDate).toISOString(),
-        maxEnrollmentPerCourse: formMaxEnrollmentPerCourse,
+        dateEntries: formDateEntries.map(entry => ({
+          programs: entry.programs,
+          semesters: entry.semesters,
+          startDate: new Date(entry.startDate).toISOString(),
+          endDate: new Date(entry.endDate).toISOString()
+        })),
         status: formStatus,
         gtuCalendarUrl: formGtuCalendarUrl || undefined,
         notes: formNotes || undefined
@@ -241,12 +331,15 @@ export default function AcademicTermManagementPage() {
   const filteredAndSortedTerms = useMemo(() => {
     let result = academicTerms.filter(term => {
       const matchesSearch = term.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           term.program?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           term.program?.code.toLowerCase().includes(searchTerm.toLowerCase());
+                           (term.programAssignments || []).some(pa => {
+                             const program = programs.find(p => p.id === pa.programId);
+                             return program?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                    program?.code.toLowerCase().includes(searchTerm.toLowerCase());
+                           });
 
       const matchesFilters = 
         (filterAcademicYear === 'all' || term.academicYear === filterAcademicYear) &&
-        (filterProgram === 'all' || term.programId === filterProgram) &&
+        (filterProgram === 'all' || (term.programAssignments || []).some(pa => pa.programId === filterProgram)) &&
         (filterTerm === 'all' || term.term === filterTerm) &&
         (filterStatus === 'all' || term.status === filterStatus);
 
@@ -348,25 +441,10 @@ export default function AcademicTermManagementPage() {
                   </Select>
                 </div>
 
-                <div>
-                  <Label htmlFor="programId">Program *</Label>
-                  <Select value={formProgramId} onValueChange={setFormProgramId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select program" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {programs.map((program) => (
-                        <SelectItem key={program.id} value={program.id}>
-                          {program.name} ({program.code})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
 
                 <div>
                   <Label htmlFor="term">Term *</Label>
-                  <Select value={formTerm} onValueChange={(value: 'Odd' | 'Even') => setFormTerm(value)}>
+                  <Select value={formTerm} onValueChange={handleTermChange}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -392,40 +470,123 @@ export default function AcademicTermManagementPage() {
                   </Select>
                 </div>
 
-                <div>
-                  <Label htmlFor="startDate">Term Start Date *</Label>
-                  <Input
-                    id="startDate"
-                    type="date"
-                    value={formStartDate}
-                    onChange={(e) => setFormStartDate(e.target.value)}
-                    required
-                  />
+              </div>
+
+              {/* Date Entries Table */}
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <Label className="text-base font-semibold">Program-Semester Date Entries *</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Add entries with different programs, semesters, and date ranges. Group programs and semesters that share the same dates.
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addDateEntry}
+                  >
+                    <PlusCircle className="h-4 w-4 mr-2" />
+                    Add Entry
+                  </Button>
                 </div>
-
-                <div>
-                  <Label htmlFor="endDate">Term End Date *</Label>
-                  <Input
-                    id="endDate"
-                    type="date"
-                    value={formEndDate}
-                    onChange={(e) => setFormEndDate(e.target.value)}
-                    required
-                  />
+                
+                <div className="border rounded-lg overflow-hidden">
+                  <div className="grid grid-cols-12 gap-2 p-3 bg-muted font-medium text-sm border-b">
+                    <div className="col-span-3">Programs</div>
+                    <div className="col-span-2">Semesters</div>
+                    <div className="col-span-3">Start Date</div>
+                    <div className="col-span-3">End Date</div>
+                    <div className="col-span-1">Action</div>
+                  </div>
+                  
+                  <div className="divide-y">
+                    {formDateEntries.map((entry, index) => (
+                      <div key={index} className="grid grid-cols-12 gap-2 p-3 items-center">
+                        {/* Programs Column */}
+                        <div className="col-span-3">
+                          <div className="space-y-2">
+                            {programs.map((program) => (
+                              <label key={program.id} className="flex items-center space-x-2">
+                                <input
+                                  type="checkbox"
+                                  checked={entry.programs?.includes(program.id) || false}
+                                  onChange={(e) => {
+                                    const programs = e.target.checked
+                                      ? [...(entry.programs || []), program.id]
+                                      : (entry.programs || []).filter(p => p !== program.id);
+                                    updateDateEntry(index, 'programs', programs);
+                                  }}
+                                  className="rounded border-gray-300"
+                                />
+                                <span className="text-sm">{program.code}</span>
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        {/* Semesters Column */}
+                        <div className="col-span-2">
+                          <div className="space-y-2">
+                            {getAvailableSemesters(formTerm).map((semester) => (
+                              <label key={semester} className="flex items-center space-x-2">
+                                <input
+                                  type="checkbox"
+                                  checked={entry.semesters?.includes(semester) || false}
+                                  onChange={(e) => {
+                                    const semesters = e.target.checked
+                                      ? [...(entry.semesters || []), semester]
+                                      : (entry.semesters || []).filter(s => s !== semester);
+                                    updateDateEntry(index, 'semesters', semesters);
+                                  }}
+                                  className="rounded border-gray-300"
+                                />
+                                <span className="text-sm">Sem {semester}</span>
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        {/* Start Date Column */}
+                        <div className="col-span-3">
+                          <Input
+                            type="date"
+                            value={entry.startDate || ''}
+                            onChange={(e) => updateDateEntry(index, 'startDate', e.target.value)}
+                            required
+                          />
+                        </div>
+                        
+                        {/* End Date Column */}
+                        <div className="col-span-3">
+                          <Input
+                            type="date"
+                            value={entry.endDate || ''}
+                            onChange={(e) => updateDateEntry(index, 'endDate', e.target.value)}
+                            required
+                          />
+                        </div>
+                        
+                        {/* Action Column */}
+                        <div className="col-span-1">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => removeDateEntry(index)}
+                            disabled={formDateEntries.length === 1}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
+              </div>
 
-
-                <div>
-                  <Label htmlFor="maxEnrollmentPerCourse">Max Enrollment Per Course</Label>
-                  <Input
-                    id="maxEnrollmentPerCourse"
-                    type="number"
-                    min="1"
-                    value={formMaxEnrollmentPerCourse}
-                    onChange={(e) => setFormMaxEnrollmentPerCourse(parseInt(e.target.value) || 60)}
-                  />
-                </div>
-
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="gtuCalendarUrl">GTU Calendar URL</Label>
                   <Input
@@ -675,8 +836,17 @@ export default function AcademicTermManagementPage() {
                       <TableCell>{term.academicYear}</TableCell>
                       <TableCell>
                         <div className="space-y-1">
-                          <div className="font-medium">{term.program?.name}</div>
-                          <div className="text-sm text-muted-foreground">{term.program?.code}</div>
+                          {(term.programAssignments || []).map((assignment, index) => {
+                            const program = programs.find(p => p.id === assignment.programId);
+                            return (
+                              <div key={assignment.programId} className={index > 0 ? "border-t pt-1 mt-1" : ""}>
+                                <div className="font-medium">{program?.name}</div>
+                                <div className="text-sm text-muted-foreground">
+                                  {program?.code} - Sem {assignment.semesters.join(', ')}
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       </TableCell>
                       <TableCell>
@@ -686,13 +856,28 @@ export default function AcademicTermManagementPage() {
                       </TableCell>
                       <TableCell>
                         <div className="text-sm">
-                          {term.semesters.join(', ')}
+                          {term.semesterDates?.map(sd => sd.semester).join(', ') || 'N/A'}
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className="text-sm">
-                          <div>{new Date(term.startDate).toLocaleDateString()}</div>
-                          <div className="text-muted-foreground">to {new Date(term.endDate).toLocaleDateString()}</div>
+                          {term.semesterDates && term.semesterDates.length > 0 ? (
+                            <div className="space-y-1">
+                              {term.semesterDates.map(sd => (
+                                <div key={sd.semester} className="flex justify-between text-xs">
+                                  <span className="font-medium">Sem {sd.semester}:</span>
+                                  <span>{new Date(sd.startDate).toLocaleDateString()} - {new Date(sd.endDate).toLocaleDateString()}</span>
+                                </div>
+                              ))}
+                            </div>
+                          ) : term.startDate && term.endDate ? (
+                            <div>
+                              <div>{new Date(term.startDate).toLocaleDateString()}</div>
+                              <div className="text-muted-foreground">to {new Date(term.endDate).toLocaleDateString()}</div>
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground">No dates configured</span>
+                          )}
                         </div>
                       </TableCell>
                       <TableCell>
@@ -828,9 +1013,19 @@ export default function AcademicTermManagementPage() {
                   <div className="font-medium">{viewTerm.academicYear}</div>
                 </div>
                 <div>
-                  <Label>Program</Label>
-                  <div className="font-medium">
-                    {viewTerm.program?.name} ({viewTerm.program?.code})
+                  <Label>Programs</Label>
+                  <div className="space-y-2 mt-1">
+                    {(viewTerm.programAssignments || []).map((assignment) => {
+                      const program = programs.find(p => p.id === assignment.programId);
+                      return (
+                        <div key={assignment.programId} className="p-2 bg-muted rounded">
+                          <div className="font-medium">{program?.name} ({program?.code})</div>
+                          <div className="text-sm text-muted-foreground">
+                            Semesters: {assignment.semesters.join(', ')}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
                 <div>
@@ -840,8 +1035,8 @@ export default function AcademicTermManagementPage() {
                   </Badge>
                 </div>
                 <div>
-                  <Label>Semesters</Label>
-                  <div className="font-medium">{viewTerm.semesters.join(', ')}</div>
+                  <Label>Configured Semesters</Label>
+                  <div className="font-medium">{viewTerm.semesterDates?.map(sd => sd.semester).join(', ') || 'N/A'}</div>
                 </div>
                 <div>
                   <Label>Status</Label>
@@ -855,11 +1050,26 @@ export default function AcademicTermManagementPage() {
                     {viewTerm.status.charAt(0).toUpperCase() + viewTerm.status.slice(1)}
                   </Badge>
                 </div>
-                <div>
+                <div className="md:col-span-2">
                   <Label>Term Duration</Label>
-                  <div className="text-sm">
-                    <div>{new Date(viewTerm.startDate).toLocaleDateString()}</div>
-                    <div className="text-muted-foreground">to {new Date(viewTerm.endDate).toLocaleDateString()}</div>
+                  <div className="text-sm mt-2">
+                    {viewTerm.semesterDates && viewTerm.semesterDates.length > 0 ? (
+                      <div className="space-y-2">
+                        {viewTerm.semesterDates.map(sd => (
+                          <div key={sd.semester} className="flex justify-between items-center p-2 bg-muted rounded">
+                            <span className="font-medium">Semester {sd.semester}:</span>
+                            <span>{new Date(sd.startDate).toLocaleDateString()} - {new Date(sd.endDate).toLocaleDateString()}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : viewTerm.startDate && viewTerm.endDate ? (
+                      <div className="p-2 bg-muted rounded">
+                        <div>{new Date(viewTerm.startDate).toLocaleDateString()}</div>
+                        <div className="text-muted-foreground">to {new Date(viewTerm.endDate).toLocaleDateString()}</div>
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground">No dates configured</span>
+                    )}
                   </div>
                 </div>
                 <div>
