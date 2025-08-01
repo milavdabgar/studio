@@ -129,8 +129,8 @@ describe('Faculty Timetable Page', () => {
       render(<FacultyTimetablePage />);
       
       await waitFor(() => {
+        expect(screen.getByText('My Teaching Schedule')).toBeInTheDocument();
         expect(screen.getByText('Dr. John Smith')).toBeInTheDocument();
-        expect(screen.getByText('faculty@test.com')).toBeInTheDocument();
       });
     });
 

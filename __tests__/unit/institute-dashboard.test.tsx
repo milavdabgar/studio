@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { useToast } from '@/hooks/use-toast';
 import InstituteDashboardPage from '@/app/admin/institute-dashboard/page';
 
@@ -17,8 +17,23 @@ jest.mock('@/components/RealtimeStatus', () => ({
 }));
 
 describe('Institute Dashboard Page', () => {
+  // Helper function to render component and advance timers
+  const renderWithTimers = async () => {
+    const result = render(<InstituteDashboardPage />);
+    
+    // Use act to wrap the timer advancement
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+    
+    return result;
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
+    
+    // Mock setTimeout to avoid delays in tests
+    jest.useFakeTimers();
 
     // Setup auth cookie
     Object.defineProperty(document, 'cookie', {
@@ -35,11 +50,12 @@ describe('Institute Dashboard Page', () => {
 
   afterEach(() => {
     jest.resetAllMocks();
+    jest.useRealTimers();
   });
 
   describe('Component Rendering', () => {
     it('renders main institute dashboard interface', async () => {
-      render(<InstituteDashboardPage />);
+      await renderWithTimers();
       
       await waitFor(() => {
         expect(screen.getByText('Institute Dashboard')).toBeInTheDocument();
@@ -47,7 +63,7 @@ describe('Institute Dashboard Page', () => {
     });
 
     it('displays dashboard description', async () => {
-      render(<InstituteDashboardPage />);
+      await renderWithTimers();
       
       await waitFor(() => {
         expect(screen.getByText('Comprehensive overview of institute-wide timetable operations')).toBeInTheDocument();
