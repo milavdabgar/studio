@@ -91,68 +91,8 @@ export default function CivilFacultyPage() {
     fetchFaculty();
   }, []);
 
-  // Dummy data as fallback (keeping some for demo purposes)
-  const dummyFacultyMembers = [
-    {
-      name: "Mr. D N Sheth",
-      designation: "Head of Department & Associate Professor",
-      qualification: "M.E. (Structural Engineering), B.E. (Civil)",
-      experience: "15+ years",
-      specialization: ["Structural Design", "Concrete Technology", "Earthquake Engineering"],
-      subjects: ["Design of RCC Structures", "Structural Analysis", "Concrete Technology"],
-      email: "dn.sheth@gppalanpur.ac.in",
-      phone: "+91 98765 43210",
-      achievements: [
-        "NBA Accreditation Coordinator",
-        "Published 8 research papers",
-        "Industry consultant for 5+ projects"
-      ],
-      researchAreas: ["Seismic Design", "High Performance Concrete", "Structural Optimization"]
-    },
-    {
-      name: "Prof. R K Patel",
-      designation: "Associate Professor",
-      qualification: "M.E. (Construction Management), B.E. (Civil)",
-      experience: "12+ years",
-      specialization: ["Construction Management", "Project Planning", "Building Technology"],
-      subjects: ["Building Materials & Construction", "Quantity Surveying", "Construction Management"],
-      email: "rk.patel@gppalanpur.ac.in",
-      phone: "+91 98765 43211",
-      achievements: [
-        "Construction industry expert",
-        "Guided 50+ student projects",
-        "AICTE certified trainer"
-      ],
-      researchAreas: ["Sustainable Construction", "Project Management", "Green Building Technology"]
-    },
-    {
-      name: "Mr. S M Shah",
-      designation: "Assistant Professor",
-      qualification: "M.E. (Transportation Engineering), B.E. (Civil)",
-      experience: "8+ years",
-      specialization: ["Highway Engineering", "Traffic Management", "Pavement Design"],
-      subjects: ["Transportation Engineering", "Highway Engineering", "Traffic Engineering"],
-      email: "sm.shah@gppalanpur.ac.in",
-      phone: "+91 98765 43212",
-      achievements: [
-        "Traffic consultant for municipal corporation",
-        "Highway design specialist",
-        "Published papers on traffic optimization"
-      ],
-      researchAreas: ["Intelligent Transportation Systems", "Pavement Materials", "Traffic Flow Analysis"]
-    }
-  ];
-
-  // Use real data if available, otherwise fall back to dummy data for missing slots
-  const displayFaculty = isLoading ? [] : [...facultyMembers];
-  
-  // Add dummy faculty if we have less than 4 faculty members to show variety
-  if (displayFaculty.length < 4 && !isLoading) {
-    const remainingSlots = 4 - displayFaculty.length;
-    for (let i = 0; i < remainingSlots && i < dummyFacultyMembers.length; i++) {
-      displayFaculty.push(dummyFacultyMembers[i] as any);
-    }
-  }
+  // Use only real data from database
+  const displayFaculty = facultyMembers;
 
   const departmentStats = {
     totalFaculty: isLoading ? "..." : facultyMembers.length.toString(),
@@ -250,18 +190,16 @@ export default function CivilFacultyPage() {
           ) : (
             <div className="grid lg:grid-cols-2 gap-8">
               {displayFaculty.map((faculty, index) => {
-                // Check if this is a dummy faculty (has 'name' property) or real faculty
-                const isDummy = 'name' in faculty;
-                const displayName = isDummy ? (faculty as any).name : createDisplayName(faculty);
-                const designation = isDummy ? (faculty as any).designation : faculty.designation || 'Faculty Member';
-                const qualification = isDummy ? (faculty as any).qualification : formatQualification(faculty);
-                const experience = isDummy ? (faculty as any).experience : getExperience(faculty);
-                const email = isDummy ? (faculty as any).email : (faculty.instituteEmail || faculty.personalEmail || faculty.email);
-                const phone = isDummy ? (faculty as any).phone : faculty.contactNumber;
-                const specializations = isDummy ? (faculty as any).specialization : (faculty.specializations || []);
-                const subjects = isDummy ? (faculty as any).subjects : (faculty.subjects || []); // Now uses real data from database
-                const researchAreas = isDummy ? (faculty as any).researchAreas : (faculty.researchInterests || []);
-                const achievements = isDummy ? (faculty as any).achievements : (faculty.achievements?.map((a: any) => a.title || a.description || a) || []);
+                const displayName = createDisplayName(faculty);
+                const designation = faculty.designation || 'Faculty Member';
+                const qualification = formatQualification(faculty);
+                const experience = getExperience(faculty);
+                const email = faculty.instituteEmail || faculty.personalEmail || faculty.email;
+                const phone = faculty.contactNumber;
+                const specializations = faculty.specializations || [];
+                const courses = faculty.subjects || []; // Using "courses" terminology but accessing "subjects" field for now
+                const researchAreas = faculty.researchInterests || [];
+                const achievements = faculty.achievements?.map((a: any) => a.title || a.description || a) || [];
 
                 return (
                   <Card key={index} className="hover:shadow-xl transition-all duration-300">
@@ -305,18 +243,18 @@ export default function CivilFacultyPage() {
                         </div>
                       )}
 
-                      {/* Subjects Taught */}
-                      {subjects && subjects.length > 0 && (
+                      {/* Courses Taught */}
+                      {courses && courses.length > 0 && (
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 dark:text-white">
                             <BookOpen className="h-4 w-4 text-primary" />
-                            Subjects Taught
+                            Courses Taught
                           </h4>
                           <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                            {subjects.map((subject: string, idx: number) => (
+                            {courses.map((course: string, idx: number) => (
                               <li key={idx} className="flex items-start gap-2">
                                 <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
-                                {subject}
+                                {course}
                               </li>
                             ))}
                           </ul>
