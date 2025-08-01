@@ -38,45 +38,45 @@ const mockAllocation = {
 
 const mockModels = {
   AllocationSessionModel: {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    findOneAndUpdate: jest.fn(),
-    deleteMany: jest.fn(),
-    countDocuments: jest.fn()
+    find: jest.fn() as jest.MockedFunction<any>,
+    findOne: jest.fn() as jest.MockedFunction<any>,
+    create: jest.fn() as jest.MockedFunction<any>,
+    findOneAndUpdate: jest.fn() as jest.MockedFunction<any>,
+    deleteMany: jest.fn() as jest.MockedFunction<any>,
+    countDocuments: jest.fn() as jest.MockedFunction<any>
   },
   CourseAllocationModel: {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    insertMany: jest.fn(),
-    deleteMany: jest.fn(),
-    countDocuments: jest.fn()
+    find: jest.fn() as jest.MockedFunction<any>,
+    findOne: jest.fn() as jest.MockedFunction<any>,
+    insertMany: jest.fn() as jest.MockedFunction<any>,
+    deleteMany: jest.fn() as jest.MockedFunction<any>,
+    countDocuments: jest.fn() as jest.MockedFunction<any>
   },
   AllocationConflictModel: {
-    find: jest.fn(),
-    deleteMany: jest.fn(),
-    insertMany: jest.fn(),
-    countDocuments: jest.fn()
+    find: jest.fn() as jest.MockedFunction<any>,
+    deleteMany: jest.fn() as jest.MockedFunction<any>,
+    insertMany: jest.fn() as jest.MockedFunction<any>,
+    countDocuments: jest.fn() as jest.MockedFunction<any>
   },
   FacultyModel: {
-    find: jest.fn(),
-    countDocuments: jest.fn()
+    find: jest.fn() as jest.MockedFunction<any>,
+    countDocuments: jest.fn() as jest.MockedFunction<any>
   },
   CourseOfferingModel: {
-    find: jest.fn(),
-    countDocuments: jest.fn()
+    find: jest.fn() as jest.MockedFunction<any>,
+    countDocuments: jest.fn() as jest.MockedFunction<any>
   },
   FacultyPreferenceModel: {
-    find: jest.fn(),
-    countDocuments: jest.fn()
+    find: jest.fn() as jest.MockedFunction<any>,
+    countDocuments: jest.fn() as jest.MockedFunction<any>
   },
   CourseModel: {
-    find: jest.fn(),
-    countDocuments: jest.fn()
+    find: jest.fn() as jest.MockedFunction<any>,
+    countDocuments: jest.fn() as jest.MockedFunction<any>
   },
   ProgramModel: {
-    find: jest.fn(),
-    countDocuments: jest.fn()
+    find: jest.fn() as jest.MockedFunction<any>,
+    countDocuments: jest.fn() as jest.MockedFunction<any>
   }
 };
 
