@@ -1197,6 +1197,7 @@ const facultySchema = new Schema<IFaculty>({
   isHOD: { type: Boolean, default: false },
   isPrincipal: { type: Boolean, default: false },
   researchInterests: [{ type: String }], // Array of strings to match TypeScript interface
+  subjects: [{ type: String }], // Array of subjects taught by the faculty
   
   gender: { type: String, enum: ['Male', 'Female', 'Other'] },
   maritalStatus: { type: String },

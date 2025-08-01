@@ -520,6 +520,7 @@ export interface FacultyProfile {
     isHOD?: boolean;
     isPrincipal?: boolean;
     researchInterests?: string[];
+    subjects?: string[]; // Array of subjects taught by the faculty
     
     status: FacultyStatus;
     

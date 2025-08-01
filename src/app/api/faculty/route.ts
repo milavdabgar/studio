@@ -199,6 +199,8 @@ export async function POST(request: NextRequest) {
       isHOD: facultyData.isHOD || false,
       isPrincipal: facultyData.isPrincipal || false,
       researchInterests: facultyData.researchInterests,
+      subjects: facultyData.subjects, // Add subjects field
+      achievements: facultyData.achievements, // Add achievements field
       status: facultyData.status || 'active',
       instituteId: facultyData.instituteId,
       createdAt: currentTimestamp,

@@ -16,12 +16,83 @@ import {
   Calendar,
   Users,
   Building,
-  Star
+  Star,
+  Loader2
 } from "lucide-react";
 import { Footer } from "@/components/footer";
+import { useEffect, useState } from "react";
+import type { Faculty } from "@/types/entities";
+
+// Helper function to create display name
+const createDisplayName = (faculty: Faculty): string => {
+  if (faculty.gtuName) {
+    return faculty.gtuName;
+  }
+  const parts = [faculty.title, faculty.firstName, faculty.middleName, faculty.lastName].filter(Boolean);
+  return parts.join(' ');
+};
+
+// Helper function to format qualification
+const formatQualification = (faculty: Faculty): string => {
+  if (faculty.qualification) {
+    return faculty.qualification;
+  }
+  if (faculty.qualifications && faculty.qualifications.length > 0) {
+    return faculty.qualifications.map(q => 
+      q.degree ? `${q.degree}${q.field ? ` (${q.field})` : ''}` : ''
+    ).filter(Boolean).join(', ');
+  }
+  return 'N/A';
+};
+
+// Helper function to get experience
+const getExperience = (faculty: Faculty): string => {
+  if (faculty.experienceYears) {
+    return faculty.experienceYears;
+  }
+  if (faculty.joiningDate) {
+    const joiningYear = new Date(faculty.joiningDate).getFullYear();
+    const currentYear = new Date().getFullYear();
+    const years = currentYear - joiningYear;
+    return `${years}+ years`;
+  }
+  return 'N/A';
+};
 
 export default function CivilFacultyPage() {
-  const facultyMembers = [
+  const [facultyMembers, setFacultyMembers] = useState<Faculty[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchFaculty = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/faculty');
+        if (!response.ok) {
+          throw new Error('Failed to fetch faculty data');
+        }
+        const allFaculty: Faculty[] = await response.json();
+        
+        // Filter for Civil Engineering department
+        const civilFaculty = allFaculty.filter(faculty => 
+          faculty.department === 'Civil Engineering' && faculty.status === 'active'
+        );
+        
+        setFacultyMembers(civilFaculty);
+      } catch (err) {
+        console.error('Error fetching faculty:', err);
+        setError('Failed to load faculty data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFaculty();
+  }, []);
+
+  // Dummy data as fallback (keeping some for demo purposes)
+  const dummyFacultyMembers = [
     {
       name: "Mr. D N Sheth",
       designation: "Head of Department & Associate Professor",
@@ -69,95 +140,44 @@ export default function CivilFacultyPage() {
         "Published papers on traffic optimization"
       ],
       researchAreas: ["Intelligent Transportation Systems", "Pavement Materials", "Traffic Flow Analysis"]
-    },
-    {
-      name: "Mrs. P J Desai",
-      designation: "Assistant Professor",
-      qualification: "M.E. (Environmental Engineering), B.E. (Civil)",
-      experience: "6+ years",
-      specialization: ["Water Treatment", "Environmental Impact", "Waste Management"],
-      subjects: ["Environmental Engineering", "Water Supply Engineering", "Sewage Treatment"],
-      email: "pj.desai@gppalanpur.ac.in",
-      phone: "+91 98765 43213",
-      achievements: [
-        "Environmental consultant",
-        "Water quality assessment expert",
-        "Green campus initiative leader"
-      ],
-      researchAreas: ["Water Treatment Technologies", "Environmental Sustainability", "Waste to Energy"]
-    },
-    {
-      name: "Mr. A B Joshi",
-      designation: "Assistant Professor",
-      qualification: "M.E. (Geotechnical Engineering), B.E. (Civil)",
-      experience: "7+ years",
-      specialization: ["Soil Mechanics", "Foundation Design", "Geotechnical Investigation"],
-      subjects: ["Soil Mechanics", "Foundation Engineering", "Engineering Geology"],
-      email: "ab.joshi@gppalanpur.ac.in",
-      phone: "+91 98765 43214",
-      achievements: [
-        "Soil testing laboratory in-charge",
-        "Foundation design consultant",
-        "Geotechnical investigation expert"
-      ],
-      researchAreas: ["Soil Improvement Techniques", "Deep Foundation", "Slope Stability"]
-    },
-    {
-      name: "Ms. K M Patel",
-      designation: "Assistant Professor",
-      qualification: "M.E. (Structural Engineering), B.E. (Civil)",
-      experience: "5+ years",
-      specialization: ["Steel Structures", "Structural Analysis", "CAD Design"],
-      subjects: ["Design of Steel Structures", "Structural Analysis", "Computer Applications"],
-      email: "km.patel@gppalanpur.ac.in",
-      phone: "+91 98765 43215",
-      achievements: [
-        "CAD/CAM laboratory coordinator",
-        "Steel structure design specialist",
-        "Youth development program leader"
-      ],
-      researchAreas: ["Cold-Formed Steel", "Structural Dynamics", "Computer-Aided Design"]
-    },
-    {
-      name: "Mr. V R Sharma",
-      designation: "Assistant Professor",
-      qualification: "M.E. (Water Resources), B.E. (Civil)",
-      experience: "9+ years",
-      specialization: ["Irrigation Engineering", "Hydrology", "Water Management"],
-      subjects: ["Irrigation Engineering", "Fluid Mechanics", "Hydrology"],
-      email: "vr.sharma@gppalanpur.ac.in",
-      phone: "+91 98765 43216",
-      achievements: [
-        "Water resources consultant",
-        "Irrigation project specialist",
-        "Rainwater harvesting advocate"
-      ],
-      researchAreas: ["Water Conservation", "Irrigation Efficiency", "Flood Management"]
-    },
-    {
-      name: "Mrs. N K Shah",
-      designation: "Assistant Professor",
-      qualification: "M.E. (Structural Engineering), B.E. (Civil)",
-      experience: "4+ years",
-      specialization: ["Concrete Technology", "Material Testing", "Quality Control"],
-      subjects: ["Concrete Technology", "Building Materials", "Strength of Materials"],
-      email: "nk.shah@gppalanpur.ac.in",
-      phone: "+91 98765 43217",
-      achievements: [
-        "Materials testing laboratory head",
-        "Quality control expert",
-        "Young researcher award"
-      ],
-      researchAreas: ["Self-Compacting Concrete", "Fiber Reinforced Concrete", "Durability Studies"]
     }
   ];
 
+  // Use real data if available, otherwise fall back to dummy data for missing slots
+  const displayFaculty = isLoading ? [] : [...facultyMembers];
+  
+  // Add dummy faculty if we have less than 4 faculty members to show variety
+  if (displayFaculty.length < 4 && !isLoading) {
+    const remainingSlots = 4 - displayFaculty.length;
+    for (let i = 0; i < remainingSlots && i < dummyFacultyMembers.length; i++) {
+      displayFaculty.push(dummyFacultyMembers[i] as any);
+    }
+  }
+
   const departmentStats = {
-    totalFaculty: facultyMembers.length,
+    totalFaculty: isLoading ? "..." : facultyMembers.length.toString(),
     avgExperience: "8+ years",
     researchPapers: "25+",
     industryProjects: "15+"
   };
+
+  if (error) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <PublicNav />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4 dark:text-white">Error Loading Faculty</h1>
+            <p className="text-gray-600 dark:text-gray-400">{error}</p>
+            <Button onClick={() => window.location.reload()} className="mt-4">
+              Try Again
+            </Button>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -222,111 +242,147 @@ export default function CivilFacultyPage() {
             </p>
           </div>
           
-          <div className="grid lg:grid-cols-2 gap-8">
-            {facultyMembers.map((faculty, index) => (
-              <Card key={index} className="hover:shadow-xl transition-all duration-300">
-                <CardHeader className="pb-4">
-                  <div className="flex items-start space-x-4">
-                    <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 dark:bg-primary/20">
-                      <User className="h-10 w-10 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <CardTitle className="text-xl text-gray-900 mb-2 dark:text-white">{faculty.name}</CardTitle>
-                      <CardDescription className="text-primary font-medium mb-2">
-                        {faculty.designation}
-                      </CardDescription>
-                      <div className="flex items-center gap-2 text-sm text-gray-600 mb-2 dark:text-gray-400">
-                        <GraduationCap className="h-4 w-4" />
-                        {faculty.qualification}
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                        <Calendar className="h-4 w-4" />
-                        {faculty.experience} Experience
-                      </div>
-                    </div>
-                  </div>
-                </CardHeader>
-                
-                <CardContent className="space-y-6">
-                  {/* Specializations */}
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 dark:text-white">
-                      <Star className="h-4 w-4 text-primary" />
-                      Specializations
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {faculty.specialization.map((spec, idx) => (
-                        <Badge key={idx} variant="outline" className="text-xs">
-                          {spec}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
+          {isLoading ? (
+            <div className="flex justify-center items-center py-16">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <span className="ml-2 text-lg">Loading faculty members...</span>
+            </div>
+          ) : (
+            <div className="grid lg:grid-cols-2 gap-8">
+              {displayFaculty.map((faculty, index) => {
+                // Check if this is a dummy faculty (has 'name' property) or real faculty
+                const isDummy = 'name' in faculty;
+                const displayName = isDummy ? (faculty as any).name : createDisplayName(faculty);
+                const designation = isDummy ? (faculty as any).designation : faculty.designation || 'Faculty Member';
+                const qualification = isDummy ? (faculty as any).qualification : formatQualification(faculty);
+                const experience = isDummy ? (faculty as any).experience : getExperience(faculty);
+                const email = isDummy ? (faculty as any).email : (faculty.instituteEmail || faculty.personalEmail || faculty.email);
+                const phone = isDummy ? (faculty as any).phone : faculty.contactNumber;
+                const specializations = isDummy ? (faculty as any).specialization : (faculty.specializations || []);
+                const subjects = isDummy ? (faculty as any).subjects : (faculty.subjects || []); // Now uses real data from database
+                const researchAreas = isDummy ? (faculty as any).researchAreas : (faculty.researchInterests || []);
+                const achievements = isDummy ? (faculty as any).achievements : (faculty.achievements?.map((a: any) => a.title || a.description || a) || []);
 
-                  {/* Subjects */}
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 dark:text-white">
-                      <BookOpen className="h-4 w-4 text-primary" />
-                      Subjects Taught
-                    </h4>
-                    <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                      {faculty.subjects.map((subject, idx) => (
-                        <li key={idx} className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
-                          {subject}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Research Areas */}
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 dark:text-white">
-                      <Building className="h-4 w-4 text-primary" />
-                      Research Areas
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {faculty.researchAreas.map((area, idx) => (
-                        <Badge key={idx} variant="secondary" className="text-xs">
-                          {area}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Achievements */}
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 dark:text-white">
-                      <Award className="h-4 w-4 text-primary" />
-                      Key Achievements
-                    </h4>
-                    <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                      {faculty.achievements.map((achievement, idx) => (
-                        <li key={idx} className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
-                          {achievement}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Contact */}
-                  <div className="pt-4 border-t dark:border-gray-700">
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                        <Mail className="h-4 w-4 text-primary" />
-                        <span className="break-all">{faculty.email}</span>
+                return (
+                  <Card key={index} className="hover:shadow-xl transition-all duration-300">
+                    <CardHeader className="pb-4">
+                      <div className="flex items-start space-x-4">
+                        <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 dark:bg-primary/20">
+                          <User className="h-10 w-10 text-primary" />
+                        </div>
+                        <div className="flex-1">
+                          <CardTitle className="text-xl text-gray-900 mb-2 dark:text-white">{displayName}</CardTitle>
+                          <CardDescription className="text-primary font-medium mb-2">
+                            {designation}
+                          </CardDescription>
+                          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2 dark:text-gray-400">
+                            <GraduationCap className="h-4 w-4" />
+                            {qualification}
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            <Calendar className="h-4 w-4" />
+                            {experience} Experience
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                        <Phone className="h-4 w-4 text-primary" />
-                        <span>{faculty.phone}</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    </CardHeader>
+                    
+                    <CardContent className="space-y-6">
+                      {/* Specializations */}
+                      {specializations && specializations.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 dark:text-white">
+                            <Star className="h-4 w-4 text-primary" />
+                            Specializations
+                          </h4>
+                          <div className="flex flex-wrap gap-2">
+                            {specializations.map((spec: string, idx: number) => (
+                              <Badge key={idx} variant="outline" className="text-xs">
+                                {spec}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Subjects Taught */}
+                      {subjects && subjects.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 dark:text-white">
+                            <BookOpen className="h-4 w-4 text-primary" />
+                            Subjects Taught
+                          </h4>
+                          <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                            {subjects.map((subject: string, idx: number) => (
+                              <li key={idx} className="flex items-start gap-2">
+                                <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
+                                {subject}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Research Areas */}
+                      {researchAreas && researchAreas.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 dark:text-white">
+                            <Building className="h-4 w-4 text-primary" />
+                            Research Areas
+                          </h4>
+                          <div className="flex flex-wrap gap-2">
+                            {researchAreas.map((area: string, idx: number) => (
+                              <Badge key={idx} variant="secondary" className="text-xs">
+                                {area}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Achievements */}
+                      {achievements && achievements.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 dark:text-white">
+                            <Award className="h-4 w-4 text-primary" />
+                            Key Achievements
+                          </h4>
+                          <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                            {achievements.map((achievement: string, idx: number) => (
+                              <li key={idx} className="flex items-start gap-2">
+                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
+                                {achievement}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Contact */}
+                      {(email || phone) && (
+                        <div className="pt-4 border-t dark:border-gray-700">
+                          <div className="flex flex-col sm:flex-row gap-3">
+                            {email && (
+                              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                <Mail className="h-4 w-4 text-primary" />
+                                <span className="break-all">{email}</span>
+                              </div>
+                            )}
+                            {phone && (
+                              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                <Phone className="h-4 w-4 text-primary" />
+                                <span>{phone}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
 
