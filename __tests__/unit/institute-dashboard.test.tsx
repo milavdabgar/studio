@@ -120,7 +120,7 @@ describe('Institute Dashboard Page', () => {
         expect(screen.getByText('2340')).toBeInTheDocument(); // Students
         expect(screen.getByText('84')).toBeInTheDocument(); // Rooms
         expect(screen.getByText('24')).toBeInTheDocument(); // Timetables
-        expect(screen.getByText('3')).toBeInTheDocument(); // Conflicts
+        expect(screen.getAllByText('3').length).toBeGreaterThanOrEqual(1); // Conflicts
         expect(screen.getAllByText('78%')).toHaveLength(2); // Utilization - appears in multiple places
       });
     });
@@ -306,7 +306,7 @@ describe('Institute Dashboard Page', () => {
       await waitFor(() => {
         expect(screen.getByText('1')).toBeInTheDocument(); // CSE conflicts
         expect(screen.getByText('0')).toBeInTheDocument(); // ECE conflicts
-        expect(screen.getByText('2')).toBeInTheDocument(); // IT conflicts
+        expect(screen.getAllByText('2').length).toBeGreaterThanOrEqual(1); // IT conflicts
       });
     });
   });

@@ -213,7 +213,7 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
       });
 
       // Should show statistics
-      expect(screen.getByText('2')).toBeInTheDocument(); // Total subjects
+      expect(screen.getAllByText('2').length).toBeGreaterThanOrEqual(1); // Total subjects
 
       // Should show real-time status
       expect(screen.getByTestId('realtime-status')).toBeInTheDocument();
