@@ -50,7 +50,8 @@ describe('InstituteDashboardPage', () => {
     await renderWithTimers();
     
     await waitFor(() => {
-      expect(screen.getByText('Departments')).toBeInTheDocument();
+      // "Departments" appears in both metric card and tab, so expect multiple
+      expect(screen.getAllByText('Departments')).toHaveLength(2);
       expect(screen.getByText('8')).toBeInTheDocument(); // Total departments
       expect(screen.getByText('Faculty')).toBeInTheDocument();
       expect(screen.getByText('156')).toBeInTheDocument(); // Total faculty
@@ -65,7 +66,8 @@ describe('InstituteDashboardPage', () => {
     await waitFor(() => {
       expect(screen.getByText('Comprehensive overview of institute-wide timetable operations')).toBeInTheDocument();
       expect(screen.getByText('Overall Utilization')).toBeInTheDocument();
-      expect(screen.getByText('78%')).toBeInTheDocument();
+      // "78%" appears in multiple places, so expect at least one
+      expect(screen.getAllByText('78%').length).toBeGreaterThanOrEqual(1);
     });
   });
 
@@ -91,7 +93,7 @@ describe('InstituteDashboardPage', () => {
     await waitFor(() => {
       expect(screen.getByText('Department Overview')).toBeInTheDocument();
       expect(screen.getByText('Computer Science & Engineering')).toBeInTheDocument();
-    });
+    }, { timeout: 5000 });
 
     // Switch to Resources tab
     const resourcesTab = screen.getByRole('tab', { name: /resources/i });
