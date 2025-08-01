@@ -274,7 +274,13 @@ describe('Student Timetable Page', () => {
         type: 'timetable_updated' as const,
         timetableId: 'timetable123',
         timestamp: new Date().toISOString(),
-        changes: { modified: ['entry1'] }
+        changes: { 
+          before: [],
+          after: [],
+          modified: ['entry1'],
+          added: [],
+          removed: []
+        }
       };
 
       mockUseStudentRealtimeTimetable.mockReturnValue({

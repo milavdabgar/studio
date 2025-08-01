@@ -60,7 +60,10 @@ describe('Real-time Timetable Hooks', () => {
 
   describe('useRealtimeTimetable Hook', () => {
     it('returns expected hook interface', () => {
-      const result = mockUseRealtimeTimetable();
+      const result = mockUseRealtimeTimetable({
+        userId: 'test-user',
+        stakeholderType: 'student'
+      });
       
       expect(result.isConnected).toBe(true);
       expect(result.connectionState).toBe('connected');
@@ -78,7 +81,10 @@ describe('Real-time Timetable Hooks', () => {
         connectionState: 'disconnected'
       });
 
-      const result = mockUseRealtimeTimetable();
+      const result = mockUseRealtimeTimetable({
+        userId: 'test-user',
+        stakeholderType: 'student'
+      });
       expect(result.isConnected).toBe(false);
       expect(result.connectionState).toBe('disconnected');
     });
@@ -88,7 +94,13 @@ describe('Real-time Timetable Hooks', () => {
         type: 'timetable_updated' as const,
         timetableId: 'tt123',
         timestamp: '2025-08-01T10:00:00Z',
-        changes: { modified: ['entry1'] }
+        changes: { 
+          before: [],
+          after: [],
+          modified: ['entry1'],
+          added: [],
+          removed: []
+        }
       };
 
       mockUseRealtimeTimetable.mockReturnValue({
@@ -96,14 +108,17 @@ describe('Real-time Timetable Hooks', () => {
         lastUpdate: mockUpdate
       });
 
-      const result = mockUseRealtimeTimetable();
+      const result = mockUseRealtimeTimetable({
+        userId: 'test-user',
+        stakeholderType: 'student'
+      });
       expect(result.lastUpdate).toEqual(mockUpdate);
     });
   });
 
   describe('useStudentRealtimeTimetable Hook', () => {
     it('returns student-specific hook interface', () => {
-      const result = mockUseStudentRealtimeTimetable();
+      const result = mockUseStudentRealtimeTimetable('test-user', ['batch1']);
       
       expect(result.isConnected).toBe(true);
       expect(result.connectionState).toBe('connected');
@@ -118,14 +133,14 @@ describe('Real-time Timetable Hooks', () => {
         getActiveSubscriptions: jest.fn(() => ['student-subscription'])
       });
 
-      const result = mockUseStudentRealtimeTimetable();
+      const result = mockUseStudentRealtimeTimetable('test-user', ['batch1']);
       expect(result.getActiveSubscriptions()).toEqual(['student-subscription']);
     });
   });
 
   describe('useFacultyRealtimeTimetable Hook', () => {
     it('returns faculty-specific hook interface', () => {
-      const result = mockUseFacultyRealtimeTimetable();
+      const result = mockUseFacultyRealtimeTimetable('test-user', ['faculty1']);
       
       expect(result.isConnected).toBe(true);
       expect(result.connectionState).toBe('connected');
@@ -145,14 +160,14 @@ describe('Real-time Timetable Hooks', () => {
         lastUpdate: facultyEvent
       });
 
-      const result = mockUseFacultyRealtimeTimetable();
+      const result = mockUseFacultyRealtimeTimetable('test-user', ['faculty1']);
       expect(result.lastUpdate).toEqual(facultyEvent);
     });
   });
 
   describe('useHODRealtimeTimetable Hook', () => {
     it('returns HOD-specific hook interface', () => {
-      const result = mockUseHODRealtimeTimetable();
+      const result = mockUseHODRealtimeTimetable('test-user', ['batch1']);
       
       expect(result.isConnected).toBe(true);
       expect(result.connectionState).toBe('connected');
@@ -171,14 +186,14 @@ describe('Real-time Timetable Hooks', () => {
         lastUpdate: hodEvent
       });
 
-      const result = mockUseHODRealtimeTimetable();
+      const result = mockUseHODRealtimeTimetable('test-user', ['batch1']);
       expect(result.lastUpdate).toEqual(hodEvent);
     });
   });
 
   describe('useRoomManagerRealtimeTimetable Hook', () => {
     it('returns room manager-specific hook interface', () => {
-      const result = mockUseRoomManagerRealtimeTimetable();
+      const result = mockUseRoomManagerRealtimeTimetable('test-user', ['room1'], ['building1']);
       
       expect(result.isConnected).toBe(true);
       expect(result.connectionState).toBe('connected');
@@ -190,7 +205,7 @@ describe('Real-time Timetable Hooks', () => {
         getActiveSubscriptions: jest.fn(() => ['room-manager-subscription'])
       });
 
-      const result = mockUseRoomManagerRealtimeTimetable();
+      const result = mockUseRoomManagerRealtimeTimetable('test-user', ['room1'], ['building1']);
       expect(result.getActiveSubscriptions()).toEqual(['room-manager-subscription']);
     });
   });
@@ -217,19 +232,22 @@ describe('Real-time Timetable Hooks', () => {
 
   describe('Hook Integration Tests', () => {
     it('all hooks can be called without errors', () => {
-      expect(() => mockUseRealtimeTimetable()).not.toThrow();
-      expect(() => mockUseStudentRealtimeTimetable()).not.toThrow();
-      expect(() => mockUseFacultyRealtimeTimetable()).not.toThrow();
-      expect(() => mockUseHODRealtimeTimetable()).not.toThrow();
-      expect(() => mockUseRoomManagerRealtimeTimetable()).not.toThrow();
+      expect(() => mockUseRealtimeTimetable({
+        userId: 'test-user',
+        stakeholderType: 'student'
+      })).not.toThrow();
+      expect(() => mockUseStudentRealtimeTimetable('test-user', ['batch1'])).not.toThrow();
+      expect(() => mockUseFacultyRealtimeTimetable('test-user', ['faculty1'])).not.toThrow();
+      expect(() => mockUseHODRealtimeTimetable('test-user', ['batch1'])).not.toThrow();
+      expect(() => mockUseRoomManagerRealtimeTimetable('test-user', ['room1'], ['building1'])).not.toThrow();
       expect(() => mockUseRealtimeConnectionStatus()).not.toThrow();
     });
 
     it('hooks can be used in component tests', () => {
       // Simulate how these hooks would be used in actual component tests
-      const studentHook = mockUseStudentRealtimeTimetable();
-      const facultyHook = mockUseFacultyRealtimeTimetable();
-      const hodHook = mockUseHODRealtimeTimetable();
+      const studentHook = mockUseStudentRealtimeTimetable('test-user', ['batch1']);
+      const facultyHook = mockUseFacultyRealtimeTimetable('test-user', ['faculty1']);
+      const hodHook = mockUseHODRealtimeTimetable('test-user', ['batch1']);
 
       expect(studentHook.isConnected).toBe(true);
       expect(facultyHook.isConnected).toBe(true);
@@ -237,7 +255,10 @@ describe('Real-time Timetable Hooks', () => {
     });
 
     it('hook functions can be called', () => {
-      const hook = mockUseRealtimeTimetable();
+      const hook = mockUseRealtimeTimetable({
+        userId: 'test-user',
+        stakeholderType: 'student'
+      });
       
       // Test that the mock functions can be called
       hook.subscribe();

@@ -98,7 +98,11 @@ const mockBatches = [
 
 describe('FacultyTimetablePage', () => {
   beforeEach(() => {
-    mockUseToast.mockReturnValue({ toast: mockToast });
+    mockUseToast.mockReturnValue({ 
+      toast: mockToast,
+      dismiss: jest.fn(),
+      toasts: []
+    });
 
     // Mock API services
     const { timetableService } = require('@/lib/api/timetables');

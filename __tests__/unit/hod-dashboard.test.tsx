@@ -362,7 +362,13 @@ describe('HOD Dashboard Page', () => {
         type: 'timetable_updated' as const,
         timetableId: 'dept-timetable',
         timestamp: new Date().toISOString(),
-        changes: { modified: ['faculty1'], added: ['timetable2'] }
+        changes: { 
+          before: [],
+          after: [],
+          modified: ['faculty1'], 
+          added: ['timetable2'],
+          removed: []
+        }
       };
 
       mockUseHODRealtimeTimetable.mockReturnValue({

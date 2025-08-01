@@ -102,7 +102,11 @@ const mockBatches = [
 
 // Helper function to setup common mocks
 const setupMocks = (role: 'student' | 'faculty' | 'hod' | 'admin') => {
-  mockUseToast.mockReturnValue({ toast: mockToast });
+  mockUseToast.mockReturnValue({ 
+    toast: mockToast,
+    dismiss: jest.fn(),
+    toasts: []
+  });
   
   // Setup real-time hooks - include all properties from the actual hook return type
   mockUseStudentRealtimeTimetable.mockReturnValue({
@@ -229,13 +233,23 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
       const mockReconnect = jest.fn();
       mockUseStudentRealtimeTimetable.mockReturnValue({
         isConnected: true,
+        connectionState: 'connected' as const,
         lastUpdate: {
           type: 'timetable_updated',
           timetableId: 'timetable123',
           timestamp: new Date().toISOString(),
-          changes: { modified: ['entry1'] }
+          changes: { 
+            before: [],
+            after: [],
+            modified: ['entry1'],
+            added: [],
+            removed: []
+          }
         },
-        reconnect: mockReconnect
+        subscribe: jest.fn(),
+        unsubscribe: jest.fn(),
+        reconnect: mockReconnect,
+        getActiveSubscriptions: jest.fn(() => [])
       });
 
       rtlRender(<StudentTimetablePage />);
@@ -349,7 +363,12 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
       const mockReconnect = jest.fn();
       mockUseHODRealtimeTimetable.mockReturnValue({
         isConnected: false,
-        reconnect: mockReconnect
+        connectionState: 'disconnected' as const,
+        lastUpdate: null,
+        subscribe: jest.fn(),
+        unsubscribe: jest.fn(),
+        reconnect: mockReconnect,
+        getActiveSubscriptions: jest.fn(() => [])
       });
 
       rtlRender(<HODDashboardPage />);
@@ -423,8 +442,12 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
         
         return {
           isConnected: true,
+          connectionState: 'connected' as const,
           lastUpdate: timetableChangeEvent,
-          reconnect: jest.fn()
+          subscribe: jest.fn(),
+          unsubscribe: jest.fn(),
+          reconnect: jest.fn(),
+          getActiveSubscriptions: jest.fn(() => [])
         };
       });
 

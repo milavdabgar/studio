@@ -35,7 +35,7 @@ describe('/api/permissions API Endpoints', () => {
         'x-forwarded-for': '127.0.0.1'
       }),
       url: 'http://localhost:3000/api/permissions'
-    };
+    } as any;
 
     mockConnectMongoose.mockResolvedValue(undefined);
   });
@@ -91,7 +91,7 @@ describe('/api/permissions API Endpoints', () => {
         })
       };
 
-      mockRequest.url = 'http://localhost:3000/api/permissions?id=perm_1';
+      (mockRequest as any).url = 'http://localhost:3000/api/permissions?id=perm_1';
       mockPermissionModel.findOne.mockResolvedValue(mockPermission);
 
       const response = await GET(mockRequest as NextRequest);
@@ -103,7 +103,7 @@ describe('/api/permissions API Endpoints', () => {
     });
 
     it('returns 404 for non-existent permission', async () => {
-      mockRequest.url = 'http://localhost:3000/api/permissions?id=nonexistent';
+      (mockRequest as any).url = 'http://localhost:3000/api/permissions?id=nonexistent';
       mockPermissionModel.findOne.mockResolvedValue(null);
 
       const response = await GET(mockRequest as NextRequest);
@@ -177,7 +177,7 @@ describe('/api/permissions API Endpoints', () => {
       };
 
       mockPermissionModel.findOne.mockResolvedValue(null); // No existing permission
-      mockPermissionModel.mockImplementation(() => mockSavedPermission);
+      (mockPermissionModel as any).mockImplementation(() => mockSavedPermission);
 
       mockRequest.json = jest.fn().mockResolvedValue(validPermissionData);
 
@@ -244,7 +244,7 @@ describe('/api/permissions API Endpoints', () => {
       };
 
       mockPermissionModel.findOne.mockResolvedValue(null);
-      mockPermissionModel.mockImplementation((data) => {
+      (mockPermissionModel as any).mockImplementation((data: any) => {
         capturedData = data;
         return mockSavedPermission;
       });
@@ -279,7 +279,7 @@ describe('/api/permissions API Endpoints', () => {
         toJSON: jest.fn().mockReturnValue(updateData)
       };
 
-      mockRequest.url = 'http://localhost:3000/api/permissions?id=perm_1';
+      (mockRequest as any).url = 'http://localhost:3000/api/permissions?id=perm_1';
       mockRequest.json = jest.fn().mockResolvedValue(updateData);
 
       mockPermissionModel.findOne
@@ -310,7 +310,7 @@ describe('/api/permissions API Endpoints', () => {
     });
 
     it('returns 404 for non-existent permission', async () => {
-      mockRequest.url = 'http://localhost:3000/api/permissions?id=nonexistent';
+      (mockRequest as any).url = 'http://localhost:3000/api/permissions?id=nonexistent';
       mockRequest.json = jest.fn().mockResolvedValue(updateData);
 
       mockPermissionModel.findOne.mockResolvedValue(null);
@@ -334,7 +334,7 @@ describe('/api/permissions API Endpoints', () => {
         code: 'updated_code'
       };
 
-      mockRequest.url = 'http://localhost:3000/api/permissions?id=perm_1';
+      (mockRequest as any).url = 'http://localhost:3000/api/permissions?id=perm_1';
       mockRequest.json = jest.fn().mockResolvedValue(updateData);
 
       mockPermissionModel.findOne
@@ -360,7 +360,7 @@ describe('/api/permissions API Endpoints', () => {
         toJSON: jest.fn().mockReturnValue(updateData)
       };
 
-      mockRequest.url = `http://localhost:3000/api/permissions?id=${objectId}`;
+      (mockRequest as any).url = `http://localhost:3000/api/permissions?id=${objectId}`;
       mockRequest.json = jest.fn().mockResolvedValue(updateData);
 
       mockPermissionModel.findById.mockResolvedValue(mockExistingPermission);
@@ -385,7 +385,7 @@ describe('/api/permissions API Endpoints', () => {
         })
       };
 
-      mockRequest.url = 'http://localhost:3000/api/permissions?id=perm_1';
+      (mockRequest as any).url = 'http://localhost:3000/api/permissions?id=perm_1';
 
       mockPermissionModel.findOne.mockResolvedValue(mockExistingPermission);
       mockPermissionModel.findByIdAndDelete.mockResolvedValue(mockExistingPermission);
@@ -407,7 +407,7 @@ describe('/api/permissions API Endpoints', () => {
     });
 
     it('returns 404 for non-existent permission', async () => {
-      mockRequest.url = 'http://localhost:3000/api/permissions?id=nonexistent';
+      (mockRequest as any).url = 'http://localhost:3000/api/permissions?id=nonexistent';
 
       mockPermissionModel.findOne.mockResolvedValue(null);
 
@@ -425,7 +425,7 @@ describe('/api/permissions API Endpoints', () => {
         toJSON: jest.fn().mockReturnValue({ id: objectId })
       };
 
-      mockRequest.url = `http://localhost:3000/api/permissions?id=${objectId}`;
+      (mockRequest as any).url = `http://localhost:3000/api/permissions?id=${objectId}`;
 
       mockPermissionModel.findById.mockResolvedValue(mockExistingPermission);
       mockPermissionModel.findByIdAndDelete.mockResolvedValue(mockExistingPermission);
@@ -450,7 +450,7 @@ describe('/api/permissions API Endpoints', () => {
     });
 
     it('uses unknown IP when headers are missing', async () => {
-      mockRequest.headers = new Headers();
+      (mockRequest as any).headers = new Headers();
 
       const response = await GET(mockRequest as NextRequest);
       
@@ -459,7 +459,7 @@ describe('/api/permissions API Endpoints', () => {
     });
 
     it('uses x-real-ip header as fallback', async () => {
-      mockRequest.headers = new Headers({
+      (mockRequest as any).headers = new Headers({
         'x-real-ip': '192.168.1.1'
       });
 
@@ -539,7 +539,7 @@ describe('/api/permissions API Endpoints', () => {
             toJSON: jest.fn().mockReturnValue(data),
             save: jest.fn().mockResolvedValue(undefined)
           };
-          mockPermissionModel.mockImplementation(() => mockSavedPermission);
+          (mockPermissionModel as any).mockImplementation(() => mockSavedPermission);
         }
 
         const response = await POST(mockRequest as NextRequest);
@@ -579,7 +579,7 @@ describe('/api/permissions API Endpoints', () => {
             toJSON: jest.fn().mockReturnValue(data),
             save: jest.fn().mockResolvedValue(undefined)
           };
-          mockPermissionModel.mockImplementation(() => mockSavedPermission);
+          (mockPermissionModel as any).mockImplementation(() => mockSavedPermission);
         }
 
         const response = await POST(mockRequest as NextRequest);
@@ -612,7 +612,7 @@ describe('/api/permissions API Endpoints', () => {
         save: jest.fn().mockResolvedValue(undefined)
       };
 
-      mockPermissionModel.mockImplementation(() => mockSavedPermission);
+      (mockPermissionModel as any).mockImplementation(() => mockSavedPermission);
 
       const response = await POST(mockRequest as NextRequest);
 

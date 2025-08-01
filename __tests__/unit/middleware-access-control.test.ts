@@ -26,7 +26,7 @@ describe('Middleware Access Control', () => {
     mockUrl = new URL('https://example.com');
     
     mockRequest = {
-      nextUrl: mockUrl,
+      nextUrl: mockUrl as any,
       cookies: {
         get: jest.fn().mockReturnValue(undefined)
       } as any,

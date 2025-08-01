@@ -26,10 +26,19 @@ Object.defineProperty(document, 'cookie', {
 
 describe('HODDashboardPage', () => {
   beforeEach(() => {
-    mockUseToast.mockReturnValue({ toast: mockToast });
+    mockUseToast.mockReturnValue({ 
+      toast: mockToast,
+      dismiss: jest.fn(), 
+      toasts: []
+    });
     mockUseHODRealtimeTimetable.mockReturnValue({
       isConnected: true,
-      reconnect: jest.fn()
+      connectionState: 'connected' as const,
+      lastUpdate: null,
+      subscribe: jest.fn(),
+      unsubscribe: jest.fn(),
+      reconnect: jest.fn(),
+      getActiveSubscriptions: jest.fn(() => [])
     });
   });
 
@@ -208,7 +217,12 @@ describe('HODDashboardPage', () => {
   it('handles real-time connection status', async () => {
     mockUseHODRealtimeTimetable.mockReturnValue({
       isConnected: false,
-      reconnect: jest.fn()
+      connectionState: 'disconnected' as const,
+      lastUpdate: null,
+      subscribe: jest.fn(),
+      unsubscribe: jest.fn(),
+      reconnect: jest.fn(),
+      getActiveSubscriptions: jest.fn(() => [])
     });
 
     rtlRender(<HODDashboardPage />);
@@ -222,7 +236,12 @@ describe('HODDashboardPage', () => {
     const mockReconnect = jest.fn();
     mockUseHODRealtimeTimetable.mockReturnValue({
       isConnected: true,
-      reconnect: mockReconnect
+      connectionState: 'connected' as const,
+      lastUpdate: null,
+      subscribe: jest.fn(),
+      unsubscribe: jest.fn(),
+      reconnect: mockReconnect,
+      getActiveSubscriptions: jest.fn(() => [])
     });
 
     rtlRender(<HODDashboardPage />);
@@ -265,7 +284,7 @@ describe('HODDashboardPage', () => {
   it('shows workload colors correctly', async () => {
     rtlRender(<HODDashboardPage />);
     
-    const facultyTab = screen.getRole('tab', { name: /faculty/i });
+    const facultyTab = screen.getByRole('tab', { name: /faculty/i });
     fireEvent.click(facultyTab);
     
     await waitFor(() => {

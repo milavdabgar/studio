@@ -84,11 +84,19 @@ const mockRooms = [
 
 describe('StudentTimetablePage', () => {
   beforeEach(() => {
-    mockUseToast.mockReturnValue({ toast: mockToast });
+    mockUseToast.mockReturnValue({ 
+      toast: mockToast,
+      dismiss: jest.fn(),
+      toasts: []
+    });
     mockUseStudentRealtimeTimetable.mockReturnValue({
       isConnected: true,
+      connectionState: 'connected' as const,
       lastUpdate: null,
-      reconnect: jest.fn()
+      subscribe: jest.fn(),
+      unsubscribe: jest.fn(),
+      reconnect: jest.fn(),
+      getActiveSubscriptions: jest.fn(() => [])
     });
 
     // Mock API services
@@ -202,13 +210,23 @@ describe('StudentTimetablePage', () => {
     const mockReconnect = jest.fn();
     mockUseStudentRealtimeTimetable.mockReturnValue({
       isConnected: false,
+      connectionState: 'disconnected' as const,
       lastUpdate: {
         type: 'timetable_updated',
         timetableId: 'timetable123',
         timestamp: new Date().toISOString(),
-        changes: { modified: ['entry1'] }
+        changes: { 
+          before: [],
+          after: [],
+          modified: ['entry1'],
+          added: [],
+          removed: []
+        }
       },
-      reconnect: mockReconnect
+      subscribe: jest.fn(),
+      unsubscribe: jest.fn(),
+      reconnect: mockReconnect,
+      getActiveSubscriptions: jest.fn(() => [])
     });
 
     rtlRender(<StudentTimetablePage />);

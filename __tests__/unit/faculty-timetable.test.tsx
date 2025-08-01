@@ -271,7 +271,13 @@ describe('Faculty Timetable Page', () => {
         type: 'timetable_updated' as const,
         timetableId: 'timetable1',
         timestamp: new Date().toISOString(),
-        changes: { modified: ['entry1'], added: ['entry2'] }
+        changes: { 
+          before: [],
+          after: [],
+          modified: ['entry1'], 
+          added: ['entry2'],
+          removed: []
+        }
       };
 
       mockUseFacultyRealtimeTimetable.mockReturnValue({
