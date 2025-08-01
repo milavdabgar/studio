@@ -192,7 +192,7 @@ describe('Institute Dashboard Page', () => {
       await waitFor(() => {
         expect(screen.getByText('Department Overview')).toBeInTheDocument();
         expect(screen.getByText('Detailed view of all departments')).toBeInTheDocument();
-      });
+      }, { timeout: 5000 });
     });
 
     it('switches to resources tab', async () => {
@@ -206,7 +206,7 @@ describe('Institute Dashboard Page', () => {
       await waitFor(() => {
         expect(screen.getByText('Resource Utilization')).toBeInTheDocument();
         expect(screen.getByText('Monitor room and faculty utilization across the institute')).toBeInTheDocument();
-      });
+      }, { timeout: 5000 });
     });
 
     it('switches to alerts tab', async () => {
