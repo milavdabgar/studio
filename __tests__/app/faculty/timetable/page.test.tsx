@@ -158,7 +158,7 @@ describe('FacultyTimetablePage', () => {
     });
   });
 
-  it.skip('switches to workload analysis tab', async () => {
+  it('switches to workload analysis tab', async () => {
     rtlRender(<FacultyTimetablePage />);
     
     // Wait for the component to load and workload analysis to complete
@@ -176,7 +176,7 @@ describe('FacultyTimetablePage', () => {
     }, { timeout: 5000 });
   });
 
-  it.skip('detects workload overload conflicts', async () => {
+  it('detects workload overload conflicts', async () => {
     // Create overloaded faculty with many classes
     const overloadedEntries = Array.from({ length: 20 }, (_, i) => ({
       dayOfWeek: 'Monday',
@@ -209,7 +209,7 @@ describe('FacultyTimetablePage', () => {
     }, { timeout: 3000 });
   });
 
-  it.skip('detects back-to-back class conflicts', async () => {
+  it('detects back-to-back class conflicts', async () => {
     const backToBackEntries = [
       {
         dayOfWeek: 'Monday',
@@ -270,7 +270,7 @@ describe('FacultyTimetablePage', () => {
     }, { timeout: 3000 });
   });
 
-  it.skip('shows alerts tab with faculty notifications', async () => {
+  it('shows alerts tab with faculty notifications', async () => {
     rtlRender(<FacultyTimetablePage />);
     
     await waitFor(() => {
@@ -285,7 +285,7 @@ describe('FacultyTimetablePage', () => {
     }, { timeout: 3000 });
   });
 
-  it.skip('calculates weekly distribution correctly', async () => {
+  it('calculates weekly distribution correctly', async () => {
     rtlRender(<FacultyTimetablePage />);
     
     await waitFor(() => {
@@ -304,7 +304,7 @@ describe('FacultyTimetablePage', () => {
     }, { timeout: 3000 });
   });
 
-  it.skip('calculates time slot distribution correctly', async () => {
+  it('calculates time slot distribution correctly', async () => {
     rtlRender(<FacultyTimetablePage />);
     
     await waitFor(() => {
@@ -387,7 +387,7 @@ describe('FacultyTimetablePage', () => {
     });
   });
 
-  it.skip('displays faculty name in header', async () => {
+  it('displays faculty name in header', async () => {
     rtlRender(<FacultyTimetablePage />);
     
     await waitFor(() => {
@@ -406,7 +406,7 @@ describe('FacultyTimetablePage', () => {
     expect(document.querySelector('.animate-spin')).toBeInTheDocument();
   });
 
-  it.skip('handles empty schedule gracefully', async () => {
+  it('handles empty schedule gracefully', async () => {
     const { timetableService } = require('@/lib/api/timetables');
     timetableService.getAllTimetables = jest.fn().mockResolvedValue([{
       ...mockTimetables[0],

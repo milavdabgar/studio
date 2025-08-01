@@ -60,7 +60,7 @@ describe('HODDashboardPage', () => {
     });
   });
 
-  it.skip('displays department metrics', async () => {
+  it('displays department metrics', async () => {
     rtlRender(<HODDashboardPage />);
     
     await waitFor(() => {
@@ -104,7 +104,7 @@ describe('HODDashboardPage', () => {
     });
   });
 
-  it.skip('handles tab navigation correctly', async () => {
+  it('handles tab navigation correctly', async () => {
     rtlRender(<HODDashboardPage />);
     
     await waitFor(() => {
@@ -138,7 +138,7 @@ describe('HODDashboardPage', () => {
     });
   });
 
-  it.skip('displays faculty workload details in faculty tab', async () => {
+  it('displays faculty workload details in faculty tab', async () => {
     rtlRender(<HODDashboardPage />);
     
     const facultyTab = screen.getByRole('tab', { name: /faculty/i });
@@ -153,7 +153,7 @@ describe('HODDashboardPage', () => {
     });
   });
 
-  it.skip('displays timetable overview in timetables tab', async () => {
+  it('displays timetable overview in timetables tab', async () => {
     rtlRender(<HODDashboardPage />);
     
     const timetablesTab = screen.getByRole('tab', { name: /timetables/i });
@@ -168,7 +168,7 @@ describe('HODDashboardPage', () => {
     });
   });
 
-  it.skip('handles timetable filtering', async () => {
+  it('handles timetable filtering', async () => {
     rtlRender(<HODDashboardPage />);
     
     const timetablesTab = screen.getByRole('tab', { name: /timetables/i });
@@ -188,7 +188,7 @@ describe('HODDashboardPage', () => {
     });
   });
 
-  it.skip('displays department alerts in alerts tab', async () => {
+  it('displays department alerts in alerts tab', async () => {
     rtlRender(<HODDashboardPage />);
     
     const alertsTab = screen.getByRole('tab', { name: /alerts/i });
@@ -273,7 +273,7 @@ describe('HODDashboardPage', () => {
     });
   });
 
-  it.skip('displays metric cards with correct values', async () => {
+  it('displays metric cards with correct values', async () => {
     rtlRender(<HODDashboardPage />);
     
     await waitFor(() => {
@@ -287,7 +287,7 @@ describe('HODDashboardPage', () => {
     });
   });
 
-  it.skip('shows workload colors correctly', async () => {
+  it('shows workload colors correctly', async () => {
     rtlRender(<HODDashboardPage />);
     
     const facultyTab = screen.getByRole('tab', { name: /faculty/i });
@@ -304,7 +304,7 @@ describe('HODDashboardPage', () => {
     });
   });
 
-  it.skip('handles authentication errors', async () => {
+  it('handles authentication errors', async () => {
     // Clear cookie
     Object.defineProperty(document, 'cookie', {
       writable: true,
@@ -322,13 +322,13 @@ describe('HODDashboardPage', () => {
     });
   });
 
-  it.skip('shows loading state initially', () => {
+  it('shows loading state initially', () => {
     rtlRender(<HODDashboardPage />);
     
     expect(screen.getByText('Loading Department Dashboard...')).toBeInTheDocument();
   });
 
-  it.skip('displays time range selector', async () => {
+  it('displays time range selector', async () => {
     rtlRender(<HODDashboardPage />);
     
     await waitFor(() => {
@@ -347,7 +347,7 @@ describe('HODDashboardPage', () => {
     });
   });
 
-  it.skip('handles timetable approval action', async () => {
+  it('handles timetable approval action', async () => {
     rtlRender(<HODDashboardPage />);
     
     const timetablesTab = screen.getByRole('tab', { name: /timetables/i });
@@ -362,7 +362,7 @@ describe('HODDashboardPage', () => {
     });
   });
 
-  it.skip('shows resource status indicators', async () => {
+  it('shows resource status indicators', async () => {
     rtlRender(<HODDashboardPage />);
     
     await waitFor(() => {

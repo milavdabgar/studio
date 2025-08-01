@@ -362,7 +362,7 @@ describe('StudentTimetablePage', () => {
     });
   });
 
-  it.skip('displays mobile-responsive layout', async () => {
+  it('displays mobile-responsive layout', async () => {
     // Mock window.innerWidth for mobile
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
@@ -380,7 +380,7 @@ describe('StudentTimetablePage', () => {
     }, { timeout: 5000 });
   });
 
-  it.skip('calculates weekly hours correctly', async () => {
+  it('calculates weekly hours correctly', async () => {
     rtlRender(<StudentTimetablePage />);
     
     await waitFor(() => {

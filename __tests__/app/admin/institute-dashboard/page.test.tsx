@@ -79,7 +79,7 @@ describe('InstituteDashboardPage', () => {
     });
   });
 
-  it.skip('handles tab navigation correctly', async () => {
+  it('handles tab navigation correctly', async () => {
     await renderWithTimers();
     
     await waitFor(() => {
@@ -143,7 +143,7 @@ describe('InstituteDashboardPage', () => {
     });
   });
 
-  it.skip('displays detailed department information in departments tab', async () => {
+  it('displays detailed department information in departments tab', async () => {
     await renderWithTimers();
     
     await waitFor(() => {
@@ -160,7 +160,7 @@ describe('InstituteDashboardPage', () => {
     }, { timeout: 10000 });
   });
 
-  it.skip('shows resource utilization details in resources tab', async () => {
+  it('shows resource utilization details in resources tab', async () => {
     await renderWithTimers();
     
     await waitFor(() => {
@@ -177,7 +177,7 @@ describe('InstituteDashboardPage', () => {
     }, { timeout: 10000 });
   });
 
-  it.skip('displays system alerts in alerts tab', async () => {
+  it('displays system alerts in alerts tab', async () => {
     await renderWithTimers();
     
     await waitFor(() => {
@@ -202,7 +202,7 @@ describe('InstituteDashboardPage', () => {
     }, { timeout: 10000 });
   });
 
-  it.skip('handles time range selector', async () => {
+  it('handles time range selector', async () => {
     await renderWithTimers();
     
     await waitFor(() => {
@@ -235,7 +235,7 @@ describe('InstituteDashboardPage', () => {
     });
   });
 
-  it.skip('displays severity-based alert styling', async () => {
+  it('displays severity-based alert styling', async () => {
     await renderWithTimers();
     
     await waitFor(() => {
@@ -262,7 +262,7 @@ describe('InstituteDashboardPage', () => {
     });
   });
 
-  it.skip('handles alert resolution', async () => {
+  it('handles alert resolution', async () => {
     await renderWithTimers();
     
     await waitFor(() => {
@@ -279,7 +279,7 @@ describe('InstituteDashboardPage', () => {
     }, { timeout: 10000 });
   });
 
-  it.skip('displays department status badges correctly', async () => {
+  it('displays department status badges correctly', async () => {
     await renderWithTimers();
     
     await waitFor(() => {
@@ -296,7 +296,7 @@ describe('InstituteDashboardPage', () => {
     }, { timeout: 10000 });
   });
 
-  it.skip('shows resource type indicators', async () => {
+  it('shows resource type indicators', async () => {
     await renderWithTimers();
     
     await waitFor(() => {
@@ -311,7 +311,7 @@ describe('InstituteDashboardPage', () => {
     }, { timeout: 10000 });
   });
 
-  it.skip('displays peak hours information', async () => {
+  it('displays peak hours information', async () => {
     await renderWithTimers();
     
     await waitFor(() => {

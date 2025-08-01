@@ -270,7 +270,7 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
       setupMocks('faculty');
     });
 
-    it.skip('renders complete faculty timetable workflow with workload analysis', async () => {
+    it('renders complete faculty timetable workflow with workload analysis', async () => {
       rtlRender(<FacultyTimetablePage />);
       
       // Should load and display faculty data
@@ -298,7 +298,7 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
       }, { timeout: 5000 });
     });
 
-    it.skip('detects and displays workload conflicts', async () => {
+    it('detects and displays workload conflicts', async () => {
       // Setup overloaded schedule
       const overloadedTimetable = {
         ...mockTimetableData,
@@ -335,7 +335,7 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
       setupMocks('hod');
     });
 
-    it.skip('renders complete HOD dashboard with department management', async () => {
+    it('renders complete HOD dashboard with department management', async () => {
       rtlRender(<HODDashboardPage />);
       
       // Should load and display department data
@@ -389,7 +389,7 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
       setupMocks('admin');
     });
 
-    it.skip('renders complete institute dashboard with system-wide metrics', async () => {
+    it('renders complete institute dashboard with system-wide metrics', async () => {
       rtlRender(<InstituteDashboardPage />);
       
       // Should load and display institute data
@@ -413,7 +413,7 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
   });
 
   describe('Cross-Stakeholder Real-time Updates', () => {
-    it.skip('simulates real-time update flow across stakeholders', async () => {
+    it('simulates real-time update flow across stakeholders', async () => {
       // Simulate timetable change event
       const timetableChangeEvent = {
         type: 'timetable_updated' as const,
@@ -468,7 +468,7 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
   });
 
   describe('Role-Based Access Control', () => {
-    it.skip('ensures each stakeholder sees appropriate data', async () => {
+    it('ensures each stakeholder sees appropriate data', async () => {
       // Test student view
       setupMocks('student');
       const { unmount: unmountStudent } = rtlRender(<StudentTimetablePage />);

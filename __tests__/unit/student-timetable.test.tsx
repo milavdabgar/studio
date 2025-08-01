@@ -455,7 +455,7 @@ describe('Student Timetable Page', () => {
   });
 
   describe('Accessibility', () => {
-    it.skip('has proper ARIA labels', async () => {
+    it('has proper ARIA labels', async () => {
       // TODO: Fix similar to HOD dashboard ARIA label issue
       render(<StudentTimetablePage />);
       

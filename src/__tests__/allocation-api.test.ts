@@ -87,7 +87,7 @@ jest.mock('../lib/algorithms/allocationEngine', () => ({
   createAllocationEngine: jest.fn()
 }));
 
-describe.skip('Allocation API Endpoints', () => {
+describe('Allocation API Endpoints', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     

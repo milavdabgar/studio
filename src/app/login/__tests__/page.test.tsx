@@ -529,7 +529,7 @@ describe('Login Page', () => {
   });
 
   describe('Cookie Handling', () => {
-    it.skip('should clear auth cookie on mount', async () => {
+    it('should clear auth cookie on mount', async () => {
       // Create a spy to track cookie assignments
       const cookieValues: string[] = [];
       
@@ -550,7 +550,7 @@ describe('Login Page', () => {
       cookieSpy.mockRestore();
     });
 
-    it.skip('should set auth cookie on successful login', async () => {
+    it('should set auth cookie on successful login', async () => {
       const user = userEvent.setup();
       
       // Create a spy to track cookie assignments
