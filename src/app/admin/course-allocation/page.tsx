@@ -34,7 +34,12 @@ import {
   Save,
   RotateCcw,
   UserCircle,
-  Calendar
+  Calendar,
+  TrendingUp,
+  PieChart,
+  Activity,
+  Award,
+  AlertCircle
 } from 'lucide-react';
 import { 
   DndContext, 
@@ -53,6 +58,23 @@ import {
 } from '@dnd-kit/sortable';
 import { useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  PieChart as RechartsPieChart,
+  Pie,
+  Cell,
+  Legend,
+  LineChart,
+  Line,
+  Area,
+  AreaChart
+} from 'recharts';
 import { useToast } from '@/hooks/use-toast';
 import type { 
   AllocationSessionWithDetails, 
@@ -434,6 +456,50 @@ export default function CourseAllocationPage() {
       .filter(a => a.facultyId === faculty.id)
       .reduce((sum, a) => sum + (a.hoursPerWeek || 0), 0)
   }));
+
+  // Analytics calculations
+  const analyticsData = {
+    workloadDistribution: facultyAllocations.map(f => ({
+      name: f.faculty.displayName || f.faculty.fullName || 'Unknown',
+      hours: f.totalHours,
+      courses: f.allocations.length,
+      utilization: Math.round((f.totalHours / 18) * 100),
+      department: f.faculty.department || 'Unknown'
+    })),
+    
+    departmentStats: Object.entries(
+      facultyAllocations.reduce((acc, f) => {
+        const dept = f.faculty.department || 'Unknown';
+        if (!acc[dept]) acc[dept] = { totalHours: 0, facultyCount: 0, courses: 0 };
+        acc[dept].totalHours += f.totalHours;
+        acc[dept].facultyCount += 1;
+        acc[dept].courses += f.allocations.length;
+        return acc;
+      }, {} as Record<string, { totalHours: number; facultyCount: number; courses: number }>)
+    ).map(([dept, stats]) => ({
+      department: dept,
+      avgHours: Math.round(stats.totalHours / stats.facultyCount),
+      totalCourses: stats.courses,
+      facultyCount: stats.facultyCount,
+      utilization: Math.round((stats.totalHours / (stats.facultyCount * 18)) * 100)
+    })),
+
+    preferenceSatisfaction: allocations.reduce((acc, a) => {
+      acc[a.preferenceMatch] = (acc[a.preferenceMatch] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>),
+
+    allocationEfficiency: {
+      totalAllocations: allocations.length,
+      manualAdjustments: allocations.filter(a => a.isManualAssignment).length,
+      highPreferenceMatch: allocations.filter(a => a.preferenceMatch === 'high').length,
+      averageScore: Math.round(allocations.reduce((sum, a) => sum + (a.allocationScore || 0), 0) / allocations.length),
+      overloadedFaculty: facultyAllocations.filter(f => f.totalHours > 18).length,
+      underutilizedFaculty: facultyAllocations.filter(f => f.totalHours < 12).length
+    }
+  };
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
 
   // Draggable allocation item component
   const DraggableAllocation = ({ allocation }: { allocation: CourseAllocationWithDetails }) => {
@@ -1061,56 +1127,259 @@ export default function CourseAllocationPage() {
               )}
             </TabsContent>
 
-            <TabsContent value="analytics" className="space-y-4">
+            <TabsContent value="analytics" className="space-y-6">
               {selectedSession ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="space-y-6">
+                  {/* Key Metrics Summary */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Courses</CardTitle>
+                        <BookOpen className="h-4 w-4 text-muted-foreground" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold">{analyticsData.allocationEfficiency.totalAllocations}</div>
+                        <p className="text-xs text-muted-foreground">
+                          {analyticsData.allocationEfficiency.highPreferenceMatch} high preference
+                        </p>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Avg Faculty Load</CardTitle>
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold">
+                          {Math.round(analyticsData.workloadDistribution.reduce((sum, f) => sum + f.hours, 0) / analyticsData.workloadDistribution.length)}h
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          of 18h maximum
+                        </p>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Allocation Score</CardTitle>
+                        <Award className="h-4 w-4 text-muted-foreground" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold">{analyticsData.allocationEfficiency.averageScore}/100</div>
+                        <Progress value={analyticsData.allocationEfficiency.averageScore} className="mt-2" />
+                      </CardContent>
+                    </Card>
+                    
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Workload Issues</CardTitle>
+                        <AlertCircle className="h-4 w-4 text-muted-foreground" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold text-red-600">{analyticsData.allocationEfficiency.overloadedFaculty}</div>
+                        <p className="text-xs text-muted-foreground">
+                          overloaded faculty
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Charts Row */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Faculty Workload Distribution */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <TrendingUp className="h-5 w-5" />
+                          Faculty Workload Distribution
+                        </CardTitle>
+                        <CardDescription>
+                          Hours per week by faculty member (GTU limit: 18h)
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <BarChart data={analyticsData.workloadDistribution.slice(0, 10)}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis 
+                              dataKey="name" 
+                              angle={-45}
+                              textAnchor="end"
+                              height={100}
+                              interval={0}
+                              fontSize={12}
+                            />
+                            <YAxis />
+                            <Tooltip 
+                              formatter={(value, name) => [
+                                `${value}h`,
+                                name === 'hours' ? 'Teaching Load' : name
+                              ]}
+                              labelFormatter={(label) => `Faculty: ${label}`}
+                            />
+                            <Bar 
+                              dataKey="hours" 
+                              name="Teaching Hours"
+                            >
+                              {analyticsData.workloadDistribution.slice(0, 10).map((entry, index) => (
+                                <Cell 
+                                  key={`cell-${index}`}
+                                  fill={entry.hours > 18 ? '#EF4444' : entry.hours < 12 ? '#F59E0B' : '#10B981'}
+                                />
+                              ))}
+                            </Bar>
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </CardContent>
+                    </Card>
+
+                    {/* Preference Satisfaction */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <PieChart className="h-5 w-5" />
+                          Preference Satisfaction
+                        </CardTitle>
+                        <CardDescription>
+                          Distribution of preference matching levels
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <RechartsPieChart>
+                            <Pie
+                              data={Object.entries(analyticsData.preferenceSatisfaction).map(([key, value]) => ({
+                                name: key.charAt(0).toUpperCase() + key.slice(1),
+                                value,
+                                percentage: Math.round((value / allocations.length) * 100)
+                              }))}
+                              cx="50%"
+                              cy="50%"
+                              labelLine={false}
+                              label={({name, percentage}) => `${name} (${percentage}%)`}
+                              outerRadius={80}
+                              fill="#8884d8"
+                              dataKey="value"
+                            >
+                              {Object.entries(analyticsData.preferenceSatisfaction).map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                              ))}
+                            </Pie>
+                            <Tooltip formatter={(value: any) => [value, 'Allocations']} />
+                            <Legend />
+                          </RechartsPieChart>
+                        </ResponsiveContainer>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Department Analysis */}
                   <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Total Courses</CardTitle>
-                      <BookOpen className="h-4 w-4 text-muted-foreground" />
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Activity className="h-5 w-5" />
+                        Department Analysis
+                      </CardTitle>
+                      <CardDescription>
+                        Workload distribution and utilization by department
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{selectedSession.statistics?.totalCourses || 0}</div>
-                      <p className="text-xs text-muted-foreground">
-                        {selectedSession.statistics?.allocatedCourses || 0} allocated
-                      </p>
+                      <ResponsiveContainer width="100%" height={400}>
+                        <BarChart data={analyticsData.departmentStats}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="department" />
+                          <YAxis yAxisId="left" />
+                          <YAxis yAxisId="right" orientation="right" />
+                          <Tooltip 
+                            formatter={(value, name) => [
+                              name === 'avgHours' ? `${value}h` :
+                              name === 'utilization' ? `${value}%` :
+                              value,
+                              name === 'avgHours' ? 'Avg Hours' :
+                              name === 'utilization' ? 'Utilization' :
+                              name === 'totalCourses' ? 'Total Courses' :
+                              name === 'facultyCount' ? 'Faculty Count' : name
+                            ]}
+                          />
+                          <Legend />
+                          <Bar yAxisId="left" dataKey="avgHours" fill="#8884d8" name="Avg Hours" />
+                          <Bar yAxisId="left" dataKey="totalCourses" fill="#82ca9d" name="Total Courses" />
+                          <Bar yAxisId="right" dataKey="utilization" fill="#ffc658" name="Utilization %" />
+                        </BarChart>
+                      </ResponsiveContainer>
                     </CardContent>
                   </Card>
-                  
+
+                  {/* Detailed Faculty Workload Table */}
                   <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Faculty Load</CardTitle>
-                      <Users className="h-4 w-4 text-muted-foreground" />
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Clock className="h-5 w-5" />
+                        Detailed Faculty Workload
+                      </CardTitle>
+                      <CardDescription>
+                        Comprehensive faculty workload breakdown with alerts
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{selectedSession.statistics?.facultyWithFullLoad || 0}</div>
-                      <p className="text-xs text-muted-foreground">
-                        of {selectedSession.statistics?.totalFaculty || 0} faculty
-                      </p>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Satisfaction Score</CardTitle>
-                      <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{selectedSession.statistics?.averageSatisfactionScore || 0}%</div>
-                      <Progress value={selectedSession.statistics?.averageSatisfactionScore || 0} className="mt-2" />
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Conflicts</CardTitle>
-                      <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{selectedSession.statistics?.conflictsDetected || 0}</div>
-                      <p className="text-xs text-muted-foreground">
-                        {conflicts.filter(c => c.status === 'resolved').length} resolved
-                      </p>
+                      <div className="overflow-x-auto">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Faculty</TableHead>
+                              <TableHead>Department</TableHead>
+                              <TableHead>Teaching Hours</TableHead>
+                              <TableHead>Courses</TableHead>
+                              <TableHead>Utilization</TableHead>
+                              <TableHead>Status</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {analyticsData.workloadDistribution
+                              .sort((a, b) => b.hours - a.hours)
+                              .map((faculty) => {
+                                const status = 
+                                  faculty.hours > 18 ? 'overloaded' :
+                                  faculty.hours < 12 ? 'underutilized' :
+                                  'optimal';
+                                
+                                return (
+                                  <TableRow key={faculty.name} className={
+                                    status === 'overloaded' ? 'bg-red-50' :
+                                    status === 'underutilized' ? 'bg-yellow-50' :
+                                    'bg-green-50'
+                                  }>
+                                    <TableCell className="font-medium">{faculty.name}</TableCell>
+                                    <TableCell>{faculty.department}</TableCell>
+                                    <TableCell>
+                                      <div className="flex items-center space-x-2">
+                                        <span>{faculty.hours}h</span>
+                                        <Progress value={(faculty.hours / 18) * 100} className="w-20 h-2" />
+                                      </div>
+                                    </TableCell>
+                                    <TableCell>{faculty.courses}</TableCell>
+                                    <TableCell>{faculty.utilization}%</TableCell>
+                                    <TableCell>
+                                      <Badge 
+                                        variant={
+                                          status === 'overloaded' ? 'destructive' :
+                                          status === 'underutilized' ? 'secondary' :
+                                          'default'
+                                        }
+                                      >
+                                        {status === 'overloaded' ? 'Overloaded' :
+                                         status === 'underutilized' ? 'Under-utilized' :
+                                         'Optimal'}
+                                      </Badge>
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              })}
+                          </TableBody>
+                        </Table>
+                      </div>
                     </CardContent>
                   </Card>
                 </div>
