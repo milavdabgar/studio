@@ -23,17 +23,17 @@ const isAuthenticated = (request: NextRequest): AuthUser | null => {
       const decodedCookie = decodeURIComponent(authUserCookie);
       const parsedUser = JSON.parse(decodedCookie) as AuthUser;
       
-      if (parsedUser && parsedUser.email && parsedUser.activeRole && parsedUser.availableRoles) {
+      if (parsedUser && parsedUser.email && parsedUser.activeRole) {
         const validActiveRole = typeof parsedUser.activeRole === 'string' ? parsedUser.activeRole : 'unknown';
         const validAvailableRoles = Array.isArray(parsedUser.availableRoles) && parsedUser.availableRoles.every(r => typeof r === 'string') 
             ? parsedUser.availableRoles 
-            : ['unknown'];
+            : [validActiveRole]; // Default to active role if availableRoles is invalid
 
         return { 
           email: parsedUser.email, 
           name: parsedUser.name || parsedUser.email,
           activeRole: validActiveRole, // Should be a role CODE
-          availableRoles: validAvailableRoles.length > 0 ? validAvailableRoles : ['unknown'] // Array of role CODES
+          availableRoles: validAvailableRoles.length > 0 ? validAvailableRoles : [validActiveRole] // Array of role CODES
         };
       }
     } catch (error) {
@@ -64,9 +64,12 @@ const PROTECTED_ROUTES_PREFIXES = [
   '/student/results',
   '/student/materials',
   '/student/exam-timetable',
+  '/student/courses', // Student courses protected
   '/student/courses/enroll', // Specific enrollment page should be protected
   '/committee', 
   '/notifications', // Notifications should be protected
+  '/dte/dashboard', // DTE admin dashboard
+  '/gtu/dashboard', // GTU admin dashboard
 ];
 
 const PUBLIC_ROUTES = [
@@ -117,7 +120,6 @@ const ROLE_ACCESS_CONTROL: Record<string, UserRoleCode[]> = {
   '/student/materials': ['student'],
   '/student/exam-timetable': ['student'],
   '/student/courses': ['student'],
-  '/student': ['student'],
   '/faculty/courses': ['faculty', 'hod', 'admin', 'super_admin'],
   '/faculty/my-courses': ['faculty', 'hod', 'admin', 'super_admin'],
   '/faculty/students': ['faculty', 'hod', 'admin', 'super_admin'],
@@ -152,12 +154,26 @@ export async function middleware(request: NextRequest) {
   }
 
   // Check if the route is public first
+  // Note: /faculty/ prefix is for public faculty profiles, not protected faculty dashboard routes
+  const isPublicFacultyRoute = pathname.startsWith('/faculty/') && 
+    !pathname.startsWith('/faculty/courses') &&
+    !pathname.startsWith('/faculty/my-courses') &&
+    !pathname.startsWith('/faculty/students') &&
+    !pathname.startsWith('/faculty/attendance') &&
+    !pathname.startsWith('/faculty/assessments') &&
+    !pathname.startsWith('/faculty/leaves') &&
+    !pathname.startsWith('/faculty/profile') &&
+    !pathname.startsWith('/faculty/timetable') &&
+    !pathname.startsWith('/faculty/course-offerings') &&
+    !pathname.startsWith('/faculty/exam-timetable') &&
+    !pathname.startsWith('/faculty/projects');
+    
   if (PUBLIC_ROUTES.includes(pathname) || 
       pathname.startsWith('/posts') || 
       pathname.startsWith('/newsletters') ||
       pathname.startsWith('/departments/') ||
       pathname.startsWith('/students/') ||
-      pathname.startsWith('/faculty/') ||
+      isPublicFacultyRoute ||
       pathname.startsWith('/slidev-builds/')) {
     // If accessing login or signup while already authenticated, redirect to dashboard
     if ((pathname === '/login' || pathname === '/signup') && authenticatedUser) {
@@ -208,8 +224,8 @@ export async function middleware(request: NextRequest) {
              hasAccess = false; 
         }
     }
-    // Allow access to specific HOD dashboard if role is HOD
-    if (pathname.startsWith('/dashboard/hod') && activeRoleCode === 'hod') {
+    // Allow access to specific HOD dashboard if role is HOD or department_admin
+    if (pathname.startsWith('/dashboard/hod') && (activeRoleCode === 'hod' || activeRoleCode === 'department_admin')) {
         hasAccess = true;
     }
     // Allow access to DTE dashboard if role is dte_admin

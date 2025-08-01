@@ -13,9 +13,15 @@ jest.mock('next/server', () => ({
 describe('Middleware Access Control', () => {
   let mockRequest: Partial<NextRequest>;
   let mockUrl: URL;
+  let consoleSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    
+    // Suppress console.log, console.warn, and console.error during tests
+    consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {});
     
     mockUrl = new URL('https://example.com');
     
@@ -31,6 +37,11 @@ describe('Middleware Access Control', () => {
     // Reset NextResponse mocks
     (NextResponse.next as jest.Mock).mockReturnValue({ cookies: { set: jest.fn() } });
     (NextResponse.redirect as jest.Mock).mockImplementation((url) => ({ url: url.toString(), type: 'redirect' }));
+  });
+
+  afterEach(() => {
+    consoleSpy?.mockRestore();
+    jest.restoreAllMocks();
   });
 
   describe('Public Routes', () => {
@@ -624,7 +635,7 @@ describe('Middleware Access Control', () => {
 
   describe('Console Logging', () => {
     it('logs access attempts and decisions', async () => {
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+      // Temporarily restore console.warn to test logging
       const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
       
       mockUrl.pathname = '/admin/users';
@@ -636,7 +647,6 @@ describe('Middleware Access Control', () => {
         expect.stringContaining('tried to access /admin/users without permission')
       );
       
-      consoleSpy.mockRestore();
       consoleWarnSpy.mockRestore();
     });
   });
