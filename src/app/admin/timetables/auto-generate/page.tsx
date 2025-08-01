@@ -34,6 +34,27 @@ import type {
   Batch,
   Program
 } from '@/types/entities';
+
+// Advanced generation types
+interface AdvancedGenerationRequest extends AutoGenerationRequest {
+  includeRoomOptimization: boolean;
+  includeResourceOptimization: boolean;
+  priorityWeights: {
+    facultyPreferences: number;
+    roomUtilization: number;
+    workloadBalance: number;
+    timeDistribution: number;
+    conflictMinimization: number;
+  };
+  resourceConstraints: {
+    maxRoomCapacityViolation: number;
+    requireSpecializedRooms: boolean;
+    considerMaintenanceSchedule: boolean;
+    allowRoomSharing: boolean;
+  };
+  optimizationStrategy: 'genetic' | 'constraint' | 'hybrid' | 'multi_objective';
+  maxExecutionTime: number;
+}
 import { batchService } from '@/lib/api/batches';
 import { programService } from '@/lib/api/programs';
 
@@ -45,6 +66,32 @@ export default function AutoGenerateTimetablePage() {
   const [semester, setSemester] = useState(1);
   const [algorithm, setAlgorithm] = useState<'genetic' | 'constraint_satisfaction' | 'hybrid'>('hybrid');
   const [considerPreferences, setConsiderPreferences] = useState(true);
+  
+  // Advanced mode toggle
+  const [isAdvancedMode, setIsAdvancedMode] = useState(false);
+  
+  // Advanced features
+  const [includeRoomOptimization, setIncludeRoomOptimization] = useState(true);
+  const [includeResourceOptimization, setIncludeResourceOptimization] = useState(true);
+  const [optimizationStrategy, setOptimizationStrategy] = useState<'genetic' | 'constraint' | 'hybrid' | 'multi_objective'>('multi_objective');
+  const [maxExecutionTime, setMaxExecutionTime] = useState(300000); // 5 minutes
+  
+  // Priority weights
+  const [priorityWeights, setPriorityWeights] = useState({
+    facultyPreferences: 0.3,
+    roomUtilization: 0.2,
+    workloadBalance: 0.25,
+    timeDistribution: 0.15,
+    conflictMinimization: 0.1
+  });
+  
+  // Resource constraints
+  const [resourceConstraints, setResourceConstraints] = useState({
+    maxRoomCapacityViolation: 0.1,
+    requireSpecializedRooms: true,
+    considerMaintenanceSchedule: true,
+    allowRoomSharing: false
+  });
   
   // Algorithm parameters
   const [populationSize, setPopulationSize] = useState(50);
@@ -124,18 +171,42 @@ export default function AutoGenerateTimetablePage() {
     }, 500);
 
     try {
-      const request: AutoGenerationRequest = {
-        academicYear,
-        semester,
-        batchIds: selectedBatchIds,
-        algorithm,
-        constraints,
-        maxIterations,
-        populationSize,
-        mutationRate,
-        crossoverRate,
-        considerPreferences
-      };
+      let request: AutoGenerationRequest | AdvancedGenerationRequest;
+      
+      if (isAdvancedMode) {
+        request = {
+          academicYear,
+          semester,
+          batchIds: selectedBatchIds,
+          algorithm,
+          constraints,
+          maxIterations,
+          populationSize,
+          mutationRate,
+          crossoverRate,
+          considerPreferences,
+          // Advanced features
+          includeRoomOptimization,
+          includeResourceOptimization,
+          priorityWeights,
+          resourceConstraints,
+          optimizationStrategy,
+          maxExecutionTime
+        } as AdvancedGenerationRequest;
+      } else {
+        request = {
+          academicYear,
+          semester,
+          batchIds: selectedBatchIds,
+          algorithm,
+          constraints,
+          maxIterations,
+          populationSize,
+          mutationRate,
+          crossoverRate,
+          considerPreferences
+        };
+      }
 
       const response = await fetch('/api/timetables/auto-generate', {
         method: 'POST',
@@ -381,6 +452,187 @@ export default function AutoGenerateTimetablePage() {
             </CardContent>
           </Card>
 
+          {/* Advanced Mode Toggle */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                Advanced Features
+              </CardTitle>
+              <CardDescription>
+                Enable advanced timetable generation with room optimization and resource management
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="advancedMode"
+                  checked={isAdvancedMode}
+                  onCheckedChange={(checked) => setIsAdvancedMode(!!checked)}
+                />
+                <Label htmlFor="advancedMode" className="text-base font-medium">
+                  Enable Advanced Generation (Phase 3)
+                </Label>
+              </div>
+              <p className="text-sm text-muted-foreground mt-2">
+                Enables room optimization, resource management, and multi-objective optimization
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Advanced Options */}
+          {isAdvancedMode && (
+            <>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Optimization Strategy</CardTitle>
+                  <CardDescription>
+                    Select the advanced optimization approach
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label>Strategy</Label>
+                    <Select value={optimizationStrategy} onValueChange={(val: any) => setOptimizationStrategy(val)}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="genetic">Genetic Algorithm</SelectItem>
+                        <SelectItem value="constraint">Constraint Satisfaction</SelectItem>
+                        <SelectItem value="hybrid">Hybrid Approach</SelectItem>
+                        <SelectItem value="multi_objective">Multi-Objective Optimization</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label>Max Execution Time (minutes)</Label>
+                    <Input
+                      type="number"
+                      value={maxExecutionTime / 60000}
+                      onChange={(e) => setMaxExecutionTime(parseInt(e.target.value) * 60000)}
+                      min={1}
+                      max={30}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="roomOptimization"
+                        checked={includeRoomOptimization}
+                        onCheckedChange={(checked) => setIncludeRoomOptimization(!!checked)}
+                      />
+                      <Label htmlFor="roomOptimization">Room Optimization</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="resourceOptimization"
+                        checked={includeResourceOptimization}
+                        onCheckedChange={(checked) => setIncludeResourceOptimization(!!checked)}
+                      />
+                      <Label htmlFor="resourceOptimization">Resource Optimization</Label>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Priority Weights</CardTitle>
+                  <CardDescription>
+                    Configure the relative importance of different optimization objectives
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {Object.entries(priorityWeights).map(([key, value]) => (
+                    <div key={key}>
+                      <Label className="capitalize">
+                        {key.replace(/([A-Z])/g, ' $1').trim()} ({(value * 100).toFixed(0)}%)
+                      </Label>
+                      <Input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.05"
+                        value={value}
+                        onChange={(e) => setPriorityWeights(prev => ({
+                          ...prev,
+                          [key]: parseFloat(e.target.value)
+                        }))}
+                        className="w-full"
+                      />
+                    </div>
+                  ))}
+                  <p className="text-sm text-muted-foreground">
+                    Total: {(Object.values(priorityWeights).reduce((a, b) => a + b, 0) * 100).toFixed(0)}%
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Resource Constraints</CardTitle>
+                  <CardDescription>
+                    Configure resource allocation and room usage constraints
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label>Max Room Capacity Violation (%)</Label>
+                    <Input
+                      type="number"
+                      value={resourceConstraints.maxRoomCapacityViolation * 100}
+                      onChange={(e) => setResourceConstraints(prev => ({
+                        ...prev,
+                        maxRoomCapacityViolation: parseFloat(e.target.value) / 100
+                      }))}
+                      min={0}
+                      max={50}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="requireSpecializedRooms"
+                        checked={resourceConstraints.requireSpecializedRooms}
+                        onCheckedChange={(checked) => setResourceConstraints(prev => ({
+                          ...prev,
+                          requireSpecializedRooms: !!checked
+                        }))}
+                      />
+                      <Label htmlFor="requireSpecializedRooms">Require Specialized Rooms</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="considerMaintenance"
+                        checked={resourceConstraints.considerMaintenanceSchedule}
+                        onCheckedChange={(checked) => setResourceConstraints(prev => ({
+                          ...prev,
+                          considerMaintenanceSchedule: !!checked
+                        }))}
+                      />
+                      <Label htmlFor="considerMaintenance">Consider Maintenance Schedule</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="allowRoomSharing"
+                        checked={resourceConstraints.allowRoomSharing}
+                        onCheckedChange={(checked) => setResourceConstraints(prev => ({
+                          ...prev,
+                          allowRoomSharing: !!checked
+                        }))}
+                      />
+                      <Label htmlFor="allowRoomSharing">Allow Room Sharing</Label>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          )}
+
           {/* Constraints */}
           <Card>
             <CardHeader>
@@ -609,6 +861,39 @@ export default function AutoGenerateTimetablePage() {
                     </p>
                   </div>
                 </div>
+
+                {/* Advanced metrics if available */}
+                {isAdvancedMode && (generationResult as any).qualityMetrics && (
+                  <div className="mt-4 p-4 border rounded-md">
+                    <Label className="text-base font-medium">Advanced Quality Metrics</Label>
+                    <div className="grid grid-cols-2 gap-4 mt-2 text-sm">
+                      <div>
+                        <Label>Schedule Compactness</Label>
+                        <p className="font-medium">
+                          {((generationResult as any).qualityMetrics.scheduleCompactness * 100).toFixed(1)}%
+                        </p>
+                      </div>
+                      <div>
+                        <Label>Preferences Satisfied</Label>
+                        <p className="font-medium">
+                          {((generationResult as any).qualityMetrics.preferencesSatisfied * 100).toFixed(1)}%
+                        </p>
+                      </div>
+                      <div>
+                        <Label>Resource Efficiency</Label>
+                        <p className="font-medium">
+                          {((generationResult as any).qualityMetrics.resourceEfficiency * 100).toFixed(1)}%
+                        </p>
+                      </div>
+                      <div>
+                        <Label>Overall Quality</Label>
+                        <p className="font-medium">
+                          {((generationResult as any).qualityMetrics.overallQuality * 100).toFixed(1)}%
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {generationResult.conflicts.length > 0 && (
                   <div>

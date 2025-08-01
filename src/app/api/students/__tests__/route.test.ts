@@ -75,7 +75,7 @@ describe('/api/students', () => {
       fullNameGtuFormat: 'JOHN SMITH',
       firstName: 'John',
       lastName: 'Smith',
-      instituteEmail: 'john.smith@gppalanpur.ac.in.in',
+      instituteEmail: 'john.smith@gpp.edu.in',
       personalEmail: 'john@gmail.com',
       status: 'active',
       isActive: true,
@@ -92,7 +92,7 @@ describe('/api/students', () => {
       fullNameGtuFormat: 'JANE DOE',
       firstName: 'Jane',
       lastName: 'Doe',
-      instituteEmail: 'jane.doe@gppalanpur.ac.in.in',
+      instituteEmail: 'jane.doe@gpp.edu.in',
       personalEmail: 'jane@gmail.com',
       status: 'active',
       isActive: true,
@@ -123,7 +123,7 @@ describe('/api/students', () => {
   const mockUser = {
     id: 'user_123',
     email: 'john@gmail.com',
-    instituteEmail: 'john.smith@gppalanpur.ac.in.in',
+    instituteEmail: 'john.smith@gpp.edu.in',
     displayName: 'JOHN SMITH',
     roles: ['student' as const],
     currentRole: 'student' as const,
@@ -221,7 +221,7 @@ describe('/api/students', () => {
       mockStudentInstance.toJSON.mockReturnValue({
         ...validStudentData,
         id: 'student_125',
-        instituteEmail: 'GP24CE001@gppalanpur.ac.in.in',
+        instituteEmail: 'GP24CE001@gpp.edu.in',
         instituteId: 'inst_gpp',
         userId: 'user_123',
         createdAt: expect.any(String),
@@ -241,13 +241,13 @@ describe('/api/students', () => {
       expect(response.status).toBe(201);
       expect(data.enrollmentNumber).toBe('GP24CE001');
       expect(data.id).toBeTruthy();
-      expect(data.instituteEmail).toBe('GP24CE001@gppalanpur.ac.in.in');
+      expect(data.instituteEmail).toBe('GP24CE001@gpp.edu.in');
       expect(data.userId).toBe('user_123');
       expect(mockStudentModel).toHaveBeenCalledWith(
         expect.objectContaining({
           enrollmentNumber: 'GP24CE001',
           fullNameGtuFormat: 'ALICE WILSON',
-          instituteEmail: 'GP24CE001@gppalanpur.ac.in.in',
+          instituteEmail: 'GP24CE001@gpp.edu.in',
           instituteId: 'inst_gpp',
           userId: 'user_123'
         })
@@ -326,7 +326,7 @@ describe('/api/students', () => {
       mockStudentModel.findOne.mockReset();
       mockStudentModel.findOne
         .mockResolvedValueOnce(null) // First call: no existing enrollment
-        .mockResolvedValueOnce({ instituteEmail: 'GP24CE001@gppalanpur.ac.in.in' }); // Second call: existing email
+        .mockResolvedValueOnce({ instituteEmail: 'GP24CE001@gpp.edu.in' }); // Second call: existing email
       
       const request = new NextRequest('http://localhost/api/students', {
         method: 'POST',
@@ -337,7 +337,7 @@ describe('/api/students', () => {
       const data = await response.json();
       
       expect(response.status).toBe(409);
-      expect(data.message).toContain("Student with institute email 'GP24CE001@gppalanpur.ac.in.in' already exists");
+      expect(data.message).toContain("Student with institute email 'GP24CE001@gpp.edu.in' already exists");
     });
 
     it('should return 400 for invalid personal email format', async () => {
@@ -399,7 +399,7 @@ describe('/api/students', () => {
         roles: ['faculty' as const],
         currentRole: 'faculty' as const,
         email: 'alice@gmail.com',
-        instituteEmail: 'GP24CE001@gppalanpur.ac.in.in'
+        instituteEmail: 'GP24CE001@gpp.edu.in'
       };
       mockUserService.createUser.mockRejectedValue(new Error('User already exists'));
       mockUserService.getAllUsers.mockResolvedValue([existingUser]);

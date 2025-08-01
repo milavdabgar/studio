@@ -1,5 +1,5 @@
 
-import type { Room, Building } from '@/types/entities';
+import type { Room, Building, RoomAllocation, MaintenanceEntry, RoomIssue } from '@/types/entities';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
@@ -78,6 +78,34 @@ export const roomService = {
         detailedMessage += ` Specific issues: ${errorData.errors.slice(0, 3).join('; ')}${errorData.errors.length > 3 ? '...' : ''}`;
       }
       throw new Error(detailedMessage);
+    }
+    return response.json();
+  },
+
+  // Advanced room scheduling methods for Phase 3
+  async getRoomAllocations(academicYear: string, semester: number): Promise<RoomAllocation[]> {
+    const response = await fetch(`${API_BASE_URL}/rooms/allocations?academicYear=${academicYear}&semester=${semester}`);
+    if (!response.ok) {
+      // Return empty array if no allocations found (non-critical for generation)
+      return [];
+    }
+    return response.json();
+  },
+
+  async getMaintenanceSchedule(): Promise<MaintenanceEntry[]> {
+    const response = await fetch(`${API_BASE_URL}/rooms/maintenance`);
+    if (!response.ok) {
+      // Return empty array if no maintenance schedule (non-critical for generation)
+      return [];
+    }
+    return response.json();
+  },
+
+  async getRoomIssues(): Promise<RoomIssue[]> {
+    const response = await fetch(`${API_BASE_URL}/rooms/issues`);
+    if (!response.ok) {
+      // Return empty array if no issues found (non-critical for generation)
+      return [];
     }
     return response.json();
   }

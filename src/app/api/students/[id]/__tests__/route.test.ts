@@ -79,7 +79,7 @@ describe('/api/students/[id]', () => {
     bloodGroup: 'B+',
     aadharNumber: '123456789012',
     personalEmail: 'john.smith@gmail.com',
-    instituteEmail: 'john.smith@gppalanpur.ac.in.in',
+    instituteEmail: 'john.smith@gpp.edu.in',
     contactNumber: '+91-9876543210',
     address: '123 Main Street, City, State',
     guardianDetails: {
@@ -101,7 +101,7 @@ describe('/api/students/[id]', () => {
 
   const mockUser = {
     id: 'user_123',
-    email: 'john.smith@gppalanpur.ac.in.in',
+    email: 'john.smith@gpp.edu.in',
     displayName: 'JOHN SMITH',
     isActive: true,
     photoURL: 'https://example.com/photo.jpg',
@@ -260,7 +260,7 @@ describe('/api/students/[id]', () => {
     });
 
     it('should return 409 for duplicate institute email', async () => {
-      const duplicateData = { instituteEmail: 'duplicate@gppalanpur.ac.in.in' };
+      const duplicateData = { instituteEmail: 'duplicate@gpp.edu.in' };
       mockStudentModel.findOne
         .mockReturnValueOnce({ lean: () => Promise.resolve(mockStudent) } as any) // eslint-disable-line @typescript-eslint/no-explicit-any
         .mockReturnValueOnce({ lean: () => Promise.resolve({ _id: 'other_student_id' }) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -274,7 +274,7 @@ describe('/api/students/[id]', () => {
       const response = await PUT(request, { params });
       expect(response.status).toBe(409);
       const data = await response.json();
-      expect(data.message).toContain('duplicate@gppalanpur.ac.in.in');
+      expect(data.message).toContain('duplicate@gpp.edu.in');
       expect(data.message).toContain('already in use');
     });
 

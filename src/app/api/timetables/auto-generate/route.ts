@@ -2,19 +2,32 @@ import { NextRequest, NextResponse } from 'next/server';
 import type { 
   AutoGenerationRequest, 
   AutoGenerationResult,
-  TimetableConstraints 
+  TimetableConstraints,
+  RoomAllocation,
+  MaintenanceEntry,
+  RoomIssue
 } from '@/types/entities';
 import { TimetableOptimizer } from '@/lib/algorithms/timetableOptimizer';
 import { ConstraintSolver } from '@/lib/algorithms/constraintSolver';
+import { AdvancedTimetableEngine, type AdvancedGenerationRequest } from '@/lib/algorithms/advancedTimetableEngine';
 import { courseOfferingService } from '@/lib/api/courseOfferings';
 import { facultyService } from '@/lib/api/faculty';
 import { roomService } from '@/lib/services/roomService';
 import { batchService } from '@/lib/api/batches';
 import { facultyPreferenceService } from '@/lib/api/facultyPreferences';
 
+// Helper function to detect if request is advanced
+function isAdvancedRequest(body: any): body is AdvancedGenerationRequest {
+  return body.includeRoomOptimization !== undefined || 
+         body.includeResourceOptimization !== undefined ||
+         body.priorityWeights !== undefined ||
+         body.resourceConstraints !== undefined ||
+         body.optimizationStrategy !== undefined;
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const body: AutoGenerationRequest = await request.json();
+    const body = await request.json();
     
     // Validate request
     const validation = validateRequest(body);
@@ -25,15 +38,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Fetch required data
-    const [courseOfferings, faculties, rooms, batches, facultyPreferences] = await Promise.all([
+    // Fetch required data - enhanced for advanced features
+    const [courseOfferings, faculties, rooms, batches, facultyPreferences, roomAllocations, maintenanceEntries, roomIssues] = await Promise.all([
       courseOfferingService.getAllCourseOfferings(),
       facultyService.getAllFaculty(),
       roomService.getAllRooms(),
       batchService.getAllBatches(),
       body.considerPreferences ? 
         facultyPreferenceService.getPreferencesByTerm(body.academicYear, body.semester) : 
-        Promise.resolve([])
+        Promise.resolve([]),
+      // Advanced data for room optimization
+      isAdvancedRequest(body) ? roomService.getRoomAllocations(body.academicYear, body.semester) : Promise.resolve([]),
+      isAdvancedRequest(body) ? roomService.getMaintenanceSchedule() : Promise.resolve([]),
+      isAdvancedRequest(body) ? roomService.getRoomIssues() : Promise.resolve([])
     ]);
 
     // Filter data for the specific request
@@ -60,7 +77,26 @@ export async function POST(request: NextRequest) {
       } as AutoGenerationResult);
     }
 
-    // Generate timetables based on selected algorithm
+    // Check if this is an advanced generation request
+    if (isAdvancedRequest(body)) {
+      // Use Advanced Timetable Engine
+      const advancedEngine = new AdvancedTimetableEngine(
+        relevantCourseOfferings,
+        faculties,
+        rooms,
+        relevantBatches,
+        facultyPreferences,
+        body.constraints,
+        roomAllocations as RoomAllocation[],
+        maintenanceEntries as MaintenanceEntry[],
+        roomIssues as RoomIssue[]
+      );
+
+      const advancedResult = await advancedEngine.generateAdvancedTimetables(body as AdvancedGenerationRequest);
+      return NextResponse.json(advancedResult);
+    }
+
+    // Generate timetables based on selected algorithm (legacy mode)
     let result: AutoGenerationResult;
 
     switch (body.algorithm) {
