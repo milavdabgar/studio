@@ -647,7 +647,11 @@ export default function HODDashboardPage() {
                           )}
                         </div>
                       </div>
-                      <Progress value={Math.min(faculty.workloadPercentage, 100)} className="h-2" />
+                      <Progress 
+                        value={Math.min(faculty.workloadPercentage, 100)} 
+                        className="h-2" 
+                        aria-label={`${faculty.name || 'Faculty'} workload: ${faculty.workloadPercentage || 0}%`}
+                      />
                       <div className="flex items-center justify-between text-xs text-muted-foreground">
                         <span>{faculty.totalHours}/{faculty.maxHours} hours</span>
                         <span>{faculty.subjects.length} subjects</span>
@@ -682,7 +686,11 @@ export default function HODDashboardPage() {
                           {resource.utilization}%
                         </span>
                       </div>
-                      <Progress value={resource.utilization} className="h-2" />
+                      <Progress 
+                        value={resource.utilization} 
+                        className="h-2" 
+                        aria-label={`${resource.name || 'Resource'} utilization: ${resource.utilization || 0}%`}
+                      />
                       <div className="flex items-center justify-between text-xs text-muted-foreground">
                         <span>{resource.bookings}/{resource.capacity} capacity</span>
                         {resource.conflicts > 0 && (
@@ -777,7 +785,11 @@ export default function HODDashboardPage() {
                           {faculty.totalHours}/{faculty.maxHours} hours/week
                         </span>
                       </div>
-                      <Progress value={Math.min(faculty.workloadPercentage, 100)} className="h-2" />
+                      <Progress 
+                        value={Math.min(faculty.workloadPercentage, 100)} 
+                        className="h-2"
+                        aria-label={`${faculty.name || 'Faculty'} detailed workload: ${faculty.workloadPercentage || 0}%`}
+                      />
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div>
@@ -886,7 +898,11 @@ export default function HODDashboardPage() {
                       <span>Resource Utilization</span>
                       <span>{timetable.resourceUtilization}%</span>
                     </div>
-                    <Progress value={timetable.resourceUtilization} className="h-1" />
+                    <Progress 
+                      value={timetable.resourceUtilization} 
+                      className="h-1"
+                      aria-label={`${timetable.name || 'Timetable'} resource utilization: ${timetable.resourceUtilization || 0}%`}
+                    />
 
                     {timetable.conflicts > 0 && (
                       <Alert className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20">
