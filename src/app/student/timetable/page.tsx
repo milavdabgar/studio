@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Clock, Loader2, Calendar, MapPin, User, BookOpen, Download, Share2, Filter, AlertCircle, Bell, RefreshCw } from "lucide-react";
+import { Clock, Loader2, Calendar, MapPin, User, BookOpen, Download, Share2, Filter, AlertCircle, Bell, RefreshCw, Smartphone, Grid, List, Search, Info } from "lucide-react";
 import { format } from 'date-fns';
 import { useToast } from "@/hooks/use-toast";
 import { useStudentRealtimeTimetable } from "@/hooks/useRealtimeTimetable";
@@ -59,9 +59,14 @@ export default function StudentTimetablePage() {
   const [enrichedEntries, setEnrichedEntries] = useState<EnrichedTimetableEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserCookie | null>(null);
+  
+  // Enhanced Phase 4 features
   const [viewMode, setViewMode] = useState<'weekly' | 'daily' | 'list'>('weekly');
+  const [selectedDay, setSelectedDay] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [filterSubject, setFilterSubject] = useState<string>('all');
   const [selectedWeek, setSelectedWeek] = useState<string>('current');
+  const [showDetails, setShowDetails] = useState(false);
   const [realtimeNotification, setRealtimeNotification] = useState<{
     title: string;
     message: string;
