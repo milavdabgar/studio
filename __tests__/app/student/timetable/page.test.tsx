@@ -1,12 +1,17 @@
 import React from 'react';
 import { render as rtlRender, screen, fireEvent, waitFor } from '@testing-library/react';
 import { useToast } from '@/hooks/use-toast';
-import { useStudentRealtimeTimetable } from '@/hooks/useRealtimeTimetable';
+import { useStudentRealtimeTimetable, useRealtimeConnectionStatus } from '@/hooks/useRealtimeTimetable';
 import StudentTimetablePage from '@/app/student/timetable/page';
 
 // Mock hooks and services
-jest.mock('@/hooks/use-toast');
-jest.mock('@/hooks/useRealtimeTimetable');
+jest.mock('@/hooks/use-toast', () => ({
+  useToast: jest.fn()
+}));
+jest.mock('@/hooks/useRealtimeTimetable', () => ({
+  useStudentRealtimeTimetable: jest.fn(),
+  useRealtimeConnectionStatus: jest.fn()
+}));
 jest.mock('@/lib/api/timetables');
 jest.mock('@/lib/api/students');
 jest.mock('@/lib/api/courses');
@@ -16,6 +21,7 @@ jest.mock('@/lib/services/roomService');
 const mockToast = jest.fn();
 const mockUseToast = useToast as jest.MockedFunction<typeof useToast>;
 const mockUseStudentRealtimeTimetable = useStudentRealtimeTimetable as jest.MockedFunction<typeof useStudentRealtimeTimetable>;
+const mockUseRealtimeConnectionStatus = useRealtimeConnectionStatus as jest.MockedFunction<typeof useRealtimeConnectionStatus>;
 
 // Mock cookie for authentication
 Object.defineProperty(document, 'cookie', {
@@ -97,6 +103,10 @@ describe('StudentTimetablePage', () => {
       unsubscribe: jest.fn(),
       reconnect: jest.fn(),
       getActiveSubscriptions: jest.fn(() => [])
+    });
+    mockUseRealtimeConnectionStatus.mockReturnValue({
+      isConnected: true,
+      connectionState: 'connected' as const
     });
 
     // Mock API services
