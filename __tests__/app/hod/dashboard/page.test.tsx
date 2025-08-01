@@ -4,12 +4,13 @@ import { useToast } from '@/hooks/use-toast';
 import { useHODRealtimeTimetable } from '@/hooks/useRealtimeTimetable';
 import HODDashboardPage from '@/app/hod/dashboard/page';
 
-// Mock hooks
-jest.mock('@/hooks/use-toast');
-jest.mock('@/hooks/useRealtimeTimetable');
-
 const mockToast = jest.fn();
-const mockUseToast = useToast as jest.MockedFunction<typeof useToast>;
+
+// Mock hooks
+jest.mock('@/hooks/use-toast', () => ({
+  useToast: () => ({ toast: mockToast })
+}));
+jest.mock('@/hooks/useRealtimeTimetable');
 const mockUseHODRealtimeTimetable = useHODRealtimeTimetable as jest.MockedFunction<typeof useHODRealtimeTimetable>;
 
 // Mock cookie for authentication
@@ -26,11 +27,6 @@ Object.defineProperty(document, 'cookie', {
 
 describe('HODDashboardPage', () => {
   beforeEach(() => {
-    mockUseToast.mockReturnValue({ 
-      toast: mockToast,
-      dismiss: jest.fn(), 
-      toasts: []
-    });
     mockUseHODRealtimeTimetable.mockReturnValue({
       isConnected: true,
       connectionState: 'connected' as const,
