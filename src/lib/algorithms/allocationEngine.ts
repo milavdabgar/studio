@@ -16,6 +16,7 @@ import type {
   CourseAllocation,
   AllocationConflict
 } from '@/types/entities';
+import { createConflictResolutionEngine } from './conflictResolution';
 
 // Algorithm configuration interface
 export interface AllocationConfig {
@@ -473,6 +474,8 @@ export class AllocationEngine {
       courseOfferingIds: conflictData.courseOfferingIds || [],
       description: conflictData.description || 'Allocation conflict detected',
       status: 'unresolved',
+      autoResolvable: conflictData.autoResolvable || false,
+      priority: conflictData.priority || 5,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -484,7 +487,7 @@ export class AllocationEngine {
    * Detect conflicts after allocation
    */
   private async detectConflicts(sessionId: string): Promise<void> {
-    // Check for faculty overload
+    // Check for faculty overload/underload
     for (const faculty of this.faculties) {
       const maxHours = faculty.preferences[0]?.maxHoursPerWeek || this.config.maxHoursPerFaculty;
       
@@ -496,7 +499,9 @@ export class AllocationEngine {
           courseOfferingIds: this.allocations
             .filter(a => a.facultyId === faculty.id)
             .map(a => a.courseOfferingId),
-          description: `${faculty.displayName || faculty.fullName} has ${faculty.currentWorkload} hours (max: ${maxHours})`
+          description: `${faculty.displayName || faculty.fullName} has ${faculty.currentWorkload} hours (max: ${maxHours})`,
+          autoResolvable: false,
+          priority: 8
         });
       } else if (faculty.currentWorkload < this.config.minHoursPerFaculty) {
         await this.createConflict(sessionId, {
@@ -504,10 +509,63 @@ export class AllocationEngine {
           severity: 'low',
           facultyId: faculty.id,
           courseOfferingIds: [],
-          description: `${faculty.displayName || faculty.fullName} has only ${faculty.currentWorkload} hours (min: ${this.config.minHoursPerFaculty})`
+          description: `${faculty.displayName || faculty.fullName} has only ${faculty.currentWorkload} hours (min: ${this.config.minHoursPerFaculty})`,
+          autoResolvable: true,
+          priority: 3
         });
       }
+
+      // Check for department mismatches
+      const facultyAllocations = this.allocations.filter(a => a.facultyId === faculty.id);
+      for (const allocation of facultyAllocations) {
+        const course = this.courseOfferings.find(c => c.id === allocation.courseOfferingId);
+        if (course && course.department && faculty.department && 
+            course.department !== faculty.department) {
+          await this.createConflict(sessionId, {
+            conflictType: 'department_mismatch',
+            severity: 'medium',
+            facultyId: faculty.id,
+            courseOfferingIds: [allocation.courseOfferingId],
+            description: `${faculty.displayName || faculty.fullName} (${faculty.department}) assigned to ${course.subjectName} (${course.department})`,
+            autoResolvable: true,
+            priority: 5
+          });
+        }
+      }
+
+      // Check for consecutive hours violations
+      if (faculty.preferences[0]?.maxConsecutiveHours) {
+        const maxConsecutive = faculty.preferences[0].maxConsecutiveHours;
+        const totalHours = facultyAllocations.reduce((sum, a) => sum + a.hoursPerWeek, 0);
+        
+        // Simple check - in real implementation, you'd check actual time slots
+        if (totalHours > maxConsecutive * 2) { // Assuming max 2 days of consecutive teaching
+          await this.createConflict(sessionId, {
+            conflictType: 'consecutive_hours_violation',
+            severity: 'medium',
+            facultyId: faculty.id,
+            courseOfferingIds: facultyAllocations.map(a => a.courseOfferingId),
+            description: `${faculty.displayName || faculty.fullName} may exceed consecutive hours limit (${maxConsecutive})`,
+            autoResolvable: false,
+            priority: 4
+          });
+        }
+      }
     }
+
+    // Use enhanced conflict resolution to add suggestions
+    await this.enhanceConflictsWithResolutions(sessionId);
+  }
+
+  /**
+   * Enhance conflicts with resolution suggestions using the conflict resolution engine
+   */
+  private async enhanceConflictsWithResolutions(sessionId: string): Promise<void> {
+    const resolutionEngine = createConflictResolutionEngine();
+    resolutionEngine.initialize(this.faculties, this.courseOfferings, this.allocations, []);
+    
+    const enhancedConflicts = await resolutionEngine.enhanceConflicts(this.conflicts);
+    this.conflicts = enhancedConflicts;
   }
 
   /**

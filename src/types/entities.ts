@@ -2381,7 +2381,18 @@ export interface CourseAllocation {
 export interface AllocationConflict {
   id: string;
   sessionId: string;
-  conflictType: 'time_overlap' | 'overload' | 'underload' | 'expertise_mismatch' | 'preference_violation';
+  conflictType: 
+    | 'time_overlap' 
+    | 'overload' 
+    | 'underload' 
+    | 'expertise_mismatch' 
+    | 'preference_violation'
+    | 'department_mismatch'
+    | 'room_conflict'
+    | 'consecutive_hours_violation'
+    | 'unavailable_time_slot'
+    | 'prerequisite_conflict'
+    | 'capacity_exceeded';
   severity: 'low' | 'medium' | 'high' | 'critical';
   
   // Conflict details
@@ -2390,11 +2401,20 @@ export interface AllocationConflict {
   description: string;
   
   // Resolution
-  status: 'unresolved' | 'resolved' | 'ignored';
-  resolutionSuggestion?: string;
+  status: 'unresolved' | 'resolved' | 'ignored' | 'in_progress';
+  resolutionSuggestions?: string[];
+  recommendedAction?: 'reassign' | 'adjust_hours' | 'change_time' | 'add_faculty' | 'manual_review';
+  autoResolvable: boolean;
+  priority: number; // 1-10, higher = more urgent
   resolvedBy?: string;
   resolvedAt?: string;
   resolutionNotes?: string;
+  alternativeSolutions?: {
+    action: string;
+    description: string;
+    impact: 'low' | 'medium' | 'high';
+    feasibility: 'easy' | 'moderate' | 'difficult';
+  }[];
   
   createdAt: string;
   updatedAt: string;

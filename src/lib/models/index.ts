@@ -2280,7 +2280,18 @@ interface ICourseAllocation extends Document {
 interface IAllocationConflict extends Document {
   id: string;
   sessionId: string;
-  conflictType: 'time_overlap' | 'overload' | 'underload' | 'expertise_mismatch' | 'preference_violation';
+  conflictType: 
+    | 'time_overlap' 
+    | 'overload' 
+    | 'underload' 
+    | 'expertise_mismatch' 
+    | 'preference_violation'
+    | 'department_mismatch'
+    | 'room_conflict'
+    | 'consecutive_hours_violation'
+    | 'unavailable_time_slot'
+    | 'prerequisite_conflict'
+    | 'capacity_exceeded';
   severity: 'low' | 'medium' | 'high' | 'critical';
   
   // Conflict details
@@ -2289,11 +2300,20 @@ interface IAllocationConflict extends Document {
   description: string;
   
   // Resolution
-  status: 'unresolved' | 'resolved' | 'ignored';
-  resolutionSuggestion?: string;
+  status: 'unresolved' | 'resolved' | 'ignored' | 'in_progress';
+  resolutionSuggestions?: string[];
+  recommendedAction?: 'reassign' | 'adjust_hours' | 'change_time' | 'add_faculty' | 'manual_review';
+  autoResolvable: boolean;
+  priority: number; // 1-10, higher = more urgent
   resolvedBy?: string;
   resolvedAt?: string;
   resolutionNotes?: string;
+  alternativeSolutions?: {
+    action: string;
+    description: string;
+    impact: 'low' | 'medium' | 'high';
+    feasibility: 'easy' | 'moderate' | 'difficult';
+  }[];
   
   createdAt: string;
   updatedAt: string;
@@ -2413,7 +2433,19 @@ const allocationConflictSchema = new Schema<IAllocationConflict>({
   sessionId: { type: String, required: true },
   conflictType: {
     type: String,
-    enum: ['time_overlap', 'overload', 'underload', 'expertise_mismatch', 'preference_violation'],
+    enum: [
+      'time_overlap', 
+      'overload', 
+      'underload', 
+      'expertise_mismatch', 
+      'preference_violation',
+      'department_mismatch',
+      'room_conflict',
+      'consecutive_hours_violation',
+      'unavailable_time_slot',
+      'prerequisite_conflict',
+      'capacity_exceeded'
+    ],
     required: true
   },
   severity: {
@@ -2428,13 +2460,33 @@ const allocationConflictSchema = new Schema<IAllocationConflict>({
   
   status: {
     type: String,
-    enum: ['unresolved', 'resolved', 'ignored'],
+    enum: ['unresolved', 'resolved', 'ignored', 'in_progress'],
     default: 'unresolved'
   },
-  resolutionSuggestion: { type: String },
+  resolutionSuggestions: [{ type: String }],
+  recommendedAction: {
+    type: String,
+    enum: ['reassign', 'adjust_hours', 'change_time', 'add_faculty', 'manual_review']
+  },
+  autoResolvable: { type: Boolean, default: false },
+  priority: { type: Number, min: 1, max: 10, default: 5 },
   resolvedBy: { type: String },
   resolvedAt: { type: String },
   resolutionNotes: { type: String },
+  alternativeSolutions: [{
+    action: { type: String, required: true },
+    description: { type: String, required: true },
+    impact: { 
+      type: String, 
+      enum: ['low', 'medium', 'high'],
+      required: true 
+    },
+    feasibility: { 
+      type: String, 
+      enum: ['easy', 'moderate', 'difficult'],
+      required: true 
+    }
+  }],
   
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
