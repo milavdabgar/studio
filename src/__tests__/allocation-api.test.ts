@@ -38,62 +38,37 @@ const mockAllocation = {
 
 jest.mock('../lib/models', () => ({
   AllocationSessionModel: {
-    find: jest.fn().mockResolvedValue([mockSession]),
-    findOne: jest.fn().mockResolvedValue(mockSession),
-    create: jest.fn().mockResolvedValue(mockSession),
-    findOneAndUpdate: jest.fn().mockResolvedValue(mockSession),
-    deleteMany: jest.fn().mockResolvedValue({ deletedCount: 0 })
+    find: jest.fn(),
+    findOne: jest.fn(),
+    create: jest.fn(),
+    findOneAndUpdate: jest.fn(),
+    deleteMany: jest.fn()
   },
   CourseAllocationModel: {
-    find: jest.fn().mockResolvedValue([mockAllocation]),
-    findOne: jest.fn().mockResolvedValue(mockAllocation),
-    insertMany: jest.fn().mockResolvedValue([mockAllocation]),
-    deleteMany: jest.fn().mockResolvedValue({ deletedCount: 0 })
+    find: jest.fn(),
+    findOne: jest.fn(),
+    insertMany: jest.fn(),
+    deleteMany: jest.fn()
   },
   AllocationConflictModel: {
-    find: jest.fn().mockResolvedValue([]),
-    deleteMany: jest.fn().mockResolvedValue({ deletedCount: 0 }),
-    insertMany: jest.fn().mockResolvedValue([])
+    find: jest.fn(),
+    deleteMany: jest.fn(),
+    insertMany: jest.fn()
   },
   FacultyModel: {
-    find: jest.fn().mockResolvedValue([{
-      id: 'faculty-1',
-      displayName: 'Dr. John Doe',
-      department: 'Computer Science'
-    }])
+    find: jest.fn()
   },
   CourseOfferingModel: {
-    find: jest.fn().mockResolvedValue([{
-      id: 'offering-1',
-      courseId: 'course-1',
-      semester: 1,
-      academicYear: '2025-26'
-    }])
+    find: jest.fn()
   },
   FacultyPreferenceModel: {
-    find: jest.fn().mockResolvedValue([{
-      id: 'pref-1',
-      facultyId: 'faculty-1',
-      preferredCourses: [{
-        courseOfferingId: 'offering-1',
-        priority: 1,
-        expertiseLevel: 9
-      }]
-    }])
+    find: jest.fn()
   },
   CourseModel: {
-    find: jest.fn().mockResolvedValue([{
-      id: 'course-1',
-      subjectName: 'Programming Fundamentals',
-      subcode: 'CS101'
-    }])
+    find: jest.fn()
   },
   ProgramModel: {
-    find: jest.fn().mockResolvedValue([{
-      id: 'btech-cse',
-      name: 'B.Tech Computer Science',
-      department: 'Computer Science'
-    }])
+    find: jest.fn()
   }
 }));
 
@@ -118,6 +93,61 @@ jest.mock('../lib/algorithms/allocationEngine', () => ({
 describe('Allocation API Endpoints', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    
+    // Setup mock return values
+    const { AllocationSessionModel, CourseAllocationModel, AllocationConflictModel, 
+            FacultyModel, CourseOfferingModel, FacultyPreferenceModel, 
+            CourseModel, ProgramModel } = require('../lib/models');
+    
+    AllocationSessionModel.find.mockResolvedValue([mockSession]);
+    AllocationSessionModel.findOne.mockResolvedValue(mockSession);
+    AllocationSessionModel.create.mockResolvedValue(mockSession);
+    AllocationSessionModel.findOneAndUpdate.mockResolvedValue(mockSession);
+    AllocationSessionModel.deleteMany.mockResolvedValue({ deletedCount: 0 });
+    
+    CourseAllocationModel.find.mockResolvedValue([mockAllocation]);
+    CourseAllocationModel.findOne.mockResolvedValue(mockAllocation);
+    CourseAllocationModel.insertMany.mockResolvedValue([mockAllocation]);
+    CourseAllocationModel.deleteMany.mockResolvedValue({ deletedCount: 0 });
+    
+    AllocationConflictModel.find.mockResolvedValue([]);
+    AllocationConflictModel.deleteMany.mockResolvedValue({ deletedCount: 0 });
+    AllocationConflictModel.insertMany.mockResolvedValue([]);
+    
+    FacultyModel.find.mockResolvedValue([{
+      id: 'faculty-1',
+      displayName: 'Dr. John Doe',
+      department: 'Computer Science'
+    }]);
+    
+    CourseOfferingModel.find.mockResolvedValue([{
+      id: 'offering-1',
+      courseId: 'course-1',
+      semester: 1,
+      academicYear: '2025-26'
+    }]);
+    
+    FacultyPreferenceModel.find.mockResolvedValue([{
+      id: 'pref-1',
+      facultyId: 'faculty-1',
+      preferredCourses: [{
+        courseOfferingId: 'offering-1',
+        priority: 1,
+        expertiseLevel: 9
+      }]
+    }]);
+    
+    CourseModel.find.mockResolvedValue([{
+      id: 'course-1',
+      subjectName: 'Programming Fundamentals',
+      subcode: 'CS101'
+    }]);
+    
+    ProgramModel.find.mockResolvedValue([{
+      id: 'btech-cse',
+      name: 'B.Tech Computer Science',
+      department: 'Computer Science'
+    }]);
   });
 
   describe('Allocation Sessions API', () => {
@@ -327,7 +357,7 @@ describe('Allocation API Endpoints', () => {
       });
 
       const result = await mockGet(request);
-      const data = await result.json();
+      const data = await (result as any).json();
 
       expect(data.success).toBe(true);
       expect(data.data).toHaveLength(1);
@@ -367,7 +397,7 @@ describe('Allocation API Endpoints', () => {
 
       const request = new NextRequest('http://localhost:3000/api/allocation-sessions/test-session-1/reports?type=summary');
       const result = await mockReportsGet(request);
-      const data = await result.json();
+      const data = await (result as any).json();
 
       expect(data.success).toBe(true);
       expect(data.data.session.id).toBe('test-session-1');
@@ -404,7 +434,7 @@ describe('Allocation API Endpoints', () => {
 
       const request = new NextRequest('http://localhost:3000/api/allocation-sessions/test-session-1/approval');
       const result = await mockApprovalGet(request);
-      const data = await result.json();
+      const data = await (result as any).json();
 
       expect(data.success).toBe(true);
       expect(data.data.approvalStats.approved).toBe(1);
@@ -446,7 +476,7 @@ describe('Allocation API Endpoints', () => {
       });
 
       const result = await mockApprovalPost(request);
-      const data = await result.json();
+      const data = await (result as any).json();
 
       expect(data.success).toBe(true);
       expect(data.data.processedAllocations).toBe(1);

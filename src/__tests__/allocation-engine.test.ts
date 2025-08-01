@@ -26,6 +26,15 @@ const mockSession: AllocationSession = {
     workloadBalanceWeightage: 0.2,
     minimizeConflicts: true
   },
+  statistics: {
+    totalCourses: 0,
+    totalFaculty: 0,
+    allocatedCourses: 0,
+    unallocatedCourses: 0,
+    facultyWithFullLoad: 0,
+    conflictsDetected: 0,
+    averageSatisfactionScore: 0
+  },
   createdAt: '2025-01-01T00:00:00.000Z',
   updatedAt: '2025-01-01T00:00:00.000Z'
 };
@@ -136,10 +145,12 @@ const mockCourseOfferings: CourseOfferingWithRequirements[] = [
   {
     id: 'offering-1',
     courseId: 'course-1',
+    academicTermId: 'term-2025-26-1',
+    facultyIds: [],
     programId: 'btech-cse',
     semester: 1,
     academicYear: '2025-26',
-    status: 'active',
+    status: 'scheduled',
     requiredHours: 4,
     assignmentType: 'theory',
     priorityLevel: 1,
@@ -156,10 +167,12 @@ const mockCourseOfferings: CourseOfferingWithRequirements[] = [
   {
     id: 'offering-2',
     courseId: 'course-2',
+    academicTermId: 'term-2025-26-3',
+    facultyIds: [],
     programId: 'btech-cse',
     semester: 3,
     academicYear: '2025-26',
-    status: 'active',
+    status: 'scheduled',
     requiredHours: 4,
     assignmentType: 'theory',
     priorityLevel: 1,
@@ -176,10 +189,12 @@ const mockCourseOfferings: CourseOfferingWithRequirements[] = [
   {
     id: 'offering-3',
     courseId: 'course-3',
+    academicTermId: 'term-2025-26-5',
+    facultyIds: [],
     programId: 'btech-it',
     semester: 5,
     academicYear: '2025-26',
-    status: 'active',
+    status: 'scheduled',
     requiredHours: 3,
     assignmentType: 'theory',
     priorityLevel: 2,
@@ -206,8 +221,7 @@ const mockPreferences: FacultyPreference[] = [
         courseId: 'offering-1',
         preference: 'high',
         expertise: 9,
-        previouslyTaught: true,
-        notes: 'Expert in programming fundamentals'
+        previouslyTaught: true
       }
     ],
     timePreferences: [],
@@ -230,8 +244,7 @@ const mockPreferences: FacultyPreference[] = [
         courseId: 'offering-2',
         preference: 'high',
         expertise: 10,
-        previouslyTaught: true,
-        notes: 'Database expert'
+        previouslyTaught: true
       }
     ],
     timePreferences: [],
@@ -254,8 +267,7 @@ const mockPreferences: FacultyPreference[] = [
         courseId: 'offering-3',
         preference: 'high',
         expertise: 8,
-        previouslyTaught: true,
-        notes: 'Security specialist'
+        previouslyTaught: true
       }
     ],
     timePreferences: [],
@@ -352,10 +364,12 @@ describe('Allocation Engine', () => {
         {
           id: 'offering-4',
           courseId: 'course-4',
+          academicTermId: 'term-2025-26-1',
+          facultyIds: [],
           programId: 'btech-cse',
           semester: 1,
           academicYear: '2025-26',
-            currentEnrollment: 55,
+          currentEnrollments: 55,
           status: 'scheduled',
           requiredHours: 16, // This would overload faculty-1
           assignmentType: 'theory',
@@ -384,13 +398,17 @@ describe('Allocation Engine', () => {
               courseId: 'offering-4',
               preference: 'medium',
               expertise: 8,
-              previouslyTaught: true,
-              notes: 'Can handle advanced programming'
+              previouslyTaught: true
             }
           ],
-          unavailableSlots: [],
+          timePreferences: [],
+          roomPreferences: [],
           maxHoursPerWeek: 18,
-                createdAt: '2025-01-01T00:00:00.000Z',
+          maxConsecutiveHours: 4,
+          unavailableSlots: [],
+          workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+          priority: 5,
+          createdAt: '2025-01-01T00:00:00.000Z',
           updatedAt: '2025-01-01T00:00:00.000Z'
         }
       ];
@@ -412,10 +430,12 @@ describe('Allocation Engine', () => {
       const mismatchedCourse: CourseOfferingWithRequirements = {
         id: 'offering-mismatch',
         courseId: 'course-mismatch',
+        academicTermId: 'term-2025-26-1',
+        facultyIds: [],
         programId: 'btech-cse',
         semester: 1,
         academicYear: '2025-26',
-        currentEnrollment: 55,
+        currentEnrollments: 55,
         status: 'scheduled',
         requiredHours: 4,
         assignmentType: 'theory',
@@ -544,10 +564,12 @@ describe('Allocation Engine', () => {
       const unsuitableCourse: CourseOfferingWithRequirements = {
         id: 'offering-unsuitable',
         courseId: 'course-unsuitable',
+        academicTermId: 'term-2025-26-1',
+        facultyIds: [],
         programId: 'btech-cse',
         semester: 1,
         academicYear: '2025-26',
-        currentEnrollment: 55,
+        currentEnrollments: 55,
         status: 'scheduled',
         requiredHours: 25, // Exceeds maximum hours for any faculty
         assignmentType: 'theory',
