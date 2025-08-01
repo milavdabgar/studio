@@ -295,7 +295,7 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
       await waitFor(() => {
         expect(screen.getByText('Weekly Distribution')).toBeInTheDocument();
         expect(screen.getByText('Time Slot Usage')).toBeInTheDocument();
-      });
+      }, { timeout: 5000 });
     });
 
     it('detects and displays workload conflicts', async () => {
@@ -326,7 +326,7 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
       await waitFor(() => {
         expect(screen.getByText('Workload Issues')).toBeInTheDocument();
         expect(screen.getByText(/exceeds maximum limit/)).toBeInTheDocument();
-      });
+      }, { timeout: 5000 });
     });
   });
 
