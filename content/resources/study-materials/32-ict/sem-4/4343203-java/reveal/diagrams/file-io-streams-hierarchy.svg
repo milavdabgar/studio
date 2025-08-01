@@ -123,7 +123,7 @@
   
   <!-- Stream Usage Examples -->
   <rect x="50" y="280" width="1100" height="300" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2" rx="10"/>
-  <text x="600" y="305" text-anchor="middle" class="title-text" font-size="16">Stream Usage Examples & Best Practices</text>
+  <text x="600" y="305" text-anchor="middle" class="title-text" font-size="16">Stream Usage Examples &amp; Best Practices</text>
   
   <!-- Byte Stream Example -->
   <rect x="70" y="320" width="520" height="120" fill="#e8f4f8" stroke="#3498db" stroke-width="2" rx="5"/>

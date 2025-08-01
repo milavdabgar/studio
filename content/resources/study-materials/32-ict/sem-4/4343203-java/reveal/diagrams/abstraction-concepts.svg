@@ -80,7 +80,7 @@
     <text x="505" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#4A148C">Features</text>
     <text x="430" y="130" font-family="Arial, sans-serif" font-size="10" fill="#333">✓ Multiple inheritance</text>
     <text x="430" y="145" font-family="Arial, sans-serif" font-size="10" fill="#333">✓ Only constants allowed</text>
-    <text x="430" y="160" font-family="Arial, sans-serif" font-size="10" fill="#333">✓ Default & static methods</text>
+    <text x="430" y="160" font-family="Arial, sans-serif" font-size="10" fill="#333">✓ Default &amp; static methods</text>
     <text x="430" y="175" font-family="Arial, sans-serif" font-size="10" fill="#333">✗ No constructors</text>
     <text x="430" y="190" font-family="Arial, sans-serif" font-size="10" fill="#333">✗ Cannot be instantiated</text>
   </g>

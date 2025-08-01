@@ -147,7 +147,7 @@
   <text x="500" y="525" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Common Thread Methods</text>
   
   <!-- Method Categories -->
-  <text x="80" y="550" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2E7D32">Creation & Control</text>
+  <text x="80" y="550" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2E7D32">Creation &amp; Control</text>
   <text x="80" y="570" font-family="Arial, sans-serif" font-size="11" fill="#333">• start() - Begin execution</text>
   <text x="80" y="585" font-family="Arial, sans-serif" font-size="11" fill="#333">• run() - Thread's main logic</text>
   <text x="80" y="600" font-family="Arial, sans-serif" font-size="11" fill="#333">• interrupt() - Send interrupt signal</text>
@@ -156,7 +156,7 @@
   <text x="80" y="645" font-family="Arial, sans-serif" font-size="11" fill="#333">• setDaemon(boolean) - Daemon thread</text>
   <text x="80" y="660" font-family="Arial, sans-serif" font-size="11" fill="#333">• setPriority(int) - Thread priority</text>
   
-  <text x="320" y="550" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1565C0">State & Information</text>
+  <text x="320" y="550" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1565C0">State &amp; Information</text>
   <text x="320" y="570" font-family="Arial, sans-serif" font-size="11" fill="#333">• getState() - Current thread state</text>
   <text x="320" y="585" font-family="Arial, sans-serif" font-size="11" fill="#333">• isAlive() - Check if thread is alive</text>
   <text x="320" y="600" font-family="Arial, sans-serif" font-size="11" fill="#333">• getName() - Get thread name</text>

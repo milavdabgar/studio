@@ -80,10 +80,10 @@
   <!-- Precedence Level 8 -->
   <rect x="50" y="500" width="800" height="50" fill="#27ae60" class="level-box"/>
   <text x="100" y="520" class="level-text">8. BITWISE AND</text>
-  <text x="250" y="520" class="operator-text">&</text>
+  <text x="250" y="520" class="operator-text">&amp;</text>
   <text x="250" y="535" class="description-text">Bitwise AND</text>
   <text x="400" y="520" class="description-text">Bit-by-bit AND operation</text>
-  <text x="650" y="525" class="example-text">5 & 3 → 1 (binary: 101 & 011 → 001)</text>
+  <text x="650" y="525" class="example-text">5 &amp; 3 → 1 (binary: 101 &amp; 011 → 001)</text>
   
   <!-- Precedence Level 9 -->
   <rect x="50" y="560" width="800" height="50" fill="#3498db" class="level-box"/>
@@ -105,9 +105,9 @@
   <rect x="50" y="680" width="400" height="50" fill="#34495e" class="level-box"/>
   <text x="100" y="700" class="level-text">11. LOGICAL AND</text>
   <text x="100" y="715" class="level-text">(Short-circuit)</text>
-  <text x="250" y="700" class="operator-text">&& </text>
+  <text x="250" y="700" class="operator-text">&amp;&amp; </text>
   <text x="250" y="715" class="description-text">Logical AND</text>
-  <text x="320" y="705" class="example-text">a && b</text>
+  <text x="320" y="705" class="example-text">a &amp;&amp; b</text>
   
   <!-- Precedence Level 12 -->
   <rect x="450" y="680" width="400" height="50" fill="#7f8c8d" class="level-box"/>
@@ -127,7 +127,7 @@
   <!-- Precedence Level 14 - Lowest -->
   <rect x="370" y="740" width="480" height="50" fill="#bdc3c7" class="level-box"/>
   <text x="420" y="760" class="level-text">14. LOWEST - ASSIGNMENT</text>
-  <text x="650" y="760" class="operator-text">= += -= *= /= %= &= |= ^= &lt;&lt;= &gt;&gt;= &gt;&gt;&gt;=</text>
+  <text x="650" y="760" class="operator-text">= += -= *= /= %= &amp;= |= ^= &lt;&lt;= &gt;&gt;= &gt;&gt;&gt;=</text>
   <text x="650" y="775" class="description-text">Assignment and compound assignment</text>
   
   <!-- Arrow showing precedence direction -->
@@ -136,6 +136,6 @@
   
   <!-- Complex Expression Example -->
   <rect x="50" y="30" width="800" height="40" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2" rx="5"/>
-  <text x="450" y="45" text-anchor="middle" class="example-text" font-weight="bold">Example: int result = 2 + 3 * 4 > 10 && true || false;</text>
-  <text x="450" y="60" text-anchor="middle" class="example-text">Evaluation: 2 + (3*4) → 2 + 12 → 14 > 10 → true && true → true || false → true</text>
+  <text x="450" y="45" text-anchor="middle" class="example-text" font-weight="bold">Example: int result = 2 + 3 * 4 > 10 &amp;&amp; true || false;</text>
+  <text x="450" y="60" text-anchor="middle" class="example-text">Evaluation: 2 + (3*4) → 2 + 12 → 14 > 10 → true &amp;&amp; true → true || false → true</text>
 </svg>

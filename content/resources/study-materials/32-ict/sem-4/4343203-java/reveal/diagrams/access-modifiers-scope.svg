@@ -15,7 +15,7 @@
   </defs>
   
   <!-- Title -->
-  <text x="550" y="30" text-anchor="middle" class="title-text">Java Access Modifiers - Scope & Visibility</text>
+  <text x="550" y="30" text-anchor="middle" class="title-text">Java Access Modifiers - Scope &amp; Visibility</text>
   
   <!-- Access Modifier Boxes -->
   <!-- Private -->

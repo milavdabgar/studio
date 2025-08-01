@@ -131,7 +131,7 @@
   
   <!-- JIT Compiler Cache -->
   <rect x="880" y="380" width="410" height="70" fill="#ffcc99" class="memory-box"/>
-  <text x="1085" y="400" text-anchor="middle" class="section-title">JIT Compiler & Code Cache</text>
+  <text x="1085" y="400" text-anchor="middle" class="section-title">JIT Compiler &amp; Code Cache</text>
   <text x="890" y="420" class="description-text">• Hotspot compilation data</text>
   <text x="890" y="435" class="description-text">• Optimized native machine code</text>
   <text x="1110" y="420" class="description-text">• Profiling information</text>
@@ -139,7 +139,7 @@
   
   <!-- Memory Management Details -->
   <rect x="80" y="490" width="1270" height="160" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2" rx="10"/>
-  <text x="715" y="515" text-anchor="middle" class="section-title" font-size="14">Memory Management & Garbage Collection</text>
+  <text x="715" y="515" text-anchor="middle" class="section-title" font-size="14">Memory Management &amp; Garbage Collection</text>
   
   <!-- GC Process -->
   <rect x="100" y="530" width="280" height="110" fill="#e8f5e9" stroke="#27ae60" stroke-width="2" rx="5"/>

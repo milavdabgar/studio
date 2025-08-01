@@ -35,14 +35,14 @@
   <text x="400" y="105" text-anchor="middle" class="component-title">Controller</text>
   <text x="310" y="125" class="component-text">• Process User Input</text>
   <text x="310" y="145" class="component-text">• Business Logic</text>
-  <text x="310" y="165" class="component-text">• Coordinate Model & View</text>
+  <text x="310" y="165" class="component-text">• Coordinate Model &amp; View</text>
   <text x="310" y="185" class="component-text">• Examples:</text>
   <text x="320" y="200" class="component-text">- Event Handlers, Servlets</text>
   
   <!-- Model Component -->
   <rect x="550" y="80" width="200" height="120" fill="#27ae60" class="component-rect"/>
   <text x="650" y="105" text-anchor="middle" class="component-title">Model</text>
-  <text x="560" y="125" class="component-text">• Data Storage & Logic</text>
+  <text x="560" y="125" class="component-text">• Data Storage &amp; Logic</text>
   <text x="560" y="145" class="component-text">• Business Rules</text>
   <text x="560" y="165" class="component-text">• Database Operations</text>
   <text x="560" y="185" class="component-text">• Examples:</text>

@@ -60,7 +60,7 @@
   <text x="750" y="150" class="process-text">• Extension class loader</text>
   <text x="750" y="165" class="process-text">• System class loader</text>
   <text x="750" y="180" class="process-text">• Loading verification</text>
-  <text x="750" y="195" class="process-text">• Preparation & resolution</text>
+  <text x="750" y="195" class="process-text">• Preparation &amp; resolution</text>
   
   <!-- Step 5: JIT Compiler -->
   <rect x="970" y="70" width="180" height="100" fill="#9b59b6" class="step-box"/>

@@ -20,7 +20,7 @@
   </defs>
   
   <!-- Title -->
-  <text x="500" y="25" text-anchor="middle" class="title-text">Java String Memory Management & Immutability</text>
+  <text x="500" y="25" text-anchor="middle" class="title-text">Java String Memory Management &amp; Immutability</text>
   
   <!-- String Pool Section -->
   <rect x="50" y="50" width="900" height="200" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2" rx="10"/>

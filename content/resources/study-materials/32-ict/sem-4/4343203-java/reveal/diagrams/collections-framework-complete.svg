@@ -260,7 +260,7 @@
   
   <!-- Legend -->
   <rect x="1000" y="540" width="350" height="200" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2" rx="10"/>
-  <text x="1175" y="565" text-anchor="middle" class="class-title" font-size="14">Legend & Key Points</text>
+  <text x="1175" y="565" text-anchor="middle" class="class-title" font-size="14">Legend &amp; Key Points</text>
   
   <rect x="1020" y="580" width="15" height="10" class="collection-color"/>
   <text x="1040" y="590" class="description-text">Interfaces (contracts)</text>

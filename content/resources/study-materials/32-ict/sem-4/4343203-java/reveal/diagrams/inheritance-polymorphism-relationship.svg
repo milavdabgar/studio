@@ -21,7 +21,7 @@
   </defs>
   
   <!-- Title -->
-  <text x="600" y="30" text-anchor="middle" class="title-text">Java Inheritance & Polymorphism Relationships</text>
+  <text x="600" y="30" text-anchor="middle" class="title-text">Java Inheritance &amp; Polymorphism Relationships</text>
   
   <!-- Interface -->
   <rect x="500" y="70" width="200" height="80" class="interface-color interface-box"/>
@@ -134,10 +134,10 @@
   <text x="620" y="860" class="code-text">// Different implementations</text>
   
   <rect x="880" y="740" width="250" height="130" fill="#e8f4f8" stroke="#3498db" stroke-width="2" rx="5"/>
-  <text x="1005" y="760" text-anchor="middle" class="method-title" fill="#3498db">Benefits & Best Practices</text>
+  <text x="1005" y="760" text-anchor="middle" class="method-title" fill="#3498db">Benefits &amp; Best Practices</text>
   <text x="890" y="780" class="description-text" font-weight="bold">Advantages:</text>
   <text x="890" y="795" class="description-text">• Code reusability</text>
-  <text x="890" y="810" class="description-text">• Flexibility & maintainability</text>
+  <text x="890" y="810" class="description-text">• Flexibility &amp; maintainability</text>
   <text x="890" y="825" class="description-text">• Loose coupling</text>
   <text x="890" y="845" class="description-text" font-weight="bold">Best Practices:</text>
   <text x="890" y="860" class="description-text">• Use @Override annotation</text>

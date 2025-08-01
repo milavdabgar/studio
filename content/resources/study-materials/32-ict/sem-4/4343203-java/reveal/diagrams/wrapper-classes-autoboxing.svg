@@ -22,7 +22,7 @@
   </defs>
   
   <!-- Title -->
-  <text x="450" y="30" text-anchor="middle" class="title-text">Java Wrapper Classes - Autoboxing & Unboxing</text>
+  <text x="450" y="30" text-anchor="middle" class="title-text">Java Wrapper Classes - Autoboxing &amp; Unboxing</text>
   
   <!-- Autoboxing Section -->
   <text x="50" y="70" class="section-title">Autoboxing (Primitive → Wrapper Object)</text>

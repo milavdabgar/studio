@@ -25,7 +25,7 @@
   </defs>
   
   <!-- Title -->
-  <text x="650" y="30" text-anchor="middle" class="title-text">Java Thread Lifecycle & State Transitions</text>
+  <text x="650" y="30" text-anchor="middle" class="title-text">Java Thread Lifecycle &amp; State Transitions</text>
   
   <!-- Thread States -->
   
@@ -111,7 +111,7 @@
   
   <!-- Method Categories -->
   <rect x="70" y="440" width="200" height="130" fill="#e8f5e9" stroke="#27ae60" stroke-width="2" rx="5"/>
-  <text x="170" y="460" text-anchor="middle" class="method-title" fill="#27ae60">Starting & Running</text>
+  <text x="170" y="460" text-anchor="middle" class="method-title" fill="#27ae60">Starting &amp; Running</text>
   <text x="80" y="480" class="code-text">start() - Begin execution</text>
   <text x="80" y="495" class="code-text">run() - Thread's main method</text>
   <text x="80" y="510" class="code-text">isAlive() - Check if running</text>
@@ -120,7 +120,7 @@
   <text x="80" y="555" class="code-text">getPriority() - Get priority</text>
   
   <rect x="290" y="440" width="200" height="130" fill="#fff3e0" stroke="#f39c12" stroke-width="2" rx="5"/>
-  <text x="390" y="460" text-anchor="middle" class="method-title" fill="#f39c12">Sleeping & Waiting</text>
+  <text x="390" y="460" text-anchor="middle" class="method-title" fill="#f39c12">Sleeping &amp; Waiting</text>
   <text x="300" y="480" class="code-text">sleep(ms) - Pause execution</text>
   <text x="300" y="495" class="code-text">wait() - Wait for notification</text>
   <text x="300" y="510" class="code-text">wait(timeout) - Timed wait</text>
@@ -129,10 +129,10 @@
   <text x="300" y="555" class="code-text">join() - Wait for completion</text>
   
   <rect x="510" y="440" width="200" height="130" fill="#fdf2f2" stroke="#e74c3c" stroke-width="2" rx="5"/>
-  <text x="610" y="460" text-anchor="middle" class="method-title" fill="#e74c3c">Interruption & Control</text>
+  <text x="610" y="460" text-anchor="middle" class="method-title" fill="#e74c3c">Interruption &amp; Control</text>
   <text x="520" y="480" class="code-text">interrupt() - Request stop</text>
   <text x="520" y="495" class="code-text">isInterrupted() - Check flag</text>
-  <text x="520" y="510" class="code-text">interrupted() - Check & clear</text>
+  <text x="520" y="510" class="code-text">interrupted() - Check &amp; clear</text>
   <text x="520" y="525" class="code-text">yield() - Hint to scheduler</text>
   <text x="520" y="540" class="code-text">setDaemon(true) - Background</text>
   <text x="520" y="555" class="code-text">setPriority(int) - Set priority</text>
@@ -147,7 +147,7 @@
   <text x="740" y="555" class="code-text">CountDownLatch</text>
   
   <rect x="950" y="440" width="280" height="130" fill="#e8f4f8" stroke="#3498db" stroke-width="2" rx="5"/>
-  <text x="1090" y="460" text-anchor="middle" class="method-title" fill="#3498db">Thread Pool & Executors</text>
+  <text x="1090" y="460" text-anchor="middle" class="method-title" fill="#3498db">Thread Pool &amp; Executors</text>
   <text x="960" y="480" class="code-text">ExecutorService exec = Executors...</text>
   <text x="960" y="495" class="code-text">newFixedThreadPool(int)</text>
   <text x="960" y="510" class="code-text">newCachedThreadPool()</text>
@@ -157,7 +157,7 @@
   
   <!-- Thread Creation Examples -->
   <rect x="50" y="600" width="1200" height="180" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2" rx="10"/>
-  <text x="650" y="625" text-anchor="middle" class="title-text" font-size="16">Thread Creation & Management Examples</text>
+  <text x="650" y="625" text-anchor="middle" class="title-text" font-size="16">Thread Creation &amp; Management Examples</text>
   
   <rect x="70" y="640" width="280" height="130" fill="#ffffff" stroke="#bdc3c7" stroke-width="1" rx="5"/>
   <text x="210" y="660" text-anchor="middle" class="method-title">Extending Thread Class</text>

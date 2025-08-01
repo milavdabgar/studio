@@ -38,7 +38,7 @@
     
     <rect x="120" y="30" width="160" height="80" rx="8" fill="#E8F5E8" stroke="#2E7D32" stroke-width="1"/>
     <text x="200" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2E7D32">Data Hiding</text>
-    <text x="130" y="70" font-family="Arial, sans-serif" font-size="10" fill="#333">• Bundle data & methods</text>
+    <text x="130" y="70" font-family="Arial, sans-serif" font-size="10" fill="#333">• Bundle data &amp; methods</text>
     <text x="130" y="85" font-family="Arial, sans-serif" font-size="10" fill="#333">• Control access with modifiers</text>
     <text x="130" y="100" font-family="Arial, sans-serif" font-size="10" fill="#333">• Protect internal state</text>
     

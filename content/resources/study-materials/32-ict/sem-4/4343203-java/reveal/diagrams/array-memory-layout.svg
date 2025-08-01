@@ -18,7 +18,7 @@
   </defs>
   
   <!-- Title -->
-  <text x="550" y="30" text-anchor="middle" class="title-text">Java Array Memory Layout & Structure</text>
+  <text x="550" y="30" text-anchor="middle" class="title-text">Java Array Memory Layout &amp; Structure</text>
   
   <!-- 1D Array Section -->
   <text x="300" y="70" text-anchor="middle" class="label-text" font-size="16" fill="#3498db">One-Dimensional Array</text>
@@ -115,7 +115,7 @@
   
   <!-- Array Properties Section -->
   <rect x="50" y="290" width="1000" height="180" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2" rx="10"/>
-  <text x="550" y="315" text-anchor="middle" class="label-text" font-size="16">Array Properties & Characteristics</text>
+  <text x="550" y="315" text-anchor="middle" class="label-text" font-size="16">Array Properties &amp; Characteristics</text>
   
   <!-- Properties Table -->
   <rect x="70" y="330" width="460" height="130" fill="#ffffff" stroke="#bdc3c7" stroke-width="1" rx="5"/>
@@ -168,7 +168,7 @@
   <text x="80" y="675" class="code-text">int length = arr.length;          // Get array size</text>
   <text x="80" y="690" class="code-text"></text>
   <text x="80" y="705" class="code-text">// Array traversal</text>
-  <text x="80" y="720" class="code-text">for (int i = 0; i < arr.length; i++) {</text>
+  <text x="80" y="720" class="code-text">for (int i = 0; i &lt; arr.length; i++) {</text>
   <text x="80" y="735" class="code-text">    System.out.println(arr[i]);</text>
   <text x="80" y="750" class="code-text">}</text>
   
@@ -187,8 +187,8 @@
   <text x="580" y="690" class="code-text">int cols = matrix[0].length;      // Number of columns</text>
   <text x="580" y="705" class="code-text"></text>
   <text x="580" y="720" class="code-text">// 2D Array traversal</text>
-  <text x="580" y="735" class="code-text">for (int i = 0; i < matrix.length; i++) {</text>
-  <text x="580" y="750" class="code-text">    for (int j = 0; j < matrix[i].length; j++) {</text>
+  <text x="580" y="735" class="code-text">for (int i = 0; i &lt; matrix.length; i++) {</text>
+  <text x="580" y="750" class="code-text">    for (int j = 0; j &lt; matrix[i].length; j++) {</text>
   <text x="600" y="765" class="code-text">System.out.print(matrix[i][j] + " ");</text>
   <text x="580" y="780" class="code-text">    }</text>
   <text x="580" y="795" class="code-text">}</text>
