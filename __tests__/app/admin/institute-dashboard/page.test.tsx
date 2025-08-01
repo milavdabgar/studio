@@ -3,8 +3,13 @@ import { render as rtlRender, screen, fireEvent, waitFor } from '@testing-librar
 import { useToast } from '@/hooks/use-toast';
 import InstituteDashboardPage from '@/app/admin/institute-dashboard/page';
 
+const mockToast = jest.fn();
+
 // Mock hooks and components
-jest.mock('@/hooks/use-toast');
+jest.mock('@/hooks/use-toast', () => ({
+  useToast: () => ({ toast: mockToast })
+}));
+
 jest.mock('@/components/RealtimeStatus', () => ({
   RealtimeStatus: ({ showLabel, onReconnect }: any) => (
     <div>
@@ -14,20 +19,25 @@ jest.mock('@/components/RealtimeStatus', () => ({
   )
 }));
 
-const mockToast = jest.fn();
-const mockUseToast = useToast as jest.MockedFunction<typeof useToast>;
-
 describe('InstituteDashboardPage', () => {
+  const renderWithTimers = () => {
+    const result = rtlRender(<InstituteDashboardPage />);
+    jest.advanceTimersByTime(1000);
+    return result;
+  };
+
   beforeEach(() => {
-    mockUseToast.mockReturnValue({ toast: mockToast });
+    jest.clearAllMocks();
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
     jest.clearAllMocks();
+    jest.useRealTimers();
   });
 
   it('renders institute dashboard successfully', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     await waitFor(() => {
       expect(screen.getByText('Institute Dashboard')).toBeInTheDocument();
@@ -35,7 +45,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('displays institute-wide metrics', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     await waitFor(() => {
       expect(screen.getByText('Departments')).toBeInTheDocument();
@@ -48,7 +58,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('shows system health status', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     await waitFor(() => {
       expect(screen.getByText('Comprehensive overview of institute-wide timetable operations')).toBeInTheDocument();
@@ -58,7 +68,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('displays real-time status component', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     await waitFor(() => {
       expect(screen.getByText('Live Updates')).toBeInTheDocument();
@@ -66,7 +76,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('handles tab navigation correctly', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     await waitFor(() => {
       expect(screen.getByText('Overview')).toBeInTheDocument();
@@ -101,7 +111,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('displays department status in overview', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     await waitFor(() => {
       expect(screen.getByText('Department Status')).toBeInTheDocument();
@@ -113,7 +123,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('shows system health metrics in overview', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     await waitFor(() => {
       expect(screen.getByText('System Health')).toBeInTheDocument();
@@ -124,7 +134,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('displays detailed department information in departments tab', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     const departmentsTab = screen.getByRole('tab', { name: /departments/i });
     fireEvent.click(departmentsTab);
@@ -139,7 +149,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('shows resource utilization details in resources tab', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     const resourcesTab = screen.getByRole('tab', { name: /resources/i });
     fireEvent.click(resourcesTab);
@@ -154,7 +164,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('displays system alerts in alerts tab', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     const alertsTab = screen.getByRole('tab', { name: /alerts/i });
     fireEvent.click(alertsTab);
@@ -168,7 +178,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('shows alert badges for pending issues', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     await waitFor(() => {
       const alertsTab = screen.getByRole('tab', { name: /alerts/i });
@@ -177,7 +187,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('handles time range selector', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     await waitFor(() => {
       expect(screen.getByDisplayValue('Today')).toBeInTheDocument();
@@ -196,7 +206,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('handles export functionality', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     await waitFor(() => {
       const exportButton = screen.getByText('Export');
@@ -208,7 +218,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('displays severity-based alert styling', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     const alertsTab = screen.getByRole('tab', { name: /alerts/i });
     fireEvent.click(alertsTab);
@@ -223,7 +233,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('shows progress bars for utilization metrics', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     await waitFor(() => {
       // Progress bars should be present for utilization rates
@@ -233,7 +243,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('handles alert resolution', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     const alertsTab = screen.getByRole('tab', { name: /alerts/i });
     fireEvent.click(alertsTab);
@@ -248,7 +258,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('displays department status badges correctly', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     const departmentsTab = screen.getByRole('tab', { name: /departments/i });
     fireEvent.click(departmentsTab);
@@ -263,7 +273,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('shows resource type indicators', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     const resourcesTab = screen.getByRole('tab', { name: /resources/i });
     fireEvent.click(resourcesTab);
@@ -276,7 +286,7 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('displays peak hours information', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     const resourcesTab = screen.getByRole('tab', { name: /resources/i });
     fireEvent.click(resourcesTab);
@@ -288,13 +298,13 @@ describe('InstituteDashboardPage', () => {
   });
 
   it('handles loading state', () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     expect(screen.getByText('Loading Institute Dashboard...')).toBeInTheDocument();
   });
 
   it('shows metric cards with icons', async () => {
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     await waitFor(() => {
       // Should display metric cards with appropriate icons
@@ -313,7 +323,7 @@ describe('InstituteDashboardPage', () => {
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     // Force an error in the component's useEffect
-    rtlRender(<InstituteDashboardPage />);
+    renderWithTimers();
     
     // The component should handle errors gracefully and show the dashboard
     await waitFor(() => {
