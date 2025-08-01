@@ -9,8 +9,12 @@ import FacultyTimetablePage from '@/app/faculty/timetable/page';
 import HODDashboardPage from '@/app/hod/dashboard/page';
 import InstituteDashboardPage from '@/app/admin/institute-dashboard/page';
 
+const mockToast = jest.fn();
+
 // Mock dependencies
-jest.mock('@/hooks/use-toast');
+jest.mock('@/hooks/use-toast', () => ({
+  useToast: () => ({ toast: mockToast })
+}));
 jest.mock('@/hooks/useRealtimeTimetable');
 jest.mock('@/lib/api/timetables');
 jest.mock('@/lib/api/students');
@@ -28,8 +32,6 @@ jest.mock('@/components/RealtimeStatus', () => ({
   )
 }));
 
-const mockToast = jest.fn();
-const mockUseToast = jest.mocked(useToast);
 const mockUseStudentRealtimeTimetable = jest.mocked(useStudentRealtimeTimetable);
 const mockUseFacultyRealtimeTimetable = jest.mocked(useFacultyRealtimeTimetable);
 const mockUseHODRealtimeTimetable = jest.mocked(useHODRealtimeTimetable);
@@ -102,11 +104,7 @@ const mockBatches = [
 
 // Helper function to setup common mocks
 const setupMocks = (role: 'student' | 'faculty' | 'hod' | 'admin') => {
-  mockUseToast.mockReturnValue({ 
-    toast: mockToast,
-    dismiss: jest.fn(),
-    toasts: []
-  });
+  // useToast is already mocked above, no need to set return value
   
   // Setup real-time hooks - include all properties from the actual hook return type
   mockUseStudentRealtimeTimetable.mockReturnValue({
