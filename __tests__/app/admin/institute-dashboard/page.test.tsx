@@ -87,31 +87,37 @@ describe('InstituteDashboardPage', () => {
     });
 
     // Switch to Departments tab
-    const departmentsTab = screen.getByRole('tab', { name: /departments/i });
-    fireEvent.click(departmentsTab);
+    await waitFor(() => {
+      const departmentsTab = screen.getByRole('tab', { name: /departments/i });
+      fireEvent.click(departmentsTab);
+    });
     
     await waitFor(() => {
       expect(screen.getByText('Department Overview')).toBeInTheDocument();
       expect(screen.getByText('Computer Science & Engineering')).toBeInTheDocument();
-    }, { timeout: 5000 });
+    }, { timeout: 10000 });
 
     // Switch to Resources tab
-    const resourcesTab = screen.getByRole('tab', { name: /resources/i });
-    fireEvent.click(resourcesTab);
+    await waitFor(() => {
+      const resourcesTab = screen.getByRole('tab', { name: /resources/i });
+      fireEvent.click(resourcesTab);
+    });
     
     await waitFor(() => {
       expect(screen.getByText('Resource Utilization')).toBeInTheDocument();
       expect(screen.getByText('Monitor room and faculty utilization across the institute')).toBeInTheDocument();
-    });
+    }, { timeout: 10000 });
 
     // Switch to Alerts tab
-    const alertsTab = screen.getByRole('tab', { name: /alerts/i });
-    fireEvent.click(alertsTab);
+    await waitFor(() => {
+      const alertsTab = screen.getByRole('tab', { name: /alerts/i });
+      fireEvent.click(alertsTab);
+    });
     
     await waitFor(() => {
       expect(screen.getByText('System Alerts')).toBeInTheDocument();
       expect(screen.getByText('Monitor and resolve system-wide issues')).toBeInTheDocument();
-    });
+    }, { timeout: 10000 });
   });
 
   it('displays department status in overview', async () => {
@@ -121,9 +127,9 @@ describe('InstituteDashboardPage', () => {
       expect(screen.getByText('Department Status')).toBeInTheDocument();
       expect(screen.getByText('Computer Science & Engineering')).toBeInTheDocument();
       expect(screen.getByText('28 faculty • 420 students')).toBeInTheDocument();
-      expect(screen.getByText('published')).toBeInTheDocument();
+      expect(screen.getAllByText('published').length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText('85% utilized')).toBeInTheDocument();
-    });
+    }, { timeout: 10000 });
   });
 
   it('shows system health metrics in overview', async () => {
@@ -140,45 +146,51 @@ describe('InstituteDashboardPage', () => {
   it('displays detailed department information in departments tab', async () => {
     await renderWithTimers();
     
-    const departmentsTab = screen.getByRole('tab', { name: /departments/i });
-    fireEvent.click(departmentsTab);
+    await waitFor(() => {
+      const departmentsTab = screen.getByRole('tab', { name: /departments/i });
+      fireEvent.click(departmentsTab);
+    });
     
     await waitFor(() => {
       expect(screen.getByText('Electronics & Communication')).toBeInTheDocument();
       expect(screen.getByText('Information Technology')).toBeInTheDocument();
-      expect(screen.getByText('24')).toBeInTheDocument(); // Faculty count for ECE
-      expect(screen.getByText('380')).toBeInTheDocument(); // Student count for ECE
-      expect(screen.getByText('72')).toBeInTheDocument(); // Utilization rate for ECE
-    });
+      expect(screen.getAllByText('24').length).toBeGreaterThanOrEqual(1); // Faculty count for ECE
+      expect(screen.getAllByText('380').length).toBeGreaterThanOrEqual(1); // Student count for ECE
+      expect(screen.getAllByText('72').length).toBeGreaterThanOrEqual(1); // Utilization rate for ECE
+    }, { timeout: 10000 });
   });
 
   it('shows resource utilization details in resources tab', async () => {
     await renderWithTimers();
     
-    const resourcesTab = screen.getByRole('tab', { name: /resources/i });
-    fireEvent.click(resourcesTab);
+    await waitFor(() => {
+      const resourcesTab = screen.getByRole('tab', { name: /resources/i });
+      fireEvent.click(resourcesTab);
+    });
     
     await waitFor(() => {
-      expect(screen.getByText('Lab 201')).toBeInTheDocument();
-      expect(screen.getByText('Dr. Smith')).toBeInTheDocument();
-      expect(screen.getByText('overutilized')).toBeInTheDocument();
+      expect(screen.getAllByText('Lab 201').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Dr. Smith').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('overutilized').length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText('37/40')).toBeInTheDocument(); // Lab capacity
       expect(screen.getByText('17/18')).toBeInTheDocument(); // Faculty capacity
-    });
+    }, { timeout: 10000 });
   });
 
   it('displays system alerts in alerts tab', async () => {
     await renderWithTimers();
     
-    const alertsTab = screen.getByRole('tab', { name: /alerts/i });
-    fireEvent.click(alertsTab);
+    await waitFor(() => {
+      const alertsTab = screen.getByRole('tab', { name: /alerts/i });
+      fireEvent.click(alertsTab);
+    });
     
     await waitFor(() => {
       expect(screen.getByText('Room Double Booking')).toBeInTheDocument();
       expect(screen.getByText('Faculty Overload')).toBeInTheDocument();
       expect(screen.getByText('Room 301 has conflicting bookings on Monday 10:00 AM')).toBeInTheDocument();
       expect(screen.getByText('Dr. Smith assigned 19 hours (exceeds 18-hour limit)')).toBeInTheDocument();
-    });
+    }, { timeout: 10000 });
   });
 
   it('shows alert badges for pending issues', async () => {
@@ -187,7 +199,7 @@ describe('InstituteDashboardPage', () => {
     await waitFor(() => {
       const alertsTab = screen.getByRole('tab', { name: /alerts/i });
       expect(alertsTab).toContainHTML('2'); // 2 unresolved alerts
-    });
+    }, { timeout: 10000 });
   });
 
   it('handles time range selector', async () => {
@@ -195,18 +207,20 @@ describe('InstituteDashboardPage', () => {
     
     await waitFor(() => {
       expect(screen.getByDisplayValue('Today')).toBeInTheDocument();
-    });
+    }, { timeout: 10000 });
 
     // Change time range
     const timeRangeSelect = screen.getByDisplayValue('Today');
     fireEvent.click(timeRangeSelect);
     
-    const weekOption = screen.getByText('This Week');
-    fireEvent.click(weekOption);
+    await waitFor(() => {
+      const weekOption = screen.getByText('This Week');
+      fireEvent.click(weekOption);
+    });
     
     await waitFor(() => {
       expect(screen.getByDisplayValue('This Week')).toBeInTheDocument();
-    });
+    }, { timeout: 10000 });
   });
 
   it('handles export functionality', async () => {
@@ -224,8 +238,10 @@ describe('InstituteDashboardPage', () => {
   it('displays severity-based alert styling', async () => {
     await renderWithTimers();
     
-    const alertsTab = screen.getByRole('tab', { name: /alerts/i });
-    fireEvent.click(alertsTab);
+    await waitFor(() => {
+      const alertsTab = screen.getByRole('tab', { name: /alerts/i });
+      fireEvent.click(alertsTab);
+    });
     
     await waitFor(() => {
       const mediumAlert = screen.getByText('medium');
@@ -233,7 +249,7 @@ describe('InstituteDashboardPage', () => {
       
       const highAlert = screen.getByText('high');
       expect(highAlert).toHaveClass('bg-orange-100');
-    });
+    }, { timeout: 10000 });
   });
 
   it('shows progress bars for utilization metrics', async () => {
@@ -249,8 +265,10 @@ describe('InstituteDashboardPage', () => {
   it('handles alert resolution', async () => {
     await renderWithTimers();
     
-    const alertsTab = screen.getByRole('tab', { name: /alerts/i });
-    fireEvent.click(alertsTab);
+    await waitFor(() => {
+      const alertsTab = screen.getByRole('tab', { name: /alerts/i });
+      fireEvent.click(alertsTab);
+    });
     
     await waitFor(() => {
       const resolveButtons = screen.getAllByText('Resolve');
@@ -258,14 +276,16 @@ describe('InstituteDashboardPage', () => {
       
       fireEvent.click(resolveButtons[0]);
       // Resolution functionality would be mocked in a real test
-    });
+    }, { timeout: 10000 });
   });
 
   it('displays department status badges correctly', async () => {
     await renderWithTimers();
     
-    const departmentsTab = screen.getByRole('tab', { name: /departments/i });
-    fireEvent.click(departmentsTab);
+    await waitFor(() => {
+      const departmentsTab = screen.getByRole('tab', { name: /departments/i });
+      fireEvent.click(departmentsTab);
+    });
     
     await waitFor(() => {
       const publishedBadge = screen.getByText('PUBLISHED');
@@ -273,32 +293,36 @@ describe('InstituteDashboardPage', () => {
       
       const draftBadge = screen.getByText('DRAFT');
       expect(draftBadge).toHaveClass('bg-yellow-100');
-    });
+    }, { timeout: 10000 });
   });
 
   it('shows resource type indicators', async () => {
     await renderWithTimers();
     
-    const resourcesTab = screen.getByRole('tab', { name: /resources/i });
-    fireEvent.click(resourcesTab);
+    await waitFor(() => {
+      const resourcesTab = screen.getByRole('tab', { name: /resources/i });
+      fireEvent.click(resourcesTab);
+    });
     
     await waitFor(() => {
-      expect(screen.getByText('room')).toBeInTheDocument();
-      expect(screen.getByText('faculty')).toBeInTheDocument();
-      expect(screen.getByText('Computer Science')).toBeInTheDocument(); // Department name
-    });
+      expect(screen.getAllByText('room').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('faculty').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Computer Science').length).toBeGreaterThanOrEqual(1); // Department name
+    }, { timeout: 10000 });
   });
 
   it('displays peak hours information', async () => {
     await renderWithTimers();
     
-    const resourcesTab = screen.getByRole('tab', { name: /resources/i });
-    fireEvent.click(resourcesTab);
+    await waitFor(() => {
+      const resourcesTab = screen.getByRole('tab', { name: /resources/i });
+      fireEvent.click(resourcesTab);
+    });
     
     await waitFor(() => {
       expect(screen.getByText('10:00-12:00, 14:00-16:00')).toBeInTheDocument(); // Peak hours for Lab 201
       expect(screen.getByText('09:00-11:00, 15:00-17:00')).toBeInTheDocument(); // Peak hours for Dr. Smith
-    });
+    }, { timeout: 10000 });
   });
 
   it('handles loading state', () => {

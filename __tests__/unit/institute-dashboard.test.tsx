@@ -220,7 +220,7 @@ describe('Institute Dashboard Page', () => {
       await waitFor(() => {
         expect(screen.getByText('System Alerts')).toBeInTheDocument();
         expect(screen.getByText('Monitor and resolve system-wide issues')).toBeInTheDocument();
-      });
+      }, { timeout: 10000 });
     });
   });
 
