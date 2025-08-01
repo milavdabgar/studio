@@ -1,283 +1,95 @@
-<svg viewBox="0 0 1400 1000" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
-  <rect width="1400" height="1000" fill="#f8fafc"/>
-  
-  <!-- Title -->
-  <text x="700" y="40" text-anchor="middle" font-size="28" font-weight="bold" fill="#1e293b">OSI Model: Security Attacks, Mechanisms &amp; Services</text>
-  
-  <!-- OSI Layers -->
-  <g transform="translate(50, 80)">
-    <!-- Layer 7 - Application -->
-    <g transform="translate(0, 0)">
-      <rect x="0" y="0" width="200" height="100" rx="10" fill="#dc2626" stroke="#991b1b" stroke-width="2"/>
-      <text x="100" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Layer 7</text>
-      <text x="100" y="45" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Application</text>
-      <text x="100" y="65" text-anchor="middle" font-size="10" fill="white">User Interface</text>
-      <text x="100" y="80" text-anchor="middle" font-size="10" fill="white">Network Services</text>
-    </g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .main-title { font-family: Arial; font-size: 24px; font-weight: bold; fill: #333; }
+        .layer-box { fill: #f5f5f5; stroke-width: 2; rx: 5; ry: 5; }
+        .layer-title { font-family: Arial; font-size: 16px; font-weight: bold; }
+        .layer-number { font-family: Arial; font-size: 14px; font-weight: bold; }
+        .attack { font-family: Arial; font-size: 12px; fill: #cc0000; }
+        .mechanism { font-family: Arial; font-size: 12px; fill: #6aa84f; }
+        .service { font-family: Arial; font-size: 12px; fill: #4a86e8; }
+        .legend-box { fill: #f5f5f5; stroke-width: 1; }
+        .legend-text { font-family: Arial; font-size: 12px; }
+    </style>
     
-    <!-- Layer 6 - Presentation -->
-    <g transform="translate(0, 120)">
-      <rect x="0" y="0" width="200" height="100" rx="10" fill="#ea580c" stroke="#c2410c" stroke-width="2"/>
-      <text x="100" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Layer 6</text>
-      <text x="100" y="45" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Presentation</text>
-      <text x="100" y="65" text-anchor="middle" font-size="10" fill="white">Encryption</text>
-      <text x="100" y="80" text-anchor="middle" font-size="10" fill="white">Compression</text>
-    </g>
+    <!-- Title -->
+    <text x="400" y="40" class="main-title" text-anchor="middle">OSI Model: Security Attacks, Mechanisms, and Services</text>
     
-    <!-- Layer 5 - Session -->
-    <g transform="translate(0, 240)">
-      <rect x="0" y="0" width="200" height="100" rx="10" fill="#d97706" stroke="#92400e" stroke-width="2"/>
-      <text x="100" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Layer 5</text>
-      <text x="100" y="45" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Session</text>
-      <text x="100" y="65" text-anchor="middle" font-size="10" fill="white">Session Management</text>
-      <text x="100" y="80" text-anchor="middle" font-size="10" fill="white">Authentication</text>
-    </g>
+    <!-- Layer 7: Application -->
+    <rect x="150" y="80" width="500" height="60" class="layer-box" stroke="#4a86e8" />
+    <text x="200" y="110" class="layer-title" text-anchor="middle" fill="#4a86e8">Application Layer</text>
+    <text x="175" y="110" class="layer-number" text-anchor="middle">7</text>
     
-    <!-- Layer 4 - Transport -->
-    <g transform="translate(0, 360)">
-      <rect x="0" y="0" width="200" height="100" rx="10" fill="#ca8a04" stroke="#a16207" stroke-width="2"/>
-      <text x="100" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Layer 4</text>
-      <text x="100" y="45" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Transport</text>
-      <text x="100" y="65" text-anchor="middle" font-size="10" fill="white">TCP/UDP</text>
-      <text x="100" y="80" text-anchor="middle" font-size="10" fill="white">Port Numbers</text>
-    </g>
+    <text x="350" y="100" class="attack" text-anchor="start">Attacks: Malware, Phishing, XSS</text>
+    <text x="350" y="120" class="mechanism" text-anchor="start">Mechanisms: WAF, Antivirus, Input Validation</text>
+    <text x="350" y="140" class="service" text-anchor="start">Services: Authentication, Authorization</text>
     
-    <!-- Layer 3 - Network -->
-    <g transform="translate(0, 480)">
-      <rect x="0" y="0" width="200" height="100" rx="10" fill="#16a34a" stroke="#15803d" stroke-width="2"/>
-      <text x="100" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Layer 3</text>
-      <text x="100" y="45" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Network</text>
-      <text x="100" y="65" text-anchor="middle" font-size="10" fill="white">IP Addressing</text>
-      <text x="100" y="80" text-anchor="middle" font-size="10" fill="white">Routing</text>
-    </g>
+    <!-- Layer 6: Presentation -->
+    <rect x="150" y="150" width="500" height="60" class="layer-box" stroke="#6aa84f" />
+    <text x="200" y="180" class="layer-title" text-anchor="middle" fill="#6aa84f">Presentation Layer</text>
+    <text x="175" y="180" class="layer-number" text-anchor="middle">6</text>
     
-    <!-- Layer 2 - Data Link -->
-    <g transform="translate(0, 600)">
-      <rect x="0" y="0" width="200" height="100" rx="10" fill="#0891b2" stroke="#0e7490" stroke-width="2"/>
-      <text x="100" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Layer 2</text>
-      <text x="100" y="45" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Data Link</text>
-      <text x="100" y="65" text-anchor="middle" font-size="10" fill="white">MAC Addresses</text>
-      <text x="100" y="80" text-anchor="middle" font-size="10" fill="white">Switching</text>
-    </g>
+    <text x="350" y="170" class="attack" text-anchor="start">Attacks: Man-in-the-Middle, Data Interception</text>
+    <text x="350" y="190" class="mechanism" text-anchor="start">Mechanisms: Encryption/Decryption, Data Compression</text>
+    <text x="350" y="210" class="service" text-anchor="start">Services: Data Encryption, Format Conversion</text>
     
-    <!-- Layer 1 - Physical -->
-    <g transform="translate(0, 720)">
-      <rect x="0" y="0" width="200" height="100" rx="10" fill="#7c3aed" stroke="#6d28d9" stroke-width="2"/>
-      <text x="100" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Layer 1</text>
-      <text x="100" y="45" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Physical</text>
-      <text x="100" y="65" text-anchor="middle" font-size="10" fill="white">Cables</text>
-      <text x="100" y="80" text-anchor="middle" font-size="10" fill="white">Signals</text>
-    </g>
-  </g>
-  
-  <!-- Security Attacks Column -->
-  <g transform="translate(300, 80)">
-    <text x="150" y="0" text-anchor="middle" font-size="20" font-weight="bold" fill="#1e293b">Security Attacks</text>
+    <!-- Layer 5: Session -->
+    <rect x="150" y="220" width="500" height="60" class="layer-box" stroke="#e69138" />
+    <text x="200" y="250" class="layer-title" text-anchor="middle" fill="#e69138">Session Layer</text>
+    <text x="175" y="250" class="layer-number" text-anchor="middle">5</text>
     
-    <!-- Layer 7 Attacks -->
-    <g transform="translate(0, 20)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#dc2626">• Malware</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#dc2626">• Phishing</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#dc2626">• Social Engineering</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#dc2626">• SQL Injection</text>
-    </g>
+    <text x="350" y="240" class="attack" text-anchor="start">Attacks: Session Hijacking, Session Fixation</text>
+    <text x="350" y="260" class="mechanism" text-anchor="start">Mechanisms: Session Tokens, Timeouts</text>
+    <text x="350" y="280" class="service" text-anchor="start">Services: Session Management, Authentication</text>
     
-    <!-- Layer 6 Attacks -->
-    <g transform="translate(0, 140)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#ea580c">• Man-in-the-Middle</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#ea580c">• Data Interception</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#ea580c">• SSL/TLS Attacks</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#ea580c">• Certificate Spoofing</text>
-    </g>
+    <!-- Layer 4: Transport -->
+    <rect x="150" y="290" width="500" height="60" class="layer-box" stroke="#cc0000" />
+    <text x="200" y="320" class="layer-title" text-anchor="middle" fill="#cc0000">Transport Layer</text>
+    <text x="175" y="320" class="layer-number" text-anchor="middle">4</text>
     
-    <!-- Layer 5 Attacks -->
-    <g transform="translate(0, 260)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#fefce8" stroke="#d97706" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#d97706">• Session Hijacking</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#d97706">• Session Fixation</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#d97706">• Cross-Site Scripting</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#d97706">• Session Replay</text>
-    </g>
+    <text x="350" y="310" class="attack" text-anchor="start">Attacks: Port Scanning, TCP SYN Flooding</text>
+    <text x="350" y="330" class="mechanism" text-anchor="start">Mechanisms: TLS/SSL, TCP Wrappers</text>
+    <text x="350" y="350" class="service" text-anchor="start">Services: End-to-End Encryption, Connection Control</text>
     
-    <!-- Layer 4 Attacks -->
-    <g transform="translate(0, 380)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#fffbeb" stroke="#ca8a04" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#ca8a04">• Port Scanning</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#ca8a04">• TCP SYN Flood</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#ca8a04">• UDP Flood</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#ca8a04">• Session Hijacking</text>
-    </g>
+    <!-- Layer 3: Network -->
+    <rect x="150" y="360" width="500" height="60" class="layer-box" stroke="#674ea7" />
+    <text x="200" y="390" class="layer-title" text-anchor="middle" fill="#674ea7">Network Layer</text>
+    <text x="175" y="390" class="layer-number" text-anchor="middle">3</text>
     
-    <!-- Layer 3 Attacks -->
-    <g transform="translate(0, 500)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#16a34a">• IP Spoofing</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#16a34a">• Routing Attacks</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#16a34a">• ICMP Attacks</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#16a34a">• DoS/DDoS</text>
-    </g>
+    <text x="350" y="380" class="attack" text-anchor="start">Attacks: IP Spoofing, Routing Attacks</text>
+    <text x="350" y="400" class="mechanism" text-anchor="start">Mechanisms: Firewalls, IDS/IPS</text>
+    <text x="350" y="420" class="service" text-anchor="start">Services: Secure Routing, Network Access Control</text>
     
-    <!-- Layer 2 Attacks -->
-    <g transform="translate(0, 620)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#f0f9ff" stroke="#0891b2" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#0891b2">• MAC Spoofing</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#0891b2">• ARP Poisoning</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#0891b2">• MAC Flooding</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#0891b2">• VLAN Hopping</text>
-    </g>
+    <!-- Layer 2: Data Link -->
+    <rect x="150" y="430" width="500" height="60" class="layer-box" stroke="#45818e" />
+    <text x="200" y="460" class="layer-title" text-anchor="middle" fill="#45818e">Data Link Layer</text>
+    <text x="175" y="460" class="layer-number" text-anchor="middle">2</text>
     
-    <!-- Layer 1 Attacks -->
-    <g transform="translate(0, 740)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#faf5ff" stroke="#7c3aed" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#7c3aed">• Eavesdropping</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#7c3aed">• Physical Damage</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#7c3aed">• Wiretapping</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#7c3aed">• Cable Cutting</text>
-    </g>
-  </g>
-  
-  <!-- Security Mechanisms Column -->
-  <g transform="translate(650, 80)">
-    <text x="150" y="0" text-anchor="middle" font-size="20" font-weight="bold" fill="#1e293b">Security Mechanisms</text>
+    <text x="350" y="450" class="attack" text-anchor="start">Attacks: MAC Spoofing, ARP Poisoning</text>
+    <text x="350" y="470" class="mechanism" text-anchor="start">Mechanisms: MAC Filtering, Port Security</text>
+    <text x="350" y="490" class="service" text-anchor="start">Services: Link Encryption, Frame Protection</text>
     
-    <!-- Layer 7 Mechanisms -->
-    <g transform="translate(0, 20)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#16a34a">• Antivirus Software</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#16a34a">• Web Application Firewall</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#16a34a">• Input Validation</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#16a34a">• Security Awareness</text>
-    </g>
+    <!-- Layer 1: Physical -->
+    <rect x="150" y="500" width="500" height="60" class="layer-box" stroke="#990000" />
+    <text x="200" y="530" class="layer-title" text-anchor="middle" fill="#990000">Physical Layer</text>
+    <text x="175" y="530" class="layer-number" text-anchor="middle">1</text>
     
-    <!-- Layer 6 Mechanisms -->
-    <g transform="translate(0, 140)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#16a34a">• Data Encryption</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#16a34a">• Digital Certificates</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#16a34a">• Data Compression</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#16a34a">• SSL/TLS</text>
-    </g>
+    <text x="350" y="520" class="attack" text-anchor="start">Attacks: Eavesdropping, Physical Tampering</text>
+    <text x="350" y="540" class="mechanism" text-anchor="start">Mechanisms: Shielded Cables, Physical Security</text>
+    <text x="350" y="560" class="service" text-anchor="start">Services: Physical Protection, EMI Protection</text>
     
-    <!-- Layer 5 Mechanisms -->
-    <g transform="translate(0, 260)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#16a34a">• Session Tokens</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#16a34a">• Session Timeouts</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#16a34a">• Multi-Factor Auth</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#16a34a">• Session Encryption</text>
-    </g>
+    <!-- Legend -->
+    <rect x="650" y="80" width="120" height="80" class="legend-box" stroke="#333" />
+    <text x="660" y="100" class="legend-text" fill="#333" font-weight="bold">Legend:</text>
+    <text x="670" y="125" class="attack">Attacks</text>
+    <text x="670" y="145" class="mechanism">Mechanisms</text>
+    <text x="670" y="165" class="service">Services</text>
     
-    <!-- Layer 4 Mechanisms -->
-    <g transform="translate(0, 380)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#16a34a">• TLS/SSL</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#16a34a">• TCP Wrappers</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#16a34a">• Port Filtering</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#16a34a">• Rate Limiting</text>
-    </g>
-    
-    <!-- Layer 3 Mechanisms -->
-    <g transform="translate(0, 500)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#16a34a">• Firewalls</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#16a34a">• Intrusion Detection</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#16a34a">• VPN</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#16a34a">• IPSec</text>
-    </g>
-    
-    <!-- Layer 2 Mechanisms -->
-    <g transform="translate(0, 620)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#16a34a">• MAC Address Filtering</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#16a34a">• Port Security</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#16a34a">• 802.1X Authentication</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#16a34a">• VLAN Segmentation</text>
-    </g>
-    
-    <!-- Layer 1 Mechanisms -->
-    <g transform="translate(0, 740)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#16a34a">• Shielded Cables</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#16a34a">• Physical Security</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#16a34a">• Biometric Access</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#16a34a">• Environmental Controls</text>
-    </g>
-  </g>
-  
-  <!-- Services Column -->
-  <g transform="translate(1000, 80)">
-    <text x="150" y="0" text-anchor="middle" font-size="20" font-weight="bold" fill="#1e293b">Security Services</text>
-    
-    <!-- Layer 7 Services -->
-    <g transform="translate(0, 20)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#3b82f6">• Authentication</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#3b82f6">• Authorization</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#3b82f6">• Data Integrity</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#3b82f6">• Non-repudiation</text>
-    </g>
-    
-    <!-- Layer 6 Services -->
-    <g transform="translate(0, 140)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#3b82f6">• Data Encryption</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#3b82f6">• Data Privacy</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#3b82f6">• Format Protection</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#3b82f6">• Secure Compression</text>
-    </g>
-    
-    <!-- Layer 5 Services -->
-    <g transform="translate(0, 260)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#3b82f6">• Session Management</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#3b82f6">• Access Control</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#3b82f6">• Session Recovery</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#3b82f6">• Audit Logging</text>
-    </g>
-    
-    <!-- Layer 4 Services -->
-    <g transform="translate(0, 380)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#3b82f6">• End-to-End Encryption</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#3b82f6">• Secure Transport</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#3b82f6">• Connection Security</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#3b82f6">• Traffic Analysis</text>
-    </g>
-    
-    <!-- Layer 3 Services -->
-    <g transform="translate(0, 500)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#3b82f6">• Secure Routing</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#3b82f6">• Packet Filtering</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#3b82f6">• Network Monitoring</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#3b82f6">• Traffic Control</text>
-    </g>
-    
-    <!-- Layer 2 Services -->
-    <g transform="translate(0, 620)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#3b82f6">• Link Encryption</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#3b82f6">• Frame Protection</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#3b82f6">• Access Control</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#3b82f6">• Error Detection</text>
-    </g>
-    
-    <!-- Layer 1 Services -->
-    <g transform="translate(0, 740)">
-      <rect x="0" y="0" width="300" height="80" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1"/>
-      <text x="10" y="20" font-size="12" font-weight="bold" fill="#3b82f6">• Physical Protection</text>
-      <text x="10" y="35" font-size="12" font-weight="bold" fill="#3b82f6">• Signal Security</text>
-      <text x="10" y="50" font-size="12" font-weight="bold" fill="#3b82f6">• Transmission Security</text>
-      <text x="10" y="65" font-size="12" font-weight="bold" fill="#3b82f6">• Interference Prevention</text>
-    </g>
-  </g>
-  
-  <!-- Mnemonic at bottom -->
-  <g transform="translate(50, 940)">
-    <rect x="0" y="0" width="1300" height="40" rx="10" fill="#1e293b" stroke="#334155" stroke-width="2"/>
-    <text x="650" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Memory Aid: "Please Do Not Throw Sausage Pizza Away"</text>
-  </g>
+    <!-- Mnemonic -->
+    <rect x="650" y="170" width="120" height="90" class="legend-box" stroke="#333" />
+    <text x="660" y="190" class="legend-text" fill="#333" font-weight="bold">Mnemonic:</text>
+    <text x="710" y="215" class="legend-text" text-anchor="middle">Please</text>
+    <text x="710" y="235" class="legend-text" text-anchor="middle">Do Not</text>
+    <text x="710" y="255" class="legend-text" text-anchor="middle">Throw Sausage</text>
+    <text x="710" y="275" class="legend-text" text-anchor="middle">Pizza Away</text>
 </svg>

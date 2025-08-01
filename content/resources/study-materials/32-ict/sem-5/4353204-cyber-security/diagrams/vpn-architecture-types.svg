@@ -1,271 +1,250 @@
-<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <title>vpn architecture types</title>
   <defs>
-    <linearGradient id="clientGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#357ABD;stop-opacity:1" />
-    </linearGradient>
-    <linearGradient id="serverGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#50C878;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#228B22;stop-opacity:1" />
+    <linearGradient id="vpnGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1565C0;stop-opacity:1" />
     </linearGradient>
     <linearGradient id="tunnelGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1" />
     </linearGradient>
     <linearGradient id="internetGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FF6B6B;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#E74C3C;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F57C00;stop-opacity:1" />
     </linearGradient>
-    <linearGradient id="corpGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#9B59B6;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#8E44AD;stop-opacity:1" />
-    </linearGradient>
-    <filter id="shadow">
-      <feDropShadow dx="3" dy="3" stdDeviation="2" flood-color="#000000" flood-opacity="0.3"/>
-    </filter>
-    <pattern id="internetPattern" patternUnits="userSpaceOnUse" width="20" height="20">
-      <rect width="20" height="20" fill="#FFE5E5"/>
-      <circle cx="10" cy="10" r="3" fill="#FF6B6B" opacity="0.5"/>
-    </pattern>
-    <pattern id="corpPattern" patternUnits="userSpaceOnUse" width="15" height="15">
-      <rect width="15" height="15" fill="#F0E6FF"/>
-      <rect x="2" y="2" width="11" height="11" fill="#9B59B6" opacity="0.3"/>
-    </pattern>
   </defs>
-  
-  <!-- Background -->
-  <rect width="1200" height="800" fill="#F8F9FA"/>
-  
+
   <!-- Title -->
-  <text x="600" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2C3E50">
-    VPN (Virtual Private Network) Architecture and Types
-  </text>
-  
-  <!-- Internet Cloud -->
-  <ellipse cx="600" cy="400" rx="300" ry="150" fill="url(#internetPattern)" stroke="#FF6B6B" stroke-width="3" opacity="0.7"/>
-  <text x="600" y="405" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#E74C3C">Internet (Public Network)</text>
-  
-  <!-- Remote User/Client -->
-  <g transform="translate(50, 320)">
-    <rect x="0" y="0" width="150" height="100" rx="10" fill="url(#clientGradient)" stroke="#357ABD" stroke-width="2" filter="url(#shadow)"/>
-    <text x="75" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Remote User</text>
-    <text x="75" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">VPN Client</text>
-    
-    <!-- Laptop icon -->
-    <g transform="translate(30, 55)">
-      <rect x="0" y="0" width="40" height="25" rx="3" fill="white" opacity="0.7"/>
-      <rect x="3" y="3" width="34" height="19" rx="2" fill="white" opacity="0.5"/>
-      <rect x="15" y="25" width="10" height="5" rx="2" fill="white" opacity="0.7"/>
-    </g>
-    
-    <!-- VPN icon -->
-    <g transform="translate(85, 55)">
-      <circle cx="0" cy="0" r="12" fill="white" opacity="0.7"/>
-      <text x="0" y="4" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#4A90E2">VPN</text>
-    </g>
-  </g>
-  
-  <!-- Corporate Network -->
-  <g transform="translate(950, 200)">
-    <rect x="0" y="0" width="200" height="300" rx="15" fill="url(#corpPattern)" stroke="#9B59B6" stroke-width="3" filter="url(#shadow)"/>
-    <text x="100" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#8E44AD">Corporate Network</text>
-    <text x="100" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#8E44AD">(Private Network)</text>
-    
-    <!-- VPN Server -->
-    <g transform="translate(25, 60)">
-      <rect x="0" y="0" width="150" height="60" rx="8" fill="url(#serverGradient)" stroke="#228B22" stroke-width="2"/>
-      <text x="75" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">VPN Server</text>
-      <text x="75" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">Gateway</text>
-      
-      <!-- Server icon -->
-      <g transform="translate(20, 40)">
-        <rect x="0" y="0" width="30" height="15" rx="2" fill="white" opacity="0.7"/>
-        <rect x="2" y="2" width="26" height="3" rx="1" fill="white" opacity="0.5"/>
-        <rect x="2" y="6" width="26" height="3" rx="1" fill="white" opacity="0.5"/>
-        <rect x="2" y="10" width="26" height="3" rx="1" fill="white" opacity="0.5"/>
-      </g>
-      
-      <!-- Shield icon -->
-      <g transform="translate(110, 40)">
-        <path d="M 0 0 L 10 -5 L 20 0 L 20 10 L 10 15 L 0 10 Z" fill="white" opacity="0.7"/>
-        <text x="10" y="7" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#50C878">🛡️</text>
-      </g>
-    </g>
-    
-    <!-- Internal Resources -->
-    <g transform="translate(25, 140)">
-      <!-- Database -->
-      <g transform="translate(0, 0)">
-        <rect x="0" y="0" width="60" height="40" rx="5" fill="#E8F4FD" stroke="#4A90E2" stroke-width="1"/>
-        <text x="30" y="15" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#4A90E2">Database</text>
-        <text x="30" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#4A90E2">Server</text>
-      </g>
-      
-      <!-- File Server -->
-      <g transform="translate(90, 0)">
-        <rect x="0" y="0" width="60" height="40" rx="5" fill="#E8F8F5" stroke="#50C878" stroke-width="1"/>
-        <text x="30" y="15" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#50C878">File</text>
-        <text x="30" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#50C878">Server</text>
-      </g>
-      
-      <!-- Email Server -->
-      <g transform="translate(0, 60)">
-        <rect x="0" y="0" width="60" height="40" rx="5" fill="#FFF3E0" stroke="#FF8C00" stroke-width="1"/>
-        <text x="30" y="15" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FF8C00">Email</text>
-        <text x="30" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FF8C00">Server</text>
-      </g>
-      
-      <!-- Intranet -->
-      <g transform="translate(90, 60)">
-        <rect x="0" y="0" width="60" height="40" rx="5" fill="#F0E6FF" stroke="#9B59B6" stroke-width="1"/>
-        <text x="30" y="15" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9B59B6">Intranet</text>
-        <text x="30" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9B59B6">Web</text>
-      </g>
-    </g>
-  </g>
-  
-  <!-- VPN Tunnel -->
-  <g>
-    <!-- Encrypted Tunnel -->
-    <path d="M 200 370 Q 600 320 950 330" stroke="url(#tunnelGradient)" stroke-width="12" fill="none" stroke-dasharray="15,10"/>
-    <text x="600" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF8C00">Encrypted VPN Tunnel</text>
+  <text x="600" y="30" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Virtual Private Network (VPN) Architecture &amp; Types</text>
+
+  <!-- VPN Overview -->
+  <g id="vpn-overview">
+    <!-- Client Device -->
+    <rect x="50" y="80" width="120" height="80" rx="10" fill="#E3F2FD" stroke="#2196F3" stroke-width="2"/>
+    <text x="110" y="105" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#1976D2">CLIENT</text>
+    <text x="110" y="120" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Remote User</text>
+    <text x="110" y="135" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Laptop/Mobile</text>
+    <text x="110" y="150" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">192.168.1.100</text>
+
+    <!-- VPN Tunnel -->
+    <rect x="220" y="60" width="760" height="120" rx="15" fill="url(#tunnelGradient)" stroke="#333" stroke-width="3"/>
+    <text x="600" y="85" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">VPN TUNNEL (Encrypted)</text>
+    <text x="600" y="105" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">Internet (Untrusted Network)</text>
     
     <!-- Encryption indicators -->
-    <g transform="translate(300, 350)">
-      <circle cx="0" cy="0" r="15" fill="#FFD700" opacity="0.8"/>
-      <text x="0" y="5" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white">🔒</text>
-    </g>
-    
-    <g transform="translate(500, 340)">
-      <circle cx="0" cy="0" r="15" fill="#FFD700" opacity="0.8"/>
-      <text x="0" y="5" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white">🔒</text>
-    </g>
-    
-    <g transform="translate(700, 340)">
-      <circle cx="0" cy="0" r="15" fill="#FFD700" opacity="0.8"/>
-      <text x="0" y="5" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white">🔒</text>
-    </g>
-    
-    <g transform="translate(850, 350)">
-      <circle cx="0" cy="0" r="15" fill="#FFD700" opacity="0.8"/>
-      <text x="0" y="5" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white">🔒</text>
-    </g>
+    <rect x="250" y="120" width="100" height="40" rx="5" fill="white" stroke="#333" stroke-width="1"/>
+    <text x="300" y="140" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">🔐 Encrypted</text>
+    <text x="300" y="155" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Data Flow</text>
+
+    <rect x="850" y="120" width="100" height="40" rx="5" fill="white" stroke="#333" stroke-width="1"/>
+    <text x="900" y="140" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">🔐 Secured</text>
+    <text x="900" y="155" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Connection</text>
+
+    <!-- Corporate Network -->
+    <rect x="1030" y="80" width="120" height="80" rx="10" fill="#E8F5E8" stroke="#4CAF50" stroke-width="2"/>
+    <text x="1090" y="105" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#2E7D32">CORPORATE</text>
+    <text x="1090" y="120" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Network</text>
+    <text x="1090" y="135" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">VPN Server</text>
+    <text x="1090" y="150" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">10.0.0.1</text>
+
+    <!-- Connection arrows -->
+    <path d="M 170 120 L 210 120" stroke="#2196F3" stroke-width="4" fill="none" marker-end="url(#blueArrow)"/>
+    <path d="M 990 120 L 1020 120" stroke="#4CAF50" stroke-width="4" fill="none" marker-end="url(#greenArrow)"/>
   </g>
-  
-  <!-- Site-to-Site VPN -->
-  <g transform="translate(50, 580)">
-    <rect x="0" y="0" width="180" height="80" rx="10" fill="url(#clientGradient)" stroke="#357ABD" stroke-width="2" filter="url(#shadow)"/>
-    <text x="90" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Branch Office</text>
-    <text x="90" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Site A</text>
-    
-    <!-- Office icon -->
-    <g transform="translate(30, 50)">
-      <rect x="0" y="0" width="30" height="20" rx="3" fill="white" opacity="0.7"/>
-      <rect x="3" y="3" width="24" height="14" rx="2" fill="white" opacity="0.5"/>
-    </g>
-    
-    <!-- Router icon -->
-    <g transform="translate(120, 50)">
-      <rect x="0" y="0" width="25" height="15" rx="3" fill="white" opacity="0.7"/>
-      <circle cx="5" cy="7" r="2" fill="white" opacity="0.5"/>
-      <circle cx="12" cy="7" r="2" fill="white" opacity="0.5"/>
-      <circle cx="20" cy="7" r="2" fill="white" opacity="0.5"/>
-    </g>
-  </g>
-  
-  <!-- Site-to-Site Tunnel -->
-  <path d="M 230 620 Q 600 570 950 620" stroke="url(#tunnelGradient)" stroke-width="8" fill="none" stroke-dasharray="10,5"/>
-  <text x="600" y="590" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FF8C00">Site-to-Site VPN</text>
-  
+
   <!-- VPN Types -->
-  <g transform="translate(50, 50)">
-    <rect x="0" y="0" width="500" height="150" rx="10" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" filter="url(#shadow)"/>
-    <text x="250" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2C3E50">VPN Types</text>
-    
-    <!-- Remote Access VPN -->
-    <g transform="translate(20, 40)">
-      <rect x="0" y="0" width="220" height="80" rx="8" fill="#E8F4FD" stroke="#4A90E2" stroke-width="2"/>
-      <text x="110" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4A90E2">Remote Access VPN</text>
-      <text x="110" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">• Individual users connect remotely</text>
-      <text x="110" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">• VPN client software required</text>
-      <text x="110" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">• Point-to-point connection</text>
-    </g>
-    
+  <g id="vpn-types">
+    <text x="600" y="220" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">VPN Types &amp; Implementations</text>
+
     <!-- Site-to-Site VPN -->
-    <g transform="translate(260, 40)">
-      <rect x="0" y="0" width="220" height="80" rx="8" fill="#E8F8F5" stroke="#50C878" stroke-width="2"/>
-      <text x="110" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#50C878">Site-to-Site VPN</text>
-      <text x="110" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">• Connects entire networks</text>
-      <text x="110" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">• Router-to-router connection</text>
-      <text x="110" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">• Always-on connection</text>
-    </g>
+    <rect x="50" y="250" width="280" height="140" rx="10" fill="#FFF3E0" stroke="#FF9800" stroke-width="2"/>
+    <text x="190" y="275" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#F57C00">Site-to-Site VPN</text>
+    
+    <!-- Office A -->
+    <rect x="70" y="290" width="80" height="50" rx="5" fill="#E3F2FD" stroke="#2196F3" stroke-width="1"/>
+    <text x="110" y="310" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#1976D2">Office A</text>
+    <text x="110" y="325" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Router/Gateway</text>
+
+    <!-- Connection -->
+    <path d="M 150 315 L 170 315" stroke="#FF9800" stroke-width="3" fill="none"/>
+    <text x="160" y="310" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FF9800">Tunnel</text>
+
+    <!-- Office B -->
+    <rect x="180" y="290" width="80" height="50" rx="5" fill="#E8F5E8" stroke="#4CAF50" stroke-width="1"/>
+    <text x="220" y="310" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#2E7D32">Office B</text>
+    <text x="220" y="325" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Router/Gateway</text>
+
+    <text x="190" y="360" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Connects entire networks</text>
+    <text x="190" y="375" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Gateway-to-gateway</text>
+
+    <!-- Remote Access VPN -->
+    <rect x="350" y="250" width="280" height="140" rx="10" fill="#F3E5F5" stroke="#9C27B0" stroke-width="2"/>
+    <text x="490" y="275" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#7B1FA2">Remote Access VPN</text>
+    
+    <!-- Multiple clients -->
+    <circle cx="400" cy="310" r="20" fill="#E3F2FD" stroke="#2196F3" stroke-width="1"/>
+    <text x="400" y="315" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">👤</text>
+    
+    <circle cx="450" cy="310" r="20" fill="#E3F2FD" stroke="#2196F3" stroke-width="1"/>
+    <text x="450" y="315" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">💻</text>
+
+    <circle cx="500" cy="310" r="20" fill="#E3F2FD" stroke="#2196F3" stroke-width="1"/>
+    <text x="500" y="315" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">📱</text>
+
+    <!-- VPN Server -->
+    <rect x="550" y="295" width="60" height="30" rx="5" fill="#E8F5E8" stroke="#4CAF50" stroke-width="1"/>
+    <text x="580" y="315" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">VPN Server</text>
+
+    <!-- Connections -->
+    <path d="M 420 310 L 540 310" stroke="#9C27B0" stroke-width="2" fill="none"/>
+    <path d="M 470 310 L 540 310" stroke="#9C27B0" stroke-width="2" fill="none"/>
+    <path d="M 520 310 L 540 310" stroke="#9C27B0" stroke-width="2" fill="none"/>
+
+    <text x="490" y="350" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Individual user access</text>
+    <text x="490" y="365" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Client-to-server</text>
+    <text x="490" y="380" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Mobile workforce</text>
+
+    <!-- Client-to-Client VPN -->
+    <rect x="650" y="250" width="280" height="140" rx="10" fill="#FFEBEE" stroke="#F44336" stroke-width="2"/>
+    <text x="790" y="275" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#D32F2F">Client-to-Client VPN</text>
+    
+    <!-- Client A -->
+    <circle cx="720" cy="310" r="25" fill="#E3F2FD" stroke="#2196F3" stroke-width="1"/>
+    <text x="720" y="315" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Client A</text>
+
+    <!-- Direct connection -->
+    <path d="M 745 310 L 835 310" stroke="#F44336" stroke-width="3" fill="none" stroke-dasharray="5,5"/>
+    <text x="790" y="300" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#F44336">P2P Tunnel</text>
+
+    <!-- Client B -->
+    <circle cx="860" cy="310" r="25" fill="#E8F5E8" stroke="#4CAF50" stroke-width="1"/>
+    <text x="860" y="315" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Client B</text>
+
+    <text x="790" y="350" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Direct peer-to-peer</text>
+    <text x="790" y="365" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• No central server</text>
+    <text x="790" y="380" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Mesh networking</text>
   </g>
-  
+
   <!-- VPN Protocols -->
-  <g transform="translate(650, 50)">
-    <rect x="0" y="0" width="500" height="150" rx="10" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" filter="url(#shadow)"/>
-    <text x="250" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2C3E50">VPN Protocols</text>
-    
+  <g id="vpn-protocols">
+    <rect x="50" y="420" width="1100" height="150" rx="10" fill="#E8F5E8" stroke="#4CAF50" stroke-width="2"/>
+    <text x="600" y="445" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#2E7D32">VPN Protocols &amp; Technologies</text>
+
     <!-- IPSec -->
-    <g transform="translate(20, 40)">
-      <rect x="0" y="0" width="100" height="50" rx="5" fill="#FFE5E5" stroke="#FF6B6B" stroke-width="1"/>
-      <text x="50" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#E74C3C">IPSec</text>
-      <text x="50" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">Network Layer</text>
-    </g>
-    
+    <rect x="80" y="465" width="160" height="80" rx="5" fill="white" stroke="#2196F3" stroke-width="2"/>
+    <text x="160" y="485" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#1976D2">IPSec</text>
+    <text x="160" y="500" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Layer 3 protocol</text>
+    <text x="160" y="512" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• ESP &amp; AH modes</text>
+    <text x="160" y="524" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Tunnel/Transport</text>
+    <text x="160" y="536" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Strong encryption</text>
+
+    <!-- L2TP -->
+    <rect x="260" y="465" width="160" height="80" rx="5" fill="white" stroke="#FF9800" stroke-width="2"/>
+    <text x="340" y="485" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#F57C00">L2TP/IPSec</text>
+    <text x="340" y="500" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Layer 2 tunneling</text>
+    <text x="340" y="512" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• IPSec encryption</text>
+    <text x="340" y="524" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Double encapsulation</text>
+    <text x="340" y="536" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Cross-platform</text>
+
     <!-- OpenVPN -->
-    <g transform="translate(140, 40)">
-      <rect x="0" y="0" width="100" height="50" rx="5" fill="#E8F4FD" stroke="#4A90E2" stroke-width="1"/>
-      <text x="50" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#4A90E2">OpenVPN</text>
-      <text x="50" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">SSL/TLS</text>
-    </g>
-    
-    <!-- L2TP/IPSec -->
-    <g transform="translate(260, 40)">
-      <rect x="0" y="0" width="100" height="50" rx="5" fill="#E8F8F5" stroke="#50C878" stroke-width="1"/>
-      <text x="50" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#50C878">L2TP/IPSec</text>
-      <text x="50" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">Layer 2</text>
-    </g>
-    
-    <!-- IKEv2 -->
-    <g transform="translate(380, 40)">
-      <rect x="0" y="0" width="100" height="50" rx="5" fill="#FFF3E0" stroke="#FF8C00" stroke-width="1"/>
-      <text x="50" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FF8C00">IKEv2</text>
-      <text x="50" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">Mobile</text>
-    </g>
-    
+    <rect x="440" y="465" width="160" height="80" rx="5" fill="white" stroke="#4CAF50" stroke-width="2"/>
+    <text x="520" y="485" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#2E7D32">OpenVPN</text>
+    <text x="520" y="500" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• SSL/TLS based</text>
+    <text x="520" y="512" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Open source</text>
+    <text x="520" y="524" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Flexible config</text>
+    <text x="520" y="536" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Firewall friendly</text>
+
     <!-- PPTP -->
-    <g transform="translate(80, 100)">
-      <rect x="0" y="0" width="100" height="30" rx="5" fill="#F0E6FF" stroke="#9B59B6" stroke-width="1"/>
-      <text x="50" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#9B59B6">PPTP (Legacy)</text>
-    </g>
-    
+    <rect x="620" y="465" width="160" height="80" rx="5" fill="white" stroke="#F44336" stroke-width="2"/>
+    <text x="700" y="485" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#D32F2F">PPTP</text>
+    <text x="700" y="500" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Point-to-Point</text>
+    <text x="700" y="512" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Legacy protocol</text>
+    <text x="700" y="524" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Weak encryption</text>
+    <text x="700" y="536" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Deprecated</text>
+
+    <!-- SSTP -->
+    <rect x="800" y="465" width="160" height="80" rx="5" fill="white" stroke="#9C27B0" stroke-width="2"/>
+    <text x="880" y="485" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#7B1FA2">SSTP</text>
+    <text x="880" y="500" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• SSL/TLS tunnel</text>
+    <text x="880" y="512" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Microsoft protocol</text>
+    <text x="880" y="524" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Port 443 (HTTPS)</text>
+    <text x="880" y="536" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Firewall bypass</text>
+
     <!-- WireGuard -->
-    <g transform="translate(300, 100)">
-      <rect x="0" y="0" width="100" height="30" rx="5" fill="#E8F8F5" stroke="#50C878" stroke-width="1"/>
-      <text x="50" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#50C878">WireGuard</text>
-    </g>
+    <rect x="980" y="465" width="160" height="80" rx="5" fill="white" stroke="#607D8B" stroke-width="2"/>
+    <text x="1060" y="485" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#455A64">WireGuard</text>
+    <text x="1060" y="500" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Modern protocol</text>
+    <text x="1060" y="512" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• High performance</text>
+    <text x="1060" y="524" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Simple config</text>
+    <text x="1060" y="536" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Strong crypto</text>
   </g>
-  
-  <!-- Benefits -->
-  <g transform="translate(50, 730)">
-    <text x="0" y="0" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2C3E50">VPN Benefits:</text>
-    <text x="0" y="20" font-family="Arial, sans-serif" font-size="12" fill="#666">• Data Privacy &amp; Confidentiality</text>
-    <text x="0" y="35" font-family="Arial, sans-serif" font-size="12" fill="#666">• Secure Remote Access</text>
-    <text x="0" y="50" font-family="Arial, sans-serif" font-size="12" fill="#666">• Bypass Geo-restrictions</text>
+
+  <!-- Benefits &amp; Use Cases -->
+  <g id="benefits">
+    <rect x="50" y="590" width="550" height="150" rx="10" fill="#E3F2FD" stroke="#2196F3" stroke-width="2"/>
+    <text x="325" y="615" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#1976D2">VPN Benefits</text>
+
+    <!-- Privacy -->
+    <rect x="80" y="635" width="100" height="60" rx="5" fill="white" stroke="#4CAF50" stroke-width="1"/>
+    <text x="130" y="655" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#2E7D32">Privacy</text>
+    <text x="130" y="670" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Hide IP address</text>
+    <text x="130" y="682" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Anonymous browsing</text>
+
+    <!-- Security -->
+    <rect x="200" y="635" width="100" height="60" rx="5" fill="white" stroke="#FF9800" stroke-width="1"/>
+    <text x="250" y="655" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#F57C00">Security</text>
+    <text x="250" y="670" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Data encryption</text>
+    <text x="250" y="682" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Secure tunneling</text>
+
+    <!-- Access -->
+    <rect x="320" y="635" width="100" height="60" rx="5" fill="white" stroke="#9C27B0" stroke-width="1"/>
+    <text x="370" y="655" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#7B1FA2">Remote Access</text>
+    <text x="370" y="670" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Work from home</text>
+    <text x="370" y="682" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Resource access</text>
+
+    <!-- Bypass -->
+    <rect x="440" y="635" width="100" height="60" rx="5" fill="white" stroke="#F44336" stroke-width="1"/>
+    <text x="490" y="655" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#D32F2F">Geo-blocking</text>
+    <text x="490" y="670" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Bypass restrictions</text>
+    <text x="490" y="682" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Content access</text>
+
+    <text x="325" y="720" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Cost-effective networking • Scalable connectivity • Business continuity</text>
   </g>
-  
-  <g transform="translate(400, 730)">
-    <text x="0" y="0" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2C3E50">Security Features:</text>
-    <text x="0" y="20" font-family="Arial, sans-serif" font-size="12" fill="#666">• Strong Encryption (AES-256)</text>
-    <text x="0" y="35" font-family="Arial, sans-serif" font-size="12" fill="#666">• Authentication &amp; Access Control</text>
-    <text x="0" y="50" font-family="Arial, sans-serif" font-size="12" fill="#666">• Tunneling Protocols</text>
+
+  <!-- Considerations -->
+  <g id="considerations">
+    <rect x="620" y="590" width="530" height="150" rx="10" fill="#FFEBEE" stroke="#F44336" stroke-width="2"/>
+    <text x="885" y="615" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#D32F2F">VPN Considerations</text>
+
+    <!-- Performance -->
+    <rect x="650" y="635" width="120" height="60" rx="5" fill="white" stroke="#FF9800" stroke-width="1"/>
+    <text x="710" y="655" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#F57C00">Performance</text>
+    <text x="710" y="670" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Encryption overhead</text>
+    <text x="710" y="682" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Latency increase</text>
+
+    <!-- Management -->
+    <rect x="790" y="635" width="120" height="60" rx="5" fill="white" stroke="#9C27B0" stroke-width="1"/>
+    <text x="850" y="655" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#7B1FA2">Management</text>
+    <text x="850" y="670" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Complex setup</text>
+    <text x="850" y="682" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Maintenance</text>
+
+    <!-- Compliance -->
+    <rect x="930" y="635" width="120" height="60" rx="5" fill="white" stroke="#4CAF50" stroke-width="1"/>
+    <text x="990" y="655" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#2E7D32">Compliance</text>
+    <text x="990" y="670" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Legal requirements</text>
+    <text x="990" y="682" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Data sovereignty</text>
+
+    <text x="885" y="720" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Single point of failure • Split tunneling • Kill switch features</text>
   </g>
-  
-  <g transform="translate(800, 730)">
-    <text x="0" y="0" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2C3E50">Use Cases:</text>
-    <text x="0" y="20" font-family="Arial, sans-serif" font-size="12" fill="#666">• Remote Work</text>
-    <text x="0" y="35" font-family="Arial, sans-serif" font-size="12" fill="#666">• Branch Office Connectivity</text>
-    <text x="0" y="50" font-family="Arial, sans-serif" font-size="12" fill="#666">• Secure Cloud Access</text>
-  </g>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="blueArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2196F3"/>
+    </marker>
+    <marker id="greenArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4CAF50"/>
+    </marker>
+  </defs>
 </svg>

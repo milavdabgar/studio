@@ -1,158 +1,110 @@
-<svg width="900" height="650" xmlns="http://www.w3.org/2000/svg">
-  <defs>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="900" height="600" xmlns="http://www.w3.org/2000/svg">
+  <title>symmetric vs asymmetric detailed</title>
     <style>
-      .title { font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; fill: #2c3e50; }
-      .section-title { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; fill: #ffffff; }
-      .text { font-family: Arial, sans-serif; font-size: 12px; fill: #ffffff; }
-      .step-num { font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; fill: #ffffff; }
-      .step { fill: #3498db; stroke: #2980b9; stroke-width: 2; }
-      .data { fill: #e74c3c; stroke: #c0392b; stroke-width: 2; }
-      .process { fill: #27ae60; stroke: #229954; stroke-width: 2; }
-      .key { fill: #f39c12; stroke: #e67e22; stroke-width: 2; }
+        .main-title { font-family: Arial; font-size: 24px; font-weight: bold; fill: #333; }
+        .section { fill: #f5f5f5; stroke-width: 2; rx: 10; ry: 10; }
+        .section-title { font-family: Arial; font-size: 20px; font-weight: bold; }
+        .feature { font-family: Arial; font-size: 14px; font-weight: bold; }
+        .desc { font-family: Arial; font-size: 12px; }
+        .symmetric { fill: #d9ead3; stroke: #6aa84f; stroke-width: 1; }
+        .asymmetric { fill: #d0e0e3; stroke: #45818e; stroke-width: 1; }
+        .divider { stroke: #999; stroke-width: 1; }
+        .header-bg { fill: #e6e6e6; }
     </style>
-  </defs>
-  
-  <!-- Title -->
-  <text x="450" y="30" text-anchor="middle" class="title">Symmetric vs Asymmetric Encryption Process</text>
-  
-  <!-- Symmetric Encryption Section -->
-  <text x="225" y="70" text-anchor="middle" class="title" fill="#3498db">SYMMETRIC ENCRYPTION</text>
-  
-  <!-- Symmetric Process Flow -->
-  <!-- Step 1: Original Data -->
-  <rect x="50" y="90" width="120" height="60" class="data" rx="5"/>
-  <text x="110" y="115" text-anchor="middle" class="section-title">Plaintext</text>
-  <text x="110" y="135" text-anchor="middle" class="text">"Hello World"</text>
-  
-  <!-- Shared Key -->
-  <rect x="50" y="170" width="120" height="40" class="key" rx="5"/>
-  <text x="110" y="195" text-anchor="middle" class="section-title">Shared Key</text>
-  
-  <!-- Encryption Process -->
-  <rect x="200" y="90" width="100" height="120" class="process" rx="5"/>
-  <text x="250" y="115" text-anchor="middle" class="section-title">Encryption</text>
-  <text x="250" y="135" text-anchor="middle" class="text">Algorithm</text>
-  <text x="250" y="155" text-anchor="middle" class="text">(AES)</text>
-  <text x="250" y="175" text-anchor="middle" class="text">Plaintext +</text>
-  <text x="250" y="195" text-anchor="middle" class="text">Key</text>
-  
-  <!-- Ciphertext -->
-  <rect x="330" y="90" width="120" height="60" class="data" rx="5"/>
-  <text x="390" y="115" text-anchor="middle" class="section-title">Ciphertext</text>
-  <text x="390" y="135" text-anchor="middle" class="text">"X7@9kL$m"</text>
-  
-  <!-- Decryption Process -->
-  <rect x="200" y="230" width="100" height="120" class="process" rx="5"/>
-  <text x="250" y="255" text-anchor="middle" class="section-title">Decryption</text>
-  <text x="250" y="275" text-anchor="middle" class="text">Algorithm</text>
-  <text x="250" y="295" text-anchor="middle" class="text">(AES)</text>
-  <text x="250" y="315" text-anchor="middle" class="text">Ciphertext +</text>
-  <text x="250" y="335" text-anchor="middle" class="text">Same Key</text>
-  
-  <!-- Same Key for decryption -->
-  <rect x="50" y="310" width="120" height="40" class="key" rx="5"/>
-  <text x="110" y="335" text-anchor="middle" class="section-title">Same Key</text>
-  
-  <!-- Recovered Plaintext -->
-  <rect x="330" y="270" width="120" height="60" class="data" rx="5"/>
-  <text x="390" y="295" text-anchor="middle" class="section-title">Plaintext</text>
-  <text x="390" y="315" text-anchor="middle" class="text">"Hello World"</text>
-  
-  <!-- Arrows for symmetric -->
-  <polygon points="175,120 195,120 185,110" fill="#2c3e50"/>
-  <polygon points="305,120 325,120 315,110" fill="#2c3e50"/>
-  <polygon points="195,300 175,300 185,310" fill="#2c3e50"/>
-  <polygon points="325,300 305,300 315,310" fill="#2c3e50"/>
-  <polygon points="390,160 390,180 400,170" fill="#2c3e50"/>
-  <polygon points="390,240 390,260 400,250" fill="#2c3e50"/>
-  
-  <!-- Key sharing challenge -->
-  <rect x="50" y="370" width="400" height="40" fill="#e74c3c" rx="5"/>
-  <text x="250" y="395" text-anchor="middle" class="section-title">Challenge: How to securely share the key?</text>
-  
-  <!-- Asymmetric Encryption Section -->
-  <text x="675" y="70" text-anchor="middle" class="title" fill="#e74c3c">ASYMMETRIC ENCRYPTION</text>
-  
-  <!-- Asymmetric Process -->
-  <!-- Original Data -->
-  <rect x="500" y="90" width="120" height="60" class="data" rx="5"/>
-  <text x="560" y="115" text-anchor="middle" class="section-title">Plaintext</text>
-  <text x="560" y="135" text-anchor="middle" class="text">"Hello World"</text>
-  
-  <!-- Public Key -->
-  <rect x="500" y="170" width="120" height="40" class="key" rx="5"/>
-  <text x="560" y="195" text-anchor="middle" class="section-title">Public Key</text>
-  
-  <!-- Encryption Process -->
-  <rect x="650" y="90" width="100" height="120" class="process" rx="5"/>
-  <text x="700" y="115" text-anchor="middle" class="section-title">Encryption</text>
-  <text x="700" y="135" text-anchor="middle" class="text">Algorithm</text>
-  <text x="700" y="155" text-anchor="middle" class="text">(RSA)</text>
-  <text x="700" y="175" text-anchor="middle" class="text">Plaintext +</text>
-  <text x="700" y="195" text-anchor="middle" class="text">Public Key</text>
-  
-  <!-- Ciphertext -->
-  <rect x="780" y="90" width="120" height="60" class="data" rx="5"/>
-  <text x="840" y="115" text-anchor="middle" class="section-title">Ciphertext</text>
-  <text x="840" y="135" text-anchor="middle" class="text">"9#kX@pL7"</text>
-  
-  <!-- Decryption Process -->
-  <rect x="650" y="230" width="100" height="120" class="process" rx="5"/>
-  <text x="700" y="255" text-anchor="middle" class="section-title">Decryption</text>
-  <text x="700" y="275" text-anchor="middle" class="text">Algorithm</text>
-  <text x="700" y="295" text-anchor="middle" class="text">(RSA)</text>
-  <text x="700" y="315" text-anchor="middle" class="text">Ciphertext +</text>
-  <text x="700" y="335" text-anchor="middle" class="text">Private Key</text>
-  
-  <!-- Private Key -->
-  <rect x="500" y="310" width="120" height="40" class="key" rx="5"/>
-  <text x="560" y="335" text-anchor="middle" class="section-title">Private Key</text>
-  
-  <!-- Recovered Plaintext -->
-  <rect x="780" y="270" width="120" height="60" class="data" rx="5"/>
-  <text x="840" y="295" text-anchor="middle" class="section-title">Plaintext</text>
-  <text x="840" y="315" text-anchor="middle" class="text">"Hello World"</text>
-  
-  <!-- Arrows for asymmetric -->
-  <polygon points="625,120 645,120 635,110" fill="#2c3e50"/>
-  <polygon points="755,120 775,120 765,110" fill="#2c3e50"/>
-  <polygon points="645,300 625,300 635,310" fill="#2c3e50"/>
-  <polygon points="775,300 755,300 765,310" fill="#2c3e50"/>
-  <polygon points="840,160 840,180 850,170" fill="#2c3e50"/>
-  <polygon points="840,240 840,260 850,250" fill="#2c3e50"/>
-  
-  <!-- Key distribution solution -->
-  <rect x="500" y="370" width="400" height="40" fill="#27ae60" rx="5"/>
-  <text x="700" y="395" text-anchor="middle" class="section-title">Solution: Public key can be shared openly!</text>
-  
-  <!-- Comparison Chart -->
-  <rect x="50" y="440" width="800" height="180" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2" rx="10"/>
-  <text x="450" y="470" text-anchor="middle" class="title" fill="#2c3e50">Comparison Summary</text>
-  
-  <!-- Comparison table -->
-  <rect x="70" y="490" width="200" height="30" fill="#3498db" rx="3"/>
-  <text x="170" y="510" text-anchor="middle" class="section-title">Symmetric</text>
-  
-  <rect x="290" y="490" width="120" height="30" fill="#95a5a6" rx="3"/>
-  <text x="350" y="510" text-anchor="middle" class="section-title" fill="white">Aspect</text>
-  
-  <rect x="430" y="490" width="200" height="30" fill="#e74c3c" rx="3"/>
-  <text x="530" y="510" text-anchor="middle" class="section-title">Asymmetric</text>
-  
-  <!-- Rows -->
-  <text x="170" y="540" text-anchor="middle" class="text" fill="#2c3e50">Fast</text>
-  <text x="350" y="540" text-anchor="middle" class="text" fill="#2c3e50">Speed</text>
-  <text x="530" y="540" text-anchor="middle" class="text" fill="#2c3e50">Slow</text>
-  
-  <text x="170" y="560" text-anchor="middle" class="text" fill="#2c3e50">Same key</text>
-  <text x="350" y="560" text-anchor="middle" class="text" fill="#2c3e50">Key Type</text>
-  <text x="530" y="560" text-anchor="middle" class="text" fill="#2c3e50">Key pair</text>
-  
-  <text x="170" y="580" text-anchor="middle" class="text" fill="#2c3e50">Difficult</text>
-  <text x="350" y="580" text-anchor="middle" class="text" fill="#2c3e50">Key Distribution</text>
-  <text x="530" y="580" text-anchor="middle" class="text" fill="#2c3e50">Easy</text>
-  
-  <text x="170" y="600" text-anchor="middle" class="text" fill="#2c3e50">Bulk data</text>
-  <text x="350" y="600" text-anchor="middle" class="text" fill="#2c3e50">Best Use</text>
-  <text x="530" y="600" text-anchor="middle" class="text" fill="#2c3e50">Key exchange</text>
+    
+    <!-- Title -->
+    <text x="450" y="40" class="main-title" text-anchor="middle">Symmetric vs Asymmetric Encryption: Detailed Comparison</text>
+    
+    <!-- Main Section -->
+    <rect x="50" y="70" width="800" height="510" class="section" stroke="#333" />
+    
+    <!-- Headers -->
+    <rect x="50" y="70" width="800" height="40" class="header-bg" />
+    <text x="250" y="95" class="section-title" text-anchor="middle" fill="#6aa84f">Symmetric Encryption</text>
+    <text x="650" y="95" class="section-title" text-anchor="middle" fill="#45818e">Asymmetric Encryption</text>
+    <line x1="450" y1="70" x2="450" y2="580" class="divider" />
+    
+    <!-- Alternate Name -->
+    <rect x="60" y="120" width="380" height="40" class="symmetric" rx="5" ry="5" />
+    <text x="70" y="140" class="feature" text-anchor="start">Alternate Name:</text>
+    <text x="250" y="140" class="desc" text-anchor="start">Private Key / Secret Key Encryption</text>
+    
+    <rect x="460" y="120" width="380" height="40" class="asymmetric" rx="5" ry="5" />
+    <text x="470" y="140" class="feature" text-anchor="start">Alternate Name:</text>
+    <text x="650" y="140" class="desc" text-anchor="start">Public Key Encryption</text>
+    
+    <!-- Key Usage -->
+    <rect x="60" y="170" width="380" height="40" class="symmetric" rx="5" ry="5" />
+    <text x="70" y="190" class="feature" text-anchor="start">Key Usage:</text>
+    <text x="250" y="190" class="desc" text-anchor="start">Same key for encryption and decryption</text>
+    
+    <rect x="460" y="170" width="380" height="40" class="asymmetric" rx="5" ry="5" />
+    <text x="470" y="190" class="feature" text-anchor="start">Key Usage:</text>
+    <text x="650" y="190" class="desc" text-anchor="start">Public key encrypts, private key decrypts</text>
+    
+    <!-- Speed -->
+    <rect x="60" y="220" width="380" height="40" class="symmetric" rx="5" ry="5" />
+    <text x="70" y="240" class="feature" text-anchor="start">Speed:</text>
+    <text x="250" y="240" class="desc" text-anchor="start">Fast encryption/decryption (10-1000x faster)</text>
+    
+    <rect x="460" y="220" width="380" height="40" class="asymmetric" rx="5" ry="5" />
+    <text x="470" y="240" class="feature" text-anchor="start">Speed:</text>
+    <text x="650" y="240" class="desc" text-anchor="start">Slower due to complex mathematical operations</text>
+    
+    <!-- Key Management -->
+    <rect x="60" y="270" width="380" height="40" class="symmetric" rx="5" ry="5" />
+    <text x="70" y="290" class="feature" text-anchor="start">Key Management:</text>
+    <text x="250" y="290" class="desc" text-anchor="start">Difficult (secure distribution needed)</text>
+    
+    <rect x="460" y="270" width="380" height="40" class="asymmetric" rx="5" ry="5" />
+    <text x="470" y="290" class="feature" text-anchor="start">Key Management:</text>
+    <text x="650" y="290" class="desc" text-anchor="start">Easier (public keys can be freely shared)</text>
+    
+    <!-- Security -->
+    <rect x="60" y="320" width="380" height="40" class="symmetric" rx="5" ry="5" />
+    <text x="70" y="340" class="feature" text-anchor="start">Security:</text>
+    <text x="250" y="340" class="desc" text-anchor="start">Secure if key remains secret</text>
+    
+    <rect x="460" y="320" width="380" height="40" class="asymmetric" rx="5" ry="5" />
+    <text x="470" y="340" class="feature" text-anchor="start">Security:</text>
+    <text x="650" y="340" class="desc" text-anchor="start">Very secure with sufficient key length</text>
+    
+    <!-- Key Length -->
+    <rect x="60" y="370" width="380" height="40" class="symmetric" rx="5" ry="5" />
+    <text x="70" y="390" class="feature" text-anchor="start">Key Length:</text>
+    <text x="250" y="390" class="desc" text-anchor="start">Typically 128-256 bits</text>
+    
+    <rect x="460" y="370" width="380" height="40" class="asymmetric" rx="5" ry="5" />
+    <text x="470" y="390" class="feature" text-anchor="start">Key Length:</text>
+    <text x="650" y="390" class="desc" text-anchor="start">Typically 1024-4096 bits</text>
+    
+    <!-- Algorithm Examples -->
+    <rect x="60" y="420" width="380" height="40" class="symmetric" rx="5" ry="5" />
+    <text x="70" y="440" class="feature" text-anchor="start">Algorithm Examples:</text>
+    <text x="250" y="440" class="desc" text-anchor="start">AES, DES, 3DES, Blowfish, Twofish</text>
+    
+    <rect x="460" y="420" width="380" height="40" class="asymmetric" rx="5" ry="5" />
+    <text x="470" y="440" class="feature" text-anchor="start">Algorithm Examples:</text>
+    <text x="650" y="440" class="desc" text-anchor="start">RSA, ECC, DSA, Diffie-Hellman</text>
+    
+    <!-- Best Suited For -->
+    <rect x="60" y="470" width="380" height="40" class="symmetric" rx="5" ry="5" />
+    <text x="70" y="490" class="feature" text-anchor="start">Best Suited For:</text>
+    <text x="250" y="490" class="desc" text-anchor="start">Encrypting large amounts of data</text>
+    
+    <rect x="460" y="470" width="380" height="40" class="asymmetric" rx="5" ry="5" />
+    <text x="470" y="490" class="feature" text-anchor="start">Best Suited For:</text>
+    <text x="650" y="490" class="desc" text-anchor="start">Key exchange, digital signatures</text>
+    
+    <!-- Use Cases -->
+    <rect x="60" y="520" width="380" height="50" class="symmetric" rx="5" ry="5" />
+    <text x="70" y="540" class="feature" text-anchor="start">Use Cases:</text>
+    <text x="250" y="535" class="desc" text-anchor="start">Disk encryption, database encryption,</text>
+    <text x="250" y="555" class="desc" text-anchor="start">session encryption, bulk data processing</text>
+    
+    <rect x="460" y="520" width="380" height="50" class="asymmetric" rx="5" ry="5" />
+    <text x="470" y="540" class="feature" text-anchor="start">Use Cases:</text>
+    <text x="650" y="535" class="desc" text-anchor="start">SSL/TLS, secure email, certificate</text>
+    <text x="650" y="555" class="desc" text-anchor="start">authorities, authentication systems</text>
 </svg>

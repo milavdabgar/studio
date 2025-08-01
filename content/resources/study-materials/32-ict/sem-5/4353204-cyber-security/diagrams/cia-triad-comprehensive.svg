@@ -1,158 +1,90 @@
-<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="confidentialityGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#3498db;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1" />
-    </linearGradient>
-    <linearGradient id="integrityGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#2ecc71;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#27ae60;stop-opacity:1" />
-    </linearGradient>
-    <linearGradient id="availabilityGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1" />
-    </linearGradient>
-    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-      <feMerge> 
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="3" dy="3" stdDeviation="4" flood-color="#00000030"/>
-    </filter>
-  </defs>
-  
-  <!-- Background -->
-  <rect width="1200" height="800" fill="#f8f9fa"/>
-  
-  <!-- Title -->
-  <text x="600" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#2c3e50">
-    CIA Triad - The Foundation of Information Security
-  </text>
-  
-  <!-- Central Triangle -->
-  <polygon points="600,150 450,400 750,400" fill="none" stroke="#34495e" stroke-width="4" stroke-linejoin="round" filter="url(#shadow)"/>
-  
-  <!-- Confidentiality Circle -->
-  <circle cx="600" cy="200" r="80" fill="url(#confidentialityGrad)" filter="url(#glow)"/>
-  <text x="600" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">
-    CONFIDENTIALITY
-  </text>
-  <text x="600" y="210" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">
-    Only authorized access
-  </text>
-  
-  <!-- Integrity Circle -->
-  <circle cx="450" cy="380" r="80" fill="url(#integrityGrad)" filter="url(#glow)"/>
-  <text x="450" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">
-    INTEGRITY
-  </text>
-  <text x="450" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">
-    Data accuracy &amp; consistency
-  </text>
-  
-  <!-- Availability Circle -->
-  <circle cx="750" cy="380" r="80" fill="url(#availabilityGrad)" filter="url(#glow)"/>
-  <text x="750" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">
-    AVAILABILITY
-  </text>
-  <text x="750" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">
-    Accessible when needed
-  </text>
-  
-  <!-- Confidentiality Details -->
-  <rect x="350" y="70" width="200" height="120" rx="10" fill="#ecf0f1" stroke="#3498db" stroke-width="2" filter="url(#shadow)"/>
-  <text x="450" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#3498db">
-    Confidentiality Methods
-  </text>
-  <text x="360" y="110" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Encryption</text>
-  <text x="360" y="125" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Access Controls</text>
-  <text x="360" y="140" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Authentication</text>
-  <text x="360" y="155" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Data Masking</text>
-  <text x="360" y="170" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Privacy Protection</text>
-  
-  <!-- Confidentiality Examples -->
-  <rect x="650" y="70" width="200" height="120" rx="10" fill="#ecf0f1" stroke="#3498db" stroke-width="2" filter="url(#shadow)"/>
-  <text x="750" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#3498db">
-    Examples
-  </text>
-  <text x="660" y="110" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Password protection</text>
-  <text x="660" y="125" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• SSL/TLS encryption</text>
-  <text x="660" y="140" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• VPN tunnels</text>
-  <text x="660" y="155" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• File permissions</text>
-  <text x="660" y="170" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Need-to-know basis</text>
-  
-  <!-- Integrity Details -->
-  <rect x="200" y="480" width="200" height="120" rx="10" fill="#ecf0f1" stroke="#2ecc71" stroke-width="2" filter="url(#shadow)"/>
-  <text x="300" y="500" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2ecc71">
-    Integrity Methods
-  </text>
-  <text x="210" y="520" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Hash functions</text>
-  <text x="210" y="535" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Digital signatures</text>
-  <text x="210" y="550" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Checksums</text>
-  <text x="210" y="565" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Version control</text>
-  <text x="210" y="580" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Audit trails</text>
-  
-  <!-- Integrity Examples -->
-  <rect x="420" y="480" width="200" height="120" rx="10" fill="#ecf0f1" stroke="#2ecc71" stroke-width="2" filter="url(#shadow)"/>
-  <text x="520" y="500" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2ecc71">
-    Examples
-  </text>
-  <text x="430" y="520" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• MD5/SHA checksums</text>
-  <text x="430" y="535" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Database constraints</text>
-  <text x="430" y="550" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Code signing</text>
-  <text x="430" y="565" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Change logs</text>
-  <text x="430" y="580" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Backup verification</text>
-  
-  <!-- Availability Details -->
-  <rect x="650" y="480" width="200" height="120" rx="10" fill="#ecf0f1" stroke="#e74c3c" stroke-width="2" filter="url(#shadow)"/>
-  <text x="750" y="500" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#e74c3c">
-    Availability Methods
-  </text>
-  <text x="660" y="520" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Redundancy</text>
-  <text x="660" y="535" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Load balancing</text>
-  <text x="660" y="550" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Disaster recovery</text>
-  <text x="660" y="565" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Maintenance</text>
-  <text x="660" y="580" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Monitoring</text>
-  
-  <!-- Availability Examples -->
-  <rect x="870" y="480" width="200" height="120" rx="10" fill="#ecf0f1" stroke="#e74c3c" stroke-width="2" filter="url(#shadow)"/>
-  <text x="970" y="500" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#e74c3c">
-    Examples
-  </text>
-  <text x="880" y="520" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• 24/7 systems</text>
-  <text x="880" y="535" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Failover clusters</text>
-  <text x="880" y="550" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Cloud services</text>
-  <text x="880" y="565" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Backup systems</text>
-  <text x="880" y="580" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• DDoS protection</text>
-  
-  <!-- Center text -->
-  <text x="600" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#34495e">
-    Information Security
-  </text>
-  <text x="600" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#7f8c8d">
-    Balanced Protection
-  </text>
-  
-  <!-- Connecting arrows -->
-  <defs>
-    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
-     refX="0" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#34495e" />
-    </marker>
-  </defs>
-  
-  <!-- Memory tip at bottom -->
-  <rect x="100" y="650" width="1000" height="100" rx="15" fill="#34495e" filter="url(#shadow)"/>
-  <text x="600" y="680" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white">
-    Memory Trick: "CIA Protects Information Assets"
-  </text>
-  <text x="600" y="700" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#ecf0f1">
-    Confidentiality (Keep secrets) + Integrity (Keep accurate) + Availability (Keep accessible)
-  </text>
-  <text x="600" y="720" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#bdc3c7">
-    All three must be balanced for effective information security
-  </text>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .triangle { fill: none; stroke: #333; stroke-width: 3; }
+        .circle { fill: #e6f2ff; stroke: #4a86e8; stroke-width: 2; }
+        .title { font-family: Arial; font-size: 18px; font-weight: bold; fill: #333; }
+        .subtitle { font-family: Arial; font-size: 14px; fill: #333; }
+        .element { font-family: Arial; font-size: 12px; fill: #333; }
+        .main-title { font-family: Arial; font-size: 24px; font-weight: bold; fill: #333; }
+        .corner-title { font-family: Arial; font-size: 20px; font-weight: bold; }
+        .implementation { font-family: Arial; font-size: 12px; fill: #333; }
+        .implementation-box { fill: #f2f2f2; stroke: #999; stroke-width: 1; rx: 5; ry: 5; }
+    </style>
+    
+    <!-- Title -->
+    <text x="400" y="40" class="main-title" text-anchor="middle">CIA Triad: Core Principles of Information Security</text>
+    
+    <!-- Triangle -->
+    <path d="M 400 100 L 200 400 L 600 400 Z" class="triangle" />
+    
+    <!-- Center Circle -->
+    <circle cx="400" cy="270" r="70" class="circle" />
+    <text x="400" y="260" class="title" text-anchor="middle">Security</text>
+    <text x="400" y="280" class="subtitle" text-anchor="middle">Balance of</text>
+    <text x="400" y="300" class="subtitle" text-anchor="middle">CIA Principles</text>
+    
+    <!-- Confidentiality Corner -->
+    <text x="400" y="90" class="corner-title" text-anchor="middle" fill="#4a86e8">Confidentiality</text>
+    <text x="400" y="110" class="subtitle" text-anchor="middle">Information access limited to authorized parties</text>
+    
+    <!-- Integrity Corner -->
+    <text x="180" y="420" class="corner-title" text-anchor="middle" fill="#6aa84f">Integrity</text>
+    <text x="180" y="440" class="subtitle" text-anchor="middle">Information remains accurate and unaltered</text>
+    
+    <!-- Availability Corner -->
+    <text x="620" y="420" class="corner-title" text-anchor="middle" fill="#e69138">Availability</text>
+    <text x="620" y="440" class="subtitle" text-anchor="middle">Information accessible when needed</text>
+    
+    <!-- Implementation Boxes -->
+    <!-- Confidentiality Implementations -->
+    <rect x="280" y="130" width="240" height="80" class="implementation-box" />
+    <text x="290" y="150" class="implementation" text-anchor="start">• Encryption</text>
+    <text x="290" y="170" class="implementation" text-anchor="start">• Access Controls</text>
+    <text x="290" y="190" class="implementation" text-anchor="start">• Authentication</text>
+    <text x="290" y="210" class="implementation" text-anchor="start">• Data Classification</text>
+    
+    <text x="430" y="150" class="implementation" text-anchor="start">• Steganography</text>
+    <text x="430" y="170" class="implementation" text-anchor="start">• Privacy Policies</text>
+    <text x="430" y="190" class="implementation" text-anchor="start">• Secure Communication</text>
+    <text x="430" y="210" class="implementation" text-anchor="start">• Secure Disposal</text>
+    
+    <!-- Integrity Implementations -->
+    <rect x="50" y="320" width="240" height="80" class="implementation-box" />
+    <text x="60" y="340" class="implementation" text-anchor="start">• Hashing</text>
+    <text x="60" y="360" class="implementation" text-anchor="start">• Digital Signatures</text>
+    <text x="60" y="380" class="implementation" text-anchor="start">• Version Control</text>
+    <text x="60" y="400" class="implementation" text-anchor="start">• Checksums</text>
+    
+    <text x="200" y="340" class="implementation" text-anchor="start">• Audit Trails</text>
+    <text x="200" y="360" class="implementation" text-anchor="start">• Input Validation</text>
+    <text x="200" y="380" class="implementation" text-anchor="start">• Change Management</text>
+    <text x="200" y="400" class="implementation" text-anchor="start">• Data Backups</text>
+    
+    <!-- Availability Implementations -->
+    <rect x="510" y="320" width="240" height="80" class="implementation-box" />
+    <text x="520" y="340" class="implementation" text-anchor="start">• Redundancy</text>
+    <text x="520" y="360" class="implementation" text-anchor="start">• Disaster Recovery</text>
+    <text x="520" y="380" class="implementation" text-anchor="start">• Load Balancing</text>
+    <text x="520" y="400" class="implementation" text-anchor="start">• Fault Tolerance</text>
+    
+    <text x="660" y="340" class="implementation" text-anchor="start">• Regular Maintenance</text>
+    <text x="660" y="360" class="implementation" text-anchor="start">• DDoS Protection</text>
+    <text x="660" y="380" class="implementation" text-anchor="start">• Backup Power</text>
+    <text x="660" y="400" class="implementation" text-anchor="start">• SLAs</text>
+    
+    <!-- Threat Examples -->
+    <text x="400" y="500" class="title" text-anchor="middle">Common Threats to CIA Principles</text>
+    
+    <text x="200" y="530" class="subtitle" text-anchor="middle" fill="#4a86e8">Confidentiality</text>
+    <text x="200" y="550" class="element" text-anchor="middle">Eavesdropping</text>
+    <text x="200" y="570" class="element" text-anchor="middle">Unauthorized Access</text>
+    
+    <text x="400" y="530" class="subtitle" text-anchor="middle" fill="#6aa84f">Integrity</text>
+    <text x="400" y="550" class="element" text-anchor="middle">Data Tampering</text>
+    <text x="400" y="570" class="element" text-anchor="middle">Man-in-the-Middle</text>
+    
+    <text x="600" y="530" class="subtitle" text-anchor="middle" fill="#e69138">Availability</text>
+    <text x="600" y="550" class="element" text-anchor="middle">DDoS Attacks</text>
+    <text x="600" y="570" class="element" text-anchor="middle">Hardware Failures</text>
 </svg>

@@ -1,73 +1,64 @@
-<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
-  <defs>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="500" xmlns="http://www.w3.org/2000/svg">
     <style>
-      .title { font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; fill: #2c3e50; }
-      .section-title { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; fill: #ffffff; }
-      .text { font-family: Arial, sans-serif; font-size: 12px; fill: #ffffff; }
-      .year { font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; fill: #2c3e50; }
-      .box { stroke-width: 2; rx: 10; }
-      .era1 { fill: #e74c3c; stroke: #c0392b; }
-      .era2 { fill: #f39c12; stroke: #e67e22; }
-      .era3 { fill: #3498db; stroke: #2980b9; }
-      .era4 { fill: #27ae60; stroke: #229954; }
-      .era5 { fill: #9b59b6; stroke: #8e44ad; }
+        .domain { fill: #e6f2ff; stroke: #4a86e8; stroke-width: 2; rx: 10; ry: 10; }
+        .title { font-family: Arial; font-size: 16px; font-weight: bold; fill: #333; }
+        .item { font-family: Arial; font-size: 12px; fill: #333; }
+        .main-title { font-family: Arial; font-size: 22px; font-weight: bold; fill: #333; }
+        .subtitle { font-family: Arial; font-size: 14px; font-style: italic; fill: #666; }
+        .overlap { fill: #f9e4c7; stroke: #e69138; stroke-width: 2; rx: 10; ry: 10; opacity: 0.6; }
+        .overlap-text { font-family: Arial; font-size: 14px; font-weight: bold; fill: #333; }
     </style>
-  </defs>
-  
-  <!-- Title -->
-  <text x="400" y="30" text-anchor="middle" class="title">Security vs Computer Security vs Information Security</text>
-  
-  <!-- Physical Security -->
-  <rect x="50" y="70" width="200" height="150" class="box era1"/>
-  <text x="150" y="100" text-anchor="middle" class="section-title">Physical Security</text>
-  <text x="60" y="125" class="text">• Access control to facilities</text>
-  <text x="60" y="145" class="text">• Surveillance systems</text>
-  <text x="60" y="165" class="text">• Environmental protection</text>
-  <text x="60" y="185" class="text">• Hardware security</text>
-  <text x="60" y="205" class="text">• Personnel security</text>
-  
-  <!-- Computer Security -->
-  <rect x="300" y="70" width="200" height="150" class="box era2"/>
-  <text x="400" y="100" text-anchor="middle" class="section-title">Computer Security</text>
-  <text x="310" y="125" class="text">• Operating system security</text>
-  <text x="310" y="145" class="text">• Application security</text>
-  <text x="310" y="165" class="text">• Database security</text>
-  <text x="310" y="185" class="text">• Endpoint protection</text>
-  <text x="310" y="205" class="text">• Software vulnerabilities</text>
-  
-  <!-- Information Security -->
-  <rect x="550" y="70" width="200" height="150" class="box era3"/>
-  <text x="650" y="100" text-anchor="middle" class="section-title">Information Security</text>
-  <text x="560" y="125" class="text">• Data protection</text>
-  <text x="560" y="145" class="text">• Information classification</text>
-  <text x="560" y="165" class="text">• Data lifecycle security</text>
-  <text x="560" y="185" class="text">• Privacy protection</text>
-  <text x="560" y="205" class="text">• Compliance</text>
-  
-  <!-- Cyber Security (Central and Comprehensive) -->
-  <rect x="200" y="280" width="400" height="180" class="box era4"/>
-  <text x="400" y="310" text-anchor="middle" class="section-title">Cyber Security</text>
-  <text x="210" y="335" class="text">• Network security and infrastructure protection</text>
-  <text x="210" y="355" class="text">• Digital threat prevention and response</text>
-  <text x="210" y="375" class="text">• Online communication security</text>
-  <text x="210" y="395" class="text">• Cloud and internet security</text>
-  <text x="210" y="415" class="text">• Incident response and digital forensics</text>
-  <text x="210" y="435" class="text">• Comprehensive protection across all digital domains</text>
-  
-  <!-- Overlap indicators -->
-  <circle cx="200" cy="250" r="15" fill="#34495e"/>
-  <circle cx="400" cy="250" r="15" fill="#34495e"/>
-  <circle cx="600" cy="250" r="15" fill="#34495e"/>
-  
-  <!-- Connecting lines -->
-  <line x1="150" y1="220" x2="200" y2="280" stroke="#34495e" stroke-width="3"/>
-  <line x1="400" y1="220" x2="400" y2="280" stroke="#34495e" stroke-width="3"/>
-  <line x1="650" y1="220" x2="600" y2="280" stroke="#34495e" stroke-width="3"/>
-  
-  <!-- Key Differences Box -->
-  <rect x="50" y="500" width="700" height="80" class="box era5"/>
-  <text x="400" y="525" text-anchor="middle" class="section-title">Key Relationships</text>
-  <text x="60" y="545" class="text">• Cyber Security encompasses and integrates all three domains</text>
-  <text x="60" y="560" class="text">• Physical Security protects tangible assets and infrastructure</text>
-  <text x="60" y="575" class="text">• Computer Security focuses on system-level protection and software security</text>
+    
+    <!-- Title -->
+    <text x="400" y="40" class="main-title" text-anchor="middle">Security Domains Comparison</text>
+    <text x="400" y="65" class="subtitle" text-anchor="middle">Understanding the relationship between Cyber, Information, Network, and Physical Security</text>
+    
+    <!-- Cyber Security Domain -->
+    <rect x="150" y="100" width="500" height="330" class="domain" />
+    <text x="400" y="125" class="title" text-anchor="middle">Cyber Security</text>
+    <text x="400" y="145" class="item" text-anchor="middle">Protection of computer systems, networks, and digital data</text>
+    
+    <!-- Information Security Domain -->
+    <rect x="200" y="160" width="400" height="230" class="domain" />
+    <text x="400" y="185" class="title" text-anchor="middle">Information Security</text>
+    <text x="400" y="205" class="item" text-anchor="middle">Protection of information regardless of medium</text>
+    
+    <!-- Network Security Domain -->
+    <rect x="250" y="220" width="200" height="130" class="domain" />
+    <text x="350" y="245" class="title" text-anchor="middle">Network Security</text>
+    <text x="350" y="265" class="item" text-anchor="middle">Securing network infrastructure</text>
+    <text x="350" y="285" class="item" text-anchor="middle">and communications</text>
+    
+    <!-- Application Security -->
+    <rect x="480" y="220" width="100" height="80" class="domain" />
+    <text x="530" y="245" class="title" text-anchor="middle" font-size="12px">Application</text>
+    <text x="530" y="260" class="title" text-anchor="middle" font-size="12px">Security</text>
+    
+    <!-- Physical Security Overlap -->
+    <rect x="50" y="360" width="200" height="100" class="overlap" />
+    <text x="150" y="385" class="overlap-text" text-anchor="middle">Physical Security</text>
+    <text x="150" y="405" class="item" text-anchor="middle">Protection of physical assets,</text>
+    <text x="150" y="425" class="item" text-anchor="middle">facilities, and personnel</text>
+    
+    <!-- Legend -->
+    <rect x="600" y="360" width="20" height="20" class="domain" />
+    <text x="625" y="375" class="item" text-anchor="start">Digital Security Domain</text>
+    
+    <rect x="600" y="390" width="20" height="20" class="overlap" />
+    <text x="625" y="405" class="item" text-anchor="start">Physical Security Domain</text>
+    
+    <!-- Key Elements in Each Domain -->
+    <text x="170" y="330" class="item" text-anchor="start" font-style="italic">• Threat Intelligence</text>
+    <text x="170" y="350" class="item" text-anchor="start" font-style="italic">• Incident Response</text>
+    <text x="170" y="370" class="item" text-anchor="start" font-style="italic">• Security Monitoring</text>
+    
+    <text x="260" y="330" class="item" text-anchor="start" font-style="italic">• Data Classification</text>
+    <text x="260" y="350" class="item" text-anchor="start" font-style="italic">• Access Control</text>
+    
+    <text x="360" y="330" class="item" text-anchor="start" font-style="italic">• Firewalls</text>
+    <text x="360" y="350" class="item" text-anchor="start" font-style="italic">• VPNs</text>
+    
+    <text x="460" y="330" class="item" text-anchor="start" font-style="italic">• Code Security</text>
+    <text x="460" y="350" class="item" text-anchor="start" font-style="italic">• SDLC Security</text>
 </svg>

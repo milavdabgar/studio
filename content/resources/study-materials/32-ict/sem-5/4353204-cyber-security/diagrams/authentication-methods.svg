@@ -1,73 +1,80 @@
-<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="650" xmlns="http://www.w3.org/2000/svg">
   <!-- Background -->
-  <rect x="0" y="0" width="600" height="400" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2"/>
+  <rect width="800" height="650" fill="#f5f5f5"/>
   
   <!-- Title -->
-  <text x="300" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2c3e50">Authentication Methods</text>
+  <text x="400" y="40" font-family="Arial" font-size="24" font-weight="bold" text-anchor="middle" fill="#333">Authentication Methods</text>
+  <text x="400" y="70" font-family="Arial" font-size="16" font-style="italic" text-anchor="middle" fill="#666">Verifying the identity of users and systems</text>
   
-  <!-- Something You Know -->
-  <rect x="50" y="80" width="150" height="100" fill="#3498db" rx="10"/>
-  <text x="125" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Something You Know</text>
-  <text x="125" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">Knowledge Factor</text>
+  <!-- Central Authentication Icon -->
+  <circle cx="400" cy="150" r="60" fill="#e6f7ff" stroke="#0099cc" stroke-width="2"/>
+  <text x="400" y="155" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="#0066cc">Authentication</text>
   
-  <!-- Password icon -->
-  <rect x="95" y="140" width="60" height="30" fill="white" rx="5"/>
-  <text x="125" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Password</text>
+  <!-- Knowledge-Based Authentication -->
+  <rect x="50" y="250" width="200" height="180" rx="10" fill="#fff2e6" stroke="#ff9933" stroke-width="2"/>
+  <text x="150" y="280" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="#cc6600">Knowledge-Based</text>
+  <text x="150" y="300" font-family="Arial" font-size="14" font-style="italic" text-anchor="middle" fill="#cc6600">"Something you know"</text>
   
-  <!-- Something You Have -->
-  <rect x="225" y="80" width="150" height="100" fill="#e74c3c" rx="10"/>
-  <text x="300" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Something You Have</text>
-  <text x="300" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">Possession Factor</text>
+  <rect x="70" y="320" width="160" height="30" rx="5" fill="#ffffff" stroke="#ff9933" stroke-width="1"/>
+  <text x="150" y="340" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">Passwords</text>
   
-  <!-- Token icon -->
-  <rect x="270" y="140" width="60" height="30" fill="white" rx="5"/>
-  <text x="300" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Token/Card</text>
+  <rect x="70" y="360" width="160" height="30" rx="5" fill="#ffffff" stroke="#ff9933" stroke-width="1"/>
+  <text x="150" y="380" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">PINs</text>
   
-  <!-- Something You Are -->
-  <rect x="400" y="80" width="150" height="100" fill="#27ae60" rx="10"/>
-  <text x="475" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Something You Are</text>
-  <text x="475" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">Inherence Factor</text>
+  <rect x="70" y="400" width="160" height="30" rx="5" fill="#ffffff" stroke="#ff9933" stroke-width="1"/>
+  <text x="150" y="420" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">Security Questions</text>
   
-  <!-- Biometric icon -->
-  <circle cx="475" cy="155" r="20" fill="white"/>
-  <text x="475" y="161" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Biometric</text>
+  <!-- Possession-Based Authentication -->
+  <rect x="300" y="250" width="200" height="180" rx="10" fill="#e6ffe6" stroke="#00cc66" stroke-width="2"/>
+  <text x="400" y="280" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="#009933">Possession-Based</text>
+  <text x="400" y="300" font-family="Arial" font-size="14" font-style="italic" text-anchor="middle" fill="#009933">"Something you have"</text>
   
-  <!-- Authentication Levels -->
-  <text x="300" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2c3e50">Authentication Levels</text>
+  <rect x="320" y="320" width="160" height="30" rx="5" fill="#ffffff" stroke="#00cc66" stroke-width="1"/>
+  <text x="400" y="340" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">Security Tokens</text>
   
-  <!-- Single Factor -->
-  <rect x="75" y="250" width="120" height="60" fill="#95a5a6" rx="5"/>
-  <text x="135" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Single Factor</text>
-  <text x="135" y="285" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">One method</text>
-  <text x="135" y="298" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">Less secure</text>
+  <rect x="320" y="360" width="160" height="30" rx="5" fill="#ffffff" stroke="#00cc66" stroke-width="1"/>
+  <text x="400" y="380" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">Smart Cards</text>
   
-  <!-- Two Factor -->
-  <rect x="240" y="250" width="120" height="60" fill="#f39c12" rx="5"/>
-  <text x="300" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Two Factor (2FA)</text>
-  <text x="300" y="285" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">Two methods</text>
-  <text x="300" y="298" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">More secure</text>
+  <rect x="320" y="400" width="160" height="30" rx="5" fill="#ffffff" stroke="#00cc66" stroke-width="1"/>
+  <text x="400" y="420" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">Mobile Devices</text>
   
-  <!-- Multi Factor -->
-  <rect x="405" y="250" width="120" height="60" fill="#e67e22" rx="5"/>
-  <text x="465" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Multi Factor (MFA)</text>
-  <text x="465" y="285" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">Multiple methods</text>
-  <text x="465" y="298" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">Most secure</text>
+  <!-- Inherence-Based Authentication -->
+  <rect x="550" y="250" width="200" height="180" rx="10" fill="#f9e6ff" stroke="#cc66ff" stroke-width="2"/>
+  <text x="650" y="280" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="#9933cc">Inherence-Based</text>
+  <text x="650" y="300" font-family="Arial" font-size="14" font-style="italic" text-anchor="middle" fill="#9933cc">"Something you are"</text>
   
-  <!-- Examples -->
-  <text x="300" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2c3e50">Real-World Examples</text>
+  <rect x="570" y="320" width="160" height="30" rx="5" fill="#ffffff" stroke="#cc66ff" stroke-width="1"/>
+  <text x="650" y="340" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">Fingerprints</text>
   
-  <text x="150" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">Password + SMS Code</text>
-  <text x="300" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">Smart Card + PIN</text>
-  <text x="450" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">Fingerprint + Token</text>
+  <rect x="570" y="360" width="160" height="30" rx="5" fill="#ffffff" stroke="#cc66ff" stroke-width="1"/>
+  <text x="650" y="380" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">Facial Recognition</text>
   
-  <!-- Connection arrows -->
-  <path d="M125 200 L135 250" stroke="#3498db" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
-  <path d="M300 200 L300 250" stroke="#e74c3c" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
-  <path d="M475 200 L465 250" stroke="#27ae60" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <rect x="570" y="400" width="160" height="30" rx="5" fill="#ffffff" stroke="#cc66ff" stroke-width="1"/>
+  <text x="650" y="420" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">Voice Recognition</text>
   
-  <!-- Arrow marker -->
+  <!-- Connecting Lines -->
+  <path d="M 400 210 L 400 230 L 150 230 L 150 250" stroke="#ff9933" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M 400 210 L 400 250" stroke="#00cc66" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M 400 210 L 400 230 L 650 230 L 650 250" stroke="#cc66ff" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Multi-Factor Authentication -->
+  <rect x="150" y="480" width="500" height="150" rx="10" fill="#e6f7ff" stroke="#0099cc" stroke-width="2"/>
+  <text x="400" y="510" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="#0066cc">Multi-Factor Authentication (MFA)</text>
+  <text x="400" y="535" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">Combines two or more authentication methods</text>
+  
+  <rect x="200" y="550" width="400" height="60" rx="5" fill="#ffffff" stroke="#0099cc" stroke-width="1"/>
+  <text x="400" y="575" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">Example: Password (Knowledge) +</text>
+  <text x="400" y="595" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">OTP on Mobile Device (Possession)</text>
+  
+  <!-- Connecting Lines to MFA -->
+  <path d="M 150 430 L 150 460 L 400 460 L 400 480" stroke="#0099cc" stroke-width="2" stroke-dasharray="5,5" fill="none"/>
+  <path d="M 400 430 L 400 480" stroke="#0099cc" stroke-width="2" stroke-dasharray="5,5" fill="none"/>
+  <path d="M 650 430 L 650 460 L 400 460" stroke="#0099cc" stroke-width="2" stroke-dasharray="5,5" fill="none"/>
+  
+  <!-- Arrowhead definition -->
   <defs>
-    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
     </marker>
   </defs>
