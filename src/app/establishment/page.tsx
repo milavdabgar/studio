@@ -266,7 +266,7 @@ export default function EstablishmentPage() {
                   <Phone className="h-6 w-6 text-primary mt-1" />
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-white mb-1 dark:text-white">Phone</h3>
-                    <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">02742-245219</p>
+                    <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">02742-262115</p>
                   </div>
                 </div>
                 
@@ -274,7 +274,7 @@ export default function EstablishmentPage() {
                   <Mail className="h-6 w-6 text-primary mt-1" />
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-white mb-1 dark:text-white">Email</h3>
-                    <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">principal-gpp@guj.edu.in</p>
+                    <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">principal@gppalanpur.ac.in</p>
                   </div>
                 </div>
                 

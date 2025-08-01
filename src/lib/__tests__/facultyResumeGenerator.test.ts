@@ -35,7 +35,7 @@ describe('FacultyResumeGenerator', () => {
     fullName: 'John Michael Doe',
     displayName: 'Dr. John Doe',
     gtuName: 'DOE JOHN MICHAEL',
-    email: 'john.doe@gpp.edu',
+    email: 'john.doe@gppalanpur.ac.in',
     personalEmail: 'john.doe@gmail.com',
     instituteEmail: 'john.doe@gppalanpur.ac.in',
     contactNumber: '+91-9876543210',
@@ -91,7 +91,7 @@ describe('FacultyResumeGenerator', () => {
 
       expect(resumeData.fullName).toBe('Dr. John Michael Doe');
       expect(resumeData.title).toBe('Dr.');
-      expect(resumeData.email).toBe('john.doe@gpp.edu');
+      expect(resumeData.email).toBe('john.doe@gppalanpur.ac.in');
       expect(resumeData.personalEmail).toBe('john.doe@gmail.com');
       expect(resumeData.contactNumber).toBe('+91-9876543210');
       expect(resumeData.address).toBe('123 Faculty Colony, Palanpur, Gujarat');
@@ -269,7 +269,7 @@ describe('FacultyResumeGenerator', () => {
       const resumeData: FacultyResumeData = {
         fullName: 'Dr. John Michael Doe',
         title: 'Dr.',
-        email: 'john.doe@gpp.edu',
+        email: 'john.doe@gppalanpur.ac.in',
         personalEmail: 'john.doe@gmail.com',
         contactNumber: '+91-9876543210',
         address: '123 Faculty Colony, Palanpur, Gujarat',
@@ -303,7 +303,7 @@ describe('FacultyResumeGenerator', () => {
       expect(html).toContain('<!DOCTYPE html>');
       expect(html).toContain('Dr. John Michael Doe');
       expect(html).toContain('Assistant Professor');
-      expect(html).toContain('john.doe@gpp.edu');
+      expect(html).toContain('john.doe@gppalanpur.ac.in');
       expect(html).toContain('FAC001');
       expect(html).toContain('Computer Engineering');
       expect(html).toContain('Machine Learning');
@@ -315,7 +315,7 @@ describe('FacultyResumeGenerator', () => {
     it('should include optional sections when data is provided', () => {
       const resumeDataWithExtras: FacultyResumeData = {
         fullName: 'Dr. John Doe',
-        email: 'john.doe@gpp.edu',
+        email: 'john.doe@gppalanpur.ac.in',
         staffCode: 'FAC001',
         department: 'Computer Engineering',
         designation: 'Assistant Professor',
@@ -414,7 +414,7 @@ describe('FacultyResumeGenerator', () => {
       const resumeData: FacultyResumeData = {
         fullName: 'Dr. John Michael Doe',
         title: 'Dr.',
-        email: 'john.doe@gpp.edu',
+        email: 'john.doe@gppalanpur.ac.in',
         contactNumber: '+91-9876543210',
         staffCode: 'FAC001',
         department: 'Computer Engineering',
@@ -441,7 +441,7 @@ describe('FacultyResumeGenerator', () => {
 
       expect(plainText).toContain('Dr. John Michael Doe');
       expect(plainText).toContain('Assistant Professor');
-      expect(plainText).toContain('Email: john.doe@gpp.edu');
+      expect(plainText).toContain('Email: john.doe@gppalanpur.ac.in');
       expect(plainText).toContain('Phone: +91-9876543210');
       expect(plainText).toContain('PROFESSIONAL INFORMATION');
       expect(plainText).toContain('Staff Code: FAC001');

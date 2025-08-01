@@ -29,7 +29,7 @@ export default function CivilFacultyPage() {
       experience: "15+ years",
       specialization: ["Structural Design", "Concrete Technology", "Earthquake Engineering"],
       subjects: ["Design of RCC Structures", "Structural Analysis", "Concrete Technology"],
-      email: "dn.sheth@gpp.edu",
+      email: "dn.sheth@gppalanpur.ac.in",
       phone: "+91 98765 43210",
       achievements: [
         "NBA Accreditation Coordinator",
@@ -45,7 +45,7 @@ export default function CivilFacultyPage() {
       experience: "12+ years",
       specialization: ["Construction Management", "Project Planning", "Building Technology"],
       subjects: ["Building Materials & Construction", "Quantity Surveying", "Construction Management"],
-      email: "rk.patel@gpp.edu",
+      email: "rk.patel@gppalanpur.ac.in",
       phone: "+91 98765 43211",
       achievements: [
         "Construction industry expert",
@@ -61,7 +61,7 @@ export default function CivilFacultyPage() {
       experience: "8+ years",
       specialization: ["Highway Engineering", "Traffic Management", "Pavement Design"],
       subjects: ["Transportation Engineering", "Highway Engineering", "Traffic Engineering"],
-      email: "sm.shah@gpp.edu",
+      email: "sm.shah@gppalanpur.ac.in",
       phone: "+91 98765 43212",
       achievements: [
         "Traffic consultant for municipal corporation",
@@ -77,7 +77,7 @@ export default function CivilFacultyPage() {
       experience: "6+ years",
       specialization: ["Water Treatment", "Environmental Impact", "Waste Management"],
       subjects: ["Environmental Engineering", "Water Supply Engineering", "Sewage Treatment"],
-      email: "pj.desai@gpp.edu",
+      email: "pj.desai@gppalanpur.ac.in",
       phone: "+91 98765 43213",
       achievements: [
         "Environmental consultant",
@@ -93,7 +93,7 @@ export default function CivilFacultyPage() {
       experience: "7+ years",
       specialization: ["Soil Mechanics", "Foundation Design", "Geotechnical Investigation"],
       subjects: ["Soil Mechanics", "Foundation Engineering", "Engineering Geology"],
-      email: "ab.joshi@gpp.edu",
+      email: "ab.joshi@gppalanpur.ac.in",
       phone: "+91 98765 43214",
       achievements: [
         "Soil testing laboratory in-charge",
@@ -109,7 +109,7 @@ export default function CivilFacultyPage() {
       experience: "5+ years",
       specialization: ["Steel Structures", "Structural Analysis", "CAD Design"],
       subjects: ["Design of Steel Structures", "Structural Analysis", "Computer Applications"],
-      email: "km.patel@gpp.edu",
+      email: "km.patel@gppalanpur.ac.in",
       phone: "+91 98765 43215",
       achievements: [
         "CAD/CAM laboratory coordinator",
@@ -125,7 +125,7 @@ export default function CivilFacultyPage() {
       experience: "9+ years",
       specialization: ["Irrigation Engineering", "Hydrology", "Water Management"],
       subjects: ["Irrigation Engineering", "Fluid Mechanics", "Hydrology"],
-      email: "vr.sharma@gpp.edu",
+      email: "vr.sharma@gppalanpur.ac.in",
       phone: "+91 98765 43216",
       achievements: [
         "Water resources consultant",
@@ -141,7 +141,7 @@ export default function CivilFacultyPage() {
       experience: "4+ years",
       specialization: ["Concrete Technology", "Material Testing", "Quality Control"],
       subjects: ["Concrete Technology", "Building Materials", "Strength of Materials"],
-      email: "nk.shah@gpp.edu",
+      email: "nk.shah@gppalanpur.ac.in",
       phone: "+91 98765 43217",
       achievements: [
         "Materials testing laboratory head",

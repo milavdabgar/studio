@@ -70,11 +70,11 @@ export function Footer({ variant = 'default' }: FooterProps) {
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4" />
-                <span>02742-245219</span>
+                <span>02742-262115</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4" />
-                <span>{variant === 'ssip' ? 'ssip-gpp@guj.edu.in' : 'principal-gpp@guj.edu.in'}</span>
+                <span>{variant === 'ssip' ? 'ssip@gppalanpur.ac.in' : 'principal@gppalanpur.ac.in'}</span>
               </div>
             </div>
           </div>

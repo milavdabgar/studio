@@ -381,7 +381,7 @@ export default function TPOPage() {
                       </div>
                       <div>
                         <h4 className="font-semibold text-gray-900 dark:text-white mb-1 dark:text-white">Email</h4>
-                        <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">placement-gpp@guj.edu.in</p>
+                        <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">tpo@gppalanpur.ac.in</p>
                         <p className="text-sm text-gray-500 dark:text-gray-400">For placement inquiries and collaborations</p>
                       </div>
                     </div>
@@ -392,7 +392,7 @@ export default function TPOPage() {
                       </div>
                       <div>
                         <h4 className="font-semibold text-gray-900 dark:text-white mb-1 dark:text-white">Phone</h4>
-                        <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">02742-245219</p>
+                        <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">02742-262115</p>
                         <p className="text-sm text-gray-500 dark:text-gray-400">Office hours: Monday to Friday, 9:00 AM - 5:00 PM</p>
                       </div>
                     </div>

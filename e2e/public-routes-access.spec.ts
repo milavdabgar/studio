@@ -88,7 +88,7 @@ test.describe('Public Routes Access', () => {
     
     // Should see contact page content
     await expect(page.locator('section h1')).toContainText('Contact Us');
-    await expect(page.locator('text=gppalanpur@gmail.com')).toBeVisible();
+    await expect(page.locator('text=info@gppalanpur.ac.in')).toBeVisible();
   });
 
   test('should access newsletters page without authentication', async ({ page }) => {

@@ -35,7 +35,7 @@ describe('/api/faculty/[id]/resume', () => {
     middleName: 'Michael',
     lastName: 'Doe',
     fullName: 'John Michael Doe',
-    email: 'john.doe@gpp.edu',
+    email: 'john.doe@gppalanpur.ac.in',
     personalEmail: 'john.doe@gmail.com',
     instituteEmail: 'john.doe@gppalanpur.ac.in',
     contactNumber: '+91-9876543210',
@@ -61,7 +61,7 @@ describe('/api/faculty/[id]/resume', () => {
   const mockResumeData = {
     fullName: 'Dr. John Michael Doe',
     title: 'Dr.',
-    email: 'john.doe@gpp.edu',
+    email: 'john.doe@gppalanpur.ac.in',
     staffCode: 'FAC001',
     department: 'Computer Engineering',
     designation: 'Assistant Professor',

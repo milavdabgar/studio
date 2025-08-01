@@ -364,14 +364,14 @@ export default function HomePage() {
                   <Phone className="h-5 w-5 text-primary" />
                   <div>
                     <p className="font-medium dark:text-white">Phone</p>
-                    <p className="text-gray-600 dark:text-gray-400">02742-245219 / 262115</p>
+                    <p className="text-gray-600 dark:text-gray-400">02742-262115</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Mail className="h-5 w-5 text-primary" />
                   <div>
                     <p className="font-medium dark:text-white">Email</p>
-                    <p className="text-gray-600 dark:text-gray-400">gppalanpur@gmail.com</p>
+                    <p className="text-gray-600 dark:text-gray-400">info@gppalanpur.ac.in</p>
                   </div>
                 </div>
               </div>

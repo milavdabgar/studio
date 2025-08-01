@@ -213,8 +213,8 @@ describe('HomePage', () => {
     expect(screen.getByText('Visit Our Campus')).toBeInTheDocument();
     expect(screen.getByText('Outside Malan Gate, Near Dhaniyana Crossroads')).toBeInTheDocument();
     expect(screen.getByText('Palanpur-385001, Banaskantha, Gujarat')).toBeInTheDocument();
-    expect(screen.getByText('02742-245219 / 262115')).toBeInTheDocument();
-    expect(screen.getByText('gppalanpur@gmail.com')).toBeInTheDocument();
+    expect(screen.getByText('02742-262115')).toBeInTheDocument();
+    expect(screen.getByText('info@gppalanpur.ac.in')).toBeInTheDocument();
   });
 
   it('should display quick links section', () => {

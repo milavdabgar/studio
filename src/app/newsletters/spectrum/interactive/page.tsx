@@ -878,7 +878,7 @@ export default function InteractiveNewsletterPage() {
                         </div>
                         <div className="flex justify-between items-center border-b border-blue-100 pb-2 dark:border-gray-700">
                           <span className="font-medium text-blue-800">Phone:</span>
-                          <span className="font-semibold text-blue-900">{currentData.reachout?.phone || '02742-245219'}</span>
+                          <span className="font-semibold text-blue-900">{currentData.reachout?.phone || '02742-262115'}</span>
                         </div>
                         <div className="flex justify-between items-center border-b border-blue-100 pb-2 dark:border-gray-700">
                           <span className="font-medium text-blue-800">Website:</span>

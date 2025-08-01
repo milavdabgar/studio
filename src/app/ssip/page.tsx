@@ -354,7 +354,7 @@ export default function SSIPPage() {
                     <Phone className="h-5 w-5 text-gray-400" />
                     <div>
                       <p className="font-medium text-gray-900 dark:text-white">Phone</p>
-                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">02742-245219</p>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">02742-262115</p>
                     </div>
                   </div>
                   
@@ -362,7 +362,7 @@ export default function SSIPPage() {
                     <Mail className="h-5 w-5 text-gray-400" />
                     <div>
                       <p className="font-medium text-gray-900 dark:text-white">Email</p>
-                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">ssip-gpp@guj.edu.in</p>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">ssip@gppalanpur.ac.in</p>
                     </div>
                   </div>
                   

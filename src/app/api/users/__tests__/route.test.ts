@@ -55,7 +55,7 @@ describe('/api/users', () => {
       firstName: 'John',
       lastName: 'Smith',
       email: 'john.smith@gmail.com',
-      instituteEmail: 'john.smith@gpp.edu.in',
+      instituteEmail: 'john.smith@gppalanpur.ac.in.in',
       roles: ['student'],
       currentRole: 'student',
       isActive: true,
@@ -72,7 +72,7 @@ describe('/api/users', () => {
       firstName: 'Jane',
       lastName: 'Doe',
       email: 'jane.doe@gmail.com',
-      instituteEmail: 'jane.doe@gpp.edu.in',
+      instituteEmail: 'jane.doe@gppalanpur.ac.in.in',
       roles: ['faculty'],
       currentRole: 'faculty',
       isActive: true,
@@ -165,7 +165,7 @@ describe('/api/users', () => {
         ...validUserData,
         id: 'user_12345_abcdef',
         displayName: 'Alice Wilson',
-        instituteEmail: 'alice.wilson@gpp.edu.in',
+        instituteEmail: 'alice.wilson@gppalanpur.ac.in.in',
         authProviders: ['password'],
         isActive: true,
         isEmailVerified: false,
@@ -189,7 +189,7 @@ describe('/api/users', () => {
       expect(data.firstName).toBe('Alice');
       expect(data.lastName).toBe('Wilson');
       expect(data.email).toBe('alice.wilson@gmail.com');
-      expect(data.instituteEmail).toBe('alice.wilson@gpp.edu.in');
+      expect(data.instituteEmail).toBe('alice.wilson@gppalanpur.ac.in.in');
       expect(data.roles).toEqual(['student']);
       expect(data.currentRole).toBe('student');
       expect(data).not.toHaveProperty('password'); // Password should be excluded from response
@@ -198,7 +198,7 @@ describe('/api/users', () => {
           firstName: 'Alice',
           lastName: 'Wilson',
           email: 'alice.wilson@gmail.com',
-          instituteEmail: 'alice.wilson@gpp.edu.in',
+          instituteEmail: 'alice.wilson@gppalanpur.ac.in.in',
           roles: ['student'],
           password: expect.stringMatching(/^\$2b\$12\$/) // Check for bcrypt hash
         })
@@ -408,13 +408,13 @@ describe('/api/users', () => {
       // Third call for institute email with suffix returns null
       mockUserModel.findOne
         .mockResolvedValueOnce(null) // No personal email conflict
-        .mockResolvedValueOnce({ instituteEmail: 'alice.wilson@gpp.edu.in' }) // Institute email conflict
-        .mockResolvedValueOnce(null); // No conflict with alice.wilson1@gpp.edu.in
+        .mockResolvedValueOnce({ instituteEmail: 'alice.wilson@gppalanpur.ac.in.in' }) // Institute email conflict
+        .mockResolvedValueOnce(null); // No conflict with alice.wilson1@gppalanpur.ac.in.in
       
       mockUserInstance.toJSON.mockReturnValue({
         ...validUserData,
         id: 'user_12345_abcdef',
-        instituteEmail: 'alice.wilson1@gpp.edu.in', // With suffix
+        instituteEmail: 'alice.wilson1@gppalanpur.ac.in.in', // With suffix
         createdAt: expect.any(String),
         updatedAt: expect.any(String)
       });
@@ -431,7 +431,7 @@ describe('/api/users', () => {
       expect(response.status).toBe(201);
       expect(mockUserModel).toHaveBeenCalledWith(
         expect.objectContaining({
-          instituteEmail: 'alice.wilson1@gpp.edu.in'
+          instituteEmail: 'alice.wilson1@gppalanpur.ac.in.in'
         })
       );
     });
@@ -470,7 +470,7 @@ describe('/api/users', () => {
       mockUserInstance.toJSON.mockReturnValue({
         ...dataWithSpecialChars,
         id: 'user_12345_abcdef',
-        instituteEmail: 'josmara.oconnor@gpp.edu.in', // Special chars removed
+        instituteEmail: 'josmara.oconnor@gppalanpur.ac.in.in', // Special chars removed
         createdAt: expect.any(String),
         updatedAt: expect.any(String)
       });
@@ -485,7 +485,7 @@ describe('/api/users', () => {
       expect(response.status).toBe(201);
       expect(mockUserModel).toHaveBeenCalledWith(
         expect.objectContaining({
-          instituteEmail: 'josmara.oconnor@gpp.edu.in'
+          instituteEmail: 'josmara.oconnor@gppalanpur.ac.in.in'
         })
       );
     });
@@ -603,7 +603,7 @@ describe('/api/users', () => {
       mockUserInstance.toJSON.mockReturnValue({
         ...dataWithSpecialCharNames,
         id: 'user_12345_abcdef',
-        instituteEmail: 'test123@gpp.edu.in', // Fallback to email username
+        instituteEmail: 'test123@gppalanpur.ac.in.in', // Fallback to email username
         createdAt: expect.any(String),
         updatedAt: expect.any(String)
       });
@@ -618,7 +618,7 @@ describe('/api/users', () => {
       expect(response.status).toBe(201);
       expect(mockUserModel).toHaveBeenCalledWith(
         expect.objectContaining({
-          instituteEmail: 'test123@gpp.edu.in'
+          instituteEmail: 'test123@gppalanpur.ac.in.in'
         })
       );
     });
@@ -718,7 +718,7 @@ describe('/api/users', () => {
         mockUserInstance.toJSON.mockReturnValue({
           ...userData,
           id: 'user_12345_abcdef',
-          instituteEmail: 'alice.wilson@gpp.edu.in',
+          instituteEmail: 'alice.wilson@gppalanpur.ac.in.in',
           createdAt: expect.any(String),
           updatedAt: expect.any(String)
         });

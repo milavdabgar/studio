@@ -601,7 +601,7 @@ Stay updated with admission information through our social media channels:
 
 **Government Polytechnic, Palanpur**Outside Malan Gate, Near Dhaniyana Crossroads,Palanpur-385001 (B.K.)
 
-**Phone**: 02742-245219/262115**Website**: www.gppp.cteguj.in
+**Phone**: 02742-262115**Website**: www.gppp.cteguj.in
 
 Take the first step toward your engineering career by applying to Government Polytechnic, Palanpur—where education meets excellence!
 
@@ -1917,7 +1917,7 @@ We maintain active relationships with industry through:
 
 ## Get in Touch
 
-**Faculty In-charge**: Prof. [Name], Training and Placement Officer**Email**: placement-gpp@guj.edu.in**Phone**: 02742-245219 Ext. [Number]
+**Faculty In-charge**: Prof. [Name], Training and Placement Officer**Email**: tpo@gppalanpur.ac.in**Phone**: 02742-262115 Ext. [Number]
 
 Companies interested in recruiting our students can contact our placement cell to schedule campus recruitment drives or participate in our annual placement fair.
 
@@ -2204,7 +2204,7 @@ Business model development
 
 ## Reach Out to Us
 
-**Email**: ssip-gpp@guj.edu.in**Office**: SSIP Cell, Ground Floor, Administrative Block**Phone**: 02742-245219 Ext. [Number]
+**Email**: ssip@gppalanpur.ac.in**Office**: SSIP Cell, Ground Floor, Administrative Block**Phone**: 02742-262115 Ext. [Number]
 
 **Office Hours**: Monday to Friday, 10:00 AM to 4:00 PM
 
