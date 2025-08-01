@@ -5,7 +5,7 @@ import { POST as POST_EXECUTE } from '../app/api/allocation-sessions/[id]/execut
 
 // Mock MongoDB connection
 jest.mock('../lib/mongodb', () => ({
-  connectMongoose: jest.fn().mockResolvedValue(undefined)
+  connectMongoose: jest.fn()
 }));
 
 // Mock models
@@ -15,7 +15,7 @@ const mockSession = {
   academicYear: '2025-26',
   semesters: [1, 3, 5],
   status: 'draft',
-  save: jest.fn().mockResolvedValue(undefined),
+  save: jest.fn(),
   toJSON: jest.fn().mockReturnValue({
     id: 'test-session-1',
     name: 'Test Session 2025-26',
@@ -74,20 +74,7 @@ jest.mock('../lib/models', () => ({
 
 // Mock allocation engine
 jest.mock('../lib/algorithms/allocationEngine', () => ({
-  createAllocationEngine: jest.fn().mockReturnValue({
-    allocateCourses: jest.fn().mockResolvedValue({
-      allocations: [mockAllocation],
-      conflicts: [],
-      statistics: {
-        totalCourses: 1,
-        allocatedCourses: 1,
-        totalFaculty: 1,
-        facultyWithFullLoad: 0,
-        conflictsDetected: 0,
-        averageSatisfactionScore: 85
-      }
-    })
-  })
+  createAllocationEngine: jest.fn()
 }));
 
 describe('Allocation API Endpoints', () => {
@@ -98,6 +85,29 @@ describe('Allocation API Endpoints', () => {
     const { AllocationSessionModel, CourseAllocationModel, AllocationConflictModel, 
             FacultyModel, CourseOfferingModel, FacultyPreferenceModel, 
             CourseModel, ProgramModel } = require('../lib/models');
+    
+    const { connectMongoose } = require('../lib/mongodb');
+    connectMongoose.mockResolvedValue(undefined);
+    
+    const { createAllocationEngine } = require('../lib/algorithms/allocationEngine');
+    const mockAllocateCourses = jest.fn() as jest.MockedFunction<any>;
+    mockAllocateCourses.mockResolvedValue({
+      allocations: [mockAllocation],
+      conflicts: [],
+      statistics: {
+        totalCourses: 1,
+        allocatedCourses: 1,
+        totalFaculty: 1,
+        facultyWithFullLoad: 0,
+        conflictsDetected: 0,
+        averageSatisfactionScore: 85
+      }
+    });
+    
+    const mockEngine = {
+      allocateCourses: mockAllocateCourses
+    };
+    (createAllocationEngine as jest.Mock).mockReturnValue(mockEngine);
     
     AllocationSessionModel.find.mockResolvedValue([mockSession]);
     AllocationSessionModel.findOne.mockResolvedValue(mockSession);
@@ -348,14 +358,16 @@ describe('Allocation API Endpoints', () => {
       const request = new NextRequest('http://localhost:3000/api/course-allocations?sessionId=test-session-1');
       
       // Mock the route handler
-      const mockGet = jest.fn().mockResolvedValue({
+      const mockGet = jest.fn() as jest.MockedFunction<any>;
+
+      mockGet.mockResolvedValue({
         json: () => Promise.resolve({
           success: true,
           data: [mockAllocation]
         }),
         status: 200
       });
-
+      
       const result = await mockGet(request);
       const data = await (result as any).json();
 
@@ -381,7 +393,9 @@ describe('Allocation API Endpoints', () => {
         allocations: [mockAllocation]
       };
 
-      const mockReportsGet = jest.fn().mockResolvedValue({
+      const mockReportsGet = jest.fn() as jest.MockedFunction<any>;
+
+      mockReportsGet.mockResolvedValue({
         json: () => Promise.resolve({
           success: true,
           data: mockReportData,
@@ -394,7 +408,7 @@ describe('Allocation API Endpoints', () => {
         }),
         status: 200
       });
-
+      
       const request = new NextRequest('http://localhost:3000/api/allocation-sessions/test-session-1/reports?type=summary');
       const result = await mockReportsGet(request);
       const data = await (result as any).json();
@@ -424,14 +438,16 @@ describe('Allocation API Endpoints', () => {
         totalRelevantAllocations: 1
       };
 
-      const mockApprovalGet = jest.fn().mockResolvedValue({
+      const mockApprovalGet = jest.fn() as jest.MockedFunction<any>;
+
+      mockApprovalGet.mockResolvedValue({
         json: () => Promise.resolve({
           success: true,
           data: mockApprovalData
         }),
         status: 200
       });
-
+      
       const request = new NextRequest('http://localhost:3000/api/allocation-sessions/test-session-1/approval');
       const result = await mockApprovalGet(request);
       const data = await (result as any).json();
@@ -451,7 +467,17 @@ describe('Allocation API Endpoints', () => {
         comments: 'Approved automatically'
       };
 
-      const mockApprovalPost = jest.fn().mockResolvedValue({
+      const mockApprovalPost = jest.fn() as jest.MockedFunction<any>;
+
+      const request = new NextRequest('http://localhost:3000/api/allocation-sessions/test-session-1/approval', {
+        method: 'POST',
+        body: JSON.stringify(approvalData),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      mockApprovalPost.mockResolvedValue({
         json: () => Promise.resolve({
           success: true,
           data: {
@@ -466,15 +492,7 @@ describe('Allocation API Endpoints', () => {
         }),
         status: 200
       });
-
-      const request = new NextRequest('http://localhost:3000/api/allocation-sessions/test-session-1/approval', {
-        method: 'POST',
-        body: JSON.stringify(approvalData),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
+      
       const result = await mockApprovalPost(request);
       const data = await (result as any).json();
 
