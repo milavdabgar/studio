@@ -4,12 +4,15 @@ import { useToast } from '@/hooks/use-toast';
 import { useHODRealtimeTimetable } from '@/hooks/useRealtimeTimetable';
 import HODTimetablePage from '@/app/hod/timetable/page';
 
+const mockToast = jest.fn();
+
 // Mock dependencies
-jest.mock('@/hooks/use-toast');
+jest.mock('@/hooks/use-toast', () => ({
+  useToast: () => ({ toast: mockToast })
+}));
+
 jest.mock('@/hooks/useRealtimeTimetable');
 
-const mockToast = jest.fn();
-const mockUseToast = useToast as jest.MockedFunction<typeof useToast>;
 const mockUseHODRealtimeTimetable = useHODRealtimeTimetable as jest.MockedFunction<typeof useHODRealtimeTimetable>;
 
 describe('HOD Dashboard Page', () => {
@@ -17,7 +20,6 @@ describe('HOD Dashboard Page', () => {
     jest.clearAllMocks();
     
     // Setup mocks
-    mockUseToast.mockReturnValue({ toast: mockToast });
     mockUseHODRealtimeTimetable.mockReturnValue({
       isConnected: true,
       connectionState: 'connected',
