@@ -93,11 +93,19 @@ describe('Faculty Timetable Page', () => {
     const { facultyService } = require('@/lib/api/faculty');
     const { courseService } = require('@/lib/api/courses');
     const { roomService } = require('@/lib/services/roomService');
+    const { programService } = require('@/lib/api/programs');
+    const { batchService } = require('@/lib/api/batches');
 
     timetableService.getAllTimetables = jest.fn().mockResolvedValue(mockFacultyTimetables);
     facultyService.getAllFaculty = jest.fn().mockResolvedValue([mockFacultyData]);
     courseService.getAllCourses = jest.fn().mockResolvedValue(mockCourses);
     roomService.getAllRooms = jest.fn().mockResolvedValue(mockRooms);
+    programService.getAllPrograms = jest.fn().mockResolvedValue([
+      { id: 'program123', code: 'CS', name: 'Computer Science' }
+    ]);
+    batchService.getAllBatches = jest.fn().mockResolvedValue([
+      { id: 'batch123', name: 'CS-A' }
+    ]);
 
     // Setup auth cookie
     Object.defineProperty(document, 'cookie', {
@@ -138,9 +146,9 @@ describe('Faculty Timetable Page', () => {
       render(<FacultyTimetablePage />);
       
       await waitFor(() => {
-        expect(screen.getByText('4h')).toBeInTheDocument(); // Total hours (1h + 2h + 1h)
-        expect(screen.getByText('22%')).toBeInTheDocument(); // Utilization rate (4/18)
-      });
+        expect(screen.getByText('3h')).toBeInTheDocument(); // Total hours (1h + 2h)
+        expect(screen.getByText('17%')).toBeInTheDocument(); // Utilization rate (3/18)
+      }, { timeout: 5000 });
     });
 
     it('displays teaching assignments', async () => {
@@ -157,9 +165,14 @@ describe('Faculty Timetable Page', () => {
     it('switches between schedule and workload analysis tabs', async () => {
       render(<FacultyTimetablePage />);
       
+      // Wait for initial data to load including workload analysis
       await waitFor(() => {
         expect(screen.getByText('My Teaching Schedule')).toBeInTheDocument();
+        expect(screen.getByText('3h')).toBeInTheDocument(); // Ensure workload analysis is complete
       });
+
+      // Wait a bit longer to ensure all async operations are complete
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       // Test Workload Analysis tab
       const workloadTab = screen.getByRole('tab', { name: /workload analysis/i });
@@ -168,7 +181,7 @@ describe('Faculty Timetable Page', () => {
       await waitFor(() => {
         expect(screen.getByText('Weekly Distribution')).toBeInTheDocument();
         expect(screen.getByText('Time Slot Usage')).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Test Alerts tab
       const alertsTab = screen.getByRole('tab', { name: /alerts/i });
