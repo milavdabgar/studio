@@ -1,7 +1,7 @@
 import React from 'react';
 import { render as rtlRender, screen, fireEvent, waitFor } from '@testing-library/react';
 import { useToast } from '@/hooks/use-toast';
-import { useHODRealtimeTimetable } from '@/hooks/useRealtimeTimetable';
+import { useHODRealtimeTimetable, useRealtimeConnectionStatus } from '@/hooks/useRealtimeTimetable';
 import HODDashboardPage from '@/app/hod/dashboard/page';
 
 const mockToast = jest.fn();
@@ -12,6 +12,7 @@ jest.mock('@/hooks/use-toast', () => ({
 }));
 jest.mock('@/hooks/useRealtimeTimetable');
 const mockUseHODRealtimeTimetable = useHODRealtimeTimetable as jest.MockedFunction<typeof useHODRealtimeTimetable>;
+const mockUseRealtimeConnectionStatus = useRealtimeConnectionStatus as jest.MockedFunction<typeof useRealtimeConnectionStatus>;
 
 // Mock cookie for authentication
 Object.defineProperty(document, 'cookie', {
@@ -35,6 +36,15 @@ describe('HODDashboardPage', () => {
       unsubscribe: jest.fn(),
       reconnect: jest.fn(),
       getActiveSubscriptions: jest.fn(() => [])
+    });
+
+    mockUseRealtimeConnectionStatus.mockReturnValue({
+      isConnected: true,
+      connectionState: 'connected' as const,
+      lastUpdate: null,
+      subscribe: jest.fn(),
+      unsubscribe: jest.fn(),
+      reconnect: jest.fn()
     });
   });
 

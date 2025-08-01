@@ -149,8 +149,11 @@ describe('StudentTimetablePage', () => {
     rtlRender(<StudentTimetablePage />);
     
     await waitFor(() => {
-      expect(screen.getByText('2')).toBeInTheDocument(); // Total subjects
-      expect(screen.getByText('2')).toBeInTheDocument(); // Total faculty
+      // Multiple statistics show "2", expect at least 2 instances
+      expect(screen.getAllByText('2').length).toBeGreaterThanOrEqual(2);
+      // Also check for the presence of the statistic cards
+      expect(screen.getByText('Subjects')).toBeInTheDocument();
+      expect(screen.getByText('Faculty')).toBeInTheDocument();
     });
   });
 
