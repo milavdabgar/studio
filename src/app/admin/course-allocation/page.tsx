@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,8 +29,30 @@ import {
   Trash2,
   Target,
   Eye,
-  RefreshCw
+  RefreshCw,
+  GripVertical,
+  Save,
+  RotateCcw,
+  UserCircle,
+  Calendar
 } from 'lucide-react';
+import { 
+  DndContext, 
+  DragEndEvent, 
+  DragOverlay, 
+  DragStartEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  closestCenter
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable
+} from '@dnd-kit/sortable';
+import { useDroppable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 import { useToast } from '@/hooks/use-toast';
 import type { 
   AllocationSessionWithDetails, 
@@ -59,6 +81,21 @@ export default function CourseAllocationPage() {
     status: 'all',
     academicYear: 'all'
   });
+  
+  // Drag and drop state
+  const [isDragMode, setIsDragMode] = useState(false);
+  const [draggedAllocation, setDraggedAllocation] = useState<CourseAllocationWithDetails | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [viewMode, setViewMode] = useState<'table' | 'faculty'>('faculty');
+  
+  // DnD sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
 
   // Form state for creating sessions
   const [formData, setFormData] = useState<Omit<AllocationSession, 'id' | 'createdAt' | 'updatedAt' | 'statistics'>>({
@@ -259,6 +296,100 @@ export default function CourseAllocationPage() {
     });
   };
 
+  // Drag and drop handlers
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    const allocation = allocations.find(a => a.id === event.active.id);
+    if (allocation) {
+      setDraggedAllocation(allocation);
+    }
+  }, [allocations]);
+
+  const handleDragEnd = useCallback(async (event: DragEndEvent) => {
+    const { active, over } = event;
+    setDraggedAllocation(null);
+    
+    if (!over || active.id === over.id) return;
+    
+    // Extract faculty ID from droppable ID (format: "faculty-{facultyId}")
+    const targetFacultyId = over.id.toString().replace('faculty-', '');
+    const allocationId = active.id.toString();
+    
+    // Find the allocation being moved
+    const allocation = allocations.find(a => a.id === allocationId);
+    if (!allocation || allocation.facultyId === targetFacultyId) return;
+    
+    // Update local state immediately for responsive UI
+    const updatedAllocations = allocations.map(a => 
+      a.id === allocationId 
+        ? { 
+            ...a, 
+            facultyId: targetFacultyId,
+            facultyName: faculties.find(f => f.id === targetFacultyId)?.displayName || 'Unknown Faculty',
+            isManualAssignment: true,
+            status: 'pending' as const
+          }
+        : a
+    );
+    setAllocations(updatedAllocations);
+    setHasUnsavedChanges(true);
+    
+    toast({
+      title: "Allocation moved",
+      description: `Course moved to ${faculties.find(f => f.id === targetFacultyId)?.displayName || 'faculty'}. Click Save to persist changes.`,
+    });
+  }, [allocations, faculties, toast]);
+
+  const saveChanges = async () => {
+    if (!hasUnsavedChanges) return;
+    
+    try {
+      const changedAllocations = allocations.filter(a => a.isManualAssignment);
+      
+      await Promise.all(
+        changedAllocations.map(allocation =>
+          fetch(`/api/course-allocations/${allocation.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              facultyId: allocation.facultyId,
+              isManualAssignment: true,
+              status: 'approved'
+            })
+          })
+        )
+      );
+      
+      setHasUnsavedChanges(false);
+      toast({
+        title: "Changes saved",
+        description: `${changedAllocations.length} allocation(s) updated successfully.`,
+      });
+      
+      // Refresh data
+      if (selectedSession) {
+        await loadSessionDetails(selectedSession);
+      }
+    } catch (error) {
+      console.error('Error saving changes:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save changes. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const revertChanges = async () => {
+    setHasUnsavedChanges(false);
+    if (selectedSession) {
+      await loadSessionDetails(selectedSession);
+    }
+    toast({
+      title: "Changes reverted",
+      description: "All unsaved changes have been discarded.",
+    });
+  };
+
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       draft: { variant: 'outline' as const, color: 'text-gray-600', label: 'Draft' },
@@ -294,6 +425,142 @@ export default function CourseAllocationPage() {
 
     return matchesSearch && matchesFilters;
   });
+
+  // Group allocations by faculty for drag-and-drop view
+  const facultyAllocations = faculties.map(faculty => ({
+    faculty,
+    allocations: allocations.filter(a => a.facultyId === faculty.id),
+    totalHours: allocations
+      .filter(a => a.facultyId === faculty.id)
+      .reduce((sum, a) => sum + (a.hoursPerWeek || 0), 0)
+  }));
+
+  // Draggable allocation item component
+  const DraggableAllocation = ({ allocation }: { allocation: CourseAllocationWithDetails }) => {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id: allocation.id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.5 : 1,
+    };
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={`p-3 border rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow ${
+          isDragging ? 'shadow-lg ring-2 ring-primary/20' : ''
+        } ${allocation.isManualAssignment ? 'border-orange-200 bg-orange-50' : ''}`}
+        {...attributes}
+        {...listeners}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <GripVertical className="h-4 w-4 text-gray-400" />
+            <div>
+              <div className="font-medium text-sm">{allocation.courseName}</div>
+              <div className="text-xs text-muted-foreground">{(allocation as any).courseCode}</div>
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Badge variant="outline" className="text-xs">
+              {allocation.hoursPerWeek}h
+            </Badge>
+            <Badge 
+              variant={
+                allocation.preferenceMatch === 'high' ? 'default' :
+                allocation.preferenceMatch === 'medium' ? 'secondary' :
+                allocation.preferenceMatch === 'low' ? 'outline' : 'destructive'
+              }
+              className="text-xs"
+            >
+              {allocation.preferenceMatch}
+            </Badge>
+            {allocation.isManualAssignment && (
+              <Badge variant="outline" className="text-xs text-orange-600">
+                Manual
+              </Badge>
+            )}
+          </div>
+        </div>
+        <div className="mt-2 text-xs text-muted-foreground">
+          Score: {allocation.allocationScore}/100 • {allocation.assignmentType}
+        </div>
+      </div>
+    );
+  };
+
+  // Droppable faculty column component
+  const FacultyColumn = ({ facultyData }: { facultyData: typeof facultyAllocations[0] }) => {
+    const { faculty, allocations: facultyAllocationsData, totalHours } = facultyData;
+    const isOverloaded = totalHours > 18; // GTU limit
+    
+    const { isOver, setNodeRef } = useDroppable({
+      id: `faculty-${faculty.id}`,
+    });
+    
+    return (
+      <Card 
+        ref={setNodeRef}
+        className={`min-h-96 transition-colors ${
+          isOverloaded ? 'border-red-200 bg-red-50' : ''
+        } ${
+          isOver ? 'ring-2 ring-blue-500 bg-blue-50' : ''
+        }`}
+      >
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <UserCircle className="h-5 w-5 text-primary" />
+              <div>
+                <CardTitle className="text-sm">{faculty.displayName || faculty.fullName}</CardTitle>
+                <CardDescription className="text-xs">{faculty.department}</CardDescription>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className={`text-sm font-medium ${isOverloaded ? 'text-red-600' : 'text-green-600'}`}>
+                {totalHours}h / 18h
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {facultyAllocationsData.length} courses
+              </div>
+            </div>
+          </div>
+          <Progress 
+            value={(totalHours / 18) * 100} 
+            className={`h-2 ${isOverloaded ? 'bg-red-100' : ''}`} 
+          />
+        </CardHeader>
+        <CardContent 
+          className={`space-y-2 min-h-64 transition-colors ${
+            isOver ? 'bg-blue-50' : ''
+          }`}
+        >
+          <SortableContext items={facultyAllocationsData.map(a => a.id)} strategy={verticalListSortingStrategy}>
+            {facultyAllocationsData.map((allocation) => (
+              <DraggableAllocation key={allocation.id} allocation={allocation} />
+            ))}
+          </SortableContext>
+          {facultyAllocationsData.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-32 text-muted-foreground text-sm">
+              <div>No courses assigned</div>
+              <div className="mt-2 text-xs">
+                {isOver ? 'Drop course here' : 'Drag courses here to assign'}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    );
+  };
 
   if (loading) {
     return (
@@ -574,16 +841,90 @@ export default function CourseAllocationPage() {
               {selectedSession ? (
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-medium">
-                      Allocations for {selectedSession.name}
-                    </h3>
-                    <Badge variant="outline">
-                      {allocations.length} total allocations
-                    </Badge>
+                    <div className="flex items-center space-x-4">
+                      <h3 className="text-lg font-medium">
+                        Allocations for {selectedSession.name}
+                      </h3>
+                      <Badge variant="outline">
+                        {allocations.length} total allocations
+                      </Badge>
+                      {hasUnsavedChanges && (
+                        <Badge variant="secondary" className="text-orange-600">
+                          Unsaved changes
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Select value={viewMode} onValueChange={(value: 'table' | 'faculty') => setViewMode(value)}>
+                        <SelectTrigger className="w-32">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="faculty">Faculty View</SelectItem>
+                          <SelectItem value="table">Table View</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {hasUnsavedChanges && (
+                        <>
+                          <Button variant="outline" size="sm" onClick={revertChanges}>
+                            <RotateCcw className="mr-2 h-4 w-4" />
+                            Revert
+                          </Button>
+                          <Button size="sm" onClick={saveChanges}>
+                            <Save className="mr-2 h-4 w-4" />
+                            Save Changes
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   </div>
+
                   {allocations.length === 0 ? (
                     <div className="text-center py-8 text-muted-foreground">
                       No allocations found. Execute the allocation algorithm to generate assignments.
+                    </div>
+                  ) : viewMode === 'faculty' && selectedSession.status !== 'completed' ? (
+                    <div>
+                      <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="flex items-center space-x-2">
+                          <Calendar className="h-5 w-5 text-blue-600" />
+                          <div>
+                            <h4 className="font-medium text-blue-900">Drag & Drop Mode</h4>
+                            <p className="text-sm text-blue-700">
+                              Drag courses between faculty to reassign them. Changes are highlighted and must be saved manually.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragStart={handleDragStart}
+                        onDragEnd={handleDragEnd}
+                      >
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                          {facultyAllocations.map((facultyData) => (
+                            <div key={facultyData.faculty.id} id={`faculty-${facultyData.faculty.id}`}>
+                              <FacultyColumn facultyData={facultyData} />
+                            </div>
+                          ))}
+                        </div>
+                        
+                        <DragOverlay>
+                          {draggedAllocation ? (
+                            <div className="p-3 border rounded-lg bg-white shadow-lg border-blue-300">
+                              <div className="flex items-center space-x-2">
+                                <GripVertical className="h-4 w-4 text-gray-400" />
+                                <div>
+                                  <div className="font-medium text-sm">{draggedAllocation.courseName}</div>
+                                  <div className="text-xs text-muted-foreground">{(draggedAllocation as any).courseCode}</div>
+                                </div>
+                              </div>
+                            </div>
+                          ) : null}
+                        </DragOverlay>
+                      </DndContext>
                     </div>
                   ) : (
                     <Table>
@@ -600,7 +941,7 @@ export default function CourseAllocationPage() {
                       </TableHeader>
                       <TableBody>
                         {allocations.map((allocation) => (
-                          <TableRow key={allocation.id}>
+                          <TableRow key={allocation.id} className={allocation.isManualAssignment ? 'bg-orange-50' : ''}>
                             <TableCell>
                               <div>
                                 <div className="font-medium">{allocation.courseName}</div>
@@ -630,7 +971,16 @@ export default function CourseAllocationPage() {
                                 {allocation.preferenceMatch}
                               </Badge>
                             </TableCell>
-                            <TableCell>{getStatusBadge(allocation.status)}</TableCell>
+                            <TableCell>
+                              <div className="flex items-center space-x-2">
+                                {getStatusBadge(allocation.status)}
+                                {allocation.isManualAssignment && (
+                                  <Badge variant="outline" className="text-xs text-orange-600">
+                                    Manual
+                                  </Badge>
+                                )}
+                              </div>
+                            </TableCell>
                             <TableCell>
                               <div className="flex space-x-2">
                                 <Button variant="outline" size="sm">
