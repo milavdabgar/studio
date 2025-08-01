@@ -39,7 +39,13 @@ import {
   PieChart,
   Activity,
   Award,
-  AlertCircle
+  AlertCircle,
+  Download,
+  FileText,
+  BarChart2,
+  Users2,
+  Building,
+  AlertOctagon
 } from 'lucide-react';
 import { 
   DndContext, 
@@ -410,6 +416,61 @@ export default function CourseAllocationPage() {
       title: "Changes reverted",
       description: "All unsaved changes have been discarded.",
     });
+  };
+
+  // Report generation functions
+  const generateReport = async (reportType: string, format: 'json' | 'csv' = 'json') => {
+    if (!selectedSession) return;
+
+    try {
+      const response = await fetch(`/api/allocation-sessions/${selectedSession.id}/reports?type=${reportType}&format=${format}`);
+      
+      if (format === 'csv') {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `allocation-report-${selectedSession.name}-${reportType}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        toast({
+          title: "Report Downloaded",
+          description: `${reportType} report has been downloaded as CSV.`,
+        });
+      } else {
+        const result = await response.json();
+        if (result.success) {
+          // For JSON, we could open in new tab or show in modal
+          const jsonStr = JSON.stringify(result.data, null, 2);
+          const blob = new Blob([jsonStr], { type: 'application/json' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `allocation-report-${selectedSession.name}-${reportType}.json`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+          
+          toast({
+            title: "Report Generated",
+            description: `${reportType} report has been downloaded.`,
+          });
+        } else {
+          throw new Error(result.error);
+        }
+      }
+    } catch (error) {
+      console.error('Error generating report:', error);
+      toast({
+        title: "Report Generation Failed",
+        description: "Failed to generate report. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -1130,6 +1191,103 @@ export default function CourseAllocationPage() {
             <TabsContent value="analytics" className="space-y-6">
               {selectedSession ? (
                 <div className="space-y-6">
+                  {/* Reports Section */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <FileText className="h-5 w-5" />
+                        Generate Reports
+                      </CardTitle>
+                      <CardDescription>
+                        Export detailed allocation reports in various formats
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm flex items-center gap-2">
+                            <BarChart2 className="h-4 w-4" />
+                            Summary Reports
+                          </h4>
+                          <div className="space-y-1">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-start"
+                              onClick={() => generateReport('summary', 'csv')}
+                            >
+                              <Download className="mr-2 h-3 w-3" />
+                              Summary CSV
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-start"
+                              onClick={() => generateReport('detailed', 'json')}
+                            >
+                              <Download className="mr-2 h-3 w-3" />
+                              Detailed JSON
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm flex items-center gap-2">
+                            <Users2 className="h-4 w-4" />
+                            Faculty Reports
+                          </h4>
+                          <div className="space-y-1">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-start"
+                              onClick={() => generateReport('faculty', 'csv')}
+                            >
+                              <Download className="mr-2 h-3 w-3" />
+                              Faculty CSV
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-start"
+                              onClick={() => generateReport('workload', 'csv')}
+                            >
+                              <Download className="mr-2 h-3 w-3" />
+                              Workload CSV
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm flex items-center gap-2">
+                            <Building className="h-4 w-4" />
+                            Specialized Reports
+                          </h4>
+                          <div className="space-y-1">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-start"
+                              onClick={() => generateReport('department', 'csv')}
+                            >
+                              <Download className="mr-2 h-3 w-3" />
+                              Department CSV
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-start"
+                              onClick={() => generateReport('conflicts', 'csv')}
+                            >
+                              <AlertOctagon className="mr-2 h-3 w-3" />
+                              Conflicts CSV
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
                   {/* Key Metrics Summary */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <Card>
