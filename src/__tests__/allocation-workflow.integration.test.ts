@@ -3,9 +3,11 @@ import { createAllocationEngine } from '../lib/algorithms/allocationEngine';
 import type { 
   AllocationSession, 
   FacultyProfile, 
-  CourseOfferingWithRequirements, 
-  FacultyPreference 
+  FacultyPreference,
+  ExperienceEntry,
+  Qualification
 } from '../types/entities';
+import type { CourseOfferingWithRequirements } from '../lib/algorithms/allocationEngine';
 
 /**
  * Integration tests for the complete allocation workflow
@@ -34,8 +36,16 @@ describe('Allocation Workflow Integration Tests', () => {
         expertiseWeightage: 0.4,
         preferencePriorityWeightage: 0.3,
         workloadBalanceWeightage: 0.2,
-        seniorityWeightage: 0.1,
         minimizeConflicts: true
+      },
+      statistics: {
+        totalCourses: 0,
+        totalFaculty: 0,
+        allocatedCourses: 0,
+        unallocatedCourses: 0,
+        facultyWithFullLoad: 0,
+        conflictsDetected: 0,
+        averageSatisfactionScore: 0
       },
       createdAt: '2025-01-01T00:00:00.000Z',
       updatedAt: '2025-01-01T00:00:00.000Z'
@@ -52,12 +62,32 @@ describe('Allocation Workflow Integration Tests', () => {
         fullName: 'Ravi Kumar Sharma',
         department: 'Computer Science',
         status: 'active',
-        experience: 15,
-        seniority: 12,
-        maxHoursPerWeek: 18,
-        currentWorkload: 0,
-        expertise: ['Programming', 'Data Structures', 'Algorithms', 'Software Engineering'],
-        qualifications: ['PhD Computer Science', 'M.Tech Software Engineering'],
+        experienceYears: '15',
+        experience: [
+          {
+            id: 'exp1',
+            company: 'University', 
+            position: 'Professor',
+            location: 'Campus',
+            startDate: '2010-01-01',
+            isCurrently: true,
+            description: 'Teaching computer science courses'
+          }
+        ] as ExperienceEntry[],
+        qualifications: [
+          {
+            degree: 'PhD',
+            field: 'Computer Science',
+            institution: 'University',
+            year: 2010
+          },
+          {
+            degree: 'M.Tech',
+            field: 'Software Engineering',
+            institution: 'University',
+            year: 2005
+          }
+        ] as Qualification[],
         createdAt: '2025-01-01T00:00:00.000Z',
         updatedAt: '2025-01-01T00:00:00.000Z'
       },
@@ -71,12 +101,32 @@ describe('Allocation Workflow Integration Tests', () => {
         fullName: 'Priya Rajesh Patel',
         department: 'Computer Science',
         status: 'active',
-        experience: 10,
-        seniority: 8,
-        maxHoursPerWeek: 18,
-        currentWorkload: 0,
-        expertise: ['Database Systems', 'Web Development', 'Cloud Computing', 'Big Data'],
-        qualifications: ['PhD Computer Science', 'M.Tech Information Technology'],
+        experienceYears: '10',
+        experience: [
+          {
+            id: 'exp2',
+            company: 'University',
+            position: 'Associate Professor',
+            location: 'Campus',
+            startDate: '2015-01-01',
+            isCurrently: true,
+            description: 'Teaching database and web development courses'
+          }
+        ] as ExperienceEntry[],
+        qualifications: [
+          {
+            degree: 'PhD',
+            field: 'Computer Science',
+            institution: 'University',
+            year: 2015
+          },
+          {
+            degree: 'M.Tech',
+            field: 'Information Technology',
+            institution: 'University',
+            year: 2010
+          }
+        ] as Qualification[],
         createdAt: '2025-01-01T00:00:00.000Z',
         updatedAt: '2025-01-01T00:00:00.000Z'
       },
@@ -90,12 +140,32 @@ describe('Allocation Workflow Integration Tests', () => {
         fullName: 'Amit Kumar Singh',
         department: 'Information Technology',
         status: 'active',
-        experience: 8,
-        seniority: 6,
-        maxHoursPerWeek: 18,
-        currentWorkload: 0,
-        expertise: ['Networks', 'Security', 'Operating Systems', 'Mobile Computing'],
-        qualifications: ['M.Tech Information Technology', 'B.Tech Computer Science'],
+        experienceYears: '8',
+        experience: [
+          {
+            id: 'exp3',
+            company: 'University',
+            position: 'Assistant Professor',
+            location: 'Campus',
+            startDate: '2017-01-01',
+            isCurrently: true,
+            description: 'Teaching network security courses'
+          }
+        ] as ExperienceEntry[],
+        qualifications: [
+          {
+            degree: 'M.Tech',
+            field: 'Information Technology',
+            institution: 'University',
+            year: 2017
+          },
+          {
+            degree: 'B.Tech',
+            field: 'Computer Science',
+            institution: 'University',
+            year: 2012
+          }
+        ] as Qualification[],
         createdAt: '2025-01-01T00:00:00.000Z',
         updatedAt: '2025-01-01T00:00:00.000Z'
       },
@@ -109,12 +179,32 @@ describe('Allocation Workflow Integration Tests', () => {
         fullName: 'Sneha Lakshmi Reddy',
         department: 'Computer Science',
         status: 'active',
-        experience: 12,
-        seniority: 10,
-        maxHoursPerWeek: 18,
-        currentWorkload: 0,
-        expertise: ['Machine Learning', 'Artificial Intelligence', 'Data Mining', 'Python'],
-        qualifications: ['PhD Computer Science', 'M.Tech Computer Science'],
+        experienceYears: '12',
+        experience: [
+          {
+            id: 'exp4',
+            company: 'University',
+            position: 'Professor',
+            location: 'Campus',
+            startDate: '2013-01-01',
+            isCurrently: true,
+            description: 'Teaching machine learning courses'
+          }
+        ] as ExperienceEntry[],
+        qualifications: [
+          {
+            degree: 'PhD',
+            field: 'Computer Science',
+            institution: 'University',
+            year: 2013
+          },
+          {
+            degree: 'M.Tech',
+            field: 'Computer Science',
+            institution: 'University',
+            year: 2008
+          }
+        ] as Qualification[],
         createdAt: '2025-01-01T00:00:00.000Z',
         updatedAt: '2025-01-01T00:00:00.000Z'
       },
@@ -128,12 +218,26 @@ describe('Allocation Workflow Integration Tests', () => {
         fullName: 'Rahul Kumar Gupta',
         department: 'Information Technology',
         status: 'active',
-        experience: 6,
-        seniority: 4,
-        maxHoursPerWeek: 18,
-        currentWorkload: 0,
-        expertise: ['Web Technologies', 'JavaScript', 'React', 'Node.js'],
-        qualifications: ['M.Tech Information Technology'],
+        experienceYears: '6',
+        experience: [
+          {
+            id: 'exp5',
+            company: 'University',
+            position: 'Assistant Professor',
+            location: 'Campus',
+            startDate: '2019-01-01',
+            isCurrently: true,
+            description: 'Teaching web technologies courses'
+          }
+        ] as ExperienceEntry[],
+        qualifications: [
+          {
+            degree: 'M.Tech',
+            field: 'Information Technology',
+            institution: 'University',
+            year: 2019
+          }
+        ] as Qualification[],
         createdAt: '2025-01-01T00:00:00.000Z',
         updatedAt: '2025-01-01T00:00:00.000Z'
       }
@@ -147,7 +251,6 @@ describe('Allocation Workflow Integration Tests', () => {
         programId: 'btech-cse',
         semester: 1,
         academicYear: '2025-26',
-        maxStudents: 60,
         currentEnrollment: 55,
         status: 'active',
         requiredHours: 5,
@@ -169,7 +272,6 @@ describe('Allocation Workflow Integration Tests', () => {
         programId: 'btech-cse',
         semester: 1,
         academicYear: '2025-26',
-        maxStudents: 60,
         currentEnrollment: 52,
         status: 'active',
         requiredHours: 4,
@@ -237,7 +339,6 @@ describe('Allocation Workflow Integration Tests', () => {
         programId: 'btech-cse',
         semester: 5,
         academicYear: '2025-26',
-        maxStudents: 50,
         currentEnrollment: 45,
         status: 'active',
         requiredHours: 4,
@@ -282,7 +383,6 @@ describe('Allocation Workflow Integration Tests', () => {
         programId: 'btech-it',
         semester: 5,
         academicYear: '2025-26',
-        maxStudents: 40,
         currentEnrollment: 35,
         status: 'active',
         requiredHours: 4,
@@ -309,23 +409,25 @@ describe('Allocation Workflow Integration Tests', () => {
         semester: 1,
         preferredCourses: [
           {
-            courseOfferingId: 'offer-cs101',
-            priority: 1,
-            expertiseLevel: 10,
-            previousExperience: true,
-            notes: 'Expert in programming fundamentals, taught for 10 years'
+            courseId: 'offer-cs101',
+            preference: 'high',
+            expertise: 10,
+            previouslyTaught: true,
           },
           {
-            courseOfferingId: 'offer-cs102',
-            priority: 2,
-            expertiseLevel: 7,
-            previousExperience: false,
-            notes: 'Can teach mathematics if needed'
+            courseId: 'offer-cs102',
+            preference: 'medium',
+            expertise: 7,
+            previouslyTaught: false,
           }
         ],
+        timePreferences: [],
+        roomPreferences: [],
+        maxConsecutiveHours: 4,
         unavailableSlots: [],
-        maxPreferredHours: 18,
-        minPreferredHours: 12,
+        workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        priority: 8,
+        maxHoursPerWeek: 18,
         createdAt: '2025-01-01T00:00:00.000Z',
         updatedAt: '2025-01-01T00:00:00.000Z'
       },
@@ -336,16 +438,19 @@ describe('Allocation Workflow Integration Tests', () => {
         semester: 3,
         preferredCourses: [
           {
-            courseOfferingId: 'offer-cs302',
-            priority: 1,
-            expertiseLevel: 10,
-            previousExperience: true,
-            notes: 'DSA expert, written books on algorithms'
+            courseId: 'offer-cs302',
+            preference: 'high',
+            expertise: 10,
+            previouslyTaught: true,
           }
         ],
+        timePreferences: [],
+        roomPreferences: [],
+        maxConsecutiveHours: 4,
         unavailableSlots: [],
-        maxPreferredHours: 18,
-        minPreferredHours: 12,
+        workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        priority: 8,
+        maxHoursPerWeek: 18,
         createdAt: '2025-01-01T00:00:00.000Z',
         updatedAt: '2025-01-01T00:00:00.000Z'
       },
@@ -357,16 +462,19 @@ describe('Allocation Workflow Integration Tests', () => {
         semester: 3,
         preferredCourses: [
           {
-            courseOfferingId: 'offer-cs301',
-            priority: 1,
-            expertiseLevel: 10,
-            previousExperience: true,
-            notes: 'Database systems specialist, industry experience'
+            courseId: 'offer-cs301',
+            preference: 'high',
+            expertise: 10,
+            previouslyTaught: true,
           }
         ],
+        timePreferences: [],
+        roomPreferences: [],
+        maxConsecutiveHours: 4,
         unavailableSlots: [],
-        maxPreferredHours: 18,
-        minPreferredHours: 12,
+        workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        priority: 8,
+        maxHoursPerWeek: 18,
         createdAt: '2025-01-01T00:00:00.000Z',
         updatedAt: '2025-01-01T00:00:00.000Z'
       },
@@ -378,16 +486,19 @@ describe('Allocation Workflow Integration Tests', () => {
         semester: 3,
         preferredCourses: [
           {
-            courseOfferingId: 'offer-it301',
-            priority: 1,
-            expertiseLevel: 9,
-            previousExperience: true,
-            notes: 'Networks expert with CISCO certifications'
+            courseId: 'offer-it301',
+            preference: 'high',
+            expertise: 9,
+            previouslyTaught: true,
           }
         ],
+        timePreferences: [],
+        roomPreferences: [],
+        maxConsecutiveHours: 4,
         unavailableSlots: [],
-        maxPreferredHours: 18,
-        minPreferredHours: 12,
+        workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        priority: 8,
+        maxHoursPerWeek: 18,
         createdAt: '2025-01-01T00:00:00.000Z',
         updatedAt: '2025-01-01T00:00:00.000Z'
       },
@@ -399,16 +510,19 @@ describe('Allocation Workflow Integration Tests', () => {
         semester: 5,
         preferredCourses: [
           {
-            courseOfferingId: 'offer-cs501',
-            priority: 1,
-            expertiseLevel: 10,
-            previousExperience: true,
-            notes: 'ML researcher with 50+ publications'
+            courseId: 'offer-cs501',
+            preference: 'high',
+            expertise: 10,
+            previouslyTaught: true,
           }
         ],
+        timePreferences: [],
+        roomPreferences: [],
+        maxConsecutiveHours: 4,
         unavailableSlots: [],
-        maxPreferredHours: 18,
-        minPreferredHours: 12,
+        workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        priority: 8,
+        maxHoursPerWeek: 18,
         createdAt: '2025-01-01T00:00:00.000Z',
         updatedAt: '2025-01-01T00:00:00.000Z'
       },
@@ -420,16 +534,19 @@ describe('Allocation Workflow Integration Tests', () => {
         semester: 5,
         preferredCourses: [
           {
-            courseOfferingId: 'offer-it501',
-            priority: 1,
-            expertiseLevel: 9,
-            previousExperience: true,
-            notes: 'Full-stack web developer, industry background'
+            courseId: 'offer-it501',
+            preference: 'high',
+            expertise: 9,
+            previouslyTaught: true,
           }
         ],
+        timePreferences: [],
+        roomPreferences: [],
+        maxConsecutiveHours: 4,
         unavailableSlots: [],
-        maxPreferredHours: 18,
-        minPreferredHours: 12,
+        workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        priority: 8,
+        maxHoursPerWeek: 18,
         createdAt: '2025-01-01T00:00:00.000Z',
         updatedAt: '2025-01-01T00:00:00.000Z'
       }
@@ -595,15 +712,14 @@ describe('Allocation Workflow Integration Tests', () => {
           semester: 1,
           preferredCourses: [
             {
-              courseOfferingId: 'offer-cs101',
-              priority: 1,
-              expertiseLevel: 10,
-              previousExperience: true,
-              notes: 'First choice'
+              courseId: 'offer-cs101',
+              preference: 'high',
+              expertise: 10,
+              previouslyTaught: true
             }
           ],
           unavailableSlots: [],
-          maxPreferredHours: 18,
+          maxHoursPerWeek: 18,
           minPreferredHours: 12,
           createdAt: '2025-01-01T00:00:00.000Z',
           updatedAt: '2025-01-01T00:00:00.000Z'
@@ -615,15 +731,14 @@ describe('Allocation Workflow Integration Tests', () => {
           semester: 1,
           preferredCourses: [
             {
-              courseOfferingId: 'offer-cs101', // Same course!
-              priority: 1,
-              expertiseLevel: 9,
-              previousExperience: true,
-              notes: 'Also first choice'
+              courseId: 'offer-cs101', // Same course!
+              preference: 'high',
+              expertise: 9,
+              previouslyTaught: true
             }
           ],
           unavailableSlots: [],
-          maxPreferredHours: 18,
+          maxHoursPerWeek: 18,
           minPreferredHours: 12,
           createdAt: '2025-01-01T00:00:00.000Z',
           updatedAt: '2025-01-01T00:00:00.000Z'
@@ -684,7 +799,6 @@ describe('Allocation Workflow Integration Tests', () => {
       const highExpertiseSettings = {
         ...testSession.algorithmSettings,
         prioritizeSeniority: false,
-        seniorityWeightage: 0.1,
         expertiseWeightage: 0.5,
         preferencePriorityWeightage: 0.3,
         workloadBalanceWeightage: 0.1
@@ -743,9 +857,8 @@ describe('Allocation Workflow Integration Tests', () => {
       const newFaculty: FacultyProfile = {
         ...testFaculties[0],
         id: 'fac-new',
-        experience: 0,
-        seniority: 0,
-        expertise: []
+        experienceYears: '0',
+        experience: [] as ExperienceEntry[]
       };
 
       const engine = createAllocationEngine(testSession.algorithmSettings);

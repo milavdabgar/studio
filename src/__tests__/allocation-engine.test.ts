@@ -3,9 +3,11 @@ import { createAllocationEngine } from '../lib/algorithms/allocationEngine';
 import type { 
   AllocationSession, 
   FacultyProfile, 
-  CourseOfferingWithRequirements, 
-  FacultyPreference 
+  FacultyPreference,
+  ExperienceEntry,
+  Qualification
 } from '../types/entities';
+import type { CourseOfferingWithRequirements } from '../lib/algorithms/allocationEngine';
 
 // Mock data for testing
 const mockSession: AllocationSession = {
@@ -22,7 +24,6 @@ const mockSession: AllocationSession = {
     expertiseWeightage: 0.4,
     preferencePriorityWeightage: 0.3,
     workloadBalanceWeightage: 0.2,
-    seniorityWeightage: 0.1,
     minimizeConflicts: true
   },
   createdAt: '2025-01-01T00:00:00.000Z',
@@ -40,12 +41,26 @@ const mockFaculties: FacultyProfile[] = [
     fullName: 'John Doe',
     department: 'Computer Science',
     status: 'active',
-    experience: 10,
-    seniority: 8,
-    maxHoursPerWeek: 18,
-    currentWorkload: 0,
-    expertise: ['Programming', 'Data Structures', 'Algorithms'],
-    qualifications: ['PhD Computer Science'],
+    experienceYears: '10',
+    experience: [
+      {
+        id: 'exp1',
+        company: 'University',
+        position: 'Professor',
+        location: 'Campus',
+        startDate: '2015-01-01',
+        isCurrently: true,
+        description: 'Teaching computer science courses'
+      }
+    ] as ExperienceEntry[],
+    qualifications: [
+      {
+        degree: 'PhD',
+        field: 'Computer Science',
+        institution: 'University',
+        year: 2015
+      }
+    ] as Qualification[],
     createdAt: '2025-01-01T00:00:00.000Z',
     updatedAt: '2025-01-01T00:00:00.000Z'
   },
@@ -59,12 +74,26 @@ const mockFaculties: FacultyProfile[] = [
     fullName: 'Jane Smith',
     department: 'Computer Science',
     status: 'active',
-    experience: 15,
-    seniority: 10,
-    maxHoursPerWeek: 18,
-    currentWorkload: 0,
-    expertise: ['Database Systems', 'Web Development', 'Software Engineering'],
-    qualifications: ['PhD Computer Science'],
+    experienceYears: '15',
+    experience: [
+      {
+        id: 'exp2',
+        company: 'University',
+        position: 'Professor',
+        location: 'Campus',
+        startDate: '2010-01-01',
+        isCurrently: true,
+        description: 'Teaching database and software engineering courses'
+      }
+    ] as ExperienceEntry[],
+    qualifications: [
+      {
+        degree: 'PhD',
+        field: 'Computer Science',
+        institution: 'University',
+        year: 2010
+      }
+    ] as Qualification[],
     createdAt: '2025-01-01T00:00:00.000Z',
     updatedAt: '2025-01-01T00:00:00.000Z'
   },
@@ -78,12 +107,26 @@ const mockFaculties: FacultyProfile[] = [
     fullName: 'Bob Wilson',
     department: 'Information Technology',
     status: 'active',
-    experience: 5,
-    seniority: 4,
-    maxHoursPerWeek: 18,
-    currentWorkload: 0,
-    expertise: ['Networks', 'Security', 'Operating Systems'],
-    qualifications: ['ME Information Technology'],
+    experienceYears: '5',
+    experience: [
+      {
+        id: 'exp3',
+        company: 'University',
+        position: 'Assistant Professor',
+        location: 'Campus',
+        startDate: '2020-01-01',
+        isCurrently: true,
+        description: 'Teaching network and security courses'
+      }
+    ] as ExperienceEntry[],
+    qualifications: [
+      {
+        degree: 'ME',
+        field: 'Information Technology',
+        institution: 'University',
+        year: 2020
+      }
+    ] as Qualification[],
     createdAt: '2025-01-01T00:00:00.000Z',
     updatedAt: '2025-01-01T00:00:00.000Z'
   }
@@ -96,8 +139,6 @@ const mockCourseOfferings: CourseOfferingWithRequirements[] = [
     programId: 'btech-cse',
     semester: 1,
     academicYear: '2025-26',
-    maxStudents: 60,
-    currentEnrollment: 55,
     status: 'active',
     requiredHours: 4,
     assignmentType: 'theory',
@@ -118,8 +159,6 @@ const mockCourseOfferings: CourseOfferingWithRequirements[] = [
     programId: 'btech-cse',
     semester: 3,
     academicYear: '2025-26',
-    maxStudents: 50,
-    currentEnrollment: 45,
     status: 'active',
     requiredHours: 4,
     assignmentType: 'theory',
@@ -140,8 +179,6 @@ const mockCourseOfferings: CourseOfferingWithRequirements[] = [
     programId: 'btech-it',
     semester: 5,
     academicYear: '2025-26',
-    maxStudents: 40,
-    currentEnrollment: 35,
     status: 'active',
     requiredHours: 3,
     assignmentType: 'theory',
@@ -166,16 +203,20 @@ const mockPreferences: FacultyPreference[] = [
     semester: 1,
     preferredCourses: [
       {
-        courseOfferingId: 'offering-1',
-        priority: 1,
-        expertiseLevel: 9,
-        previousExperience: true,
+        courseId: 'offering-1',
+        preference: 'high',
+        expertise: 9,
+        previouslyTaught: true,
         notes: 'Expert in programming fundamentals'
       }
     ],
+    timePreferences: [],
+    roomPreferences: [],
+    maxConsecutiveHours: 4,
     unavailableSlots: [],
-    maxPreferredHours: 18,
-    minPreferredHours: 12,
+    workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    priority: 8,
+    maxHoursPerWeek: 18,
     createdAt: '2025-01-01T00:00:00.000Z',
     updatedAt: '2025-01-01T00:00:00.000Z'
   },
@@ -186,16 +227,20 @@ const mockPreferences: FacultyPreference[] = [
     semester: 3,
     preferredCourses: [
       {
-        courseOfferingId: 'offering-2',
-        priority: 1,
-        expertiseLevel: 10,
-        previousExperience: true,
+        courseId: 'offering-2',
+        preference: 'high',
+        expertise: 10,
+        previouslyTaught: true,
         notes: 'Database expert'
       }
     ],
+    timePreferences: [],
+    roomPreferences: [],
+    maxConsecutiveHours: 4,
     unavailableSlots: [],
-    maxPreferredHours: 18,
-    minPreferredHours: 12,
+    workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    priority: 8,
+    maxHoursPerWeek: 18,
     createdAt: '2025-01-01T00:00:00.000Z',
     updatedAt: '2025-01-01T00:00:00.000Z'
   },
@@ -206,16 +251,20 @@ const mockPreferences: FacultyPreference[] = [
     semester: 5,
     preferredCourses: [
       {
-        courseOfferingId: 'offering-3',
-        priority: 1,
-        expertiseLevel: 8,
-        previousExperience: true,
+        courseId: 'offering-3',
+        preference: 'high',
+        expertise: 8,
+        previouslyTaught: true,
         notes: 'Security specialist'
       }
     ],
+    timePreferences: [],
+    roomPreferences: [],
+    maxConsecutiveHours: 4,
     unavailableSlots: [],
-    maxPreferredHours: 18,
-    minPreferredHours: 12,
+    workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    priority: 8,
+    maxHoursPerWeek: 18,
     createdAt: '2025-01-01T00:00:00.000Z',
     updatedAt: '2025-01-01T00:00:00.000Z'
   }
@@ -306,9 +355,8 @@ describe('Allocation Engine', () => {
           programId: 'btech-cse',
           semester: 1,
           academicYear: '2025-26',
-          maxStudents: 60,
-          currentEnrollment: 55,
-          status: 'active',
+            currentEnrollment: 55,
+          status: 'scheduled',
           requiredHours: 16, // This would overload faculty-1
           assignmentType: 'theory',
           priorityLevel: 1,
@@ -333,17 +381,16 @@ describe('Allocation Engine', () => {
           semester: 1,
           preferredCourses: [
             {
-              courseOfferingId: 'offering-4',
-              priority: 2,
-              expertiseLevel: 8,
-              previousExperience: true,
+              courseId: 'offering-4',
+              preference: 'medium',
+              expertise: 8,
+              previouslyTaught: true,
               notes: 'Can handle advanced programming'
             }
           ],
           unavailableSlots: [],
-          maxPreferredHours: 18,
-          minPreferredHours: 12,
-          createdAt: '2025-01-01T00:00:00.000Z',
+          maxHoursPerWeek: 18,
+                createdAt: '2025-01-01T00:00:00.000Z',
           updatedAt: '2025-01-01T00:00:00.000Z'
         }
       ];
@@ -356,7 +403,7 @@ describe('Allocation Engine', () => {
       );
 
       expect(result.conflicts.length).toBeGreaterThan(0);
-      const workloadConflict = result.conflicts.find(c => c.conflictType === 'workload_overload');
+      const workloadConflict = result.conflicts.find(c => c.conflictType === 'overload');
       expect(workloadConflict).toBeDefined();
     });
 
@@ -368,9 +415,8 @@ describe('Allocation Engine', () => {
         programId: 'btech-cse',
         semester: 1,
         academicYear: '2025-26',
-        maxStudents: 60,
         currentEnrollment: 55,
-        status: 'active',
+        status: 'scheduled',
         requiredHours: 4,
         assignmentType: 'theory',
         priorityLevel: 1,
@@ -433,7 +479,6 @@ describe('Allocation Engine', () => {
       const seniorityEngine = createAllocationEngine({
         ...mockSession.algorithmSettings,
         prioritizeSeniority: true,
-        seniorityWeightage: 0.3
       });
 
       const result = await seniorityEngine.allocateCourses(
@@ -452,7 +497,6 @@ describe('Allocation Engine', () => {
       const noSeniorityEngine = createAllocationEngine({
         ...mockSession.algorithmSettings,
         prioritizeSeniority: false,
-        seniorityWeightage: 0
       });
 
       const result = await noSeniorityEngine.allocateCourses(
@@ -503,9 +547,8 @@ describe('Allocation Engine', () => {
         programId: 'btech-cse',
         semester: 1,
         academicYear: '2025-26',
-        maxStudents: 60,
         currentEnrollment: 55,
-        status: 'active',
+        status: 'scheduled',
         requiredHours: 25, // Exceeds maximum hours for any faculty
         assignmentType: 'theory',
         priorityLevel: 1,

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { NextRequest } from 'next/server';
 import { GET, POST } from '../app/api/allocation-sessions/route';
-import { GET as GET_SESSION, POST as POST_EXECUTE } from '../app/api/allocation-sessions/[id]/execute/route';
+import { POST as POST_EXECUTE } from '../app/api/allocation-sessions/[id]/execute/route';
 
 // Mock MongoDB connection
 jest.mock('../lib/mongodb', () => ({
