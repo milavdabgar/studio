@@ -76,6 +76,9 @@ autonomous-temp/
 # OS files
 Thumbs.db
 
+# Crush directory
+.crush/
+
 # Backup files
 *.backup
 *.bak
