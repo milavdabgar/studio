@@ -20,13 +20,13 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { UserCircle, Mail, Phone, CalendarDays, Briefcase, Edit, Loader2, Building, Star, Download, FileText, FileCheck, Globe, Save, Camera } from "lucide-react";
+import { UserCircle, Mail, Phone, CalendarDays, Briefcase, Edit, Loader2, Building, Star, Globe, Save, Camera } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Faculty } from '@/types/entities';
 import { facultyService } from '@/lib/api/faculty';
 import PasswordChangeForm from '@/components/password-change-form';
 import { format } from 'date-fns';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import FacultyDownloadButtons from '@/components/faculty-download-buttons';
 import { 
   EducationSection, 
   ExperienceSection, 
@@ -242,7 +242,7 @@ export default function FacultyProfilePage() {
     return `${window.location.origin}/faculty/${faculty.staffCode}`;
   };
 
-  const handleGenerateResume = async (format: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt') => {
+  const handleGenerateResume = async (format: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv' | 'biodata-html' | 'resume-html' | 'cv-html' | 'latex' | 'biodata-latex' | 'resume-latex' | 'cv-latex') => {
     if (!faculty || !user) {
       toast({ variant: "destructive", title: "Error", description: "Faculty data not available." });
       return;
@@ -348,40 +348,12 @@ export default function FacultyProfilePage() {
                   Public View
                 </Link>
               </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button disabled={isGeneratingResume}>
-                    {isGeneratingResume ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <Download className="mr-2 h-4 w-4" />
-                    )}
-                    Generate Resume
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => handleGenerateResume('pdf')}>
-                    <FileText className="mr-2 h-4 w-4" />
-                    Download as PDF
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleGenerateResume('pdf-latex')}>
-                    <FileText className="mr-2 h-4 w-4" />
-                    Download as PDF LaTeX
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleGenerateResume('docx')}>
-                    <FileCheck className="mr-2 h-4 w-4" />
-                    Download as DOCX
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleGenerateResume('html')}>
-                    <FileText className="mr-2 h-4 w-4" />
-                    Download as HTML
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleGenerateResume('txt')}>
-                    <FileText className="mr-2 h-4 w-4" />
-                    Download as TXT
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <FacultyDownloadButtons 
+                onDownload={handleGenerateResume}
+                isLoading={isGeneratingResume}
+                variant="default"
+                size="sm"
+              />
             </div>
           </div>
         </CardHeader>

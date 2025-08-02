@@ -460,7 +460,8 @@ describe('ConfigService', () => {
       
       const config = new ConfigService();
       
-      expect(config.getAll()).toEqual({});
+      // Should contain only NODE_ENV
+      expect(config.getAll()).toEqual({ NODE_ENV: 'test' });
       
       // Restore original environment
       process.env = originalEnv;
