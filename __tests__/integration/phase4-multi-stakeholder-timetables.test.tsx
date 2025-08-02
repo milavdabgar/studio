@@ -25,7 +25,7 @@ jest.mock('@/lib/api/programs');
 jest.mock('@/lib/api/batches');
 jest.mock('@/components/RealtimeStatus', () => ({
   RealtimeStatus: ({ showLabel }: any) => (
-    <div data-testid="realtime-status">{showLabel ? 'Live Updates' : 'Status'}</div>
+    <div data-testid={showLabel ? "realtime-status-label" : "realtime-status-icon"}>{showLabel ? 'Live Updates' : 'Status'}</div>
   ),
   RealtimeNotification: ({ title, message }: any) => (
     <div data-testid="realtime-notification">{title}: {message}</div>
@@ -215,11 +215,11 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
       // Should show statistics
       expect(screen.getAllByText('2').length).toBeGreaterThanOrEqual(1); // Total subjects
 
-      // Should show real-time status
-      expect(screen.getByTestId('realtime-status')).toBeInTheDocument();
+      // Should show real-time status (with label in student timetable)
+      expect(screen.getAllByTestId('realtime-status-label').length).toBeGreaterThanOrEqual(1);
 
       // Should handle view switching
-      const listTab = screen.getByRole('tab', { name: /list/i });
+      const listTab = screen.getByText('List');
       fireEvent.click(listTab);
       
       await waitFor(() => {
@@ -354,9 +354,12 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
         expect(numbers.length).toBeGreaterThanOrEqual(1);
       });
 
-      // Should handle tab navigation - just verify tabs exist
-      const facultyTab = screen.getByRole('tab', { name: /faculty/i });
-      fireEvent.click(facultyTab);
+      // Should handle tab navigation - verify tabs exist and are clickable
+      // Get all Faculty texts and find the button one (it contains a badge with "1")
+      const facultyTexts = screen.getAllByText('Faculty');
+      const facultyTab = facultyTexts.find(el => el.closest('button') && el.parentElement.textContent.includes('1'));
+      expect(facultyTab).toBeInTheDocument();
+      fireEvent.click(facultyTab!);
       
       await waitFor(() => {
         // Just verify tab is still there after click

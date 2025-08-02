@@ -12,19 +12,20 @@ describe('ContactForm', () => {
 
   // Helper function to get form inputs consistently
   const getFormInputs = () => {
-    const inputs = screen.getAllByRole('textbox');
     return {
-      nameInput: inputs[0], // First input is name
-      emailInput: inputs[1], // Second input is email
-      messageInput: inputs[2], // Third is textarea (message)
+      nameInput: screen.getByLabelText(/name/i),
+      emailInput: screen.getByLabelText(/email/i), 
+      messageInput: screen.getByLabelText(/message/i),
     };
   };
 
   it('should render all form fields', () => {
     render(<ContactForm />);
     
-    const inputs = screen.getAllByRole('textbox');
-    expect(inputs).toHaveLength(3); // Name, Email, Message
+    // Check for specific form elements
+    expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/message/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Send Message' })).toBeInTheDocument();
     expect(screen.getByText('Name')).toBeInTheDocument();
     expect(screen.getByText('Email')).toBeInTheDocument();
@@ -37,8 +38,10 @@ describe('ContactForm', () => {
     const form = document.querySelector('form');
     expect(form).toBeInTheDocument();
     
-    const inputs = screen.getAllByRole('textbox');
-    expect(inputs).toHaveLength(3);
+    // Check for specific form elements
+    expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/message/i)).toBeInTheDocument();
     
     // Verify the text content shows the labels
     expect(screen.getByText('Name')).toBeInTheDocument();

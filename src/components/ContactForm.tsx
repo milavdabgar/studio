@@ -31,12 +31,12 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label htmlFor="contact-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           Name
         </label>
         <input
           type="text"
-          id="name"
+          id="contact-name"
           name="name"
           value={formData.name}
           onChange={handleChange}
@@ -46,12 +46,12 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit }) => {
       </div>
       
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label htmlFor="contact-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           Email
         </label>
         <input
           type="email"
-          id="email"
+          id="contact-email"
           name="email"
           value={formData.email}
           onChange={handleChange}
@@ -61,11 +61,11 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit }) => {
       </div>
       
       <div>
-        <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label htmlFor="contact-message" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           Message
         </label>
         <textarea
-          id="message"
+          id="contact-message"
           name="message"
           rows={4}
           value={formData.message}

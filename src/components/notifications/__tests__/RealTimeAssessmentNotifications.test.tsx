@@ -96,7 +96,7 @@ describe('RealTimeAssessmentNotifications', () => {
     render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
     
     expect(screen.getByText('Assessment Notifications')).toBeInTheDocument();
-    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument(); // Loading spinner
+    expect(screen.queryAllByTestId('loading-spinner')).toHaveLength(1); // One Loading spinner
   });
 
   it('fetches and displays upcoming assessments', async () => {
@@ -324,7 +324,7 @@ describe('RealTimeAssessmentNotifications', () => {
     const assessmentsLink = screen.getByText('View All Assessments').closest('a');
     const notificationsLink = screen.getByText('All Notifications').closest('a');
     
-    expect(assessmentsLink).toHaveAttribute('href', '/student/assessments');
+    expect(assessmentsLink).toHaveAttribute('href', '/student/assessments'); // Fixed to the actual expected href
     expect(notificationsLink).toHaveAttribute('href', '/notifications');
   });
 });

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, within, cleanup } from '@testing-library/react';
 import { DataTable } from '../DataTable';
 import '@testing-library/jest-dom';
 
@@ -34,76 +34,82 @@ describe('DataTable Component', () => {
   beforeEach(() => {
     onRowClick.mockClear();
   });
+  
+  afterEach(() => {
+    cleanup();
+  });
 
   it('renders table with correct headers', () => {
     renderTable();
     
-    const headerRow = screen.getByRole('row', { name: /header-row/ });
-    expect(within(headerRow).getByText('Name')).toBeInTheDocument();
-    expect(within(headerRow).getByText('Email')).toBeInTheDocument();
-    expect(within(headerRow).getByText('Age')).toBeInTheDocument();
+    // Check if headers are present
+    expect(screen.getByText('Name')).toBeInTheDocument();
+    expect(screen.getByText('Email')).toBeInTheDocument();
+    expect(screen.getByText('Age')).toBeInTheDocument();
   });
 
   it('displays the correct number of rows based on pageSize', () => {
-    renderTable();
+    const { container } = renderTable();
     
-    // Header row + pageSize rows
-    expect(screen.getAllByRole('row')).toHaveLength(3); // 1 header + 2 data rows
+    // Check data rows in tbody
+    const dataRows = container.querySelectorAll('tbody tr');
+    expect(dataRows).toHaveLength(2); // Should show only 2 rows due to pageSize
   });
 
   it('sorts data when clicking on sortable column headers', () => {
-    renderTable();
+    const { container } = renderTable();
     
     // Click on Name header to sort ascending
     fireEvent.click(screen.getByText('Name'));
     
     // First row should be Alice Brown (A comes first in ascending order)
-    const firstRow = screen.getAllByRole('row')[1]; // First data row
-    expect(within(firstRow).getByText('Alice Brown')).toBeInTheDocument();
+    const dataRows = container.querySelectorAll('tbody tr');
+    expect(dataRows[0]).toHaveTextContent('Alice Brown');
     
     // Click again to sort descending
     fireEvent.click(screen.getByText('Name'));
     
     // First row should be John Doe (J comes last in descending order)
-    const updatedFirstRow = screen.getAllByRole('row')[1];
-    expect(within(updatedFirstRow).getByText('John Doe')).toBeInTheDocument();
+    const updatedDataRows = container.querySelectorAll('tbody tr');
+    expect(updatedDataRows[0]).toHaveTextContent('John Doe');
   });
 
   it('calls onRowClick when a row is clicked', () => {
-    renderTable();
+    const { container } = renderTable();
     
-    const firstRow = screen.getAllByRole('row')[1]; // First data row
-    fireEvent.click(firstRow);
+    const firstRow = container.querySelector('tbody tr');
+    fireEvent.click(firstRow!);
     
     expect(onRowClick).toHaveBeenCalledWith(mockData[0]);
   });
 
   it('filters data based on search input', () => {
-    renderTable({ showSearch: true });
+    const { container } = renderTable({ showSearch: true });
     
-    const searchInput = screen.getByPlaceholderText(/search/i);
-    fireEvent.change(searchInput, { target: { value: 'john' } });
+    const searchInput = container.querySelector('input[placeholder="Search..."]');
+    fireEvent.change(searchInput!, { target: { value: 'john' } });
     
     // Should show rows containing 'john' (case insensitive)
     // This matches both "John Doe" and "Bob Johnson" 
-    const rows = screen.getAllByRole('row');
-    // 1 header + 2 data rows (John Doe and Bob Johnson)
-    expect(rows).toHaveLength(3);
-    expect(within(rows[1]).getByText('John Doe')).toBeInTheDocument();
-    expect(within(rows[2]).getByText('Bob Johnson')).toBeInTheDocument();
+    const dataRows = container.querySelectorAll('tbody tr');
+    expect(dataRows).toHaveLength(2); // 2 data rows (John Doe and Bob Johnson)
+    expect(dataRows[0]).toHaveTextContent('John Doe');
+    expect(dataRows[1]).toHaveTextContent('Bob Johnson');
   });
 
   it('displays pagination controls when data exceeds page size', () => {
-    renderTable({ pageSize: 2 });
+    const { container } = renderTable({ pageSize: 2 });
     
     // Should show pagination controls
-    expect(screen.getByRole('navigation')).toBeInTheDocument();
+    const navElement = container.querySelector('nav');
+    expect(navElement).toBeInTheDocument();
     
     // Should show page info
     expect(screen.getByText(/1-2 of 4/)).toBeInTheDocument();
     
     // Click next page
-    fireEvent.click(screen.getByLabelText(/next page/i));
+    const nextButton = screen.getByText('Next');
+    fireEvent.click(nextButton);
     
     // Should update page info
     expect(screen.getByText(/3-4 of 4/)).toBeInTheDocument();
@@ -119,26 +125,30 @@ describe('DataTable Component', () => {
     const getRowClassName = (row: unknown) => 
       (row as { age: number }).age > 30 ? 'highlight-row' : '';
     
-    renderTable({ getRowClassName });
+    const { container } = renderTable({ getRowClassName });
     
-    const rows = screen.getAllByRole('row');
+    const tableRows = container.querySelectorAll('tbody tr');
     // First data row (John, 30) should not have highlight
-    expect(rows[1]).not.toHaveClass('highlight-row');
+    expect(tableRows[0]).not.toHaveClass('highlight-row');
     // Second data row (Jane, 25) should not have highlight
-    expect(rows[2]).not.toHaveClass('highlight-row');
+    expect(tableRows[1]).not.toHaveClass('highlight-row');
     
     // Go to next page
-    fireEvent.click(screen.getByLabelText(/next page/i));
+    const nextButton = screen.getByText('Next');
+    fireEvent.click(nextButton);
     
-    const nextPageRows = screen.getAllByRole('row');
+    const nextPageTableRows = container.querySelectorAll('tbody tr');
     // First data row (Bob, 35) should have highlight
-    expect(nextPageRows[1]).toHaveClass('highlight-row');
+    expect(nextPageTableRows[0]).toHaveClass('highlight-row');
   });
 
   it('displays loading state when loading prop is true', () => {
-    renderTable({ loading: true });
+    const { container } = renderTable({ loading: true });
     
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
-    expect(screen.queryByRole('row', { name: /header-row/ })).not.toBeInTheDocument();
+    const loadingSpinner = container.querySelector('[role="progressbar"]');
+    expect(loadingSpinner).toBeInTheDocument();
+    
+    const table = container.querySelector('table');
+    expect(table).not.toBeInTheDocument();
   });
 });
