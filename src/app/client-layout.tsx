@@ -4,7 +4,7 @@ import { GeistSans } from 'geist/font/sans';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
 import { 
-    Home, Settings, LogOut, UserCircle, Briefcase, BookOpen, Award, CalendarCheck, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Clock, UserPlus, BellRing, BookOpenText, Newspaper} from 'lucide-react';
+    Home, Settings, LogOut, UserCircle, Briefcase, BookOpen, Award, CalendarCheck, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Clock, UserPlus, BellRing, BookOpenText, Newspaper, Target, BarChart3, Zap} from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -37,24 +37,43 @@ const DEFAULT_USER: User = {
 };
 
 const adminNavItems = [
-  { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard-link' }, 
+  { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard-link' },
+  
+  // Timetable Automation (Workflow Order)
+  { href: '/admin/preference-campaigns', icon: Target, label: 'Preference Campaigns', id: 'admin-preference-campaigns-link' },
+  { href: '/admin/faculty-preferences', icon: UsersIconLucide, label: 'Faculty Preferences', id: 'admin-faculty-preferences-link' },
+  { href: '/admin/course-allocation', icon: BarChart3, label: 'Course Allocation', id: 'admin-course-allocation-link' },
+  { href: '/admin/timetables/auto-generate', icon: Zap, label: 'Auto Generate', id: 'admin-auto-generate-link' },
+  { href: '/admin/timetables', icon: Clock, label: 'View Timetables', id: 'admin-timetables-link' },
+  
+  // Academic Management
+  { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses-link' },
+  { href: '/admin/course-offerings', icon: BookOpen, label: 'Course Offerings', id: 'admin-course-offerings-link' },
+  { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Mgt.', id: 'admin-curriculum-link' },
+  { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs-link' },
+  { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches-link' },
+  { href: '/admin/academic-terms', icon: CalendarRange, label: 'Academic Terms', id: 'admin-academic-terms-link' },
+  
+  // User Management
   { href: '/admin/users', icon: UsersIconLucide, label: 'User Management', id: 'admin-users-link' },
   { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles-link' },
-  { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'admin-institutes-link'},
-  { href: '/admin/buildings', icon: Building, label: 'Buildings', id: 'admin-buildings-link'},
-  { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'admin-rooms-link'},
-  { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'admin-committees-link'},
   { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students-link' },
   { href: '/admin/faculty', icon: UserCog, label: 'Staff Mgt.', id: 'admin-faculty-link' }, 
   { href: '/admin/faculty-workload', icon: Briefcase, label: 'Faculty Workload', id: 'admin-faculty-workload-link'},
+  
+  // Infrastructure
+  { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'admin-institutes-link'},
+  { href: '/admin/buildings', icon: Building, label: 'Buildings', id: 'admin-buildings-link'},
+  { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'admin-rooms-link'},
   { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments-link' },
-  { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs-link' },
-  { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches-link' },
-  { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses-link' },
-  { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Mgt.', id: 'admin-curriculum-link' },
+  
+  // Assessment & Examinations
   { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments-link' },
   { href: '/admin/examinations', icon: Award, label: 'Examination Mgt.', id: 'admin-examinations-link'},
   { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'admin-enrollments-link'},
+  
+  // System Management
+  { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'admin-committees-link'},
   { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-nav-link' }, 
   { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation-link' },
   { href: '/admin/settings', icon: Settings, label: 'System Settings', id: 'admin-settings-nav-link'},

@@ -23,10 +23,11 @@ const navigationItems = [
   {
     section: 'Timetable Management',
     items: [
-      { href: '/admin/timetables', label: 'Timetables', icon: Clock },
-      { href: '/admin/timetables/auto-generate', label: 'Auto Generate', icon: Settings },
+      { href: '/admin/preference-campaigns', label: 'Preference Campaigns', icon: Target },
       { href: '/admin/faculty-preferences', label: 'Faculty Preferences', icon: Users },
-      { href: '/admin/preference-collection', label: 'Preference Collection', icon: Target },
+      { href: '/admin/course-allocation', label: 'Course Allocation', icon: BarChart3 },
+      { href: '/admin/timetables/auto-generate', label: 'Auto Generate', icon: Settings },
+      { href: '/admin/timetables', label: 'View Timetables', icon: Clock },
       { href: '/admin/course-offerings', label: 'Course Offerings', icon: BookOpen },
     ]
   },

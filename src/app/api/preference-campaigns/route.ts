@@ -16,7 +16,31 @@ interface CollectionCampaign {
 }
 
 // Mock data for demonstration - in production this would be in MongoDB
-let mockCampaigns: CollectionCampaign[] = [];
+// Use global to share state across API routes
+declare global {
+  var mockCampaigns: CollectionCampaign[] | undefined;
+}
+
+if (!global.mockCampaigns) {
+  global.mockCampaigns = [
+    {
+      id: 'camp_demo_1',
+      name: 'Spring 2025 Preference Collection',
+      description: 'Collect faculty preferences for Spring 2025 semester',
+      academicYear: '2024-25',
+      semesters: [1, 3, 5],
+      targetFaculties: [],
+      startDate: '2025-01-15T00:00:00.000Z',
+      endDate: '2025-01-30T23:59:59.000Z',
+      reminderSchedule: [],
+      status: 'draft' as const,
+      responseCount: 0,
+      totalTargeted: 25,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+  ];
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,9 +49,9 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
 
-    let filteredCampaigns = mockCampaigns;
+    let filteredCampaigns = global.mockCampaigns!;
     if (status && status !== 'all') {
-      filteredCampaigns = mockCampaigns.filter(campaign => campaign.status === status);
+      filteredCampaigns = global.mockCampaigns!.filter(campaign => campaign.status === status);
     }
 
     return NextResponse.json({
@@ -50,9 +74,9 @@ export async function POST(request: NextRequest) {
     const campaignData = await request.json() as Omit<CollectionCampaign, 'id' | 'createdAt' | 'updatedAt'>;
 
     // Validation
-    if (!campaignData.name || !campaignData.academicYear || !campaignData.semesters.length) {
+    if (!campaignData.name || !campaignData.academicYear || !campaignData.semesters || !Array.isArray(campaignData.semesters) || campaignData.semesters.length === 0) {
       return NextResponse.json(
-        { success: false, error: 'Missing required fields: name, academicYear, semesters.' },
+        { success: false, error: 'Missing required fields: name, academicYear, semesters (must be a non-empty array).' },
         { status: 400 }
       );
     }
@@ -66,7 +90,7 @@ export async function POST(request: NextRequest) {
       updatedAt: currentTimestamp,
     };
 
-    mockCampaigns.push(newCampaign);
+    global.mockCampaigns!.push(newCampaign);
 
     return NextResponse.json({
       success: true,
