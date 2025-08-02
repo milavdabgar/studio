@@ -10,17 +10,14 @@ const TestComponent = () => {
 
   return (
     <div>
-      <div data-testid="loading-state">{loading ? 'loading' : 'loaded'}</div>
-      <div data-testid="user-state">
+      <div>{loading ? 'loading' : 'loaded'}</div>
+      <div>
         {user ? `User: ${user.name} (${user.email})` : 'No user'}
       </div>
-      <button
-        data-testid="login-button"
-        onClick={() => login('test@example.com', 'password')}
-      >
+      <button onClick={() => login('test@example.com', 'password')}>
         Login
       </button>
-      <button data-testid="logout-button" onClick={logout}>
+      <button onClick={logout}>
         Logout
       </button>
     </div>
@@ -38,11 +35,10 @@ describe('AuthContext', () => {
     it('renders children correctly', () => {
       render(
         <AuthProvider>
-          <div data-testid="test-child">Test Child</div>
+          <div>Test Child</div>
         </AuthProvider>
       );
 
-      expect(screen.getByTestId('test-child')).toBeInTheDocument();
       expect(screen.getByText('Test Child')).toBeInTheDocument();
     });
 
@@ -53,8 +49,8 @@ describe('AuthContext', () => {
         </AuthProvider>
       );
 
-      expect(screen.getByTestId('user-state')).toHaveTextContent('No user');
-      expect(screen.getByTestId('loading-state')).toHaveTextContent('loaded');
+      expect(screen.getByText('No user')).toBeInTheDocument();
+      expect(screen.getByText('loaded')).toBeInTheDocument();
     });
 
     it('initially shows loading state', () => {
@@ -65,7 +61,7 @@ describe('AuthContext', () => {
       );
 
       // After initial render, loading should be false due to useEffect
-      expect(screen.getByTestId('loading-state')).toHaveTextContent('loaded');
+      expect(screen.getByText('loaded')).toBeInTheDocument();
     });
   });
 
@@ -88,10 +84,10 @@ describe('AuthContext', () => {
         </AuthProvider>
       );
 
-      expect(screen.getByTestId('login-button')).toBeInTheDocument();
-      expect(screen.getByTestId('logout-button')).toBeInTheDocument();
-      expect(screen.getByTestId('user-state')).toBeInTheDocument();
-      expect(screen.getByTestId('loading-state')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Logout' })).toBeInTheDocument();
+      expect(screen.getByText('No user')).toBeInTheDocument();
+      expect(screen.getByText('loaded')).toBeInTheDocument();
     });
   });
 
@@ -106,17 +102,15 @@ describe('AuthContext', () => {
       );
 
       // Initially no user
-      expect(screen.getByTestId('user-state')).toHaveTextContent('No user');
+      expect(screen.getByText('No user')).toBeInTheDocument();
 
       // Click login button
-      const loginButton = screen.getByTestId('login-button');
+      const loginButton = screen.getByRole('button', { name: 'Login' });
       await user.click(loginButton);
 
       // Should show logged in user
       await waitFor(() => {
-        expect(screen.getByTestId('user-state')).toHaveTextContent(
-          'User: Test User (test@example.com)'
-        );
+        expect(screen.getByText('User: Test User (test@example.com)')).toBeInTheDocument();
       });
     });
 
@@ -130,20 +124,18 @@ describe('AuthContext', () => {
       );
 
       // Login first
-      const loginButton = screen.getByTestId('login-button');
+      const loginButton = screen.getByRole('button', { name: 'Login' });
       await user.click(loginButton);
 
       await waitFor(() => {
-        expect(screen.getByTestId('user-state')).toHaveTextContent(
-          'User: Test User (test@example.com)'
-        );
+        expect(screen.getByText('User: Test User (test@example.com)')).toBeInTheDocument();
       });
 
       // Then logout
-      const logoutButton = screen.getByTestId('logout-button');
+      const logoutButton = screen.getByRole('button', { name: 'Logout' });
       await user.click(logoutButton);
 
-      expect(screen.getByTestId('user-state')).toHaveTextContent('No user');
+      expect(screen.getByText('No user')).toBeInTheDocument();
     });
 
     it('login function is async', async () => {
@@ -155,7 +147,7 @@ describe('AuthContext', () => {
         </AuthProvider>
       );
 
-      const loginButton = screen.getByTestId('login-button');
+      const loginButton = screen.getByRole('button', { name: 'Login' });
       
       // Click login and verify it's async
       await act(async () => {
@@ -163,9 +155,7 @@ describe('AuthContext', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByTestId('user-state')).toHaveTextContent(
-          'User: Test User (test@example.com)'
-        );
+        expect(screen.getByText('User: Test User (test@example.com)')).toBeInTheDocument();
       });
     });
   });
@@ -180,7 +170,7 @@ describe('AuthContext', () => {
 
       // After initial render, loading should be false
       await waitFor(() => {
-        expect(screen.getByTestId('loading-state')).toHaveTextContent('loaded');
+        expect(screen.getByText('loaded')).toBeInTheDocument();
       });
     });
 
@@ -192,7 +182,7 @@ describe('AuthContext', () => {
       );
 
       // Loading state should be managed by useEffect
-      expect(screen.getByTestId('loading-state')).toBeInTheDocument();
+      expect(screen.getByText('loaded')).toBeInTheDocument();
     });
   });
 
@@ -207,18 +197,14 @@ describe('AuthContext', () => {
       );
 
       // Login
-      await user.click(screen.getByTestId('login-button'));
+      await user.click(screen.getByRole('button', { name: 'Login' }));
 
       await waitFor(() => {
-        expect(screen.getByTestId('user-state')).toHaveTextContent(
-          'User: Test User (test@example.com)'
-        );
+        expect(screen.getByText('User: Test User (test@example.com)')).toBeInTheDocument();
       });
 
       // User state should persist until logout
-      expect(screen.getByTestId('user-state')).toHaveTextContent(
-        'User: Test User (test@example.com)'
-      );
+      expect(screen.getByText('User: Test User (test@example.com)')).toBeInTheDocument();
     });
 
     it('clears user state on logout', async () => {
@@ -231,18 +217,16 @@ describe('AuthContext', () => {
       );
 
       // Login first
-      await user.click(screen.getByTestId('login-button'));
+      await user.click(screen.getByRole('button', { name: 'Login' }));
       
       await waitFor(() => {
-        expect(screen.getByTestId('user-state')).toHaveTextContent(
-          'User: Test User (test@example.com)'
-        );
+        expect(screen.getByText('User: Test User (test@example.com)')).toBeInTheDocument();
       });
 
       // Then logout
-      await user.click(screen.getByTestId('logout-button'));
+      await user.click(screen.getByRole('button', { name: 'Logout' }));
 
-      expect(screen.getByTestId('user-state')).toHaveTextContent('No user');
+      expect(screen.getByText('No user')).toBeInTheDocument();
     });
   });
 
@@ -250,7 +234,7 @@ describe('AuthContext', () => {
     const SecondTestComponent = () => {
       const { user } = useAuth();
       return (
-        <div data-testid="second-component">
+        <div>
           {user ? `Second: ${user.name}` : 'Second: No user'}
         </div>
       );
@@ -267,20 +251,16 @@ describe('AuthContext', () => {
       );
 
       // Both components should show no user initially
-      expect(screen.getByTestId('user-state')).toHaveTextContent('No user');
-      expect(screen.getByTestId('second-component')).toHaveTextContent('Second: No user');
+      expect(screen.getByText('No user')).toBeInTheDocument();
+      expect(screen.getByText('Second: No user')).toBeInTheDocument();
 
       // Login
-      await user.click(screen.getByTestId('login-button'));
+      await user.click(screen.getByRole('button', { name: 'Login' }));
 
       // Both components should show the same user
       await waitFor(() => {
-        expect(screen.getByTestId('user-state')).toHaveTextContent(
-          'User: Test User (test@example.com)'
-        );
-        expect(screen.getByTestId('second-component')).toHaveTextContent(
-          'Second: Test User'
-        );
+        expect(screen.getByText('User: Test User (test@example.com)')).toBeInTheDocument();
+        expect(screen.getByText('Second: Test User')).toBeInTheDocument();
       });
     });
   });
@@ -291,10 +271,10 @@ describe('AuthContext', () => {
       
       return (
         <div>
-          <div data-testid="has-user">{typeof auth.user}</div>
-          <div data-testid="has-login">{typeof auth.login}</div>
-          <div data-testid="has-logout">{typeof auth.logout}</div>
-          <div data-testid="has-loading">{typeof auth.loading}</div>
+          <div>User type: {typeof auth.user}</div>
+          <div>Login type: {typeof auth.login}</div>
+          <div>Logout type: {typeof auth.logout}</div>
+          <div>Loading type: {typeof auth.loading}</div>
         </div>
       );
     };
@@ -306,10 +286,10 @@ describe('AuthContext', () => {
         </AuthProvider>
       );
 
-      expect(screen.getByTestId('has-user')).toHaveTextContent('object');
-      expect(screen.getByTestId('has-login')).toHaveTextContent('function');
-      expect(screen.getByTestId('has-logout')).toHaveTextContent('function');
-      expect(screen.getByTestId('has-loading')).toHaveTextContent('boolean');
+      expect(screen.getByText('User type: object')).toBeInTheDocument();
+      expect(screen.getByText('Login type: function')).toBeInTheDocument();
+      expect(screen.getByText('Logout type: function')).toBeInTheDocument();
+      expect(screen.getByText('Loading type: boolean')).toBeInTheDocument();
     });
   });
 
@@ -325,9 +305,9 @@ describe('AuthContext', () => {
 
       return (
         <div>
-          <div data-testid="login-called">{loginCalled ? 'called' : 'not called'}</div>
-          <div data-testid="user-email">{user?.email || 'no email'}</div>
-          <button data-testid="custom-login" onClick={handleLogin}>
+          <div>Login called: {loginCalled ? 'called' : 'not called'}</div>
+          <div>User email: {user?.email || 'no email'}</div>
+          <button onClick={handleLogin}>
             Custom Login
           </button>
         </div>
@@ -343,14 +323,14 @@ describe('AuthContext', () => {
         </AuthProvider>
       );
 
-      expect(screen.getByTestId('login-called')).toHaveTextContent('not called');
-      expect(screen.getByTestId('user-email')).toHaveTextContent('no email');
+      expect(screen.getByText('Login called: not called')).toBeInTheDocument();
+      expect(screen.getByText('User email: no email')).toBeInTheDocument();
 
-      await user.click(screen.getByTestId('custom-login'));
+      await user.click(screen.getByRole('button', { name: 'Custom Login' }));
 
       await waitFor(() => {
-        expect(screen.getByTestId('login-called')).toHaveTextContent('called');
-        expect(screen.getByTestId('user-email')).toHaveTextContent('custom@example.com');
+        expect(screen.getByText('Login called: called')).toBeInTheDocument();
+        expect(screen.getByText('User email: custom@example.com')).toBeInTheDocument();
       });
     });
   });
@@ -365,8 +345,8 @@ describe('AuthContext', () => {
         </AuthProvider>
       );
 
-      const loginButton = screen.getByTestId('login-button');
-      const logoutButton = screen.getByTestId('logout-button');
+      const loginButton = screen.getByRole('button', { name: 'Login' });
+      const logoutButton = screen.getByRole('button', { name: 'Logout' });
 
       // Rapid login/logout sequence
       await user.click(loginButton);
@@ -374,7 +354,7 @@ describe('AuthContext', () => {
       await user.click(loginButton);
       await user.click(logoutButton);
 
-      expect(screen.getByTestId('user-state')).toHaveTextContent('No user');
+      expect(screen.getByText('No user')).toBeInTheDocument();
     });
 
     it('maintains state consistency across re-renders', async () => {
@@ -387,12 +367,10 @@ describe('AuthContext', () => {
       );
 
       // Login
-      await user.click(screen.getByTestId('login-button'));
+      await user.click(screen.getByRole('button', { name: 'Login' }));
 
       await waitFor(() => {
-        expect(screen.getByTestId('user-state')).toHaveTextContent(
-          'User: Test User (test@example.com)'
-        );
+        expect(screen.getByText('User: Test User (test@example.com)')).toBeInTheDocument();
       });
 
       // Re-render with same provider instance (children change)
@@ -403,9 +381,7 @@ describe('AuthContext', () => {
       );
 
       // State should be preserved when re-rendering with the same provider
-      expect(screen.getByTestId('user-state')).toHaveTextContent(
-        'User: Test User (test@example.com)'
-      );
+      expect(screen.getByText('User: Test User (test@example.com)')).toBeInTheDocument();
     });
   });
 
@@ -416,13 +392,13 @@ describe('AuthContext', () => {
       const UserStructureTest = () => {
         const { user: authUser } = useAuth();
         
-        if (!authUser) return <div data-testid="no-user">No user</div>;
+        if (!authUser) return <div>No user logged in</div>;
         
         return (
           <div>
-            <div data-testid="user-id">{authUser.id}</div>
-            <div data-testid="user-name">{authUser.name}</div>
-            <div data-testid="user-email">{authUser.email}</div>
+            <div>User ID: {authUser.id}</div>
+            <div>User Name: {authUser.name}</div>
+            <div>User Email: {authUser.email}</div>
           </div>
         );
       };
@@ -434,14 +410,14 @@ describe('AuthContext', () => {
         </AuthProvider>
       );
 
-      expect(screen.getByTestId('no-user')).toBeInTheDocument();
+      expect(screen.getByText('No user logged in')).toBeInTheDocument();
 
-      await user.click(screen.getByTestId('login-button'));
+      await user.click(screen.getByRole('button', { name: 'Login' }));
 
       await waitFor(() => {
-        expect(screen.getByTestId('user-id')).toHaveTextContent('1');
-        expect(screen.getByTestId('user-name')).toHaveTextContent('Test User');
-        expect(screen.getByTestId('user-email')).toHaveTextContent('test@example.com');
+        expect(screen.getByText('User ID: 1')).toBeInTheDocument();
+        expect(screen.getByText('User Name: Test User')).toBeInTheDocument();
+        expect(screen.getByText('User Email: test@example.com')).toBeInTheDocument();
       });
     });
   });
