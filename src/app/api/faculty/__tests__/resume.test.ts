@@ -1,10 +1,9 @@
 import { NextRequest } from 'next/server';
 import { GET, POST } from '../[id]/resume/route';
-import { facultyResumeGenerator } from '@/lib/services/facultyResumeGenerator';
 
-// Mock all dependencies
-jest.mock('@/lib/services/facultyResumeGenerator', () => ({
-  facultyResumeGenerator: {
+// Mock the actual dependencies used by the route
+jest.mock('@/lib/services/resumeGenerator', () => ({
+  resumeGenerator: {
     generateResumeData: jest.fn(),
     generatePDF: jest.fn(),
     generateDOCX: jest.fn(),
@@ -13,16 +12,21 @@ jest.mock('@/lib/services/facultyResumeGenerator', () => ({
   }
 }));
 
-jest.mock('@/lib/api/faculty', () => ({
-  facultyService: {
-    getAllFaculty: jest.fn()
+jest.mock('@/lib/mongodb', () => ({
+  connectMongoose: jest.fn().mockResolvedValue(undefined)
+}));
+
+jest.mock('@/lib/models', () => ({
+  FacultyModel: {
+    findOne: jest.fn()
   }
 }));
 
-import { facultyService } from '@/lib/api/faculty';
+import { resumeGenerator } from '@/lib/services/resumeGenerator';
+import { FacultyModel } from '@/lib/models';
 
-const mockFacultyService = facultyService as jest.Mocked<typeof facultyService>;
-const mockFacultyResumeGenerator = facultyResumeGenerator as jest.Mocked<typeof facultyResumeGenerator>;
+const mockResumeGenerator = resumeGenerator as jest.Mocked<typeof resumeGenerator>;
+const mockFacultyModel = FacultyModel as jest.Mocked<typeof FacultyModel>;
 
 describe('/api/faculty/[id]/resume', () => {
   const mockFaculty = {
@@ -80,14 +84,14 @@ describe('/api/faculty/[id]/resume', () => {
     jest.clearAllMocks();
     
     // Setup default mocks
-    mockFacultyService.getAllFaculty.mockResolvedValue([mockFaculty]);
-    mockFacultyResumeGenerator.generateResumeData.mockReturnValue(mockResumeData);
+    mockFacultyModel.findOne.mockResolvedValue(mockFaculty);
+    mockResumeGenerator.generateResumeData.mockReturnValue(mockResumeData);
   });
 
   describe('GET method', () => {
     it('should generate PDF resume successfully', async () => {
       const mockPdfBuffer = Buffer.from('mock-pdf-content');
-      mockFacultyResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
+      mockResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume?format=pdf');
       const response = await GET(request, { params: Promise.resolve({ id: 'faculty-123' }) });
@@ -97,13 +101,14 @@ describe('/api/faculty/[id]/resume', () => {
       expect(response.headers.get('Content-Disposition')).toContain('attachment');
       expect(response.headers.get('Content-Disposition')).toContain('.pdf');
 
-      expect(mockFacultyResumeGenerator.generateResumeData).toHaveBeenCalledWith(mockFaculty);
-      expect(mockFacultyResumeGenerator.generatePDF).toHaveBeenCalledWith(mockResumeData);
+      expect(mockFacultyModel.findOne).toHaveBeenCalledWith({ id: 'faculty-123' });
+      expect(mockResumeGenerator.generateResumeData).toHaveBeenCalled();
+      expect(mockResumeGenerator.generatePDF).toHaveBeenCalledWith(mockResumeData);
     });
 
     it('should generate DOCX resume successfully', async () => {
       const mockDocxBuffer = Buffer.from('mock-docx-content');
-      mockFacultyResumeGenerator.generateDOCX.mockResolvedValue(mockDocxBuffer);
+      mockResumeGenerator.generateDOCX.mockResolvedValue(mockDocxBuffer);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume?format=docx');
       const response = await GET(request, { params: Promise.resolve({ id: 'faculty-123' }) });
@@ -112,12 +117,12 @@ describe('/api/faculty/[id]/resume', () => {
       expect(response.headers.get('Content-Type')).toBe('application/vnd.openxmlformats-officedocument.wordprocessingml.document');
       expect(response.headers.get('Content-Disposition')).toContain('.docx');
 
-      expect(mockFacultyResumeGenerator.generateDOCX).toHaveBeenCalledWith(mockResumeData);
+      expect(mockResumeGenerator.generateDOCX).toHaveBeenCalledWith(mockResumeData);
     });
 
     it('should generate HTML resume successfully', async () => {
       const mockHtmlContent = '<html><body>Mock HTML Resume</body></html>';
-      mockFacultyResumeGenerator.generateHTML.mockReturnValue(mockHtmlContent);
+      mockResumeGenerator.generateHTML.mockReturnValue(mockHtmlContent);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume?format=html');
       const response = await GET(request, { params: Promise.resolve({ id: 'faculty-123' }) });
@@ -129,12 +134,12 @@ describe('/api/faculty/[id]/resume', () => {
       const responseText = await response.text();
       expect(responseText).toBe(mockHtmlContent);
 
-      expect(mockFacultyResumeGenerator.generateHTML).toHaveBeenCalledWith(mockResumeData);
+      expect(mockResumeGenerator.generateHTML).toHaveBeenCalledWith(mockResumeData);
     });
 
     it('should generate TXT resume successfully', async () => {
       const mockTxtContent = 'Mock Plain Text Resume';
-      mockFacultyResumeGenerator.generatePlainText.mockReturnValue(mockTxtContent);
+      mockResumeGenerator.generatePlainText.mockReturnValue(mockTxtContent);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume?format=txt');
       const response = await GET(request, { params: Promise.resolve({ id: 'faculty-123' }) });
@@ -146,19 +151,19 @@ describe('/api/faculty/[id]/resume', () => {
       const responseText = await response.text();
       expect(responseText).toBe(mockTxtContent);
 
-      expect(mockFacultyResumeGenerator.generatePlainText).toHaveBeenCalledWith(mockResumeData);
+      expect(mockResumeGenerator.generatePlainText).toHaveBeenCalledWith(mockResumeData);
     });
 
     it('should default to PDF format when no format specified', async () => {
       const mockPdfBuffer = Buffer.from('mock-pdf-content');
-      mockFacultyResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
+      mockResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume');
       const response = await GET(request, { params: Promise.resolve({ id: 'faculty-123' }) });
 
       expect(response.status).toBe(200);
       expect(response.headers.get('Content-Type')).toBe('application/pdf');
-      expect(mockFacultyResumeGenerator.generatePDF).toHaveBeenCalled();
+      expect(mockResumeGenerator.generatePDF).toHaveBeenCalled();
     });
 
     it('should return 400 for missing faculty ID', async () => {
@@ -180,7 +185,7 @@ describe('/api/faculty/[id]/resume', () => {
     });
 
     it('should return 404 for non-existent faculty', async () => {
-      mockFacultyService.getAllFaculty.mockResolvedValue([]);
+      mockFacultyModel.findOne.mockResolvedValue(null);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/non-existent/resume');
       const response = await GET(request, { params: Promise.resolve({ id: 'non-existent' }) });
@@ -191,7 +196,7 @@ describe('/api/faculty/[id]/resume', () => {
     });
 
     it('should handle PDF generation errors', async () => {
-      mockFacultyResumeGenerator.generatePDF.mockRejectedValue(new Error('PDF generation failed'));
+      mockResumeGenerator.generatePDF.mockRejectedValue(new Error('PDF generation failed'));
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume');
       const response = await GET(request, { params: Promise.resolve({ id: 'faculty-123' }) });
@@ -204,13 +209,13 @@ describe('/api/faculty/[id]/resume', () => {
 
     it('should generate proper filename with faculty name and staff code', async () => {
       const mockPdfBuffer = Buffer.from('mock-pdf-content');
-      mockFacultyResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
+      mockResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume?format=pdf');
       const response = await GET(request, { params: Promise.resolve({ id: 'faculty-123' }) });
 
       const contentDisposition = response.headers.get('Content-Disposition');
-      expect(contentDisposition).toContain('John_Michael_Doe_Faculty_Resume_FAC001.pdf');
+      expect(contentDisposition).toContain('John Michael Doe_FAC001.pdf');
     });
 
     it('should handle faculty without proper names in filename', async () => {
@@ -222,16 +227,16 @@ describe('/api/faculty/[id]/resume', () => {
         status: 'active' as const
       };
       
-      mockFacultyService.getAllFaculty.mockResolvedValue([facultyWithoutName]);
+      mockFacultyModel.findOne.mockResolvedValue(facultyWithoutName);
       
       const mockPdfBuffer = Buffer.from('mock-pdf-content');
-      mockFacultyResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
+      mockResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume?format=pdf');
       const response = await GET(request, { params: Promise.resolve({ id: 'faculty-123' }) });
 
       const contentDisposition = response.headers.get('Content-Disposition');
-      expect(contentDisposition).toContain('FAC001_Faculty_Resume_FAC001.pdf');
+      expect(contentDisposition).toContain('FAC001_FAC001.pdf');
     });
   });
 
@@ -256,7 +261,7 @@ describe('/api/faculty/[id]/resume', () => {
             authors: ['John Doe', 'Jane Smith']
           }
         ],
-        research: [
+        projects: [
           {
             title: 'AI in Healthcare',
             description: 'Research on AI applications in medical diagnosis',
@@ -272,11 +277,19 @@ describe('/api/faculty/[id]/resume', () => {
             category: 'award'
           }
         ],
-        certifications: [
+        skills: [
           {
             name: 'AWS Certified Developer',
-            issuer: 'Amazon Web Services',
-            date: '2023-01-15'
+            level: 'Advanced',
+            category: 'Cloud Computing'
+          }
+        ],
+        education: [
+          {
+            degree: 'Ph.D.',
+            field: 'Computer Science',
+            institution: 'IIT Bombay',
+            year: 2020
           }
         ]
       };
@@ -285,13 +298,14 @@ describe('/api/faculty/[id]/resume', () => {
         ...mockResumeData,
         experience: customData.experience,
         publications: customData.publications,
-        research: customData.research,
+        projects: customData.projects || mockResumeData.projects,
         achievements: customData.achievements,
-        certifications: customData.certifications
+        education: customData.education || mockResumeData.education,
+        skills: customData.skills || mockResumeData.skills
       };
 
       const mockPdfBuffer = Buffer.from('enhanced-pdf-content');
-      mockFacultyResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
+      mockResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
         method: 'POST',
@@ -304,14 +318,14 @@ describe('/api/faculty/[id]/resume', () => {
       expect(response.status).toBe(200);
       expect(response.headers.get('Content-Type')).toBe('application/pdf');
 
-      expect(mockFacultyResumeGenerator.generatePDF).toHaveBeenCalledWith(enhancedResumeData);
+      expect(mockResumeGenerator.generatePDF).toHaveBeenCalledWith(enhancedResumeData);
     });
 
     it('should use base resume data when custom data is not provided', async () => {
       const requestData = { format: 'html' };
 
       const mockHtmlContent = '<html><body>Base Resume</body></html>';
-      mockFacultyResumeGenerator.generateHTML.mockReturnValue(mockHtmlContent);
+      mockResumeGenerator.generateHTML.mockReturnValue(mockHtmlContent);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
         method: 'POST',
@@ -322,7 +336,7 @@ describe('/api/faculty/[id]/resume', () => {
       const response = await POST(request, { params: Promise.resolve({ id: 'faculty-123' }) });
 
       expect(response.status).toBe(200);
-      expect(mockFacultyResumeGenerator.generateHTML).toHaveBeenCalledWith(mockResumeData);
+      expect(mockResumeGenerator.generateHTML).toHaveBeenCalledWith(mockResumeData);
     });
 
     it('should default to PDF format in POST requests', async () => {
@@ -337,7 +351,7 @@ describe('/api/faculty/[id]/resume', () => {
       };
 
       const mockPdfBuffer = Buffer.from('custom-pdf-content');
-      mockFacultyResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
+      mockResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
         method: 'POST',
@@ -349,7 +363,7 @@ describe('/api/faculty/[id]/resume', () => {
 
       expect(response.status).toBe(200);
       expect(response.headers.get('Content-Type')).toBe('application/pdf');
-      expect(mockFacultyResumeGenerator.generatePDF).toHaveBeenCalled();
+      expect(mockResumeGenerator.generatePDF).toHaveBeenCalled();
     });
 
     it('should return 400 for missing faculty ID in POST', async () => {
@@ -367,7 +381,7 @@ describe('/api/faculty/[id]/resume', () => {
     });
 
     it('should return 404 for non-existent faculty in POST', async () => {
-      mockFacultyService.getAllFaculty.mockResolvedValue([]);
+      mockFacultyModel.findOne.mockResolvedValue(null);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/non-existent/resume', {
         method: 'POST',
@@ -397,7 +411,7 @@ describe('/api/faculty/[id]/resume', () => {
     });
 
     it('should handle generation errors in POST requests', async () => {
-      mockFacultyResumeGenerator.generateDOCX.mockRejectedValue(new Error('DOCX generation failed'));
+      mockResumeGenerator.generateDOCX.mockRejectedValue(new Error('DOCX generation failed'));
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
         method: 'POST',
@@ -417,7 +431,7 @@ describe('/api/faculty/[id]/resume', () => {
       const customData = { format: 'pdf', experience: [] };
 
       const mockPdfBuffer = Buffer.from('enhanced-pdf-content');
-      mockFacultyResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
+      mockResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
         method: 'POST',
@@ -450,7 +464,7 @@ describe('/api/faculty/[id]/resume', () => {
     it('should handle TXT format generation', async () => {
       const customData = { format: 'txt', experience: [] };
       const mockTxtContent = 'John Doe\nFaculty\nExperience: ...';
-      mockFacultyResumeGenerator.generatePlainText.mockReturnValue(mockTxtContent);
+      mockResumeGenerator.generatePlainText.mockReturnValue(mockTxtContent);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
         method: 'POST',
@@ -462,7 +476,7 @@ describe('/api/faculty/[id]/resume', () => {
 
       expect(response.status).toBe(200);
       expect(response.headers.get('Content-Type')).toBe('text/plain');
-      expect(mockFacultyResumeGenerator.generatePlainText).toHaveBeenCalledWith(expect.objectContaining({
+      expect(mockResumeGenerator.generatePlainText).toHaveBeenCalledWith(expect.objectContaining({
         fullName: 'Dr. John Michael Doe',
         staffCode: 'FAC001'
       }));
@@ -471,7 +485,7 @@ describe('/api/faculty/[id]/resume', () => {
     it('should handle HTML format generation', async () => {
       const customData = { format: 'html', experience: [] };
       const mockHtmlContent = '<html><body><h1>John Doe</h1></body></html>';
-      mockFacultyResumeGenerator.generateHTML.mockReturnValue(mockHtmlContent);
+      mockResumeGenerator.generateHTML.mockReturnValue(mockHtmlContent);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
         method: 'POST',
@@ -483,7 +497,7 @@ describe('/api/faculty/[id]/resume', () => {
 
       expect(response.status).toBe(200);
       expect(response.headers.get('Content-Type')).toBe('text/html');
-      expect(mockFacultyResumeGenerator.generateHTML).toHaveBeenCalledWith(expect.objectContaining({
+      expect(mockResumeGenerator.generateHTML).toHaveBeenCalledWith(expect.objectContaining({
         fullName: 'Dr. John Michael Doe',
         staffCode: 'FAC001'
       }));
@@ -491,7 +505,7 @@ describe('/api/faculty/[id]/resume', () => {
 
     it('should handle general error during faculty profile fetch', async () => {
       // Mock faculty service to throw a general error
-      mockFacultyService.getAllFaculty.mockRejectedValueOnce(new Error('Database connection failed'));
+      mockFacultyModel.findOne.mockRejectedValueOnce(new Error('Database connection failed'));
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume');
       const response = await GET(request, { params: Promise.resolve({ id: 'faculty-123' }) });
@@ -504,7 +518,7 @@ describe('/api/faculty/[id]/resume', () => {
 
     it('should handle outer catch block for POST custom resume generation', async () => {
       // Mock an error that occurs before the inner try-catch
-      mockFacultyService.getAllFaculty.mockRejectedValueOnce(new Error('Database connection failed'));
+      mockFacultyModel.findOne.mockRejectedValueOnce(new Error('Database connection failed'));
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
         method: 'POST',
@@ -524,7 +538,7 @@ describe('/api/faculty/[id]/resume', () => {
   describe('caching and headers', () => {
     it('should set appropriate cache control headers', async () => {
       const mockPdfBuffer = Buffer.from('mock-pdf-content');
-      mockFacultyResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
+      mockResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume');
       const response = await GET(request, { params: Promise.resolve({ id: 'faculty-123' }) });

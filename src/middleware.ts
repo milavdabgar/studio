@@ -224,8 +224,16 @@ export async function middleware(request: NextRequest) {
              hasAccess = false; 
         }
     }
-    // HOD and department_admin users use the main dashboard with role-aware rendering
-    // No special /dashboard/hod route needed
+    
+    // Special handling for HOD dashboard
+    if (pathname.startsWith('/dashboard/hod')) {
+        const isHodRole = activeRoleCode === 'hod' || activeRoleCode === 'department_admin';
+        if (isHodRole) {
+            hasAccess = true;
+        } else if (!hasAccess && !ROLE_ACCESS_CONTROL[pathname]) { // If no specific rule already granted access
+             hasAccess = false; 
+        }
+    }
     // Allow access to DTE dashboard if role is dte_admin
     if (pathname.startsWith('/dte/dashboard') && activeRoleCode === 'dte_admin') {
         hasAccess = true;
@@ -239,8 +247,9 @@ export async function middleware(request: NextRequest) {
     if (!hasAccess) {
         console.warn(`User ${authenticatedUser.email} with active role code [${activeRoleCode}] tried to access ${pathname} without permission.`);
         // Redirect to their default dashboard or a generic access denied page
-        let redirectPath = '/dashboard'; // Default redirect - HOD and department_admin use main dashboard too
-        if (activeRoleCode.startsWith('committee_')) redirectPath = '/dashboard/committee';
+        let redirectPath = '/dashboard'; // Default redirect
+        if (activeRoleCode === 'hod' || activeRoleCode === 'department_admin') redirectPath = '/dashboard/hod';
+        else if (activeRoleCode.startsWith('committee_')) redirectPath = '/dashboard/committee';
         else if (activeRoleCode === 'dte_admin') redirectPath = '/dte/dashboard';
         else if (activeRoleCode === 'gtu_admin') redirectPath = '/gtu/dashboard';
         

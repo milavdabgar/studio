@@ -238,26 +238,26 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     const format = customData.format || 'pdf';
 
-    // Get faculty data
-    const allFaculty = await facultyService.getAllFaculty();
-    const faculty = allFaculty.find(f => f.id === facultyId);
+    // Get faculty data from database
+    await connectMongoose();
+    const faculty = await FacultyModel.findOne({ id: facultyId });
 
     if (!faculty) {
       return NextResponse.json({ error: 'Faculty not found' }, { status: 404 });
     }
 
     // Generate base resume data
-    const baseResumeData = facultyResumeGenerator.generateResumeData(faculty);
+    const baseResumeData = resumeGenerator.generateResumeData(faculty);
 
     // Enhance with custom data
-    const enhancedResumeData: FacultyResumeData = {
+    const enhancedResumeData: ResumeData = {
       ...baseResumeData,
       experience: customData.experience || baseResumeData.experience,
       publications: customData.publications || baseResumeData.publications,
-      research: customData.research || baseResumeData.research,
+      projects: customData.projects || baseResumeData.projects,
       achievements: customData.achievements || baseResumeData.achievements,
-      courses: customData.courses || baseResumeData.courses,
-      certifications: customData.certifications || baseResumeData.certifications
+      education: customData.education || baseResumeData.education,
+      skills: customData.skills || baseResumeData.skills
     };
 
     // Generate filename
@@ -274,19 +274,19 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     try {
       switch (format) {
         case 'pdf':
-          content = await facultyResumeGenerator.generatePDF(enhancedResumeData);
+          content = await resumeGenerator.generatePDF(enhancedResumeData);
           contentType = 'application/pdf';
           break;
         case 'docx':
-          content = await facultyResumeGenerator.generateDOCX(enhancedResumeData);
+          content = await resumeGenerator.generateDOCX(enhancedResumeData);
           contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
           break;
         case 'html':
-          content = facultyResumeGenerator.generateHTML(enhancedResumeData);
+          content = resumeGenerator.generateHTML(enhancedResumeData);
           contentType = 'text/html';
           break;
         case 'txt':
-          content = facultyResumeGenerator.generatePlainText(enhancedResumeData);
+          content = resumeGenerator.generatePlainText(enhancedResumeData);
           contentType = 'text/plain';
           break;
         default:
