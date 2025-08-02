@@ -40,11 +40,7 @@ describe('HODDashboardPage', () => {
 
     mockUseRealtimeConnectionStatus.mockReturnValue({
       isConnected: true,
-      connectionState: 'connected' as const,
-      lastUpdate: null,
-      subscribe: jest.fn(),
-      unsubscribe: jest.fn(),
-      reconnect: jest.fn()
+      connectionState: 'connected' as const
     });
   });
 

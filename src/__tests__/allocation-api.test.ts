@@ -1,70 +1,110 @@
+// @ts-nocheck - Complex mock setup causes TypeScript inference issues
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { NextRequest } from 'next/server';
 import { GET, POST } from '../app/api/allocation-sessions/route';
 import { POST as POST_EXECUTE } from '../app/api/allocation-sessions/[id]/execute/route';
 
 // Mock MongoDB connection
-jest.mock('../lib/mongodb', () => ({
+jest.mock('@/lib/mongodb', () => ({
   connectMongoose: jest.fn()
 }));
 
-// Mock models
-jest.mock('../lib/models', () => {
-  const mockModels = {
-    AllocationSessionModel: {
-      find: jest.fn(),
-      findOne: jest.fn(),
-      create: jest.fn(),
-      findOneAndUpdate: jest.fn(),
-      deleteMany: jest.fn(),
-      countDocuments: jest.fn()
-    },
-    CourseAllocationModel: {
-      find: jest.fn(),
-      findOne: jest.fn(),
-      create: jest.fn(),
-      deleteMany: jest.fn()
-    },
-    AllocationConflictModel: {
-      find: jest.fn(),
-      create: jest.fn(),
-      deleteMany: jest.fn()
-    },
-    FacultyModel: {
-      find: jest.fn()
-    },
-    CourseOfferingModel: {
-      find: jest.fn()
-    },
-    FacultyPreferenceModel: {
-      find: jest.fn()
-    },
-    CourseModel: {
-      find: jest.fn()
-    },
-    ProgramModel: {
-      find: jest.fn()
-    }
+// Mock models with proper typing
+jest.mock('@/lib/models', () => {
+  const createMockModel = (name: string) => {
+    const MockModel = function(this: any, data: any) {
+      Object.assign(this, data);
+      this.save = jest.fn().mockResolvedValue(this);
+      this.toJSON = jest.fn().mockReturnValue(data);
+    } as any;
+    
+    MockModel.find = jest.fn();
+    MockModel.findOne = jest.fn();
+    MockModel.create = jest.fn();
+    MockModel.findOneAndUpdate = jest.fn();
+    MockModel.deleteMany = jest.fn();
+    MockModel.insertMany = jest.fn();
+    MockModel.countDocuments = jest.fn();
+    
+    return MockModel;
   };
-  return mockModels;
+
+  const mockAllocationSessionModel = createMockModel('AllocationSession');
+  mockAllocationSessionModel.find.mockReturnValue({
+    sort: jest.fn().mockReturnValue({
+      lean: jest.fn().mockResolvedValue([])
+    })
+  });
+
+  const mockCourseAllocationModel = createMockModel('CourseAllocation');
+  const mockAllocationConflictModel = createMockModel('AllocationConflict');
+
+  return {
+    AllocationSessionModel: mockAllocationSessionModel,
+    CourseAllocationModel: mockCourseAllocationModel,
+    AllocationConflictModel: mockAllocationConflictModel,
+    FacultyModel: (() => {
+      const model = createMockModel('Faculty');
+      model.find.mockReturnValue({
+        lean: jest.fn().mockResolvedValue([])
+      });
+      return model;
+    })(),
+    CourseOfferingModel: (() => {
+      const model = createMockModel('CourseOffering');
+      model.find.mockReturnValue({
+        lean: jest.fn().mockResolvedValue([])
+      });
+      return model;
+    })(),
+    FacultyPreferenceModel: (() => {
+      const model = createMockModel('FacultyPreference');
+      model.find.mockReturnValue({
+        lean: jest.fn().mockResolvedValue([])
+      });
+      return model;
+    })(),
+    CourseModel: (() => {
+      const model = createMockModel('Course');
+      model.find.mockReturnValue({
+        lean: jest.fn().mockResolvedValue([])
+      });
+      return model;
+    })(),
+    ProgramModel: (() => {
+      const model = createMockModel('Program');
+      model.find.mockReturnValue({
+        lean: jest.fn().mockResolvedValue([])
+      });
+      return model;
+    })()
+  };
 });
 
-// Mock session data
-const mockSession = {
-  id: 'test-session-1',
-  name: 'Test Session 2025-26',
-  academicYear: '2025-26',
-  semesters: [1, 3, 5],
-  status: 'draft',
-  save: jest.fn(),
-  toJSON: jest.fn().mockReturnValue({
+// Create a mock session instance
+const createMockSession = (overrides = {}) => {
+  const sessionData = {
     id: 'test-session-1',
     name: 'Test Session 2025-26',
     academicYear: '2025-26',
     semesters: [1, 3, 5],
-    status: 'draft'
-  })
+    status: 'draft',
+    targetPrograms: ['btech-cse'],
+    algorithmSettings: {
+      prioritizeSeniority: true,
+      expertiseWeightage: 0.4
+    },
+    ...overrides
+  };
+  
+  return {
+    ...sessionData,
+    save: jest.fn().mockResolvedValue(sessionData),
+    toJSON: jest.fn().mockReturnValue(sessionData)
+  };
 };
+
+const mockSession = createMockSession();
 
 const mockAllocation = {
   id: 'test-allocation-1',
@@ -77,99 +117,28 @@ const mockAllocation = {
   status: 'pending'
 };
 
-const mockModels = {
-  AllocationSessionModel: {
-    find: jest.fn() as jest.MockedFunction<any>,
-    findOne: jest.fn() as jest.MockedFunction<any>,
-    create: jest.fn() as jest.MockedFunction<any>,
-    findOneAndUpdate: jest.fn() as jest.MockedFunction<any>,
-    deleteMany: jest.fn() as jest.MockedFunction<any>,
-    countDocuments: jest.fn() as jest.MockedFunction<any>
-  },
-  CourseAllocationModel: {
-    find: jest.fn() as jest.MockedFunction<any>,
-    findOne: jest.fn() as jest.MockedFunction<any>,
-    insertMany: jest.fn() as jest.MockedFunction<any>,
-    deleteMany: jest.fn() as jest.MockedFunction<any>,
-    countDocuments: jest.fn() as jest.MockedFunction<any>
-  },
-  AllocationConflictModel: {
-    find: jest.fn() as jest.MockedFunction<any>,
-    deleteMany: jest.fn() as jest.MockedFunction<any>,
-    insertMany: jest.fn() as jest.MockedFunction<any>,
-    countDocuments: jest.fn() as jest.MockedFunction<any>
-  },
-  FacultyModel: {
-    find: jest.fn() as jest.MockedFunction<any>,
-    countDocuments: jest.fn() as jest.MockedFunction<any>
-  },
-  CourseOfferingModel: {
-    find: jest.fn() as jest.MockedFunction<any>,
-    countDocuments: jest.fn() as jest.MockedFunction<any>
-  },
-  FacultyPreferenceModel: {
-    find: jest.fn() as jest.MockedFunction<any>,
-    countDocuments: jest.fn() as jest.MockedFunction<any>
-  },
-  CourseModel: {
-    find: jest.fn() as jest.MockedFunction<any>,
-    countDocuments: jest.fn() as jest.MockedFunction<any>
-  },
-  ProgramModel: {
-    find: jest.fn() as jest.MockedFunction<any>,
-    countDocuments: jest.fn() as jest.MockedFunction<any>
-  }
-};
-
-jest.mock('../lib/models', () => mockModels);
 
 // Mock allocation engine
-jest.mock('../lib/algorithms/allocationEngine', () => ({
+jest.mock('@/lib/algorithms/allocationEngine', () => ({
   createAllocationEngine: jest.fn()
 }));
 
-describe.skip('Allocation API Endpoints', () => {
+describe('Allocation API Endpoints', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     
-    // Setup mock return values using require to get the mocked models
-    const { AllocationSessionModel, CourseAllocationModel, AllocationConflictModel, 
+    // Get all models from the mock
+    const { AllocationSessionModel, CourseAllocationModel, AllocationConflictModel,
             FacultyModel, CourseOfferingModel, FacultyPreferenceModel, 
-            CourseModel, ProgramModel } = require('../lib/models');
+            CourseModel, ProgramModel } = require('@/lib/models');
     
-    // Setup default mock values
-    AllocationSessionModel.find.mockResolvedValue([mockSession]);
-    AllocationSessionModel.findOne.mockResolvedValue(mockSession);
-    AllocationSessionModel.create.mockResolvedValue(mockSession);
-    
-    CourseAllocationModel.find.mockResolvedValue([mockAllocation]);
-    CourseAllocationModel.deleteMany.mockResolvedValue({ deletedCount: 0 });
-    
-    const { connectMongoose } = require('../lib/mongodb');
-    connectMongoose.mockResolvedValue(undefined);
-    
-    const { createAllocationEngine } = require('../lib/algorithms/allocationEngine');
-    const mockAllocateCourses = jest.fn() as jest.MockedFunction<any>;
-    mockAllocateCourses.mockResolvedValue({
-      allocations: [mockAllocation],
-      conflicts: [],
-      statistics: {
-        totalCourses: 1,
-        allocatedCourses: 1,
-        totalFaculty: 1,
-        facultyWithFullLoad: 0,
-        conflictsDetected: 0,
-        averageSatisfactionScore: 85
-      }
+    // Setup mock return values for main models
+    AllocationSessionModel.find.mockReturnValue({
+      sort: jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue([mockSession])
+      })
     });
-    
-    const mockEngine = {
-      allocateCourses: mockAllocateCourses
-    };
-    (createAllocationEngine as jest.Mock).mockReturnValue(mockEngine);
-    
-    AllocationSessionModel.find.mockResolvedValue([mockSession]);
-    AllocationSessionModel.findOne.mockResolvedValue(mockSession);
+    AllocationSessionModel.findOne.mockResolvedValue(null);
     AllocationSessionModel.create.mockResolvedValue(mockSession);
     AllocationSessionModel.findOneAndUpdate.mockResolvedValue(mockSession);
     AllocationSessionModel.deleteMany.mockResolvedValue({ deletedCount: 0 });
@@ -186,45 +155,79 @@ describe.skip('Allocation API Endpoints', () => {
     AllocationConflictModel.insertMany.mockResolvedValue([]);
     AllocationConflictModel.countDocuments.mockResolvedValue(0);
     
-    FacultyModel.find.mockResolvedValue([{
-      id: 'faculty-1',
-      displayName: 'Dr. John Doe',
-      department: 'Computer Science'
-    }]);
+    FacultyModel.find.mockReturnValue({
+      lean: jest.fn().mockResolvedValue([{
+        id: 'faculty-1',
+        displayName: 'Dr. John Doe',
+        department: 'Computer Science'
+      }])
+    });
     FacultyModel.countDocuments.mockResolvedValue(1);
     
-    CourseOfferingModel.find.mockResolvedValue([{
-      id: 'offering-1',
-      courseId: 'course-1',
-      semester: 1,
-      academicYear: '2025-26'
-    }]);
+    CourseOfferingModel.find.mockReturnValue({
+      lean: jest.fn().mockResolvedValue([{
+        id: 'offering-1',
+        courseId: 'course-1',
+        semester: 1,
+        academicYear: '2025-26'
+      }])
+    });
     CourseOfferingModel.countDocuments.mockResolvedValue(1);
     
-    FacultyPreferenceModel.find.mockResolvedValue([{
-      id: 'pref-1',
-      facultyId: 'faculty-1',
-      preferredCourses: [{
-        courseOfferingId: 'offering-1',
-        priority: 1,
-        expertiseLevel: 9
-      }]
-    }]);
+    FacultyPreferenceModel.find.mockReturnValue({
+      lean: jest.fn().mockResolvedValue([{
+        id: 'pref-1',
+        facultyId: 'faculty-1',
+        preferredCourses: [{
+          courseOfferingId: 'offering-1',
+          priority: 1,
+          expertiseLevel: 9
+        }]
+      }])
+    });
     FacultyPreferenceModel.countDocuments.mockResolvedValue(1);
     
-    CourseModel.find.mockResolvedValue([{
-      id: 'course-1',
-      subjectName: 'Programming Fundamentals',
-      subcode: 'CS101'
-    }]);
+    CourseModel.find.mockReturnValue({
+      lean: jest.fn().mockResolvedValue([{
+        id: 'course-1',
+        subjectName: 'Programming Fundamentals',
+        subcode: 'CS101'
+      }])
+    });
     CourseModel.countDocuments.mockResolvedValue(1);
     
-    ProgramModel.find.mockResolvedValue([{
-      id: 'btech-cse',
-      name: 'B.Tech Computer Science',
-      department: 'Computer Science'
-    }]);
+    ProgramModel.find.mockReturnValue({
+      lean: jest.fn().mockResolvedValue([{
+        id: 'btech-cse',
+        name: 'B.Tech Computer Science',
+        department: 'Computer Science'
+      }])
+    });
     ProgramModel.countDocuments.mockResolvedValue(1);
+    
+    // Setup MongoDB mock
+    const { connectMongoose } = require('@/lib/mongodb');
+    connectMongoose.mockResolvedValue(undefined);
+    
+    // Setup allocation engine mock
+    const { createAllocationEngine } = require('@/lib/algorithms/allocationEngine');
+    const mockAllocateCourses = jest.fn().mockResolvedValue({
+      allocations: [mockAllocation],
+      conflicts: [],
+      statistics: {
+        totalCourses: 1,
+        allocatedCourses: 1,
+        totalFaculty: 1,
+        facultyWithFullLoad: 0,
+        conflictsDetected: 0,
+        averageSatisfactionScore: 85
+      }
+    });
+    
+    const mockEngine = {
+      allocateCourses: mockAllocateCourses
+    };
+    createAllocationEngine.mockReturnValue(mockEngine);
   });
 
   describe('Allocation Sessions API', () => {
@@ -241,8 +244,12 @@ describe.skip('Allocation API Endpoints', () => {
       });
 
       it('should handle database errors gracefully', async () => {
-        const { AllocationSessionModel } = require('../lib/models');
-        AllocationSessionModel.find.mockRejectedValueOnce(new Error('Database error'));
+        const { AllocationSessionModel } = require('@/lib/models');
+        AllocationSessionModel.find.mockReturnValueOnce({
+          sort: jest.fn().mockReturnValue({
+            lean: jest.fn().mockRejectedValueOnce(new Error('Database error'))
+          })
+        });
 
         const request = new NextRequest('http://localhost:3000/api/allocation-sessions');
         const response = await GET(request);
@@ -262,6 +269,7 @@ describe.skip('Allocation API Endpoints', () => {
           semesters: [1, 3],
           targetPrograms: ['btech-cse'],
           allocationMethod: 'preference_based',
+          createdBy: 'admin@test.com',
           algorithmSettings: {
             prioritizeSeniority: true,
             expertiseWeightage: 0.4,
@@ -289,7 +297,7 @@ describe.skip('Allocation API Endpoints', () => {
 
       it('should validate required fields', async () => {
         const invalidData = {
-          // Missing required fields
+          // Missing required fields (name, semesters, createdBy)
           academicYear: '2025-26'
         };
 
@@ -314,6 +322,11 @@ describe.skip('Allocation API Endpoints', () => {
   describe('Allocation Execution API', () => {
     describe('POST /api/allocation-sessions/[id]/execute', () => {
       it('should execute allocation successfully', async () => {
+        // Override findOne to return draft session for execution
+        const { AllocationSessionModel } = require('@/lib/models');
+        const freshSession = createMockSession(); // Create fresh session for this test
+        AllocationSessionModel.findOne.mockResolvedValueOnce(freshSession);
+
         const request = new NextRequest('http://localhost:3000/api/allocation-sessions/test-session-1/execute', {
           method: 'POST'
         });
@@ -332,7 +345,7 @@ describe.skip('Allocation API Endpoints', () => {
       });
 
       it('should handle session not found', async () => {
-        const { AllocationSessionModel } = require('../lib/models');
+        const { AllocationSessionModel } = require('@/lib/models');
         AllocationSessionModel.findOne.mockResolvedValueOnce(null);
 
         const request = new NextRequest('http://localhost:3000/api/allocation-sessions/nonexistent/execute', {
@@ -352,12 +365,9 @@ describe.skip('Allocation API Endpoints', () => {
       });
 
       it('should prevent execution of completed sessions', async () => {
-        const completedSession = {
-          ...mockSession,
-          status: 'completed'
-        };
+        const completedSession = createMockSession({ status: 'completed' });
         
-        const { AllocationSessionModel } = require('../lib/models');
+        const { AllocationSessionModel } = require('@/lib/models');
         AllocationSessionModel.findOne.mockResolvedValueOnce(completedSession);
 
         const request = new NextRequest('http://localhost:3000/api/allocation-sessions/completed-session/execute', {
@@ -377,8 +387,12 @@ describe.skip('Allocation API Endpoints', () => {
       });
 
       it('should handle execution with no course offerings', async () => {
-        const { CourseOfferingModel } = require('../lib/models');
-        CourseOfferingModel.find.mockResolvedValueOnce([]);
+        const { AllocationSessionModel, CourseOfferingModel } = require('@/lib/models');
+        const freshSession = createMockSession(); // Create fresh session for this test
+        AllocationSessionModel.findOne.mockResolvedValueOnce(freshSession);
+        CourseOfferingModel.find.mockReturnValueOnce({
+          lean: jest.fn().mockResolvedValueOnce([])
+        });
 
         const request = new NextRequest('http://localhost:3000/api/allocation-sessions/test-session-1/execute', {
           method: 'POST'
@@ -397,8 +411,12 @@ describe.skip('Allocation API Endpoints', () => {
       });
 
       it('should handle execution with no faculty', async () => {
-        const { FacultyModel } = require('../lib/models');
-        FacultyModel.find.mockResolvedValueOnce([]);
+        const { AllocationSessionModel, FacultyModel } = require('@/lib/models');
+        const freshSession = createMockSession(); // Create fresh session for this test
+        AllocationSessionModel.findOne.mockResolvedValueOnce(freshSession);
+        FacultyModel.find.mockReturnValueOnce({
+          lean: jest.fn().mockResolvedValueOnce([])
+        });
 
         const request = new NextRequest('http://localhost:3000/api/allocation-sessions/test-session-1/execute', {
           method: 'POST'
@@ -420,7 +438,7 @@ describe.skip('Allocation API Endpoints', () => {
 
   describe('Course Allocations API', () => {
     it('should fetch allocations for a session', async () => {
-      const { CourseAllocationModel } = require('../lib/models');
+      const { CourseAllocationModel } = require('@/lib/models');
       
       const request = new NextRequest('http://localhost:3000/api/course-allocations?sessionId=test-session-1');
       
@@ -589,7 +607,7 @@ describe.skip('Allocation API Endpoints', () => {
     });
 
     it('should handle database connection errors', async () => {
-      const { connectMongoose } = require('../lib/mongodb');
+      const { connectMongoose } = require('@/lib/mongodb');
       connectMongoose.mockRejectedValueOnce(new Error('Connection failed'));
 
       const request = new NextRequest('http://localhost:3000/api/allocation-sessions');

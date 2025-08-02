@@ -40,6 +40,9 @@ describe('AdvancedTimetableEngine', () => {
         semester: 1,
         programId: 'test-program',
         batchIds: ['test-batch'],
+        algorithm: 'genetic' as const,
+        constraints: mockConstraints,
+        considerPreferences: true,
         includeRoomOptimization: true,
         includeResourceOptimization: true,
         priorityWeights: {
@@ -105,6 +108,9 @@ describe('AdvancedTimetableEngine', () => {
         semester: 1,
         programId: 'test-program',
         batchIds: ['test-batch'],
+        algorithm: 'genetic' as const,
+        constraints: mockConstraints,
+        considerPreferences: true,
         includeRoomOptimization: true,
         includeResourceOptimization: true,
         priorityWeights: {

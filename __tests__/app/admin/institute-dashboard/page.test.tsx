@@ -225,7 +225,7 @@ describe('InstituteDashboardPage', () => {
   it('displays severity-based alert styling', async () => {
     await renderWithTimers();
     
-    let alertsTab;
+    let alertsTab: HTMLElement;
     await waitFor(() => {
       alertsTab = screen.getByRole('tab', { name: /alerts/i });
       fireEvent.click(alertsTab);
@@ -250,7 +250,7 @@ describe('InstituteDashboardPage', () => {
   it('handles alert resolution', async () => {
     await renderWithTimers();
     
-    let alertsTab;
+    let alertsTab: HTMLElement;
     await waitFor(() => {
       alertsTab = screen.getByRole('tab', { name: /alerts/i });
       fireEvent.click(alertsTab);
@@ -295,7 +295,7 @@ describe('InstituteDashboardPage', () => {
   it('displays peak hours information', async () => {
     await renderWithTimers();
     
-    let resourcesTab;
+    let resourcesTab: HTMLElement;
     await waitFor(() => {
       resourcesTab = screen.getByRole('tab', { name: /resources/i });
       fireEvent.click(resourcesTab);

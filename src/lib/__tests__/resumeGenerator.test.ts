@@ -7,6 +7,7 @@ jest.mock('puppeteer', () => {
     setViewport: jest.fn().mockResolvedValue(undefined),
     setContent: jest.fn().mockResolvedValue(undefined),
     evaluateHandle: jest.fn().mockResolvedValue({}),
+    evaluate: jest.fn().mockResolvedValue({}),
     pdf: jest.fn().mockResolvedValue(Buffer.from('mocked-pdf-content'))
   };
   const mockBrowser = {
@@ -455,7 +456,7 @@ describe('ResumeGenerator', () => {
     });
   });
 
-  describe.skip('PDF and DOCX generation', () => {
+  describe('PDF and DOCX generation', () => {
     it('should generate PDF resume', async () => {
       const resumeData: ResumeData = {
         fullName: 'Test Student',
