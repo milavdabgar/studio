@@ -62,6 +62,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       contactNumber: faculty.contactNumber,
       address: faculty.address,
       department: faculty.department,
+      photoURL: faculty.photoURL, // Include faculty photo URL
       // Add faculty-specific data
       designation: faculty.designation,
       jobType: faculty.jobType,
@@ -79,6 +80,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       fullNameGtuFormat: facultyAsStudent.fullNameGtuFormat,
       department: facultyAsStudent.department,
       email: facultyAsStudent.personalEmail,
+      photoURL: facultyAsStudent.photoURL,
       hasBasicData: !!(facultyAsStudent.fullNameGtuFormat && facultyAsStudent.department)
     });
 
