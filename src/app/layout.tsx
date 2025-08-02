@@ -7,7 +7,7 @@ import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
 import { 
-    Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, Plane, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Clock, ListChecks, BookOpenCheck, FilePieChart, Paperclip, UserPlus, BellRing, NotebookPen, BookOpenText, Newspaper, Calendar} from 'lucide-react';
+    Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, Plane, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, Users, FileText as AssessmentIcon, BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Clock, ListChecks, BookOpenCheck, FilePieChart, Paperclip, UserPlus, BellRing, NotebookPen, BookOpenText, Newspaper, Calendar, Target, Zap, CheckCircle2, CheckCircle, TrendingUp} from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -44,37 +44,97 @@ const DEFAULT_USER: User = {
   dataAiHint: 'user avatar'
 };
 
-const adminNavItems = [
-  { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard-link' }, 
-  { href: '/admin/users', icon: UsersIconLucide, label: 'User Management', id: 'admin-users-link' },
-  { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles-link' },
-  { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'admin-institutes-link'},
-  { href: '/admin/buildings', icon: Building, label: 'Buildings', id: 'admin-buildings-link'},
-  { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'admin-rooms-link'},
-  { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'admin-committees-link'},
-  { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students-link' },
-  { href: '/admin/faculty', icon: UserCog, label: 'Staff Mgt.', id: 'admin-faculty-link' }, 
-  { href: '/admin/faculty-workload', icon: Briefcase, label: 'Faculty Workload', id: 'admin-faculty-workload-link'},
-  { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments-link' },
-  { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs-link' },
-  { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches-link' },
-  { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses-link' },
-  { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Mgt.', id: 'admin-curriculum-link' },
-  { href: '/admin/academic-terms', icon: Calendar, label: 'Academic Terms', id: 'admin-academic-terms-link' },
-  { href: '/admin/course-offerings', icon: BookOpenCheck, label: 'Course Offerings', id: 'admin-course-offerings-link' },
-  { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments-link' },
-  { href: '/admin/examinations', icon: Award, label: 'Examination Mgt.', id: 'admin-examinations-link'},
-  { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'admin-enrollments-link'},
-  { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-nav-link' }, 
-  { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation-link' },
-  { href: '/admin/timetables', icon: Clock, label: 'Timetables', id: 'admin-timetables-link'},
-  { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback-link' },
-  { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'admin-reporting-link' },
-  { href: '/admin/project-fair/events', icon: Briefcase, label: 'Project Fair Events', id: 'admin-project-event-nav-link'},
-  { href: '/admin/results', icon: Award, label: 'Results Mgt.', id: 'admin-results-link'},
-  { href: '/admin/settings', icon: Settings, label: 'System Settings', id: 'admin-settings-nav-link'},
-  { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'admin-blog-link' },
+const adminNavGroups = [
+  {
+    title: 'Main',
+    items: [
+      { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard-link' }
+    ]
+  },
+  {
+    title: 'Timetable Automation',
+    items: [
+      { href: '/admin/preference-campaigns', icon: Target, label: 'Preference Campaigns', id: 'admin-preference-campaigns-link'},
+      { href: '/admin/faculty-preferences', icon: Users, label: 'Faculty Preferences', id: 'admin-faculty-preferences-link'},
+      { href: '/admin/course-allocation', icon: BarChart3, label: 'Course Allocation', id: 'admin-course-allocation-link'},
+      { href: '/admin/course-allocation/approval', icon: CheckCircle2, label: 'Allocation Approval', id: 'admin-allocation-approval-link'},
+      { href: '/admin/timetables/auto-generate', icon: Zap, label: 'Auto Generate', id: 'admin-auto-generate-link'},
+      { href: '/admin/timetables', icon: Clock, label: 'View Timetables', id: 'admin-timetables-link'},
+      { href: '/admin/timetable/approval', icon: CheckCircle, label: 'Timetable Approval', id: 'admin-timetable-approval-link'},
+      { href: '/admin/timetable/analytics', icon: TrendingUp, label: 'Timetable Analytics', id: 'admin-timetable-analytics-link'}
+    ]
+  },
+  {
+    title: 'User Management',
+    items: [
+      { href: '/admin/users', icon: UsersIconLucide, label: 'User Accounts', id: 'admin-users-link' },
+      { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles-link' },
+      { href: '/admin/faculty', icon: UserCog, label: 'Faculty Management', id: 'admin-faculty-link' }, 
+      { href: '/admin/faculty-workload', icon: Briefcase, label: 'Faculty Workload', id: 'admin-faculty-workload-link'},
+      { href: '/admin/students', icon: BookUser, label: 'Student Management', id: 'admin-students-link' }
+    ]
+  },
+  {
+    title: 'Academic Structure',
+    items: [
+      { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'admin-institutes-link'},
+      { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments-link' },
+      { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs-link' },
+      { href: '/admin/academic-terms', icon: Calendar, label: 'Academic Terms', id: 'admin-academic-terms-link' },
+      { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches-link' }
+    ]
+  },
+  {
+    title: 'Curriculum & Courses',
+    items: [
+      { href: '/admin/courses', icon: ClipboardList, label: 'Course Management', id: 'admin-courses-link' },
+      { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Management', id: 'admin-curriculum-link' },
+      { href: '/admin/course-offerings', icon: BookOpenCheck, label: 'Course Offerings', id: 'admin-course-offerings-link' },
+      { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Management', id: 'admin-enrollments-link'}
+    ]
+  },
+  {
+    title: 'Assessment & Evaluation',
+    items: [
+      { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments-link' },
+      { href: '/admin/results', icon: Award, label: 'Results Management', id: 'admin-results-link'},
+      { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-nav-link' }
+    ]
+  },
+  {
+    title: 'Infrastructure',
+    items: [
+      { href: '/admin/buildings', icon: Building, label: 'Buildings', id: 'admin-buildings-link'},
+      { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'admin-rooms-link'},
+      { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'admin-committees-link'},
+      { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation-link' },
+      { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Room Allocation', id: 'admin-room-allocation-link' }
+    ]
+  },
+  {
+    title: 'Analytics & Reports',
+    items: [
+      { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'admin-reporting-link' },
+      { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback-link' },
+      { href: '/admin/approvals', icon: CheckCircle, label: 'Pending Approvals', id: 'admin-approvals-link' }
+    ]
+  },
+  {
+    title: 'Events & Projects',
+    items: [
+      { href: '/admin/project-fair/events', icon: Briefcase, label: 'Project Fair Events', id: 'admin-project-event-nav-link'}
+    ]
+  },
+  {
+    title: 'System Administration',
+    items: [
+      { href: '/admin/settings', icon: Settings, label: 'System Settings', id: 'admin-settings-nav-link'},
+      { href: '/posts/en', icon: Newspaper, label: 'Blog Management', id: 'admin-blog-link' }
+    ]
+  }
 ];
+
+const adminNavItems = adminNavGroups.flatMap(group => group.items);
 
 const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.ElementType; label: string; id: string }>> = {
   admin: adminNavItems,
@@ -472,16 +532,53 @@ export default function RootLayout({
               </SidebarHeader>
             <SidebarContent className="p-2">
               <SidebarMenu>
-                {currentNavItems.map((item) => (
-                  <SidebarMenuItem key={item.id}>
-                    <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname?.startsWith(item.href + '/') && item.href !== '/dashboard' && item.href !== '/dashboard/hod' && item.href !== '/dashboard/committee')} asChild>
-                      <Link href={item.href}>
-                        <item.icon />
-                        <span>{item.label}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {currentUser.activeRole === 'admin' || currentUser.activeRole === 'super_admin' ? (
+                  // Collapsible grouped navigation for admin users
+                  adminNavGroups.map((group) => (
+                    <details key={group.title} className="group mb-2" open={group.title === 'Main' || group.title === 'Timetable Automation'}>
+                      <summary className="flex items-center justify-between px-3 py-2 text-xs font-semibold text-sidebar-foreground/70 uppercase tracking-wider cursor-pointer hover:text-sidebar-foreground transition-colors">
+                        {group.title}
+                        <svg 
+                          className="h-3 w-3 transition-transform group-open:rotate-90" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </summary>
+                      <div className="ml-2 space-y-1">
+                        {group.items.map((item) => (
+                          <SidebarMenuItem key={item.id}>
+                            <SidebarMenuButton 
+                              tooltip={item.label} 
+                              isActive={pathname === item.href || (pathname?.startsWith(item.href + '/') && item.href !== '/dashboard' && item.href !== '/dashboard/hod' && item.href !== '/dashboard/committee')} 
+                              asChild
+                              className="text-xs"
+                            >
+                              <Link href={item.href}>
+                                <item.icon className="h-3 w-3" />
+                                <span>{item.label}</span>
+                              </Link>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        ))}
+                      </div>
+                    </details>
+                  ))
+                ) : (
+                  // Regular navigation for other users
+                  currentNavItems.map((item) => (
+                    <SidebarMenuItem key={item.id}>
+                      <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname?.startsWith(item.href + '/') && item.href !== '/dashboard' && item.href !== '/dashboard/hod' && item.href !== '/dashboard/committee')} asChild>
+                        <Link href={item.href}>
+                          <item.icon />
+                          <span>{item.label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))
+                )}
               </SidebarMenu>
             </SidebarContent>
             <SidebarFooter className="p-4 border-t border-sidebar-border dark:border-gray-700">

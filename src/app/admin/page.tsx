@@ -23,7 +23,22 @@ import {
   Zap,
   Brain,
   ArrowRight,
-  PlusCircle
+  PlusCircle,
+  UserCog,
+  Award,
+  Building2,
+  BookOpenText,
+  CalendarRange,
+  UserPlus,
+  CalendarCheck,
+  Landmark,
+  DoorOpen,
+  Users2 as CommitteeIcon,
+  Settings2 as ResourceIcon,
+  BotMessageSquare,
+  Briefcase,
+  Newspaper,
+  FileText as AssessmentIcon
 } from 'lucide-react';
 
 const DashboardPage = () => {
@@ -74,32 +89,18 @@ const DashboardPage = () => {
 
   const managementSections = [
     {
-      title: 'Timetable Management',
-      description: 'Complete timetable automation system',
-      icon: Clock,
+      title: 'Timetable Automation',
+      description: 'Complete automated timetable generation system',
+      icon: Target,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50 dark:bg-blue-950',
       items: [
-        { label: 'Preference Campaigns', href: '/admin/preference-campaigns', icon: Target, badge: stats.activeCampaigns },
-        { label: 'Faculty Preferences', href: '/admin/faculty-preferences', icon: Users },
-        { label: 'Course Allocation', href: '/admin/course-allocation', icon: BarChart3, badge: stats.pendingAllocations },
-        { label: 'Auto Generate', href: '/admin/timetables/auto-generate', icon: Settings },
-        { label: 'View Timetables', href: '/admin/timetables', icon: Clock },
-        { label: 'Course Offerings', href: '/admin/course-offerings', icon: BookOpen }
-      ]
-    },
-    {
-      title: 'Academic Management',
-      description: 'Core academic data and curriculum',
-      icon: BookOpen,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50 dark:bg-green-950',
-      items: [
-        { label: 'Academic Terms', href: '/admin/academic-terms', icon: Calendar },
-        { label: 'Courses', href: '/admin/courses', icon: BookOpen, badge: stats.totalCourses },
-        { label: 'Programs', href: '/admin/programs', icon: FileText },
-        { label: 'Curriculum', href: '/admin/curriculum', icon: FileText },
-        { label: 'Batches', href: '/admin/batches', icon: Users }
+        { label: 'Preference Campaigns', href: '/admin/preference-campaigns', icon: Target, badge: stats.activeCampaigns, description: 'Collect faculty preferences' },
+        { label: 'Faculty Preferences', href: '/admin/faculty-preferences', icon: Users, description: 'View & manage preferences' },
+        { label: 'Course Allocation', href: '/admin/course-allocation', icon: BarChart3, badge: stats.pendingAllocations, description: 'Semi-automatic allocation' },
+        { label: 'Auto Generate', href: '/admin/timetables/auto-generate', icon: Zap, description: 'Generate optimized timetables' },
+        { label: 'View Timetables', href: '/admin/timetables', icon: Clock, description: 'Multi-stakeholder views' },
+        { label: 'Course Offerings', href: '/admin/course-offerings', icon: BookOpen, description: 'Manage course offerings' }
       ]
     },
     {
@@ -109,21 +110,68 @@ const DashboardPage = () => {
       color: 'text-purple-600',
       bgColor: 'bg-purple-50 dark:bg-purple-950',
       items: [
-        { label: 'Faculty', href: '/admin/faculty', icon: UserCheck, badge: stats.totalFaculty },
-        { label: 'Students', href: '/admin/students', icon: Users, badge: stats.totalStudents },
-        { label: 'Users', href: '/admin/users', icon: Users }
+        { label: 'Faculty Management', href: '/admin/faculty', icon: UserCheck, badge: stats.totalFaculty, description: 'Staff & workload' },
+        { label: 'Student Management', href: '/admin/students', icon: Users, badge: stats.totalStudents, description: 'Student records' },
+        { label: 'User Accounts', href: '/admin/users', icon: Users, description: 'System users' },
+        { label: 'Role Management', href: '/admin/roles', icon: UserCog, description: 'Permissions & roles' },
+        { label: 'Faculty Workload', href: '/admin/faculty-workload', icon: Briefcase, description: 'Workload analysis' }
       ]
     },
     {
-      title: 'Infrastructure',
-      description: 'Buildings, rooms, and facilities',
+      title: 'Academic Management',
+      description: 'Curriculum, courses, and academic structure',
+      icon: BookOpen,
+      color: 'text-green-600',
+      bgColor: 'bg-green-50 dark:bg-green-950',
+      items: [
+        { label: 'Academic Terms', href: '/admin/academic-terms', icon: Calendar, description: 'Semesters & terms' },
+        { label: 'Programs', href: '/admin/programs', icon: FileText, description: 'Degree programs' },
+        { label: 'Departments', href: '/admin/departments', icon: Building2, description: 'Academic departments' },
+        { label: 'Courses', href: '/admin/courses', icon: BookOpen, badge: stats.totalCourses, description: 'Course catalog' },
+        { label: 'Curriculum', href: '/admin/curriculum', icon: BookOpenText, description: 'Curriculum structure' },
+        { label: 'Batches', href: '/admin/batches', icon: CalendarRange, description: 'Student batches' }
+      ]
+    },
+    {
+      title: 'Assessment & Evaluation',
+      description: 'Examinations, assessments, and results',
+      icon: Award,
+      color: 'text-indigo-600',
+      bgColor: 'bg-indigo-50 dark:bg-indigo-950',
+      items: [
+        { label: 'Assessments', href: '/admin/assessments', icon: AssessmentIcon, description: 'Internal assessments' },
+        { label: 'Examinations', href: '/admin/examinations', icon: Award, description: 'Exam management' },
+        { label: 'Results Management', href: '/admin/results', icon: TrendingUp, description: 'Student results' },
+        { label: 'Enrollments', href: '/admin/enrollments', icon: UserPlus, description: 'Course enrollments' },
+        { label: 'Mark Attendance', href: '/faculty/attendance/mark', icon: CalendarCheck, description: 'Quick attendance' }
+      ]
+    },
+    {
+      title: 'Infrastructure & Resources',
+      description: 'Buildings, rooms, and resource allocation',
       icon: Building,
       color: 'text-orange-600',
       bgColor: 'bg-orange-50 dark:bg-orange-950',
       items: [
-        { label: 'Buildings', href: '/admin/buildings', icon: Building },
-        { label: 'Rooms', href: '/admin/rooms', icon: Building },
-        { label: 'Room Utilization', href: '/admin/rooms/utilization', icon: BarChart3 }
+        { label: 'Institutes', href: '/admin/institutes', icon: Landmark, description: 'Institute management' },
+        { label: 'Buildings', href: '/admin/buildings', icon: Building, description: 'Building management' },
+        { label: 'Rooms', href: '/admin/rooms', icon: DoorOpen, description: 'Room management' },
+        { label: 'Committees', href: '/admin/committees', icon: CommitteeIcon, description: 'Committee structure' },
+        { label: 'Resource Allocation', href: '/admin/resource-allocation', icon: ResourceIcon, description: 'Resource booking' }
+      ]
+    },
+    {
+      title: 'Analytics & Operations',
+      description: 'Reports, analytics, and system operations',
+      icon: BarChart3,
+      color: 'text-emerald-600',
+      bgColor: 'bg-emerald-50 dark:bg-emerald-950',
+      items: [
+        { label: 'Reports & Analytics', href: '/admin/reporting-analytics', icon: BarChart3, description: 'Data insights' },
+        { label: 'Feedback Analysis', href: '/admin/feedback-analysis', icon: BotMessageSquare, description: 'AI feedback analysis' },
+        { label: 'Project Fair Events', href: '/admin/project-fair/events', icon: Briefcase, description: 'Project management' },
+        { label: 'System Settings', href: '/admin/settings', icon: Settings, description: 'System configuration' },
+        { label: 'Blog Management', href: '/posts/en', icon: Newspaper, description: 'Content management' }
       ]
     }
   ];
@@ -133,9 +181,9 @@ const DashboardPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
+          <h1 className="text-3xl font-bold text-foreground">Admin Hub</h1>
           <p className="text-muted-foreground mt-1">
-            Manage your institution's timetable automation and academic data
+            Complete administration center - access all system features and management tools
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -240,7 +288,7 @@ const DashboardPage = () => {
       </Card>
 
       {/* Management Sections */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {managementSections.map((section, index) => {
           const SectionIcon = section.icon;
           return (
@@ -260,19 +308,24 @@ const DashboardPage = () => {
                     const ItemIcon = item.icon;
                     return (
                       <Link key={itemIndex} href={item.href}>
-                        <div className="flex items-center justify-between p-3 hover:bg-muted/50 transition-colors">
-                          <div className="flex items-center gap-3">
-                            <ItemIcon className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm font-medium">{item.label}</span>
+                        <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors group">
+                          <div className="flex items-center gap-3 flex-1">
+                            <ItemIcon className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium">{item.label}</span>
+                                {item.badge && (
+                                  <Badge variant="secondary" className="text-xs">
+                                    {item.badge}
+                                  </Badge>
+                                )}
+                              </div>
+                              {item.description && (
+                                <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>
+                              )}
+                            </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            {item.badge && (
-                              <Badge variant="secondary" className="text-xs">
-                                {item.badge}
-                              </Badge>
-                            )}
-                            <ArrowRight className="h-3 w-3 text-muted-foreground" />
-                          </div>
+                          <ArrowRight className="h-3 w-3 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
                         </div>
                       </Link>
                     );
