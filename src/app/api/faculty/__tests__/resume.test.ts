@@ -2,6 +2,16 @@ import { NextRequest } from 'next/server';
 import { GET, POST } from '../[id]/resume/route';
 
 // Mock the actual dependencies used by the route
+jest.mock('@/lib/services/facultyResumeGenerator', () => ({
+  FacultyResumeGenerator: jest.fn().mockImplementation(() => ({
+    generateResumeData: jest.fn(),
+    generatePDF: jest.fn(),
+    generateDOCX: jest.fn(),
+    generateHTML: jest.fn(),
+    generatePlainText: jest.fn()
+  }))
+}));
+
 jest.mock('@/lib/services/resumeGenerator', () => ({
   resumeGenerator: {
     generateResumeData: jest.fn(),
@@ -23,10 +33,16 @@ jest.mock('@/lib/models', () => ({
 }));
 
 import { resumeGenerator } from '@/lib/services/resumeGenerator';
+import { FacultyResumeGenerator } from '@/lib/services/facultyResumeGenerator';
 import { FacultyModel } from '@/lib/models';
+import type { FacultyResumeData } from '@/lib/services/facultyResumeGenerator';
 
 const mockResumeGenerator = resumeGenerator as jest.Mocked<typeof resumeGenerator>;
+const MockFacultyResumeGenerator = FacultyResumeGenerator as jest.MockedClass<typeof FacultyResumeGenerator>;
 const mockFacultyModel = FacultyModel as jest.Mocked<typeof FacultyModel>;
+
+// Create a persistent mock instance
+let mockFacultyResumeInstance: any;
 
 describe('/api/faculty/[id]/resume', () => {
   const mockFaculty = {
@@ -62,7 +78,7 @@ describe('/api/faculty/[id]/resume', () => {
     updatedAt: '2024-07-01T00:00:00.000Z'
   };
 
-  const mockResumeData = {
+  const mockResumeData: FacultyResumeData = {
     fullName: 'Dr. John Michael Doe',
     title: 'Dr.',
     email: 'john.doe@gppalanpur.ac.in',
@@ -85,7 +101,26 @@ describe('/api/faculty/[id]/resume', () => {
     
     // Setup default mocks
     mockFacultyModel.findOne.mockResolvedValue(mockFaculty);
-    mockResumeGenerator.generateResumeData.mockReturnValue(mockResumeData);
+    mockResumeGenerator.generateResumeData.mockReturnValue(mockResumeData as any);
+    
+    // Setup faculty resume generator mock
+    mockFacultyResumeInstance = {
+      generateResumeData: jest.fn().mockReturnValue(mockResumeData),
+      generatePDF: jest.fn(),
+      generateDOCX: jest.fn(),
+      generateHTML: jest.fn(),
+      generatePlainText: jest.fn(),
+      contentConverter: {} as any,
+      formatFullName: jest.fn(),
+      generateResumeHTML: jest.fn(),
+      generatePDFPandoc: jest.fn(),
+      generateResumePDF: jest.fn(),
+      generateBiodataPDF: jest.fn(),
+      generateCVPDF: jest.fn(),
+      generateBiodataHTML: jest.fn(),
+      generateCVHTML: jest.fn()
+    };
+    MockFacultyResumeGenerator.mockImplementation(() => mockFacultyResumeInstance as any);
   });
 
   describe('GET method', () => {
@@ -257,15 +292,15 @@ describe('/api/faculty/[id]/resume', () => {
             title: 'Machine Learning in Education',
             journal: 'IEEE Transactions',
             year: '2023',
-            type: 'journal',
+            type: 'journal' as const,
             authors: ['John Doe', 'Jane Smith']
           }
         ],
-        projects: [
+        research: [
           {
             title: 'AI in Healthcare',
             description: 'Research on AI applications in medical diagnosis',
-            status: 'ongoing',
+            status: 'ongoing' as const,
             duration: '2022-2024'
           }
         ],
@@ -274,38 +309,29 @@ describe('/api/faculty/[id]/resume', () => {
             title: 'Best Paper Award',
             description: 'Received for outstanding research paper',
             date: '2023-06-15',
-            category: 'award'
+            category: 'award' as const
           }
         ],
-        skills: [
+        certifications: [
           {
             name: 'AWS Certified Developer',
-            level: 'Advanced',
-            category: 'Cloud Computing'
-          }
-        ],
-        education: [
-          {
-            degree: 'Ph.D.',
-            field: 'Computer Science',
-            institution: 'IIT Bombay',
-            year: 2020
+            issuer: 'Amazon Web Services',
+            date: '2023-01-15'
           }
         ]
       };
 
-      const enhancedResumeData = {
+      const enhancedResumeData: FacultyResumeData = {
         ...mockResumeData,
         experience: customData.experience,
         publications: customData.publications,
-        projects: customData.projects || mockResumeData.projects,
+        research: customData.research,
         achievements: customData.achievements,
-        education: customData.education || mockResumeData.education,
-        skills: customData.skills || mockResumeData.skills
+        certifications: customData.certifications
       };
 
       const mockPdfBuffer = Buffer.from('enhanced-pdf-content');
-      mockResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
+      mockFacultyResumeInstance.generatePDF.mockResolvedValue(mockPdfBuffer);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
         method: 'POST',
@@ -318,14 +344,14 @@ describe('/api/faculty/[id]/resume', () => {
       expect(response.status).toBe(200);
       expect(response.headers.get('Content-Type')).toBe('application/pdf');
 
-      expect(mockResumeGenerator.generatePDF).toHaveBeenCalledWith(enhancedResumeData);
+      expect(mockFacultyResumeInstance.generatePDF).toHaveBeenCalledWith(enhancedResumeData);
     });
 
     it('should use base resume data when custom data is not provided', async () => {
       const requestData = { format: 'html' };
 
       const mockHtmlContent = '<html><body>Base Resume</body></html>';
-      mockResumeGenerator.generateHTML.mockReturnValue(mockHtmlContent);
+      mockFacultyResumeInstance.generateHTML.mockReturnValue(mockHtmlContent);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
         method: 'POST',
@@ -336,7 +362,7 @@ describe('/api/faculty/[id]/resume', () => {
       const response = await POST(request, { params: Promise.resolve({ id: 'faculty-123' }) });
 
       expect(response.status).toBe(200);
-      expect(mockResumeGenerator.generateHTML).toHaveBeenCalledWith(mockResumeData);
+      expect(mockFacultyResumeInstance.generateHTML).toHaveBeenCalledWith(mockResumeData);
     });
 
     it('should default to PDF format in POST requests', async () => {
@@ -351,7 +377,7 @@ describe('/api/faculty/[id]/resume', () => {
       };
 
       const mockPdfBuffer = Buffer.from('custom-pdf-content');
-      mockResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
+      mockFacultyResumeInstance.generatePDF.mockResolvedValue(mockPdfBuffer);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
         method: 'POST',
@@ -363,7 +389,7 @@ describe('/api/faculty/[id]/resume', () => {
 
       expect(response.status).toBe(200);
       expect(response.headers.get('Content-Type')).toBe('application/pdf');
-      expect(mockResumeGenerator.generatePDF).toHaveBeenCalled();
+      expect(mockFacultyResumeInstance.generatePDF).toHaveBeenCalled();
     });
 
     it('should return 400 for missing faculty ID in POST', async () => {
@@ -411,7 +437,7 @@ describe('/api/faculty/[id]/resume', () => {
     });
 
     it('should handle generation errors in POST requests', async () => {
-      mockResumeGenerator.generateDOCX.mockRejectedValue(new Error('DOCX generation failed'));
+      mockFacultyResumeInstance.generateDOCX.mockRejectedValue(new Error('DOCX generation failed'));
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
         method: 'POST',
@@ -431,7 +457,7 @@ describe('/api/faculty/[id]/resume', () => {
       const customData = { format: 'pdf', experience: [] };
 
       const mockPdfBuffer = Buffer.from('enhanced-pdf-content');
-      mockResumeGenerator.generatePDF.mockResolvedValue(mockPdfBuffer);
+      mockFacultyResumeInstance.generatePDF.mockResolvedValue(mockPdfBuffer);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
         method: 'POST',
@@ -464,7 +490,7 @@ describe('/api/faculty/[id]/resume', () => {
     it('should handle TXT format generation', async () => {
       const customData = { format: 'txt', experience: [] };
       const mockTxtContent = 'John Doe\nFaculty\nExperience: ...';
-      mockResumeGenerator.generatePlainText.mockReturnValue(mockTxtContent);
+      mockFacultyResumeInstance.generatePlainText.mockReturnValue(mockTxtContent);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
         method: 'POST',
@@ -476,7 +502,7 @@ describe('/api/faculty/[id]/resume', () => {
 
       expect(response.status).toBe(200);
       expect(response.headers.get('Content-Type')).toBe('text/plain');
-      expect(mockResumeGenerator.generatePlainText).toHaveBeenCalledWith(expect.objectContaining({
+      expect(mockFacultyResumeInstance.generatePlainText).toHaveBeenCalledWith(expect.objectContaining({
         fullName: 'Dr. John Michael Doe',
         staffCode: 'FAC001'
       }));
@@ -485,7 +511,7 @@ describe('/api/faculty/[id]/resume', () => {
     it('should handle HTML format generation', async () => {
       const customData = { format: 'html', experience: [] };
       const mockHtmlContent = '<html><body><h1>John Doe</h1></body></html>';
-      mockResumeGenerator.generateHTML.mockReturnValue(mockHtmlContent);
+      mockFacultyResumeInstance.generateHTML.mockReturnValue(mockHtmlContent);
 
       const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
         method: 'POST',
@@ -497,7 +523,7 @@ describe('/api/faculty/[id]/resume', () => {
 
       expect(response.status).toBe(200);
       expect(response.headers.get('Content-Type')).toBe('text/html');
-      expect(mockResumeGenerator.generateHTML).toHaveBeenCalledWith(expect.objectContaining({
+      expect(mockFacultyResumeInstance.generateHTML).toHaveBeenCalledWith(expect.objectContaining({
         fullName: 'Dr. John Michael Doe',
         staffCode: 'FAC001'
       }));

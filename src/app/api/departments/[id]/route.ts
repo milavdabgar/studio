@@ -154,7 +154,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         try {
           const oldHod = await UserModel.findById(oldHodId);
           if (oldHod && oldHod.roles.includes('hod')) {
-            const updatedRoles = oldHod.roles.filter(role => role !== 'hod');
+            const updatedRoles = oldHod.roles.filter((role: string) => role !== 'hod');
             await UserModel.findByIdAndUpdate(oldHodId, { 
               roles: updatedRoles,
               updatedAt: new Date().toISOString()
@@ -243,7 +243,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       try {
         const currentHod = await UserModel.findById(departmentToDelete.hodId);
         if (currentHod && currentHod.roles.includes('hod')) {
-          const updatedRoles = currentHod.roles.filter(role => role !== 'hod');
+          const updatedRoles = currentHod.roles.filter((role: string) => role !== 'hod');
           await UserModel.findByIdAndUpdate(departmentToDelete.hodId, { 
             roles: updatedRoles,
             updatedAt: new Date().toISOString()
