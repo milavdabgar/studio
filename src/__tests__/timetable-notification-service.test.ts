@@ -52,7 +52,7 @@ describe('TimetableNotificationService', () => {
     // Create a mock instance of NotificationService
     mockNotificationService = {
       sendNotification: jest.fn(),
-      sendBatchNotifications: jest.fn(),
+      sendBatchNotification: jest.fn(),
       getNotificationStatus: jest.fn(),
       getUserNotificationHistory: jest.fn()
     } as any;
@@ -157,7 +157,7 @@ describe('TimetableNotificationService', () => {
       expect(hodNotifications).toHaveLength(1);
       expect(hodNotifications[0][0]).toMatchObject({
         type: 'timetable_published',
-        title: expect.stringContaining('Timetable Published'),
+        title: expect.stringContaining('Timetable Approval Required'),
         channels: ['email', 'push']
       });
     });

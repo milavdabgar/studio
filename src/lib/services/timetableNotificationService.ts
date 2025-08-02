@@ -193,26 +193,40 @@ export class TimetableNotificationService {
     timetable: Timetable,
     stakeholders: StakeholderGroup
   ): Promise<{ success: boolean; results: any[] }> {
+    // Check if stakeholders exist
+    const hasStakeholders = stakeholders.students.length > 0 || 
+                           stakeholders.faculty.length > 0 || 
+                           stakeholders.hods.length > 0 || 
+                           stakeholders.roomManagers.length > 0;
+
+    if (!hasStakeholders) {
+      return { success: false, results: [] };
+    }
+
     const results = [];
 
-    // Notify students
-    const studentNotifications = await this.notifyStudentsOfPublication(timetable, stakeholders.students);
-    results.push(...studentNotifications);
+    try {
+      // Notify students
+      const studentNotifications = await this.notifyStudentsOfPublication(timetable, stakeholders.students);
+      results.push(...studentNotifications);
 
-    // Notify faculty
-    const facultyNotifications = await this.notifyFacultyOfAssignment(timetable, stakeholders.faculty);
-    results.push(...facultyNotifications);
+      // Notify faculty
+      const facultyNotifications = await this.notifyFacultyOfAssignment(timetable, stakeholders.faculty);
+      results.push(...facultyNotifications);
 
-    // Notify HODs
-    const hodNotifications = await this.notifyHODsOfPublication(timetable, stakeholders.hods);
-    results.push(...hodNotifications);
+      // Notify HODs
+      const hodNotifications = await this.notifyHODsOfPublication(timetable, stakeholders.hods);
+      results.push(...hodNotifications);
 
-    // Notify room managers
-    const roomNotifications = await this.notifyRoomManagersOfBookings(timetable, stakeholders.roomManagers);
-    results.push(...roomNotifications);
+      // Notify room managers
+      const roomNotifications = await this.notifyRoomManagersOfBookings(timetable, stakeholders.roomManagers);
+      results.push(...roomNotifications);
 
-    const success = results.some(r => r.success);
-    return { success, results };
+      const success = results.some(r => r.success);
+      return { success, results };
+    } catch (error) {
+      return { success: false, results: [] };
+    }
   }
 
   async notifyTimetableChanges(
@@ -254,6 +268,10 @@ export class TimetableNotificationService {
     stakeholders: StakeholderGroup
   ): Promise<{ success: boolean; results: any[] }> {
     const results = [];
+
+    if (conflicts.length === 0) {
+      return { success: true, results: [] };
+    }
 
     // Group conflicts by severity
     const criticalConflicts = conflicts.filter(c => c.severity === 'critical');
@@ -303,7 +321,7 @@ export class TimetableNotificationService {
       }
     }
 
-    const success = results.some(r => r.success);
+    const success = results.length === 0 || results.some(r => r.success);
     return { success, results };
   }
 
@@ -366,11 +384,16 @@ export class TimetableNotificationService {
     timetable: Timetable,
     students: StakeholderGroup['students']
   ): Promise<any[]> {
-    const batchStudents = students.filter(s => s.batchId === timetable.batchId);
+    const results = [];
+    // If timetable has batchId, filter by it; otherwise notify all students
+    const batchStudents = (timetable as any).batchId ? 
+      students.filter(s => s.batchId === (timetable as any).batchId) :
+      students;
     
-    const batchRequest: BatchNotificationRequest = {
-      users: batchStudents.map(s => s.id),
-      notification: {
+    // Send individual notifications to each student
+    for (const student of batchStudents) {
+      const result = await this.notificationService.sendNotification({
+        userId: student.id,
         type: 'timetable_published',
         title: this.templates.student.timetable_published.title,
         message: this.interpolateTemplate(
@@ -382,12 +405,11 @@ export class TimetableNotificationService {
         ),
         channels: this.templates.student.timetable_published.channels,
         priority: 'high'
-      },
-      maxConcurrency: 20
-    };
+      });
+      results.push(result);
+    }
 
-    const result = await this.notificationService.sendBatchNotification(batchRequest);
-    return [result];
+    return results;
   }
 
   private async notifyFacultyOfAssignment(
@@ -591,8 +613,32 @@ export class TimetableNotificationService {
     change: TimetableChangeDetails,
     stakeholders: StakeholderGroup
   ): Promise<any[]> {
-    // Implementation for faculty change notifications
-    return [];
+    const results = [];
+    
+    for (const entry of change.affectedEntries) {
+      // Notify students about faculty change
+      const affectedStudents = stakeholders.students;
+      
+      for (const student of affectedStudents) {
+        const result = await this.notificationService.sendNotification({
+          userId: student.id,
+          type: 'schedule_changed',
+          title: this.templates.student.schedule_changed.title,
+          message: this.interpolateTemplate(
+            this.templates.student.schedule_changed.message,
+            {
+              courseName: entry.courseId,
+              changeDetails: `Faculty changed from ${change.oldValue} to ${change.newValue}`
+            }
+          ),
+          channels: this.templates.student.schedule_changed.channels,
+          priority: 'medium'
+        });
+        results.push(result);
+      }
+    }
+
+    return results;
   }
 
   private async notifyClassCancellation(
@@ -633,8 +679,32 @@ export class TimetableNotificationService {
     change: TimetableChangeDetails,
     stakeholders: StakeholderGroup
   ): Promise<any[]> {
-    // Implementation for class addition notifications
-    return [];
+    const results = [];
+    
+    for (const entry of change.affectedEntries) {
+      // Notify students about new class
+      const affectedStudents = stakeholders.students;
+      
+      for (const student of affectedStudents) {
+        const result = await this.notificationService.sendNotification({
+          userId: student.id,
+          type: 'schedule_changed',
+          title: this.templates.student.schedule_changed.title,
+          message: this.interpolateTemplate(
+            this.templates.student.schedule_changed.message,
+            {
+              courseName: entry.courseId,
+              changeDetails: `New class added: ${change.newValue}`
+            }
+          ),
+          channels: this.templates.student.schedule_changed.channels,
+          priority: 'medium'
+        });
+        results.push(result);
+      }
+    }
+
+    return results;
   }
 
   private async getAffectedStakeholders(
@@ -657,6 +727,12 @@ export class TimetableNotificationService {
 
   private calculateTotalHours(entries: TimetableEntry[]): number {
     return entries.reduce((total, entry) => {
+      // If entry has duration property, use it
+      if ('duration' in entry && typeof (entry as any).duration === 'number') {
+        return total + (entry as any).duration / 60; // Convert minutes to hours
+      }
+      
+      // Otherwise calculate from start/end times
       const start = new Date(`2000-01-01T${entry.startTime}`);
       const end = new Date(`2000-01-01T${entry.endTime}`);
       return total + (end.getTime() - start.getTime()) / (1000 * 60 * 60);
@@ -665,7 +741,7 @@ export class TimetableNotificationService {
 
   private interpolateTemplate(template: string, data: Record<string, any>): string {
     return template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
-      return data[key]?.toString() || match;
+      return data[key]?.toString() || '';
     });
   }
 

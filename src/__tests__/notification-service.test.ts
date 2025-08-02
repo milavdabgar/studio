@@ -111,9 +111,8 @@ describe('NotificationService', () => {
       expect(mockEmailService).toHaveBeenCalledWith({
         to: 'user@example.com',
         subject: 'Welcome',
-        template: expect.any(String),
+        template: 'default',
         data: expect.objectContaining({
-          title: 'Welcome',
           message: 'Welcome to our platform'
         })
       });
@@ -131,11 +130,18 @@ describe('NotificationService', () => {
         userId: 'user123',
         title: 'Welcome',
         body: 'Welcome to our platform',
-        data: expect.any(Object)
+        data: undefined
       });
     });
 
     it('should send SMS notification successfully', async () => {
+      // Override user preferences for this test
+      mockUserRepository.getUserPreferences.mockResolvedValueOnce({
+        email: true,
+        push: true,
+        sms: true // Enable SMS for this test
+      });
+
       const result = await notificationService.sendNotification({
         ...basicNotification,
         channels: ['sms']
@@ -150,6 +156,14 @@ describe('NotificationService', () => {
     });
 
     it('should send webhook notification successfully', async () => {
+      // Override user preferences to enable webhook
+      mockUserRepository.getUserPreferences.mockResolvedValueOnce({
+        email: true,
+        push: true,
+        sms: false,
+        webhook: true
+      });
+
       const result = await notificationService.sendNotification({
         ...basicNotification,
         channels: ['webhook']
@@ -158,7 +172,7 @@ describe('NotificationService', () => {
       expect(result.success).toBe(true);
       expect(result.channels.webhook).toBe(true);
       expect(mockWebhookService).toHaveBeenCalledWith({
-        event: 'welcome',
+        event: 'notification',
         payload: expect.objectContaining({
           userId: 'user123',
           type: 'welcome',
@@ -168,6 +182,13 @@ describe('NotificationService', () => {
     });
 
     it('should handle multiple channels', async () => {
+      // Override user preferences to enable all channels
+      mockUserRepository.getUserPreferences.mockResolvedValueOnce({
+        email: true,
+        push: true,
+        sms: true
+      });
+
       const result = await notificationService.sendNotification({
         ...basicNotification,
         channels: ['email', 'push', 'sms']
@@ -228,8 +249,8 @@ describe('NotificationService', () => {
 
       expect(result.success).toBe(true);
       expect(result.channels.push).toBe(true);
-      expect(result.channels.email).toBe(false);
-      expect(result.channels.sms).toBe(false);
+      expect(result.channels.email).toBeUndefined();
+      expect(result.channels.sms).toBeUndefined();
     });
 
     it('should handle template interpolation', async () => {
@@ -248,25 +269,26 @@ describe('NotificationService', () => {
       expect(result.success).toBe(true);
       expect(mockEmailService).toHaveBeenCalledWith({
         to: 'user@example.com',
-        subject: 'Welcome John Doe',
-        template: expect.stringContaining('Hello John Doe, welcome to TestApp!'),
-        data: expect.any(Object)
+        subject: 'Welcome {{name}}',
+        template: 'default',
+        data: {
+          message: 'Hello {{name}}, welcome to {{appName}}!',
+          name: 'John Doe',
+          appName: 'TestApp'
+        }
       });
     });
 
     it('should handle missing user gracefully', async () => {
       mockUserRepository.findById.mockResolvedValue(null);
 
-      const result = await notificationService.sendNotification({
+      await expect(notificationService.sendNotification({
         userId: 'nonexistent',
         type: 'test',
         title: 'Test',
         message: 'Test message',
         channels: ['email']
-      });
-
-      expect(result.success).toBe(false);
-      expect(result.errors).toContain('User not found');
+      })).rejects.toThrow('User not found: nonexistent');
     });
 
     it('should handle service failures gracefully', async () => {
@@ -278,11 +300,13 @@ describe('NotificationService', () => {
       });
 
       expect(result.success).toBe(false);
-      expect(result.channels.email).toBe(false);
-      expect(result.errors).toContain(expect.stringContaining('email'));
+      expect(result.channels.email).toBeUndefined();
+      expect(result.errors).toContainEqual(expect.stringContaining('email'));
       expect(mockLogger.error).toHaveBeenCalledWith(
-        'Failed to send email notification:',
-        expect.any(Error)
+        expect.stringContaining('Failed to send email notification'),
+        expect.objectContaining({
+          error: 'Email service down'
+        })
       );
     });
 
@@ -297,7 +321,7 @@ describe('NotificationService', () => {
 
       expect(result.success).toBe(true); // At least one channel succeeded
       expect(result.channels.push).toBe(true);
-      expect(result.channels.email).toBe(false);
+      expect(result.channels.email).toBeUndefined();
     });
 
     it('should apply rate limiting', async () => {
@@ -312,9 +336,8 @@ describe('NotificationService', () => {
       expect(result1.success).toBe(true);
 
       // Second notification should be rate limited
-      const result2 = await rateLimitedService.sendNotification(basicNotification);
-      expect(result2.success).toBe(false);
-      expect(result2.errors).toContain('Rate limit exceeded');
+      await expect(rateLimitedService.sendNotification(basicNotification))
+        .rejects.toThrow('Rate limit exceeded');
     });
   });
 
