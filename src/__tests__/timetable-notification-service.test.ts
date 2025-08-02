@@ -9,50 +9,44 @@ describe('TimetableNotificationService', () => {
   let timetableNotificationService: TimetableNotificationService;
   let mockNotificationService: jest.Mocked<NotificationService>;
 
-  const mockTimetable: Timetable = {
-    id: 'tt_123',
-    batchId: 'batch_1',
-    academicYear: '2024-25',
-    semester: 3,
-    entries: [
-      {
-        id: 'entry_1',
-        courseId: 'course_1',
-        courseName: 'Programming Fundamentals',
-        facultyId: 'faculty_1',
-        facultyName: 'Dr. Smith',
-        roomId: 'room_1',
-        roomName: 'Lab A',
-        dayOfWeek: 'monday' as const,
-        startTime: '09:00',
-        endTime: '10:30',
-        type: 'lecture' as const,
-        duration: 90
-      }
-    ],
-    status: 'published' as const,
-    version: 1,
-    createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-01T00:00:00Z',
-    createdBy: 'admin',
-    approvedBy: 'hod_1'
-  };
+    const mockTimetableEntry: TimetableEntry = {
+      dayOfWeek: 'Monday' as const,
+      startTime: '09:00',
+      endTime: '10:00',
+      courseId: 'CS101',
+      courseName: 'Introduction to Computer Science',
+      facultyId: 'faculty_1',
+      roomId: 'room_1',
+      entryType: 'lecture'
+    };
 
-  const mockStakeholders = {
-    students: [
-      { id: 'student_1', name: 'John Doe', email: 'john@example.com', phone: '+1234567890', batchId: 'batch_1' },
-      { id: 'student_2', name: 'Jane Smith', email: 'jane@example.com', phone: '+1234567891', batchId: 'batch_1' }
-    ],
-    faculty: [
-      { id: 'faculty_1', name: 'Dr. Smith', email: 'dr.smith@example.com', phone: '+1234567892', department: 'CS' }
-    ],
-    hods: [
-      { id: 'hod_1', name: 'Dr. Johnson', email: 'hod@example.com', phone: '+1234567893', department: 'CS' }
-    ],
-    roomManagers: [
-      { id: 'manager_1', name: 'Room Manager', email: 'manager@example.com', phone: '+1234567894', buildingId: 'building_1' }
-    ]
-  };
+    const mockTimetable: Timetable = {
+      id: 'timetable_1',
+      name: 'Spring 2024 Timetable',
+      academicYear: '2023-24',
+      semester: 2,
+      programId: 'program_1',
+      version: '1.0',
+      status: 'published',
+      effectiveDate: new Date().toISOString(),
+      entries: [mockTimetableEntry]
+    };
+
+    const mockStakeholders = {
+      students: [
+        { id: 'student_1', name: 'John Doe', email: 'john@example.com', phone: '+1234567890', batchId: 'batch_1' },
+        { id: 'student_2', name: 'Jane Smith', email: 'jane@example.com', phone: '+1234567891', batchId: 'batch_1' }
+      ],
+      faculty: [
+        { id: 'faculty_1', name: 'Dr. Smith', email: 'dr.smith@example.com', phone: '+1234567892', department: 'CS' }
+      ],
+      hods: [
+        { id: 'hod_1', name: 'Dr. Johnson', email: 'hod@example.com', phone: '+1234567893', department: 'CS' }
+      ],
+      roomManagers: [
+        { id: 'manager_1', name: 'Room Manager', email: 'manager@example.com', phone: '+1234567894', buildingId: 'building_1' }
+      ]
+    };
 
   beforeEach(() => {
     // Create a mock instance of NotificationService
@@ -66,21 +60,21 @@ describe('TimetableNotificationService', () => {
     // Mock successful notification responses
     mockNotificationService.sendNotification.mockResolvedValue({
       success: true,
-      notificationId: 'notif_123',
-      sentChannels: ['email'],
-      failedChannels: [],
-      skippedChannels: [],
-      errors: []
+      channels: {
+        email: true,
+        sms: false,
+        push: false,
+        webhook: false
+      },
+      errors: [],
+      messageId: 'notif_123'
     });
 
-    mockNotificationService.sendBatchNotifications.mockResolvedValue({
-      success: true,
+    mockNotificationService.sendBatchNotification.mockResolvedValue({
       totalSent: 2,
-      totalFailed: 0,
-      results: [
-        { success: true, notificationId: 'notif_1' },
-        { success: true, notificationId: 'notif_2' }
-      ]
+      successful: 2,
+      failed: 0,
+      errors: []
     });
 
     timetableNotificationService = new TimetableNotificationService(mockNotificationService);
@@ -305,24 +299,19 @@ describe('TimetableNotificationService', () => {
   describe('notifyConflicts', () => {
     const mockConflicts: TimetableConflict[] = [
       {
-        id: 'conflict_1',
         type: 'room',
         severity: 'critical',
         description: 'Room double booking',
+        affectedEntries: [0],
         batchId: 'batch_1',
-        conflictingEntries: [mockTimetable.entries[0]],
-        detectedAt: '2024-01-01T00:00:00Z',
-        status: 'unresolved'
+        roomId: 'room_1'
       },
       {
-        id: 'conflict_2',
         type: 'faculty',
         severity: 'high',
         description: 'Faculty overlap',
-        batchId: 'batch_1',
-        conflictingEntries: [mockTimetable.entries[0]],
-        detectedAt: '2024-01-01T00:00:00Z',
-        status: 'unresolved'
+        affectedEntries: [0],
+        facultyId: 'faculty_1'
       }
     ];
 

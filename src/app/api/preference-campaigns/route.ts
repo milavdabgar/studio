@@ -26,7 +26,6 @@ if (!global.mockCampaigns) {
     {
       id: 'camp_demo_1',
       name: 'Spring 2025 Preference Collection',
-      description: 'Collect faculty preferences for Spring 2025 semester',
       academicYear: '2024-25',
       semesters: [1, 3, 5],
       targetFaculties: [],
@@ -34,8 +33,6 @@ if (!global.mockCampaigns) {
       endDate: '2025-01-30T23:59:59.000Z',
       reminderSchedule: [],
       status: 'draft' as const,
-      responseCount: 0,
-      totalTargeted: 25,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
@@ -115,6 +112,13 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json(
         { success: false, error: 'Campaign ID is required' },
         { status: 400 }
+      );
+    }
+
+    if (!mockCampaigns) {
+      return NextResponse.json(
+        { success: false, error: 'No campaigns available' },
+        { status: 500 }
       );
     }
 

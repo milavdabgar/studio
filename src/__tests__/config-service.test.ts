@@ -331,46 +331,106 @@ describe('ConfigService', () => {
 
     describe('getNodeEnv', () => {
       it('should return NODE_ENV', () => {
-        process.env.NODE_ENV = 'production';
+        const originalEnv = process.env.NODE_ENV;
+        Object.defineProperty(process.env, 'NODE_ENV', {
+          value: 'production',
+          writable: true,
+          configurable: true
+        });
         config.reload();
         
         expect(config.getNodeEnv()).toBe('production');
+        
+        // Restore original value
+        Object.defineProperty(process.env, 'NODE_ENV', {
+          value: originalEnv,
+          writable: true,
+          configurable: true
+        });
       });
 
       it('should return development as default', () => {
-        delete process.env.NODE_ENV;
+        const originalEnv = process.env.NODE_ENV;
+        Object.defineProperty(process.env, 'NODE_ENV', {
+          value: undefined,
+          writable: true,
+          configurable: true
+        });
         config.reload();
         
         expect(config.getNodeEnv()).toBe('development');
+        
+        // Restore original value
+        Object.defineProperty(process.env, 'NODE_ENV', {
+          value: originalEnv,
+          writable: true,
+          configurable: true
+        });
       });
     });
 
     describe('environment checks', () => {
       it('should detect production environment', () => {
-        process.env.NODE_ENV = 'production';
+        const originalEnv = process.env.NODE_ENV;
+        Object.defineProperty(process.env, 'NODE_ENV', {
+          value: 'production',
+          writable: true,
+          configurable: true
+        });
         config.reload();
         
         expect(config.isProduction()).toBe(true);
         expect(config.isDevelopment()).toBe(false);
         expect(config.isTest()).toBe(false);
+        
+        // Restore original value
+        Object.defineProperty(process.env, 'NODE_ENV', {
+          value: originalEnv,
+          writable: true,
+          configurable: true
+        });
       });
 
       it('should detect development environment', () => {
-        process.env.NODE_ENV = 'development';
+        const originalEnv = process.env.NODE_ENV;
+        Object.defineProperty(process.env, 'NODE_ENV', {
+          value: 'development',
+          writable: true,
+          configurable: true
+        });
         config.reload();
         
         expect(config.isProduction()).toBe(false);
         expect(config.isDevelopment()).toBe(true);
         expect(config.isTest()).toBe(false);
+        
+        // Restore original value
+        Object.defineProperty(process.env, 'NODE_ENV', {
+          value: originalEnv,
+          writable: true,
+          configurable: true
+        });
       });
 
       it('should detect test environment', () => {
-        process.env.NODE_ENV = 'test';
+        const originalEnv = process.env.NODE_ENV;
+        Object.defineProperty(process.env, 'NODE_ENV', {
+          value: 'test',
+          writable: true,
+          configurable: true
+        });
         config.reload();
         
         expect(config.isProduction()).toBe(false);
         expect(config.isDevelopment()).toBe(false);
         expect(config.isTest()).toBe(true);
+        
+        // Restore original value
+        Object.defineProperty(process.env, 'NODE_ENV', {
+          value: originalEnv,
+          writable: true,
+          configurable: true
+        });
       });
     });
   });
@@ -389,10 +449,21 @@ describe('ConfigService', () => {
 
   describe('edge cases', () => {
     it('should handle empty environment', () => {
-      process.env = {};
+      const originalEnv = { ...process.env };
+      
+      // Clear environment variables except NODE_ENV which is required
+      Object.keys(process.env).forEach(key => {
+        if (key !== 'NODE_ENV') {
+          delete process.env[key];
+        }
+      });
+      
       const config = new ConfigService();
       
       expect(config.getAll()).toEqual({});
+      
+      // Restore original environment
+      process.env = originalEnv;
     });
 
     it('should handle complex schema types', () => {

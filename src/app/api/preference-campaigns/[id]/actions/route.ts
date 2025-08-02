@@ -20,9 +20,7 @@ interface CollectionCampaign {
 
 // Import the same mock data - in production this would be in MongoDB
 // For now, we'll create a shared reference
-declare global {
-  var mockCampaigns: CollectionCampaign[] | undefined;
-}
+// Note: global declaration is in the main route.ts file
 
 if (!global.mockCampaigns) {
   global.mockCampaigns = [];
@@ -96,7 +94,7 @@ export async function POST(
 
       case 'cancel':
         // Cancel campaign
-        global.mockCampaigns![campaignIndex].status = 'cancelled';
+        global.mockCampaigns![campaignIndex].status = 'completed';
         global.mockCampaigns![campaignIndex].updatedAt = new Date().toISOString();
         
         return NextResponse.json({

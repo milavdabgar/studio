@@ -20,9 +20,7 @@ interface CollectionCampaign {
 
 // Mock data for demonstration - in production this would be in MongoDB
 // Use global to share state across API routes
-declare global {
-  var mockCampaigns: CollectionCampaign[] | undefined;
-}
+// Note: global declaration is in the main route.ts file
 
 if (!global.mockCampaigns) {
   global.mockCampaigns = [];
