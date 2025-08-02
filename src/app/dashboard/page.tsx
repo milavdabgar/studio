@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -38,10 +39,93 @@ import {
   BotMessageSquare,
   Briefcase,
   Newspaper,
-  FileText as AssessmentIcon
+  FileText as AssessmentIcon,
+  Home,
+  Loader2
 } from 'lucide-react';
+import type { UserRole as UserRoleCode } from '@/types/entities';
+import PasswordChangeForm from "@/components/password-change-form";
+
+interface User {
+  name: string;
+  activeRole: UserRoleCode;
+  availableRoles: UserRoleCode[];
+  email?: string;
+}
+
+const DEFAULT_USER: User = {
+  name: 'Guest User',
+  activeRole: 'unknown',
+  availableRoles: ['unknown'],
+};
+
+function getCookie(name: string): string | undefined {
+  if (typeof document === 'undefined') return undefined;
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    const cookiePart = parts.pop();
+    if (cookiePart) {
+        return cookiePart.split(';').shift();
+    }
+  }
+  return undefined;
+}
+
+interface ParsedUserCookie {
+  email: string;
+  name: string;
+  availableRoles: UserRoleCode[];
+  activeRole: UserRoleCode;
+}
 
 const DashboardPage = () => {
+  const [currentUser, setCurrentUser] = useState<User>(DEFAULT_USER);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    const authUserCookie = getCookie('auth_user');
+    if (authUserCookie) {
+      try {
+        const decodedCookie = decodeURIComponent(authUserCookie);
+        const parsedUser = JSON.parse(decodedCookie) as ParsedUserCookie;
+
+        setCurrentUser({
+          name: parsedUser.name || parsedUser.email,
+          activeRole: parsedUser.activeRole || 'unknown',
+          availableRoles: parsedUser.availableRoles && parsedUser.availableRoles.length > 0 ? parsedUser.availableRoles : ['unknown'],
+          email: parsedUser.email,
+        });
+      } catch (error) {
+        console.error("Failed to parse auth_user cookie on dashboard:", error);
+        setCurrentUser(DEFAULT_USER);
+      }
+    } else {
+      setCurrentUser(DEFAULT_USER);
+    }
+  }, []);
+
+  if (!isMounted) { 
+    return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
+  }
+
+  // Role-aware dashboard content
+  if (currentUser.activeRole === 'admin' || currentUser.activeRole === 'super_admin') {
+    return <AdminDashboard />;
+  } else if (currentUser.activeRole === 'faculty') {
+    return <FacultyDashboard currentUser={currentUser} />;
+  } else if (currentUser.activeRole === 'student') {
+    return <StudentDashboard currentUser={currentUser} />;
+  } else if (currentUser.activeRole === 'hod') {
+    return <HODDashboard currentUser={currentUser} />;
+  } else {
+    return <DefaultDashboard currentUser={currentUser} />;
+  }
+};
+
+// Admin Dashboard Component
+const AdminDashboard = () => {
   // Mock stats - in production, these would come from APIs
   const stats = {
     activeCampaigns: 3,
@@ -377,6 +461,453 @@ const DashboardPage = () => {
           </div>
         </CardContent>
       </Card>
+    </div>
+  );
+};
+
+// Faculty Dashboard Component
+const FacultyDashboard = ({ currentUser }: { currentUser: User }) => {
+  return (
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Welcome, {currentUser.name}!</h1>
+          <p className="text-muted-foreground mt-1">
+            Faculty Dashboard - Manage your courses, timetable, and academic activities
+          </p>
+        </div>
+        <Badge variant="outline" className="text-blue-600">
+          <Activity className="w-3 h-3 mr-1" />
+          Faculty Portal
+        </Badge>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="border-l-4 border-l-blue-500">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">My Courses</CardTitle>
+            <BookOpen className="h-4 w-4 text-blue-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">6</div>
+            <p className="text-xs text-muted-foreground">Active this semester</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-green-500">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">My Students</CardTitle>
+            <Users className="h-4 w-4 text-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">142</div>
+            <p className="text-xs text-muted-foreground">Enrolled students</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-purple-500">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">My Timetable</CardTitle>
+            <Clock className="h-4 w-4 text-purple-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">18</div>
+            <p className="text-xs text-muted-foreground">Hours this week</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-orange-500">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Pending Tasks</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-orange-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">5</div>
+            <p className="text-xs text-muted-foreground">Attendance & grading</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Zap className="h-5 w-5 text-primary" />
+              Quick Actions
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Link href="/faculty/timetable">
+              <Button variant="outline" className="w-full justify-start gap-2">
+                <Clock className="h-4 w-4" />
+                View My Timetable
+              </Button>
+            </Link>
+            <Link href="/faculty/attendance/mark">
+              <Button variant="outline" className="w-full justify-start gap-2">
+                <CalendarCheck className="h-4 w-4" />
+                Mark Attendance
+              </Button>
+            </Link>
+            <Link href="/faculty/my-courses">
+              <Button variant="outline" className="w-full justify-start gap-2">
+                <BookOpen className="h-4 w-4" />
+                My Courses
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Activity</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 p-2 rounded hover:bg-muted/50">
+                <CheckCircle2 className="h-4 w-4 text-green-500" />
+                <div>
+                  <p className="text-sm font-medium">Attendance marked for CSE-301</p>
+                  <p className="text-xs text-muted-foreground">2 hours ago</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-2 rounded hover:bg-muted/50">
+                <BookOpen className="h-4 w-4 text-blue-500" />
+                <div>
+                  <p className="text-sm font-medium">New timetable generated</p>
+                  <p className="text-xs text-muted-foreground">1 day ago</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {currentUser.email && (
+        <PasswordChangeForm 
+          userEmail={currentUser.email} 
+          variant="dialog"
+          trigger={
+            <Button variant="outline" className="w-full sm:w-auto">
+              <Settings className="mr-2 h-4 w-4" />
+              Change Password
+            </Button>
+          }
+        />
+      )}
+    </div>
+  );
+};
+
+// Student Dashboard Component
+const StudentDashboard = ({ currentUser }: { currentUser: User }) => {
+  return (
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Welcome, {currentUser.name}!</h1>
+          <p className="text-muted-foreground mt-1">
+            Student Dashboard - Access your courses, timetable, and academic information
+          </p>
+        </div>
+        <Badge variant="outline" className="text-green-600">
+          <Activity className="w-3 h-3 mr-1" />
+          Student Portal
+        </Badge>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="border-l-4 border-l-blue-500">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">My Courses</CardTitle>
+            <BookOpen className="h-4 w-4 text-blue-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">8</div>
+            <p className="text-xs text-muted-foreground">Enrolled this semester</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-green-500">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Attendance</CardTitle>
+            <CalendarCheck className="h-4 w-4 text-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">87%</div>
+            <p className="text-xs text-muted-foreground">Overall attendance</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-purple-500">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Assignments</CardTitle>
+            <FileText className="h-4 w-4 text-purple-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">3</div>
+            <p className="text-xs text-muted-foreground">Pending submissions</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-orange-500">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Grades</CardTitle>
+            <Award className="h-4 w-4 text-orange-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">A-</div>
+            <p className="text-xs text-muted-foreground">Current GPA</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Zap className="h-5 w-5 text-primary" />
+              Quick Actions
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Link href="/student/timetable">
+              <Button variant="outline" className="w-full justify-start gap-2">
+                <Clock className="h-4 w-4" />
+                View My Timetable
+              </Button>
+            </Link>
+            <Link href="/student/courses">
+              <Button variant="outline" className="w-full justify-start gap-2">
+                <BookOpen className="h-4 w-4" />
+                My Courses
+              </Button>
+            </Link>
+            <Link href="/student/assignments">
+              <Button variant="outline" className="w-full justify-start gap-2">
+                <FileText className="h-4 w-4" />
+                Assignments
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Upcoming Events</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 p-2 rounded hover:bg-muted/50">
+                <Calendar className="h-4 w-4 text-blue-500" />
+                <div>
+                  <p className="text-sm font-medium">Database Systems Exam</p>
+                  <p className="text-xs text-muted-foreground">Tomorrow, 10:00 AM</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-2 rounded hover:bg-muted/50">
+                <FileText className="h-4 w-4 text-orange-500" />
+                <div>
+                  <p className="text-sm font-medium">Web Development Assignment Due</p>
+                  <p className="text-xs text-muted-foreground">In 3 days</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {currentUser.email && (
+        <PasswordChangeForm 
+          userEmail={currentUser.email} 
+          variant="dialog"
+          trigger={
+            <Button variant="outline" className="w-full sm:w-auto">
+              <Settings className="mr-2 h-4 w-4" />
+              Change Password
+            </Button>
+          }
+        />
+      )}
+    </div>
+  );
+};
+
+// HOD Dashboard Component
+const HODDashboard = ({ currentUser }: { currentUser: User }) => {
+  return (
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Welcome, {currentUser.name}!</h1>
+          <p className="text-muted-foreground mt-1">
+            Head of Department Dashboard - Manage your department and academic activities
+          </p>
+        </div>
+        <Badge variant="outline" className="text-purple-600">
+          <Activity className="w-3 h-3 mr-1" />
+          HOD Portal
+        </Badge>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="border-l-4 border-l-blue-500">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Department Faculty</CardTitle>
+            <UserCog className="h-4 w-4 text-blue-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">24</div>
+            <p className="text-xs text-muted-foreground">Active faculty members</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-green-500">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Department Students</CardTitle>
+            <Users className="h-4 w-4 text-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">456</div>
+            <p className="text-xs text-muted-foreground">Enrolled students</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-purple-500">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Department Courses</CardTitle>
+            <BookOpen className="h-4 w-4 text-purple-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">32</div>
+            <p className="text-xs text-muted-foreground">Active courses</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-orange-500">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Pending Approvals</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-orange-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">7</div>
+            <p className="text-xs text-muted-foreground">Requiring attention</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Zap className="h-5 w-5 text-primary" />
+              Quick Actions
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Link href="/hod/timetable">
+              <Button variant="outline" className="w-full justify-start gap-2">
+                <Clock className="h-4 w-4" />
+                Department Timetable
+              </Button>
+            </Link>
+            <Link href="/admin/faculty">
+              <Button variant="outline" className="w-full justify-start gap-2">
+                <UserCog className="h-4 w-4" />
+                Faculty Management
+              </Button>
+            </Link>
+            <Link href="/admin/students">
+              <Button variant="outline" className="w-full justify-start gap-2">
+                <Users className="h-4 w-4" />
+                Student Management
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Department Overview</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 p-2 rounded hover:bg-muted/50">
+                <Target className="h-4 w-4 text-blue-500" />
+                <div>
+                  <p className="text-sm font-medium">Timetable generation completed</p>
+                  <p className="text-xs text-muted-foreground">2 hours ago</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-2 rounded hover:bg-muted/50">
+                <Users className="h-4 w-4 text-green-500" />
+                <div>
+                  <p className="text-sm font-medium">New faculty member joined</p>
+                  <p className="text-xs text-muted-foreground">1 day ago</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {currentUser.email && (
+        <PasswordChangeForm 
+          userEmail={currentUser.email} 
+          variant="dialog"
+          trigger={
+            <Button variant="outline" className="w-full sm:w-auto">
+              <Settings className="mr-2 h-4 w-4" />
+              Change Password
+            </Button>
+          }
+        />
+      )}
+    </div>
+  );
+};
+
+// Default Dashboard Component
+const DefaultDashboard = ({ currentUser }: { currentUser: User }) => {
+  const displayActiveRole = currentUser.activeRole.charAt(0).toUpperCase() + currentUser.activeRole.slice(1).replace(/_/g, ' ');
+
+  return (
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Welcome, {currentUser.name}!</h1>
+          <p className="text-muted-foreground mt-1">
+            Your dashboard for {displayActiveRole} role
+          </p>
+        </div>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Getting Started</CardTitle>
+          <CardDescription>
+            Welcome to the system. Your current role is {displayActiveRole}.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">
+            Contact your administrator if you need access to additional features or have questions about your account.
+          </p>
+        </CardContent>
+      </Card>
+
+      {currentUser.email && (
+        <PasswordChangeForm 
+          userEmail={currentUser.email} 
+          variant="dialog"
+          trigger={
+            <Button variant="outline" className="w-full sm:w-auto">
+              <Settings className="mr-2 h-4 w-4" />
+              Change Password
+            </Button>
+          }
+        />
+      )}
     </div>
   );
 };

@@ -2,7 +2,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Department } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
-import { DepartmentModel } from '@/lib/models';
+import { DepartmentModel, UserModel } from '@/lib/models';
 
 
 export async function GET() {
@@ -58,6 +58,25 @@ export async function POST(request: NextRequest) {
     });
     
     const savedDepartment = await newDepartment.save();
+
+    // Add 'hod' role to new HOD if specified
+    if (departmentData.hodId) {
+      try {
+        const newHod = await UserModel.findById(departmentData.hodId);
+        if (newHod && !newHod.roles.includes('hod')) {
+          const updatedRoles = [...newHod.roles, 'hod'];
+          await UserModel.findByIdAndUpdate(departmentData.hodId, { 
+            roles: updatedRoles,
+            updatedAt: new Date().toISOString()
+          });
+          console.log(`[POST Department] Added 'hod' role to user ${departmentData.hodId} for new department ${savedDepartment.name}`);
+        }
+      } catch (error) {
+        console.error(`[POST Department] Error adding hod role to ${departmentData.hodId}:`, error);
+        // Don't fail the department creation if this fails, just log it
+      }
+    }
+
     return NextResponse.json(savedDepartment, { status: 201 });
   } catch (error) {
     console.error('Error creating department:', error);

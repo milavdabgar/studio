@@ -168,7 +168,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'faculty-blog-link' },
   ],
   hod: [
-    { href: '/dashboard/hod', icon: Home, label: 'HOD Dashboard', id: 'hod-dashboard-link' },
+    { href: '/dashboard', icon: Home, label: 'HOD Dashboard', id: 'hod-dashboard-link' },
     { href: '/admin/departments', icon: Building2, label: 'My Department', id: 'hod-department-link' }, 
     { href: '/admin/programs', icon: BookCopy, label: 'Programs (Dept)', id: 'hod-programs-link' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'hod-courses-link' },
@@ -221,7 +221,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'institute_admin-blog-link' },
   ],
   department_admin: [ 
-    { href: '/dashboard/hod', icon: Home, label: 'Department Dashboard', id: 'department-admin-dashboard-link' }, // Using HOD dashboard for dept admin
+    { href: '/dashboard', icon: Home, label: 'Department Dashboard', id: 'department-admin-dashboard-link' }, // Using main dashboard with role-aware rendering
     { href: '/admin/programs', icon: BookCopy, label: 'Programs (Dept)', id: 'department-admin-programs-link' },
     { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'department-admin-batches-link' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'department-admin-courses-link' },
@@ -417,7 +417,7 @@ export default function RootLayout({
         if(roleToActivate?.isCommitteeRole && !['committee_admin', 'admin', 'super_admin', 'hod', 'institute_admin'].includes(newRoleCode) ){ 
             router.push('/dashboard/committee');
         } else if (newRoleCode === 'hod' || newRoleCode === 'department_admin') {
-            router.push('/dashboard/hod');
+            router.push('/dashboard');
         } else if (newRoleCode === 'dte_admin') {
             router.push('/dte/dashboard');
         } else if (newRoleCode === 'gtu_admin') {
@@ -552,7 +552,7 @@ export default function RootLayout({
                           <SidebarMenuItem key={item.id}>
                             <SidebarMenuButton 
                               tooltip={item.label} 
-                              isActive={pathname === item.href || (pathname?.startsWith(item.href + '/') && item.href !== '/dashboard' && item.href !== '/dashboard/hod' && item.href !== '/dashboard/committee')} 
+                              isActive={pathname === item.href || (pathname?.startsWith(item.href + '/') && item.href !== '/dashboard' && item.href !== '/dashboard/committee')} 
                               asChild
                               className="text-xs"
                             >
@@ -570,7 +570,7 @@ export default function RootLayout({
                   // Regular navigation for other users
                   currentNavItems.map((item) => (
                     <SidebarMenuItem key={item.id}>
-                      <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname?.startsWith(item.href + '/') && item.href !== '/dashboard' && item.href !== '/dashboard/hod' && item.href !== '/dashboard/committee')} asChild>
+                      <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname?.startsWith(item.href + '/') && item.href !== '/dashboard' && item.href !== '/dashboard/committee')} asChild>
                         <Link href={item.href}>
                           <item.icon />
                           <span>{item.label}</span>

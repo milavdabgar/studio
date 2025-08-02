@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Department } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
-import { DepartmentModel } from '@/lib/models';
+import { DepartmentModel, UserModel } from '@/lib/models';
 import { Types } from 'mongoose';
 
 interface RouteParams {
@@ -128,6 +128,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ message: 'Please enter a valid establishment year.' }, { status: 400 });
     }
 
+    // Handle HOD role assignment changes
+    const oldHodId = existingDepartment.hodId;
+    const newHodId = departmentData.hodId;
+    
     // Update department data
     const updateData: Record<string, unknown> = {
       ...departmentData,
@@ -140,6 +144,51 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (departmentData.establishmentYear !== undefined) updateData.establishmentYear = departmentData.establishmentYear ? Number(departmentData.establishmentYear) : undefined;
 
     const updatedDepartment = await DepartmentModel.findByIdAndUpdate(existingDepartment._id, updateData, { new: true });
+
+    // Handle HOD role changes if hodId was updated
+    if (departmentData.hodId !== undefined && oldHodId !== newHodId) {
+      console.log(`[PUT Department] HOD changed from ${oldHodId} to ${newHodId}`);
+      
+      // Remove 'hod' role from previous HOD if exists
+      if (oldHodId) {
+        try {
+          const oldHod = await UserModel.findById(oldHodId);
+          if (oldHod && oldHod.roles.includes('hod')) {
+            const updatedRoles = oldHod.roles.filter(role => role !== 'hod');
+            await UserModel.findByIdAndUpdate(oldHodId, { 
+              roles: updatedRoles,
+              updatedAt: new Date().toISOString()
+            });
+            console.log(`[PUT Department] Removed 'hod' role from user ${oldHodId}`);
+          }
+        } catch (error) {
+          console.error(`[PUT Department] Error removing hod role from ${oldHodId}:`, error);
+          // Don't fail the department update if this fails, just log it
+        }
+      }
+      
+      // Add 'hod' role to new HOD if exists
+      if (newHodId) {
+        try {
+          const newHod = await UserModel.findById(newHodId);
+          if (newHod && !newHod.roles.includes('hod')) {
+            const updatedRoles = [...newHod.roles, 'hod'];
+            await UserModel.findByIdAndUpdate(newHodId, { 
+              roles: updatedRoles,
+              updatedAt: new Date().toISOString()
+            });
+            console.log(`[PUT Department] Added 'hod' role to user ${newHodId}`);
+          }
+        } catch (error) {
+          console.error(`[PUT Department] Error adding hod role to ${newHodId}:`, error);
+          // Don't fail the department update if this fails, just log it
+        }
+      }
+      
+      // Clear login cache to ensure updated roles are reflected immediately
+      console.log(`[PUT Department] Role changes detected - recommending cache clear for login`);
+    }
+
     return NextResponse.json(updatedDepartment);
   } catch (error) {
     console.error(`Error updating department:`, error);
@@ -188,6 +237,24 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
     
     console.log(`[DELETE Department] Found department: ${departmentToDelete.name} (ID: ${departmentToDelete.id})`);
+    
+    // Remove 'hod' role from current HOD if exists before deleting department
+    if (departmentToDelete.hodId) {
+      try {
+        const currentHod = await UserModel.findById(departmentToDelete.hodId);
+        if (currentHod && currentHod.roles.includes('hod')) {
+          const updatedRoles = currentHod.roles.filter(role => role !== 'hod');
+          await UserModel.findByIdAndUpdate(departmentToDelete.hodId, { 
+            roles: updatedRoles,
+            updatedAt: new Date().toISOString()
+          });
+          console.log(`[DELETE Department] Removed 'hod' role from user ${departmentToDelete.hodId} due to department deletion`);
+        }
+      } catch (error) {
+        console.error(`[DELETE Department] Error removing hod role from ${departmentToDelete.hodId}:`, error);
+        // Don't fail the department deletion if this fails, just log it
+      }
+    }
     
     // TODO: Add validation to prevent deletion of departments that have associated programs, courses, or users
     
