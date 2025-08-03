@@ -4,14 +4,71 @@ import type { Role } from '@/types/entities';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
-// Define all possible permissions in the system. This could also be fetched from an API.
+// Define all possible permissions in the system
 export const allPermissions = [
+  // Core System Permissions
   "manage_users", "manage_roles", "manage_settings", "view_courses", 
   "submit_assignments", "manage_courses", "grade_assignments", 
   "manage_faculty", "view_department_reports", "evaluate_projects",
   "view_feedback", "generate_reports", "manage_institutes", "manage_buildings",
-  "manage_rooms", "manage_departments", "manage_programs"
+  "manage_rooms", "manage_departments", "manage_programs",
+  
+  // TPO Committee Permissions
+  "placement_management", "company_coordination", "placement_analytics",
+  "job_posting_management", "student_placement_tracking", "career_guidance",
+  "industry_partnerships", "placement_drive_organization", "interview_scheduling",
+  
+  // SSIP Committee Permissions
+  "innovation_management", "funding_approval", "startup_incubation",
+  "patent_management", "mentorship_coordination", "competition_management",
+  "innovation_analytics", "funding_tracking", "entrepreneur_guidance",
+  
+  // Library Committee Permissions
+  "library_management", "resource_allocation", "catalog_management",
+  "digital_assets", "circulation_control", "user_access_management",
+  "budget_planning", "acquisition_management", "usage_analytics",
+  
+  // IT/CWAN Committee Permissions
+  "infrastructure_management", "security_oversight", "network_administration",
+  "system_monitoring", "hardware_management", "software_licensing",
+  "user_account_management", "backup_management", "technical_support"
 ];
+
+// Committee-specific permission sets
+export const committeePermissions = {
+  tpo: {
+    name: "Training & Placement Office",
+    permissions: [
+      "placement_management", "company_coordination", "placement_analytics",
+      "job_posting_management", "student_placement_tracking", "career_guidance",
+      "industry_partnerships", "placement_drive_organization", "interview_scheduling"
+    ]
+  },
+  ssip: {
+    name: "Student Startup & Innovation Policy",
+    permissions: [
+      "innovation_management", "funding_approval", "startup_incubation",
+      "patent_management", "mentorship_coordination", "competition_management",
+      "innovation_analytics", "funding_tracking", "entrepreneur_guidance"
+    ]
+  },
+  library: {
+    name: "Library Committee",
+    permissions: [
+      "library_management", "resource_allocation", "catalog_management",
+      "digital_assets", "circulation_control", "user_access_management",
+      "budget_planning", "acquisition_management", "usage_analytics"
+    ]
+  },
+  it_cwan: {
+    name: "IT & Computer Network Administration",
+    permissions: [
+      "infrastructure_management", "security_oversight", "network_administration",
+      "system_monitoring", "hardware_management", "software_licensing",
+      "user_account_management", "backup_management", "technical_support"
+    ]
+  }
+};
 
 
 export const roleService = {

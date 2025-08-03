@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserCog, Users, Shield, Search, Plus, Edit, Trash2, Eye, Loader2, CheckCircle, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { committeePermissions } from '@/lib/api/roles';
+import { permissionUtils, permissionCategories } from '@/lib/utils/permissions';
 
 interface User {
   id: string;
