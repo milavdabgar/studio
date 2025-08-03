@@ -208,13 +208,10 @@ export default function CommitteeManagementPage() {
     try {
         const result = await committeeService.importCommittees(selectedFile, institutes, facultyUsers);
         await fetchInitialData();
-        toast({ title: "Import Successful", description: `${result.success} committees imported successfully` });
-        if (result.errors && result.errors.length > 0) {
-          result.errors.slice(0, 3).forEach((err: unknown) => {
-            const error = err as { row?: number; message?: string };
-            toast({ variant: "destructive", title: `Import Warning (Row ${error.row || 'unknown'})`, description: error.message || 'Unknown error' });
-          });
-        }
+        toast({ 
+          title: "Import Successful", 
+          description: `${result.newCount} new committees created, ${result.updatedCount} updated, ${result.skippedCount} skipped` 
+        });
     } catch (error: unknown) {
         console.error("Error processing CSV file:", error);
         const errorMessage = error instanceof Error ? error.message : "Could not process the CSV file.";

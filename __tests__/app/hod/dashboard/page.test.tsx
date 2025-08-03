@@ -6,6 +6,10 @@ import HODDashboardPage from '@/app/hod/dashboard/page';
 
 const mockToast = jest.fn();
 
+// Mock fetch globally
+global.fetch = jest.fn();
+const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>;
+
 // Mock hooks
 jest.mock('@/hooks/use-toast', () => ({
   useToast: () => ({ toast: mockToast })
@@ -28,6 +32,64 @@ Object.defineProperty(document, 'cookie', {
 
 describe('HODDashboardPage', () => {
   beforeEach(() => {
+    // Mock fetch responses
+    mockFetch.mockImplementation((url) => {
+      const urlStr = url?.toString() || '';
+      
+      if (urlStr.includes('/departments/')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({
+            id: 'dept_001',
+            name: 'Computer Engineering',
+            totalStudents: 150,
+            totalFaculty: 12,
+            activeCourses: 25,
+            systemHealth: 'warning',
+            facultyDistribution: [
+              { name: 'Dr. Smith', workload: 18, status: 'normal' },
+              { name: 'Dr. Jones', workload: 22, status: 'overloaded' }
+            ]
+          })
+        } as Response);
+      }
+      
+      if (urlStr.includes('/hod/faculty')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve([
+            { id: 'fac_001', name: 'Dr. Smith', workloadPercentage: 85, currentHours: 18, maxHours: 22 },
+            { id: 'fac_002', name: 'Dr. Jones', workloadPercentage: 95, currentHours: 20, maxHours: 22 }
+          ])
+        } as Response);
+      }
+      
+      if (urlStr.includes('/hod/timetables')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve([
+            { id: 'tt_001', name: 'Morning Schedule', status: 'active', conflicts: 0 }
+          ])
+        } as Response);
+      }
+      
+      if (urlStr.includes('/hod/analytics')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({
+            totalHours: 120,
+            utilization: 85,
+            efficiency: 92
+          })
+        } as Response);
+      }
+      
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({})
+      } as Response);
+    });
+
     mockUseHODRealtimeTimetable.mockReturnValue({
       isConnected: true,
       connectionState: 'connected' as const,

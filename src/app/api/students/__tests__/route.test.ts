@@ -270,9 +270,11 @@ describe('/api/students', () => {
       const invalidData = { ...validStudentData };
       delete (invalidData as { enrollmentNumber?: string }).enrollmentNumber;
       
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(invalidData),
+        url: 'http://localhost/api/students',
+        body: invalidData,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
@@ -288,9 +290,11 @@ describe('/api/students', () => {
       delete (invalidData as { fullNameGtuFormat?: string; firstName?: string; lastName?: string }).firstName;
       delete (invalidData as { fullNameGtuFormat?: string; firstName?: string; lastName?: string }).lastName;
       
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(invalidData),
+        url: 'http://localhost/api/students',
+        body: invalidData,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
@@ -304,9 +308,11 @@ describe('/api/students', () => {
       const invalidData = { ...validStudentData };
       delete (invalidData as { programId?: string }).programId;
       
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(invalidData),
+        url: 'http://localhost/api/students',
+        body: invalidData,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
@@ -321,9 +327,11 @@ describe('/api/students', () => {
         .mockResolvedValueOnce({ enrollmentNumber: 'GP24CE001' }) // First call: existing enrollment
         .mockResolvedValueOnce(null); // Second call: no existing email
       
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(validStudentData),
+        url: 'http://localhost/api/students',
+        body: validStudentData,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
@@ -340,9 +348,11 @@ describe('/api/students', () => {
         .mockResolvedValueOnce(null) // First call: no existing enrollment
         .mockResolvedValueOnce({ instituteEmail: 'GP24CE001@gpp.edu.in' }); // Second call: existing email
       
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(validStudentData),
+        url: 'http://localhost/api/students',
+        body: validStudentData,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
@@ -359,9 +369,11 @@ describe('/api/students', () => {
       
       const invalidData = { ...validStudentData, personalEmail: 'invalid-email' };
       
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(invalidData),
+        url: 'http://localhost/api/students',
+        body: invalidData,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
@@ -388,9 +400,11 @@ describe('/api/students', () => {
         updatedAt: expect.any(String)
       });
       
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(validStudentData),
+        url: 'http://localhost/api/students',
+        body: validStudentData,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
@@ -417,9 +431,11 @@ describe('/api/students', () => {
       mockUserService.getAllUsers.mockResolvedValue([existingUser]);
       mockUserService.updateUser.mockResolvedValue(existingUser);
       
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(validStudentData),
+        url: 'http://localhost/api/students',
+        body: validStudentData,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
@@ -442,9 +458,11 @@ describe('/api/students', () => {
       };
       delete (dataWithoutGtuFormat as { fullNameGtuFormat?: string }).fullNameGtuFormat;
       
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(dataWithoutGtuFormat),
+        url: 'http://localhost/api/students',
+        body: dataWithoutGtuFormat,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
@@ -461,9 +479,11 @@ describe('/api/students', () => {
     it('should handle database errors during student creation', async () => {
       mockStudentInstance.save.mockRejectedValue(new Error('Database save failed'));
       
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(validStudentData),
+        url: 'http://localhost/api/students',
+        body: validStudentData,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
@@ -480,9 +500,11 @@ describe('/api/students', () => {
         instituteEmail: 'alice.wilson@custom.edu.in'
       };
       
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(dataWithInstituteEmail),
+        url: 'http://localhost/api/students',
+        body: dataWithInstituteEmail,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
@@ -523,9 +545,11 @@ describe('/api/students', () => {
         updatedAt: expect.any(String)
       });
       
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(validStudentData),
+        url: 'http://localhost/api/students',
+        body: validStudentData,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
@@ -545,9 +569,11 @@ describe('/api/students', () => {
       }];
       mockProgramService.getAllPrograms.mockResolvedValue(programWithoutInstitute);
       
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(validStudentData),
+        url: 'http://localhost/api/students',
+        body: validStudentData,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
@@ -565,9 +591,11 @@ describe('/api/students', () => {
       // Mock empty programs array so no program is found
       mockProgramService.getAllPrograms.mockResolvedValue([]);
       
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(validStudentData),
+        url: 'http://localhost/api/students',
+        body: validStudentData,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
@@ -587,9 +615,11 @@ describe('/api/students', () => {
       mockUserService.createUser.mockRejectedValue(alreadyExistsError);
       mockUserService.getAllUsers.mockResolvedValue([]); // No existing users found
       
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(validStudentData),
+        url: 'http://localhost/api/students',
+        body: validStudentData,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
@@ -608,9 +638,11 @@ describe('/api/students', () => {
       const otherError = new Error('Database connection failed');
       mockUserService.createUser.mockRejectedValue(otherError);
       
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(validStudentData),
+        url: 'http://localhost/api/students',
+        body: validStudentData,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
