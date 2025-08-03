@@ -69,7 +69,8 @@ describe('HODDashboardPage', () => {
               totalHours: 18,
               maxHours: 22,
               alerts: [],
-              subjects: ['Math 101', 'Calculus']
+              subjects: ['Math 101', 'Calculus'],
+              timetables: ['Morning Schedule', 'Evening Schedule']
             },
             { 
               id: 'fac_002', 
@@ -79,7 +80,8 @@ describe('HODDashboardPage', () => {
               totalHours: 20,
               maxHours: 22,
               alerts: [{ type: 'overload', message: 'Workload exceeds recommended hours' }],
-              subjects: ['Physics 201', 'Advanced Physics', 'Lab Work']
+              subjects: ['Physics 201', 'Advanced Physics', 'Lab Work'],
+              timetables: ['Afternoon Schedule']
             }
           ])
         } as Response);

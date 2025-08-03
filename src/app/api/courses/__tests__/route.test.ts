@@ -59,7 +59,24 @@ describe('/api/courses', () => {
       // Mock the find method to return the courses directly
       mockCourseModel.find.mockResolvedValue([mockCourse]);
       
-      const response = await GET();
+      // Mock request with admin authentication for role-based access
+      const mockAuthUser = {
+        email: 'admin@test.com',
+        name: 'Test Admin',
+        activeRole: 'admin',
+        availableRoles: ['admin'],
+        departmentId: 'dept_test',
+        instituteId: 'inst_test'
+      };
+      const mockRequest = {
+        cookies: {
+          get: jest.fn().mockReturnValue({ 
+            value: encodeURIComponent(JSON.stringify(mockAuthUser)) 
+          })
+        },
+        url: 'http://localhost:3000/api/courses'
+      } as any;
+      const response = await GET(mockRequest);
       const data = await response.json();
       
       expect(response.status).toBe(200);
@@ -72,7 +89,24 @@ describe('/api/courses', () => {
       const errorMessage = 'Database connection failed';
       mockCourseModel.find.mockRejectedValue(new Error(errorMessage));
       
-      const response = await GET();
+      // Mock request with admin authentication for role-based access
+      const mockAuthUser = {
+        email: 'admin@test.com',
+        name: 'Test Admin',
+        activeRole: 'admin',
+        availableRoles: ['admin'],
+        departmentId: 'dept_test',
+        instituteId: 'inst_test'
+      };
+      const mockRequest = {
+        cookies: {
+          get: jest.fn().mockReturnValue({ 
+            value: encodeURIComponent(JSON.stringify(mockAuthUser)) 
+          })
+        },
+        url: 'http://localhost:3000/api/courses'
+      } as any;
+      const response = await GET(mockRequest);
       const data = await response.json();
       
       expect(response.status).toBe(500);

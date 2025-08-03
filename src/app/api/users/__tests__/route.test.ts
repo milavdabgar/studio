@@ -4,6 +4,28 @@ import { UserModel } from '@/lib/models';
 import { connectMongoose } from '@/lib/mongodb';
 import { instituteService } from '@/lib/api/institutes';
 
+// Helper function to create authenticated requests
+const createAuthenticatedRequest = (url: string, options: RequestInit = {}) => {
+  const adminUser = {
+    email: 'admin@test.com',
+    name: 'Test Admin',
+    activeRole: 'admin',
+    availableRoles: ['admin'],
+    departmentId: 'dept_cse',
+    id: 'user_admin_test'
+  };
+  
+  const authCookie = encodeURIComponent(JSON.stringify(adminUser));
+  
+  return new NextRequest(url, {
+    ...options,
+    headers: {
+      ...options.headers,
+      'Cookie': `auth_user=${authCookie}`
+    }
+  });
+};
+
 // Mock console methods to suppress expected error/warning messages during tests
 const originalConsoleError = console.error;
 const originalConsoleWarn = console.warn;
@@ -105,7 +127,7 @@ describe('/api/users', () => {
       const leanResult = Promise.resolve(mockUsers);
       mockUserModel.find.mockReturnValue({ lean: () => leanResult } as { lean: () => Promise<typeof mockUsers> });
       
-      const response = await GET(new NextRequest('http://localhost/api/users'));
+      const response = await GET(createAuthenticatedRequest('http://localhost/api/users'));
       const data = await response.json();
       
       expect(response.status).toBe(200);
@@ -124,7 +146,7 @@ describe('/api/users', () => {
       const leanResult = Promise.resolve([]);
       mockUserModel.find.mockReturnValue({ lean: () => leanResult } as { lean: () => Promise<never[]> });
       
-      const response = await GET(new NextRequest('http://localhost/api/users'));
+      const response = await GET(createAuthenticatedRequest('http://localhost/api/users'));
       const data = await response.json();
       
       expect(response.status).toBe(200);
@@ -136,7 +158,7 @@ describe('/api/users', () => {
       const errorMessage = 'Database connection failed';
       mockUserModel.find.mockReturnValue({ lean: () => Promise.reject(new Error(errorMessage)) } as { lean: () => Promise<never> });
       
-      const response = await GET(new NextRequest('http://localhost/api/users'));
+      const response = await GET(createAuthenticatedRequest('http://localhost/api/users'));
       const data = await response.json();
       
       expect(response.status).toBe(500);
@@ -177,7 +199,7 @@ describe('/api/users', () => {
     });
 
     it('should create a new user with valid data', async () => {
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(validUserData),
       });
@@ -209,7 +231,7 @@ describe('/api/users', () => {
       const invalidData = { ...validUserData };
       delete (invalidData as { fullName?: string }).fullName;
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(invalidData),
       });
@@ -228,7 +250,7 @@ describe('/api/users', () => {
     it('should return 400 for empty full name', async () => {
       const invalidData = { ...validUserData, fullName: '   ' };
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(invalidData),
       });
@@ -244,7 +266,7 @@ describe('/api/users', () => {
       const invalidData = { ...validUserData };
       delete (invalidData as { firstName?: string }).firstName;
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(invalidData),
       });
@@ -264,7 +286,7 @@ describe('/api/users', () => {
       const invalidData = { ...validUserData };
       delete (invalidData as { lastName?: string }).lastName;
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(invalidData),
       });
@@ -284,7 +306,7 @@ describe('/api/users', () => {
       const invalidData = { ...validUserData };
       delete (invalidData as { email?: string }).email;
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(invalidData),
       });
@@ -300,7 +322,7 @@ describe('/api/users', () => {
       const invalidData = { ...validUserData };
       delete (invalidData as { roles?: string[] }).roles;
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(invalidData),
       });
@@ -315,7 +337,7 @@ describe('/api/users', () => {
     it('should return 400 for empty roles array', async () => {
       const invalidData = { ...validUserData, roles: [] };
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(invalidData),
       });
@@ -331,7 +353,7 @@ describe('/api/users', () => {
       const invalidData = { ...validUserData };
       delete (invalidData as { password?: string }).password;
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(invalidData),
       });
@@ -346,7 +368,7 @@ describe('/api/users', () => {
     it('should return 400 for short password', async () => {
       const invalidData = { ...validUserData, password: '12345' };
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(invalidData),
       });
@@ -367,7 +389,7 @@ describe('/api/users', () => {
         email: 'alice.wilson@gmail.com'
       });
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(validUserData),
       });
@@ -390,7 +412,7 @@ describe('/api/users', () => {
         updatedAt: expect.any(String)
       });
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(validUserData),
       });
@@ -419,7 +441,7 @@ describe('/api/users', () => {
         updatedAt: expect.any(String)
       });
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(validUserData),
       });
@@ -448,7 +470,7 @@ describe('/api/users', () => {
         updatedAt: expect.any(String)
       });
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(dataWithoutInstitute),
       });
@@ -475,7 +497,7 @@ describe('/api/users', () => {
         updatedAt: expect.any(String)
       });
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(dataWithSpecialChars),
       });
@@ -491,7 +513,7 @@ describe('/api/users', () => {
     });
 
     it('should set default display name when not provided', async () => {
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(validUserData),
       });
@@ -512,7 +534,7 @@ describe('/api/users', () => {
         displayName: 'Alice W.'
       };
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(dataWithDisplayName),
       });
@@ -530,7 +552,7 @@ describe('/api/users', () => {
     it('should handle database errors during user creation', async () => {
       mockUserInstance.save.mockRejectedValue(new Error('Database save failed'));
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(validUserData),
       });
@@ -552,7 +574,7 @@ describe('/api/users', () => {
         email: '  alice.wilson@gmail.com  '
       };
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(dataWithWhitespace),
       });
@@ -580,7 +602,7 @@ describe('/api/users', () => {
         return Promise.resolve(null);
       });
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(validUserData),
       });
@@ -608,7 +630,7 @@ describe('/api/users', () => {
         updatedAt: expect.any(String)
       });
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(dataWithSpecialCharNames),
       });
@@ -631,7 +653,7 @@ describe('/api/users', () => {
         email: '!@#$%^@example.com' // Username will be cleaned to empty
       };
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(dataWithSpecialCharNames),
       });
@@ -660,7 +682,7 @@ describe('/api/users', () => {
         updatedAt: expect.any(String)
       });
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(validUserData),
       });
@@ -675,7 +697,7 @@ describe('/api/users', () => {
     it('should handle empty trimmed names', async () => {
       const invalidData = { ...validUserData, firstName: '   ', lastName: '   ' };
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(invalidData),
       });
@@ -690,7 +712,7 @@ describe('/api/users', () => {
     it('should handle empty trimmed email', async () => {
       const invalidData = { ...validUserData, email: '   ' };
       
-      const request = new NextRequest('http://localhost/api/users', {
+      const request = createAuthenticatedRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify(invalidData),
       });
@@ -723,7 +745,7 @@ describe('/api/users', () => {
           updatedAt: expect.any(String)
         });
         
-        const request = new NextRequest('http://localhost/api/users', {
+        const request = createAuthenticatedRequest('http://localhost/api/users', {
           method: 'POST',
           body: JSON.stringify(userData),
         });

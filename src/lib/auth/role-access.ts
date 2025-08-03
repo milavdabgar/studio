@@ -68,11 +68,77 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
     };
   }
 
-  const isAdmin = user.availableRoles.includes('admin');
-  const isHOD = user.availableRoles.includes('hod');
-  const isPrincipal = user.availableRoles.includes('principal');
-  const isFaculty = user.availableRoles.includes('faculty');
-  const isStudent = user.availableRoles.includes('student');
+  // Ensure availableRoles is an array
+  if (!user.availableRoles || !Array.isArray(user.availableRoles)) {
+    return {
+      canViewAllDepartments: false,
+      canEditAllDepartments: false,
+      allowedDepartments: user.departmentId ? [user.departmentId] : [],
+      departmentFilter: user.departmentId,
+      featurePermissions: {
+        canImportData: false,
+        canExportData: false,
+        canDeleteRecords: false,
+        canManageRoles: false,
+        canApproveRequests: false,
+      },
+      navigationPermissions: {
+        canAccessFaculty: false,
+        canAccessStudents: false,
+        canAccessPrograms: false,
+        canAccessCourses: false,
+        canAccessTimetables: false,
+        canAccessBatches: false,
+        canAccessRooms: false,
+        canAccessReports: false,
+        canAccessSettings: false,
+        canAccessInstitutes: false,
+        canAccessAnalytics: false,
+        canAccessApprovals: false,
+        canAccessCommittees: false,
+      }
+    };
+  }
+
+  // Use activeRole for primary role determination, but check availableRoles for authorization
+  const isAdmin = user.activeRole === 'admin' || user.activeRole === 'super_admin';
+  const isHOD = user.activeRole === 'hod';
+  const isPrincipal = user.activeRole === 'principal';
+  const isFaculty = user.activeRole === 'faculty';
+  const isStudent = user.activeRole === 'student';
+  
+  // Ensure user actually has the role they're trying to use
+  if (user.activeRole && !user.availableRoles.includes(user.activeRole)) {
+    // If active role is not in available roles, fall back to most restrictive permissions
+    return {
+      canViewAllDepartments: false,
+      canEditAllDepartments: false,
+      allowedDepartments: user.departmentId ? [user.departmentId] : [],
+      departmentFilter: user.departmentId,
+      featurePermissions: {
+        canImportData: false,
+        canExportData: false,
+        canDeleteRecords: false,
+        canManageRoles: false,
+        canApproveRequests: false,
+      },
+      navigationPermissions: {
+        canAccessFaculty: false,
+        canAccessStudents: false,
+        canAccessPrograms: false,
+        canAccessCourses: false,
+        canAccessTimetables: false,
+        canAccessBatches: false,
+        canAccessRooms: false,
+        canAccessReports: false,
+        canAccessSettings: false,
+        canAccessInstitutes: false,
+        canAccessAnalytics: false,
+        canAccessApprovals: false,
+        canAccessCommittees: false,
+      }
+    };
+  }
 
   // Admin has full access
   if (isAdmin) {
@@ -243,6 +309,16 @@ export function getDepartmentMapping(): Record<string, string> {
     'General Department': 'dept_general',
     'Administration': 'dept_admin',
   };
+}
+
+/**
+ * Update user cookie with new data
+ */
+export function updateUserCookie(user: UserRole): void {
+  if (typeof document !== 'undefined') {
+    const cookieValue = encodeURIComponent(JSON.stringify(user));
+    document.cookie = `auth_user=${cookieValue}; path=/; max-age=${7 * 24 * 60 * 60}`; // 7 days
+  }
 }
 
 export function getDepartmentDisplayName(departmentId: string): string {
