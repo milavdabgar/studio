@@ -16,6 +16,8 @@ import { batchService } from '@/lib/api/batches';
 import { programService } from '@/lib/api/programs';
 import { studentService } from '@/lib/api/students';
 import { getIntakeCapacityForYear } from '@/lib/utils/intake-capacity';
+import { getUserCookie, getUserAccessContext, getDepartmentDisplayName } from '@/lib/auth/role-access';
+import { DepartmentScopedPage } from '@/components/auth/PageAccessControl';
 
 type SortField = keyof Batch | 'none';
 type SortDirection = 'asc' | 'desc';
@@ -32,6 +34,10 @@ export default function BatchManagementPage() {
   const [batches, setBatches] = useState<Batch[]>([]);
   const [programs, setPrograms] = useState<Program[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
+
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -651,8 +657,22 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
     setCurrentPage(1); 
   };
   
+  // Apply role-based filtering to programs
+  const filteredPrograms = useMemo(() => {
+    if (!accessContext.canViewAllDepartments && accessContext.departmentFilter) {
+      return programs.filter(program => program.departmentId === accessContext.departmentFilter);
+    }
+    return programs;
+  }, [programs, accessContext.canViewAllDepartments, accessContext.departmentFilter]);
+
   const filteredAndSortedBatches = useMemo(() => {
     let result = [...batches];
+
+    // Apply role-based department filtering first
+    if (!accessContext.canViewAllDepartments && accessContext.departmentFilter) {
+      const allowedProgramIds = filteredPrograms.map(p => p.id);
+      result = result.filter(batch => allowedProgramIds.includes(batch.programId));
+    }
 
     if (searchTerm) {
       result = result.filter(b => 
@@ -691,7 +711,7 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
       });
     }
     return result;
-  }, [batches, searchTerm, filterStatusVal, filterProgramVal, sortField, sortDirection]);
+  }, [batches, searchTerm, filterStatusVal, filterProgramVal, sortField, sortDirection, accessContext.canViewAllDepartments, accessContext.departmentFilter, filteredPrograms]);
 
   const totalPages = Math.ceil(filteredAndSortedBatches.length / itemsPerPage);
   const paginatedBatches = useMemo(() => {
@@ -748,7 +768,8 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
   );
 
   return (
-    <div className="space-y-8">
+    <DepartmentScopedPage pageName="Batch Management">
+      <div className="space-y-8">
       <Card className="shadow-xl">
         <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
@@ -779,9 +800,9 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
                   
                   <div>
                     <Label htmlFor="programId">Program *</Label>
-                    <Select value={formProgramId} onValueChange={setFormProgramId} disabled={isSubmitting || programs.length === 0} required>
+                    <Select value={formProgramId} onValueChange={setFormProgramId} disabled={isSubmitting || filteredPrograms.length === 0} required>
                       <SelectTrigger id="programId"><SelectValue placeholder="Select Program" /></SelectTrigger>
-                      <SelectContent>{programs.map(p => <SelectItem key={p.id} value={p.id}>{p.name} ({p.code})</SelectItem>)}</SelectContent>
+                      <SelectContent>{filteredPrograms.map(p => <SelectItem key={p.id} value={p.id}>{p.name} ({p.code})</SelectItem>)}</SelectContent>
                     </Select>
                   </div>
 
@@ -838,29 +859,33 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
                   : "Creates batches like 'EC-2024', 'ICT-2023' based on admission year from enrollment numbers (more reliable data)"}
               </p>
             </div>
-            <Button onClick={handleExportBatches} variant="outline" className="w-full sm:w-auto">
-              <Download className="mr-2 h-5 w-5" /> Export CSV
-            </Button>
+            {accessContext.featurePermissions.canExportData && (
+              <Button onClick={handleExportBatches} variant="outline" className="w-full sm:w-auto">
+                <Download className="mr-2 h-5 w-5" /> Export CSV
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
-            <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Batches from CSV</h3>
-            <div className="flex flex-col sm:flex-row gap-2 items-center">
-              <Input type="file" id="csvImportBatch" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
-              <Button onClick={handleImportBatches} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto">
-                {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>} Import
-              </Button>
-            </div>
-            <div className="flex items-center gap-2">
-                 <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="px-0 text-primary">
-                    <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
+          {accessContext.featurePermissions.canImportData && (
+            <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
+              <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Batches from CSV</h3>
+              <div className="flex flex-col sm:flex-row gap-2 items-center">
+                <Input type="file" id="csvImportBatch" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
+                <Button onClick={handleImportBatches} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto">
+                  {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>} Import
                 </Button>
-                <p className="text-xs text-muted-foreground">
-                  CSV fields: id (opt), name, programId OR (programName & programCode), startAcademicYear, endAcademicYear, maxIntake, status.
-                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                   <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="px-0 text-primary">
+                      <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
+                  </Button>
+                  <p className="text-xs text-muted-foreground">
+                    CSV fields: id (opt), name, programId OR (programName & programCode), startAcademicYear, endAcademicYear, maxIntake, status.
+                  </p>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
@@ -872,11 +897,11 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
             </div>
             <div>
               <Label htmlFor="filterProgram">Filter by Program</Label>
-              <Select value={filterProgramVal} onValueChange={setFilterProgramVal} disabled={programs.length === 0}>
+              <Select value={filterProgramVal} onValueChange={setFilterProgramVal} disabled={filteredPrograms.length === 0}>
                 <SelectTrigger id="filterProgram"><SelectValue placeholder="All Programs"/></SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">All Programs</SelectItem>
-                    {programs.map(p => <SelectItem key={p.id} value={p.id}>{p.name} ({p.code})</SelectItem>)}
+                    {filteredPrograms.map(p => <SelectItem key={p.id} value={p.id}>{p.name} ({p.code})</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -889,7 +914,7 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
             </div>
           </div>
 
-          {selectedBatchIds.length > 0 && (
+          {selectedBatchIds.length > 0 && accessContext.featurePermissions.canDeleteRecords && (
              <div className="mb-4 flex items-center gap-2">
                 <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
                     <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedBatchIds.length})
@@ -913,11 +938,13 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
                 <Card key={batch.id} className="p-4">
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <Checkbox 
-                        checked={selectedBatchIds.includes(batch.id)} 
-                        onCheckedChange={(checked) => handleSelectBatch(batch.id, !!checked)}
-                        className="flex-shrink-0"
-                      />
+                      {accessContext.featurePermissions.canDeleteRecords && (
+                        <Checkbox 
+                          checked={selectedBatchIds.includes(batch.id)} 
+                          onCheckedChange={(checked) => handleSelectBatch(batch.id, !!checked)}
+                          className="flex-shrink-0"
+                        />
+                      )}
                       <div className="min-w-0 flex-1">
                         <h3 className="font-medium text-sm leading-tight">{batch.name}</h3>
                         <p className="text-xs text-muted-foreground">{program?.name || 'Unknown Program'}</p>
@@ -960,16 +987,18 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
                       <Edit className="h-3 w-3" />
                       <span className="ml-1">Edit</span>
                     </Button>
-                    <Button 
-                      variant="destructive" 
-                      size="sm" 
-                      onClick={() => handleDelete(batch.id)} 
-                      disabled={isSubmitting}
-                      className="min-h-[44px] flex-1 text-xs"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                      <span className="ml-1">Delete</span>
-                    </Button>
+                    {accessContext.featurePermissions.canDeleteRecords && (
+                      <Button 
+                        variant="destructive" 
+                        size="sm" 
+                        onClick={() => handleDelete(batch.id)} 
+                        disabled={isSubmitting}
+                        className="min-h-[44px] flex-1 text-xs"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                        <span className="ml-1">Delete</span>
+                      </Button>
+                    )}
                   </div>
                 </Card>
               );
@@ -985,7 +1014,9 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
           <Table className="hidden lg:table">
             <TableHeader>
               <TableRow>
-                 <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedBatches.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all batches on this page"/></TableHead>
+                 {accessContext.featurePermissions.canDeleteRecords && (
+                   <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedBatches.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all batches on this page"/></TableHead>
+                 )}
                 <SortableTableHeader field="name" label="Batch Name" />
                 <SortableTableHeader field="programId" label="Program" />
                 <SortableTableHeader field="startAcademicYear" label="Start Year" />
@@ -998,7 +1029,9 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
             <TableBody>
               {paginatedBatches.map((batch) => (
                 <TableRow key={batch.id} data-state={selectedBatchIds.includes(batch.id) ? "selected" : undefined}>
-                  <TableCell><Checkbox checked={selectedBatchIds.includes(batch.id)} onCheckedChange={(checked) => handleSelectBatch(batch.id, !!checked)} aria-labelledby={`batch-name-${batch.id}`}/></TableCell>
+                  {accessContext.featurePermissions.canDeleteRecords && (
+                    <TableCell><Checkbox checked={selectedBatchIds.includes(batch.id)} onCheckedChange={(checked) => handleSelectBatch(batch.id, !!checked)} aria-labelledby={`batch-name-${batch.id}`}/></TableCell>
+                  )}
                   <TableCell id={`batch-name-${batch.id}`} className="font-medium">{batch.name}</TableCell>
                   <TableCell>{programs.find(p => p.id === batch.programId)?.name || 'N/A'}</TableCell>
                   <TableCell>{batch.startAcademicYear}</TableCell>
@@ -1052,16 +1085,18 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
                         <Edit className="h-4 w-4" />
                         <span className="sr-only">Edit Batch</span>
                       </Button>
-                      <Button variant="destructive" size="icon" onClick={() => handleDelete(batch.id)} disabled={isSubmitting}>
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete Batch</span>
-                      </Button>
+                      {accessContext.featurePermissions.canDeleteRecords && (
+                        <Button variant="destructive" size="icon" onClick={() => handleDelete(batch.id)} disabled={isSubmitting}>
+                          <Trash2 className="h-4 w-4" />
+                          <span className="sr-only">Delete Batch</span>
+                        </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
               ))}
               {paginatedBatches.length === 0 && (
-                 <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">No batches found. Adjust filters or add a new batch.</TableCell></TableRow>
+                 <TableRow><TableCell colSpan={accessContext.featurePermissions.canDeleteRecords ? 8 : 7} className="text-center text-muted-foreground py-8">No batches found. Adjust filters or add a new batch.</TableCell></TableRow>
               )}
             </TableBody>
           </Table>
@@ -1223,6 +1258,7 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </DepartmentScopedPage>
   );
 }
