@@ -20,6 +20,20 @@ export interface AccessContext {
     canManageRoles: boolean;
     canApproveRequests: boolean;
   };
+  navigationPermissions: {
+    canAccessFaculty: boolean;
+    canAccessStudents: boolean;
+    canAccessPrograms: boolean;
+    canAccessCourses: boolean;
+    canAccessTimetables: boolean;
+    canAccessBatches: boolean;
+    canAccessRooms: boolean;
+    canAccessReports: boolean;
+    canAccessSettings: boolean;
+    canAccessInstitutes: boolean;
+    canAccessAnalytics: boolean;
+    canAccessApprovals: boolean;
+  };
 }
 
 export function getUserAccessContext(user: UserRole | null): AccessContext {
@@ -34,6 +48,20 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
         canDeleteRecords: false,
         canManageRoles: false,
         canApproveRequests: false,
+      },
+      navigationPermissions: {
+        canAccessFaculty: false,
+        canAccessStudents: false,
+        canAccessPrograms: false,
+        canAccessCourses: false,
+        canAccessTimetables: false,
+        canAccessBatches: false,
+        canAccessRooms: false,
+        canAccessReports: false,
+        canAccessSettings: false,
+        canAccessInstitutes: false,
+        canAccessAnalytics: false,
+        canAccessApprovals: false,
       }
     };
   }
@@ -54,6 +82,20 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
         canDeleteRecords: true,
         canManageRoles: true,
         canApproveRequests: true,
+      },
+      navigationPermissions: {
+        canAccessFaculty: true,
+        canAccessStudents: true,
+        canAccessPrograms: true,
+        canAccessCourses: true,
+        canAccessTimetables: true,
+        canAccessBatches: true,
+        canAccessRooms: true,
+        canAccessReports: true,
+        canAccessSettings: true,
+        canAccessInstitutes: true,
+        canAccessAnalytics: true,
+        canAccessApprovals: true,
       }
     };
   }
@@ -71,6 +113,20 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
         canDeleteRecords: false,
         canManageRoles: false,
         canApproveRequests: true,
+      },
+      navigationPermissions: {
+        canAccessFaculty: true,
+        canAccessStudents: true,
+        canAccessPrograms: true,
+        canAccessCourses: true,
+        canAccessTimetables: true,
+        canAccessBatches: true,
+        canAccessRooms: true,
+        canAccessReports: true,
+        canAccessSettings: false,
+        canAccessInstitutes: false,
+        canAccessAnalytics: true,
+        canAccessApprovals: true,
       }
     };
   }
@@ -88,6 +144,20 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
         canDeleteRecords: true,
         canManageRoles: false,
         canApproveRequests: true,
+      },
+      navigationPermissions: {
+        canAccessFaculty: true,
+        canAccessStudents: true,
+        canAccessPrograms: true,
+        canAccessCourses: true,
+        canAccessTimetables: true,
+        canAccessBatches: true,
+        canAccessRooms: true,
+        canAccessReports: true,
+        canAccessSettings: false,
+        canAccessInstitutes: false,
+        canAccessAnalytics: true,
+        canAccessApprovals: true,
       }
     };
   }
@@ -103,6 +173,20 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
       canDeleteRecords: false,
       canManageRoles: false,
       canApproveRequests: false,
+    },
+    navigationPermissions: {
+      canAccessFaculty: false,
+      canAccessStudents: false,
+      canAccessPrograms: false,
+      canAccessCourses: false,
+      canAccessTimetables: false,
+      canAccessBatches: false,
+      canAccessRooms: false,
+      canAccessReports: false,
+      canAccessSettings: false,
+      canAccessInstitutes: false,
+      canAccessAnalytics: false,
+      canAccessApprovals: false,
     }
   };
 }

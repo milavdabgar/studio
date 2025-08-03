@@ -17,6 +17,8 @@ import type { Program, Department, IntakeCapacityRange } from '@/types/entities'
 import { programService } from '@/lib/api/programs';
 import { departmentService } from '@/lib/api/departments';
 import { getCurrentIntakeCapacity, rangesToYearlyCapacities, formatRangeDisplay, validateIntakeRanges } from '@/lib/utils/intake-capacity';
+import { getUserCookie, getUserAccessContext, getDepartmentDisplayName } from '@/lib/auth/role-access';
+import { DepartmentScopedPage } from '@/components/auth/PageAccessControl';
 
 type SortField = keyof Program | 'none';
 type SortDirection = 'asc' | 'desc';
@@ -26,6 +28,11 @@ const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
 export default function ProgramManagementPage() {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
+  
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
+  
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -301,8 +308,21 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
     setCurrentPage(1); 
   };
   
+  // Apply role-based filtering to departments
+  const filteredDepartments = useMemo(() => {
+    if (!accessContext.canViewAllDepartments && accessContext.departmentFilter) {
+      return departments.filter(dept => dept.id === accessContext.departmentFilter);
+    }
+    return departments;
+  }, [departments, accessContext.canViewAllDepartments, accessContext.departmentFilter]);
+
   const filteredPrograms = useMemo(() => {
     let result = [...programs];
+
+    // Apply role-based department filtering first
+    if (!accessContext.canViewAllDepartments && accessContext.departmentFilter) {
+      result = result.filter(program => program.departmentId === accessContext.departmentFilter);
+    }
 
     if (searchTerm) {
       result = result.filter(prog => 
@@ -341,7 +361,7 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
       });
     }
     return result;
-  }, [programs, searchTerm, filterStatus, filterDepartment, sortField, sortDirection]);
+  }, [programs, searchTerm, filterStatus, filterDepartment, sortField, sortDirection, accessContext.canViewAllDepartments, accessContext.departmentFilter]);
 
   const totalPages = Math.ceil(filteredPrograms.length / itemsPerPage);
   const paginatedPrograms = useMemo(() => {
@@ -409,7 +429,8 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
 
 
   return (
-    <div className="space-y-8">
+    <DepartmentScopedPage pageName="Program Management">
+      <div className="space-y-8">
       <Card className="shadow-xl">
         <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
@@ -458,7 +479,7 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
                       <Select value={formDepartmentId} onValueChange={setFormDepartmentId} disabled={isSubmitting || departments.length === 0} required>
                         <SelectTrigger id="progDepartment"><SelectValue placeholder="Select Department" /></SelectTrigger>
                         <SelectContent>
-                          {departments.map(dept => (
+                          {filteredDepartments.map(dept => (
                             <SelectItem key={dept.id} value={dept.id}>{dept.name} ({dept.code})</SelectItem>
                           ))}
                         </SelectContent>
@@ -721,11 +742,11 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
             </div>
             <div>
               <Label htmlFor="filterProgDepartment">Filter by Department</Label>
-              <Select value={filterDepartment} onValueChange={(value) => setFilterDepartment(value as string)} disabled={departments.length === 0}>
+              <Select value={filterDepartment} onValueChange={(value) => setFilterDepartment(value as string)} disabled={filteredDepartments.length === 0}>
                 <SelectTrigger id="filterProgDepartment"><SelectValue placeholder="All Departments" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Departments</SelectItem>
-                  {departments.map(dept => (
+                  {filteredDepartments.map(dept => (
                     <SelectItem key={dept.id} value={dept.id}>{dept.name} ({dept.code})</SelectItem>
                   ))}
                 </SelectContent>
@@ -733,7 +754,7 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
             </div>
           </div>
 
-          {selectedProgramIds.length > 0 && (
+          {selectedProgramIds.length > 0 && accessContext.featurePermissions.canDeleteRecords && (
              <div className="mb-4 flex items-center gap-2">
                 <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
                     <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedProgramIds.length})
@@ -754,11 +775,12 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
                 <Card key={program.id} className="p-4">
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <Checkbox 
-                        checked={selectedProgramIds.includes(program.id)} 
-                        onCheckedChange={(checked) => handleSelectProgram(program.id, !!checked)}
-                        className="flex-shrink-0"
-                      />
+                      {accessContext.featurePermissions.canDeleteRecords && (
+                        <Checkbox 
+                          checked={selectedProgramIds.includes(program.id)} 
+                          onCheckedChange={(checked) => handleSelectProgram(program.id, !!checked)}
+                        />
+                      )}
                       <div className="min-w-0 flex-1">
                         <h3 className="font-medium text-sm leading-tight">{program.name}</h3>
                         <p className="text-xs text-muted-foreground">{program.code}</p>
@@ -801,16 +823,18 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
                       <Edit className="h-3 w-3" />
                       <span className="ml-1">Edit</span>
                     </Button>
-                    <Button 
-                      variant="destructive" 
-                      size="sm" 
-                      onClick={() => handleDelete(program.id)} 
-                      disabled={isSubmitting}
-                      className="min-h-[44px] flex-1 text-xs"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                      <span className="ml-1">Delete</span>
-                    </Button>
+                    {accessContext.featurePermissions.canDeleteRecords && (
+                      <Button 
+                        variant="destructive" 
+                        size="sm" 
+                        onClick={() => handleDelete(program.id)} 
+                        disabled={isSubmitting}
+                        className="min-h-[44px] flex-1 text-xs"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                        <span className="ml-1">Delete</span>
+                      </Button>
+                    )}
                   </div>
                 </Card>
               );
@@ -826,13 +850,15 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
           <Table className="hidden lg:table">
             <TableHeader>
               <TableRow>
-                 <TableHead className="w-[50px]">
-                    <Checkbox 
-                        checked={isAllSelectedOnPage || (paginatedPrograms.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)}
-                        onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)}
-                        aria-label="Select all programs on this page"
-                    />
-                </TableHead>
+                 {accessContext.featurePermissions.canDeleteRecords && (
+                   <TableHead className="w-[50px]">
+                      <Checkbox 
+                          checked={isAllSelectedOnPage || (paginatedPrograms.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)}
+                          onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)}
+                          aria-label="Select all programs on this page"
+                      />
+                   </TableHead>
+                 )}
                 <SortableTableHeader field="name" label="Program Name" />
                 <SortableTableHeader field="code" label="Code" />
                 <TableHead>Department</TableHead>
@@ -846,13 +872,15 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
             <TableBody>
               {paginatedPrograms.map((prog) => (
                 <TableRow key={prog.id} data-state={selectedProgramIds.includes(prog.id) ? "selected" : undefined}>
-                  <TableCell>
-                      <Checkbox
-                        checked={selectedProgramIds.includes(prog.id)}
-                        onCheckedChange={(checked) => handleSelectProgram(prog.id, !!checked)}
-                        aria-labelledby={`prog-name-${prog.id}`}
-                       />
-                  </TableCell>
+                  {accessContext.featurePermissions.canDeleteRecords && (
+                    <TableCell>
+                        <Checkbox
+                          checked={selectedProgramIds.includes(prog.id)}
+                          onCheckedChange={(checked) => handleSelectProgram(prog.id, !!checked)}
+                          aria-labelledby={`prog-name-${prog.id}`}
+                         />
+                    </TableCell>
+                  )}
                   <TableCell id={`prog-name-${prog.id}`} className="font-medium">{prog.name}</TableCell>
                   <TableCell>{prog.code}</TableCell>
                   <TableCell>{departments.find(d => d.id === prog.departmentId)?.name || 'N/A'}</TableCell>
@@ -874,10 +902,12 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
                         <Edit className="h-4 w-4" />
                         <span className="sr-only">Edit Program</span>
                       </Button>
-                      <Button variant="destructive" size="icon" onClick={() => handleDelete(prog.id)} disabled={isSubmitting}>
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete Program</span>
-                      </Button>
+                      {accessContext.featurePermissions.canDeleteRecords && (
+                        <Button variant="destructive" size="icon" onClick={() => handleDelete(prog.id)} disabled={isSubmitting}>
+                          <Trash2 className="h-4 w-4" />
+                          <span className="sr-only">Delete Program</span>
+                        </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
@@ -1117,7 +1147,8 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </DepartmentScopedPage>
   );
 }
 

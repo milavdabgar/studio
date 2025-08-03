@@ -396,6 +396,14 @@ export default function HODDashboardPage() {
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
+          <Button variant="outline" size="sm" onClick={() => window.location.href = '/admin/faculty'}>
+            <Users className="h-4 w-4 mr-2" />
+            Manage Faculty
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => window.location.href = '/admin/students'}>
+            <Users className="h-4 w-4 mr-2" />
+            Manage Students
+          </Button>
           <Button variant="outline" size="sm">
             <Download className="h-4 w-4 mr-2" />
             Export
