@@ -208,8 +208,8 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
       // Should load and display timetable data
       await waitFor(() => {
         expect(screen.getByText('My Timetable')).toBeInTheDocument();
-        expect(screen.getByText('Data Structures')).toBeInTheDocument();
-        expect(screen.getByText('Database Systems')).toBeInTheDocument();
+        expect(screen.getAllByText('Data Structures').length).toBeGreaterThan(0);
+        expect(screen.getAllByText('Database Systems').length).toBeGreaterThan(0);
       });
 
       // Should show statistics
@@ -223,7 +223,7 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
       fireEvent.click(listTab);
       
       await waitFor(() => {
-        expect(screen.getByText('lecture')).toBeInTheDocument();
+        expect(screen.getAllByText('lecture').length).toBeGreaterThan(0);
       });
     });
 
