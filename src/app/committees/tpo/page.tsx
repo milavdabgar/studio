@@ -29,7 +29,8 @@ import {
   ExternalLink,
   Download,
   Filter,
-  Search
+  Search,
+  Eye
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 

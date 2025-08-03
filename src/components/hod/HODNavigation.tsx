@@ -203,6 +203,7 @@ export function HODNavigation({ className = "", compact = false }: HODNavigation
   };
 
   const isActive = (href: string) => {
+    if (!pathname) return false;
     if (href === "/hod/dashboard") {
       return pathname === href;
     }
@@ -210,6 +211,7 @@ export function HODNavigation({ className = "", compact = false }: HODNavigation
   };
 
   const hasActiveSubItem = (item: NavigationItem) => {
+    if (!pathname) return false;
     return item.subItems?.some(subItem => pathname.startsWith(subItem.href)) || false;
   };
 

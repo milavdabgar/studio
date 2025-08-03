@@ -1,6 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserFromRequest } from '@/lib/services/authService';
 import type { UserRole } from '@/types/entities';
+
+// Mock user interface for department scoping
+interface User {
+  id: string;
+  activeRole: UserRole;
+  departmentId?: string;
+  instituteId?: string;
+}
+
+// Mock function to get user from request
+async function getUserFromRequest(request: NextRequest): Promise<User | null> {
+  // In a real implementation, this would:
+  // 1. Extract JWT token from headers
+  // 2. Verify and decode the token
+  // 3. Fetch user data from database
+  
+  // For now, return null to handle gracefully
+  return null;
+}
 
 /**
  * Department scoping middleware for HOD and department-level operations

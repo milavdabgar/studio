@@ -31,7 +31,7 @@ import {
   Lock,
   Activity,
   Settings,
-  Tool,
+  Wrench,
   Eye,
   Play,
   Pause,

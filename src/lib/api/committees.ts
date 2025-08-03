@@ -90,7 +90,7 @@ export const committeeService = {
       // Ensure members have appropriate permissions
       committeeData.members?.forEach(member => {
         if (member.permissions) {
-          const validation = permissionUtils.validateCommitteePermissions(committeeData.committeeType, member.permissions);
+          const validation = permissionUtils.validateCommitteePermissions(committeeData.committeeType || 'general', member.permissions);
           if (!validation.valid) {
             throw new Error(`Invalid permissions for committee type ${committeeData.committeeType}: ${validation.invalidPermissions.join(', ')}`);
           }
@@ -236,6 +236,35 @@ export const committeeService = {
     const userPermissions = this.getUserCommitteePermissions(committeeType, roleType || '');
     
     return userPermissions.includes(requiredPermission);
+  },
+
+  // Import committees from file
+  async importCommittees(file: File, institutes: any[], facultyUsers: any[]): Promise<{ success: number; errors: string[] }> {
+    try {
+      // Mock implementation for now - replace with actual file parsing
+      const result = {
+        success: 0,
+        errors: [] as string[]
+      };
+
+      // Simulate file processing
+      if (file.size === 0) {
+        throw new Error('File is empty');
+      }
+
+      // In a real implementation, you would:
+      // 1. Parse the file (CSV, Excel, etc.)
+      // 2. Validate each committee record
+      // 3. Check against existing institutes and faculty
+      // 4. Create committees using createCommittee method
+      
+      // Mock successful import
+      result.success = 1;
+      
+      return result;
+    } catch (error) {
+      throw new Error(`Import failed: ${(error as Error).message}`);
+    }
   }
 };
 

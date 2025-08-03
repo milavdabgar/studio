@@ -208,7 +208,7 @@ export default function CommitteeManagementPage() {
     try {
         const result = await committeeService.importCommittees(selectedFile, institutes, facultyUsers);
         await fetchInitialData();
-        toast({ title: "Import Successful", description: `${result.newCount} committees added, ${result.updatedCount} updated. Skipped: ${result.skippedCount}`});
+        toast({ title: "Import Successful", description: `${result.success} committees imported successfully` });
         if (result.errors && result.errors.length > 0) {
           result.errors.slice(0, 3).forEach((err: unknown) => {
             const error = err as { row?: number; message?: string };

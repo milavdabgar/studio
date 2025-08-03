@@ -374,7 +374,7 @@ export default function CommitteeBaseLayout({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="font-medium text-sm truncate">{task.title}</h4>
-                      <Badge className={getStatusColor(task.status)} size="sm">
+                      <Badge className={`text-xs ${getStatusColor(task.status)}`}>
                         {task.status.replace('_', ' ')}
                       </Badge>
                     </div>
@@ -411,7 +411,7 @@ export default function CommitteeBaseLayout({
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="font-medium text-sm">{member.name}</h4>
-                      <Badge className={getRoleColor(member.role)} size="sm">
+                      <Badge className={`text-xs ${getRoleColor(member.role)}`}>
                         {member.role.replace('_', ' ')}
                       </Badge>
                     </div>
