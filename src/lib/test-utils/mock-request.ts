@@ -42,7 +42,8 @@ export function createMockRequest(options: {
   if (user) {
     const authCookie = encodeURIComponent(JSON.stringify(user));
     // Mock the cookies.get method
-    jest.spyOn(request.cookies, 'get').mockImplementation((name: string) => {
+    jest.spyOn(request.cookies, 'get').mockImplementation((...args: any[]) => {
+      const name = typeof args[0] === 'string' ? args[0] : args[0]?.name;
       if (name === 'auth_user') {
         return { name: 'auth_user', value: authCookie };
       }

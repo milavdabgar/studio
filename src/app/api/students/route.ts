@@ -50,9 +50,6 @@ async function handleGetStudents(request: NextRequest, context: APIAccessContext
 // Export wrapped functions for API routes
 export const GET = withAPIRoleAccess(handleGetStudents, ['admin', 'super_admin', 'hod', 'principal', 'faculty']);
 
-// Export unwrapped functions for testing
-export { handleGetStudents };
-
 async function handleCreateStudent(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
@@ -197,6 +194,3 @@ async function handleCreateStudent(request: NextRequest, context: APIAccessConte
 
 // Export wrapped functions for API routes
 export const POST = withAPIRoleAccess(handleCreateStudent, ['admin', 'super_admin', 'hod', 'principal']);
-
-// Export unwrapped functions for testing
-export { handleCreateStudent };

@@ -1,10 +1,11 @@
 import { NextRequest } from 'next/server';
 import { GET, POST } from '../route';
-import { StudentModel } from '@/lib/models';
+import { StudentModel, ProgramModel } from '@/lib/models';
 import { connectMongoose } from '@/lib/mongodb';
 import { userService } from '@/lib/api/users';
 import { instituteService } from '@/lib/api/institutes';
 import { programService } from '@/lib/api/programs';
+import { createMockRequest, mockAdminUser, mockHODUser } from '@/lib/test-utils/mock-request';
 
 // Mock console methods to suppress expected error/warning messages during tests
 const originalConsoleError = console.error;
@@ -33,8 +34,13 @@ jest.mock('@/lib/models', () => {
   const MockStudentModelConstructor = jest.fn().mockImplementation(() => mockStudentInstance) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
   MockStudentModelConstructor.find = jest.fn();
   MockStudentModelConstructor.findOne = jest.fn();
+  
+  const MockProgramModelConstructor = jest.fn() as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  MockProgramModelConstructor.find = jest.fn();
+  
   return {
-    StudentModel: MockStudentModelConstructor
+    StudentModel: MockStudentModelConstructor,
+    ProgramModel: MockProgramModelConstructor
   };
 });
 
@@ -59,6 +65,7 @@ jest.mock('@/lib/api/programs', () => ({
 
 const mockConnectMongoose = connectMongoose as jest.MockedFunction<typeof connectMongoose>;
 const mockStudentModel = StudentModel as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+const mockProgramModel = ProgramModel as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 const mockUserService = userService as jest.Mocked<typeof userService>;
 const mockInstituteService = instituteService as jest.Mocked<typeof instituteService>;
 const mockProgramService = programService as jest.Mocked<typeof programService>;
@@ -140,11 +147,12 @@ describe('/api/students', () => {
   });
 
   describe('GET /api/students', () => {
-    it('should return all students with proper id mapping', async () => {
+    it('should return all students with proper id mapping for admin user', async () => {
       const leanResult = Promise.resolve(mockStudents);
       mockStudentModel.find.mockReturnValue({ lean: () => leanResult } as { lean: () => Promise<typeof mockStudents> });
       
-      const response = await GET();
+      const mockRequest = createMockRequest({ user: mockAdminUser });
+      const response = await GET(mockRequest);
       const data = await response.json();
       
       expect(response.status).toBe(200);
@@ -167,7 +175,8 @@ describe('/api/students', () => {
       const leanResult = Promise.resolve(studentsWithoutId);
       mockStudentModel.find.mockReturnValue({ lean: () => leanResult } as { lean: () => Promise<typeof studentsWithoutId> });
       
-      const response = await GET();
+      const mockRequest = createMockRequest({ user: mockAdminUser });
+      const response = await GET(mockRequest);
       const data = await response.json();
       
       expect(response.status).toBe(200);
@@ -179,7 +188,8 @@ describe('/api/students', () => {
       const leanResult = Promise.resolve([]);
       mockStudentModel.find.mockReturnValue({ lean: () => leanResult } as { lean: () => Promise<never[]> });
       
-      const response = await GET();
+      const mockRequest = createMockRequest({ user: mockAdminUser });
+      const response = await GET(mockRequest);
       const data = await response.json();
       
       expect(response.status).toBe(200);
@@ -191,7 +201,8 @@ describe('/api/students', () => {
       const errorMessage = 'Database connection failed';
       mockStudentModel.find.mockReturnValue({ lean: () => Promise.reject(new Error(errorMessage)) } as { lean: () => Promise<never> });
       
-      const response = await GET();
+      const mockRequest = createMockRequest({ user: mockAdminUser });
+      const response = await GET(mockRequest);
       const data = await response.json();
       
       expect(response.status).toBe(500);
@@ -230,9 +241,10 @@ describe('/api/students', () => {
     });
 
     it('should create a new student with valid data', async () => {
-      const request = new NextRequest('http://localhost/api/students', {
+      const request = createMockRequest({
         method: 'POST',
-        body: JSON.stringify(validStudentData),
+        body: validStudentData,
+        user: mockAdminUser
       });
       
       const response = await POST(request);
