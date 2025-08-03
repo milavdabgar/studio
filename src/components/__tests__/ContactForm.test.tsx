@@ -104,13 +104,12 @@ describe('ContactForm', () => {
     expect(messageInput).toBeInTheDocument();
   });
 
-  it('should render textarea element', () => {
+  it('should have a message textarea', () => {
     render(<ContactForm />);
-    
     const { messageInput } = getFormInputs();
     
     expect(messageInput).toBeInTheDocument();
-    expect(messageInput.tagName).toBe('TEXTAREA');
+    expect(messageInput?.tagName).toBe('TEXTAREA');
   });
 
   it('should have proper input count and structure', () => {

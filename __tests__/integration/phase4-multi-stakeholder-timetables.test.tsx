@@ -357,7 +357,7 @@ describe('Phase 4: Multi-Stakeholder Timetable Views - Integration Tests', () =>
       // Should handle tab navigation - verify tabs exist and are clickable
       // Get all Faculty texts and find the button one (it contains a badge with "1")
       const facultyTexts = screen.getAllByText('Faculty');
-      const facultyTab = facultyTexts.find(el => el.closest('button') && el.parentElement.textContent.includes('1'));
+      const facultyTab = facultyTexts.find(el => el.closest('button') && el.parentElement?.textContent?.includes('1'));
       expect(facultyTab).toBeInTheDocument();
       fireEvent.click(facultyTab!);
       

@@ -51,11 +51,10 @@ const mockAwards: AwardEntry[] = [
     id: '1',
     title: 'Excellence in Computer Science',
     issuer: 'University',
-    dateReceived: '2022-05-15',
+    date: '2022-05-15',
     description: 'Outstanding academic performance',
     category: 'academic',
     prize: '$1000',
-    significance: 'Department-wide recognition',
     order: 0
   }
 ];
@@ -69,7 +68,7 @@ const mockCertifications: CertificationEntry[] = [
     expiryDate: '2025-03-01',
     credentialId: 'AWS-SA-123456',
     description: 'Cloud architecture certification',
-    relatedSkills: ['AWS', 'Cloud Computing', 'Architecture'],
+    skills: ['AWS', 'Cloud Computing', 'Architecture'],
     order: 0
   }
 ];
@@ -219,7 +218,7 @@ describe('Additional Profile Sections', () => {
     });
 
     it('handles empty certifications array', () => {
-      render(<CertificationsSection certifications={[]} onUpdate={jest.fn()} userType="student" />);
+      render(<CertificationsSection certifications={[]} onUpdate={jest.fn()} />);
       
       expect(screen.getByText('Add Certification')).toBeInTheDocument();
     });
@@ -255,12 +254,12 @@ describe('Additional Profile Sections', () => {
       };
       
       // Test student type
-      render(<VolunteerSection volunteerWork={[]} {...props} userType="student" />);
-      render(<ProfessionalMembershipsSection memberships={[]} {...props} userType="student" />);
+      render(<VolunteerSection volunteerWork={[]} {...props} />);
+      render(<ProfessionalMembershipsSection memberships={[]} {...props} />);
       
       // Test faculty type  
-      render(<AwardsSection awards={[]} {...props} userType="faculty" />);
-      render(<CertificationsSection certifications={[]} {...props} userType="faculty" />);
+      render(<AwardsSection awards={[]} {...props} />);
+      render(<CertificationsSection certifications={[]} {...props} />);
     });
   });
 });
