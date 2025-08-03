@@ -33,6 +33,7 @@ export interface AccessContext {
     canAccessInstitutes: boolean;
     canAccessAnalytics: boolean;
     canAccessApprovals: boolean;
+    canAccessCommittees: boolean;
   };
 }
 
@@ -62,6 +63,7 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
         canAccessInstitutes: false,
         canAccessAnalytics: false,
         canAccessApprovals: false,
+        canAccessCommittees: false,
       }
     };
   }
@@ -69,6 +71,8 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
   const isAdmin = user.availableRoles.includes('admin');
   const isHOD = user.availableRoles.includes('hod');
   const isPrincipal = user.availableRoles.includes('principal');
+  const isFaculty = user.availableRoles.includes('faculty');
+  const isStudent = user.availableRoles.includes('student');
 
   // Admin has full access
   if (isAdmin) {
@@ -96,6 +100,7 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
         canAccessInstitutes: true,
         canAccessAnalytics: true,
         canAccessApprovals: true,
+        canAccessCommittees: true,
       }
     };
   }
@@ -108,7 +113,7 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
       allowedDepartments: ['all'],
       departmentFilter: undefined,
       featurePermissions: {
-        canImportData: false,
+        canImportData: true,
         canExportData: true,
         canDeleteRecords: false,
         canManageRoles: false,
@@ -127,6 +132,7 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
         canAccessInstitutes: false,
         canAccessAnalytics: true,
         canAccessApprovals: true,
+        canAccessCommittees: true,
       }
     };
   }
@@ -139,9 +145,9 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
       allowedDepartments: [user.departmentId],
       departmentFilter: user.departmentId,
       featurePermissions: {
-        canImportData: false,
+        canImportData: true,
         canExportData: true,
-        canDeleteRecords: true,
+        canDeleteRecords: false,
         canManageRoles: false,
         canApproveRequests: true,
       },
@@ -158,15 +164,49 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
         canAccessInstitutes: false,
         canAccessAnalytics: true,
         canAccessApprovals: true,
+        canAccessCommittees: true,
       }
     };
   }
 
-  // Default: no access
+  // Faculty has limited access
+  if (isFaculty && user.departmentId) {
+    return {
+      canViewAllDepartments: false,
+      canEditAllDepartments: false,
+      allowedDepartments: [user.departmentId],
+      departmentFilter: user.departmentId,
+      featurePermissions: {
+        canImportData: false,
+        canExportData: true,
+        canDeleteRecords: false,
+        canManageRoles: false,
+        canApproveRequests: false,
+      },
+      navigationPermissions: {
+        canAccessFaculty: false,
+        canAccessStudents: true,
+        canAccessPrograms: false,
+        canAccessCourses: true,
+        canAccessTimetables: true,
+        canAccessBatches: false,
+        canAccessRooms: false,
+        canAccessReports: false,
+        canAccessSettings: false,
+        canAccessInstitutes: false,
+        canAccessAnalytics: false,
+        canAccessApprovals: false,
+        canAccessCommittees: false,
+      }
+    };
+  }
+
+  // Student or default: no access
   return {
     canViewAllDepartments: false,
     canEditAllDepartments: false,
-    allowedDepartments: [],
+    allowedDepartments: user.departmentId ? [user.departmentId] : [],
+    departmentFilter: user.departmentId,
     featurePermissions: {
       canImportData: false,
       canExportData: false,
@@ -187,6 +227,7 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
       canAccessInstitutes: false,
       canAccessAnalytics: false,
       canAccessApprovals: false,
+      canAccessCommittees: false,
     }
   };
 }
