@@ -526,3 +526,24 @@ Object.defineProperty(Element.prototype, 'attributes', {
   y: 0,
   toJSON: () => {},
 });
+
+// Mock Radix UI Dialog for testing
+jest.mock('@radix-ui/react-dialog', () => {
+  const React = require('react');
+  return {
+    Root: ({ children, open, onOpenChange }: any) => {
+      return React.createElement(
+        'div',
+        { 'data-testid': 'dialog-root' },
+        open ? children : null
+      );
+    },
+    Portal: ({ children }: any) => React.createElement('div', { 'data-testid': 'dialog-portal' }, children),
+    Overlay: ({ children, ...props }: any) => React.createElement('div', { ...props, 'data-testid': 'dialog-overlay' }, children),
+    Content: ({ children, ...props }: any) => React.createElement('div', { role: 'dialog', 'data-testid': 'dialog-content', ...props }, children),
+    Trigger: ({ children, ...props }: any) => React.createElement('button', { ...props, 'data-testid': 'dialog-trigger' }, children),
+    Close: ({ children, ...props }: any) => React.createElement('button', { ...props, 'data-testid': 'dialog-close' }, children),
+    Title: ({ children, ...props }: any) => React.createElement('h2', { ...props, 'data-testid': 'dialog-title' }, children),
+    Description: ({ children, ...props }: any) => React.createElement('p', { ...props, 'data-testid': 'dialog-description' }, children),
+  };
+});
