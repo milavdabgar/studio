@@ -35,8 +35,9 @@ describe('HODDashboardPage', () => {
     // Mock fetch responses
     mockFetch.mockImplementation((url) => {
       const urlStr = url?.toString() || '';
+      console.log('Mock fetch called with URL:', urlStr);
       
-      if (urlStr.includes('/departments/')) {
+      if (urlStr.includes('/hod/analytics')) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve({
@@ -46,6 +47,8 @@ describe('HODDashboardPage', () => {
             totalFaculty: 12,
             activeCourses: 25,
             systemHealth: 'warning',
+            resourceUtilization: 85,
+            pendingApprovals: 2,
             facultyDistribution: [
               { name: 'Dr. Smith', workload: 18, status: 'normal' },
               { name: 'Dr. Jones', workload: 22, status: 'overloaded' }
@@ -58,8 +61,26 @@ describe('HODDashboardPage', () => {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve([
-            { id: 'fac_001', name: 'Dr. Smith', workloadPercentage: 85, currentHours: 18, maxHours: 22 },
-            { id: 'fac_002', name: 'Dr. Jones', workloadPercentage: 95, currentHours: 20, maxHours: 22 }
+            { 
+              id: 'fac_001', 
+              name: 'Dr. Smith', 
+              workloadPercentage: 85, 
+              currentHours: 18, 
+              totalHours: 18,
+              maxHours: 22,
+              alerts: [],
+              subjects: ['Math 101', 'Calculus']
+            },
+            { 
+              id: 'fac_002', 
+              name: 'Dr. Jones', 
+              workloadPercentage: 95, 
+              currentHours: 20, 
+              totalHours: 20,
+              maxHours: 22,
+              alerts: [{ type: 'overload', message: 'Workload exceeds recommended hours' }],
+              subjects: ['Physics 201', 'Advanced Physics', 'Lab Work']
+            }
           ])
         } as Response);
       }
@@ -73,20 +94,13 @@ describe('HODDashboardPage', () => {
         } as Response);
       }
       
-      if (urlStr.includes('/hod/analytics')) {
-        return Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve({
-            totalHours: 120,
-            utilization: 85,
-            efficiency: 92
-          })
-        } as Response);
-      }
-      
+      // Fallback for any other API calls
       return Promise.resolve({
         ok: true,
-        json: () => Promise.resolve({})
+        json: () => Promise.resolve({
+          data: [],
+          message: 'Success'
+        })
       } as Response);
     });
 
