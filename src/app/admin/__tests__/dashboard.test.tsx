@@ -243,7 +243,7 @@ describe('Admin Dashboard (Template)', () => {
   describe('Basic Rendering', () => {
     it('renders without crashing', () => {
       render(<AdminDashboard />);
-      expect(screen.getByTestId('admin-dashboard')).toBeInTheDocument();
+      expect(screen.getByText('Admin Dashboard')).toBeInTheDocument();
     });
 
     it('renders dashboard header with title', () => {
