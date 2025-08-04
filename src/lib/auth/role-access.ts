@@ -19,6 +19,14 @@ export interface AccessContext {
     canDeleteRecords: boolean;
     canManageRoles: boolean;
     canApproveRequests: boolean;
+    canCreateRecords: boolean;
+    canEditRecords: boolean;
+    canViewSensitiveData: boolean;
+    canAccessAdvancedFeatures: boolean;
+    canPublishTimetables: boolean;
+    canAutoGenerateTimetables: boolean;
+    canManageTimetableConstraints: boolean;
+    canAccessTimetableAnalytics: boolean;
   };
   navigationPermissions: {
     canAccessFaculty: boolean;
@@ -49,6 +57,14 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
         canDeleteRecords: false,
         canManageRoles: false,
         canApproveRequests: false,
+        canCreateRecords: false,
+        canEditRecords: false,
+        canViewSensitiveData: false,
+        canAccessAdvancedFeatures: false,
+        canPublishTimetables: false,
+        canAutoGenerateTimetables: false,
+        canManageTimetableConstraints: false,
+        canAccessTimetableAnalytics: false,
       },
       navigationPermissions: {
         canAccessFaculty: false,
@@ -81,6 +97,14 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
         canDeleteRecords: false,
         canManageRoles: false,
         canApproveRequests: false,
+        canCreateRecords: false,
+        canEditRecords: false,
+        canViewSensitiveData: false,
+        canAccessAdvancedFeatures: false,
+        canPublishTimetables: false,
+        canAutoGenerateTimetables: false,
+        canManageTimetableConstraints: false,
+        canAccessTimetableAnalytics: false,
       },
       navigationPermissions: {
         canAccessFaculty: false,
@@ -121,6 +145,14 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
         canDeleteRecords: false,
         canManageRoles: false,
         canApproveRequests: false,
+        canCreateRecords: false,
+        canEditRecords: false,
+        canViewSensitiveData: false,
+        canAccessAdvancedFeatures: false,
+        canPublishTimetables: false,
+        canAutoGenerateTimetables: false,
+        canManageTimetableConstraints: false,
+        canAccessTimetableAnalytics: false,
       },
       navigationPermissions: {
         canAccessFaculty: false,
@@ -152,6 +184,14 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
         canDeleteRecords: true,
         canManageRoles: true,
         canApproveRequests: true,
+        canCreateRecords: true,
+        canEditRecords: true,
+        canViewSensitiveData: true,
+        canAccessAdvancedFeatures: true,
+        canPublishTimetables: true,
+        canAutoGenerateTimetables: true,
+        canManageTimetableConstraints: true,
+        canAccessTimetableAnalytics: true,
       },
       navigationPermissions: {
         canAccessFaculty: true,
@@ -184,6 +224,14 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
         canDeleteRecords: false,
         canManageRoles: false,
         canApproveRequests: true,
+        canCreateRecords: true,
+        canEditRecords: true,
+        canViewSensitiveData: false,
+        canAccessAdvancedFeatures: false,
+        canPublishTimetables: true,
+        canAutoGenerateTimetables: false,
+        canManageTimetableConstraints: false,
+        canAccessTimetableAnalytics: true,
       },
       navigationPermissions: {
         canAccessFaculty: true,
@@ -216,6 +264,14 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
         canDeleteRecords: false,
         canManageRoles: false,
         canApproveRequests: true,
+        canCreateRecords: true,
+        canEditRecords: true,
+        canViewSensitiveData: false,
+        canAccessAdvancedFeatures: false,
+        canPublishTimetables: true,
+        canAutoGenerateTimetables: true,
+        canManageTimetableConstraints: true,
+        canAccessTimetableAnalytics: true,
       },
       navigationPermissions: {
         canAccessFaculty: true,
@@ -248,6 +304,14 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
         canDeleteRecords: false,
         canManageRoles: false,
         canApproveRequests: false,
+        canCreateRecords: false,
+        canEditRecords: false,
+        canViewSensitiveData: false,
+        canAccessAdvancedFeatures: false,
+        canPublishTimetables: false,
+        canAutoGenerateTimetables: false,
+        canManageTimetableConstraints: false,
+        canAccessTimetableAnalytics: false,
       },
       navigationPermissions: {
         canAccessFaculty: false,
@@ -279,6 +343,14 @@ export function getUserAccessContext(user: UserRole | null): AccessContext {
       canDeleteRecords: false,
       canManageRoles: false,
       canApproveRequests: false,
+      canCreateRecords: false,
+      canEditRecords: false,
+      canViewSensitiveData: false,
+      canAccessAdvancedFeatures: false,
+      canPublishTimetables: false,
+      canAutoGenerateTimetables: false,
+      canManageTimetableConstraints: false,
+      canAccessTimetableAnalytics: false,
     },
     navigationPermissions: {
       canAccessFaculty: false,

@@ -82,9 +82,10 @@ const getNavigationItems = (): NavigationSection[] => [
       { href: '/admin/preference-campaigns', label: 'Preference Campaigns', icon: Target, requiredPermission: 'canAccessTimetables' },
       { href: '/admin/faculty-preferences', label: 'Faculty Preferences', icon: Users, requiredPermission: 'canAccessTimetables' },
       { href: '/admin/course-allocation', label: 'Course Allocation', icon: BarChart3, requiredPermission: 'canAccessTimetables' },
-      { href: '/admin/timetables/auto-generate', label: 'Auto Generate', icon: Settings, requiredPermission: 'canAccessTimetables' },
+      { href: '/admin/timetables/auto-generate', label: 'Auto Generate', icon: Settings, requiredPermission: 'canAutoGenerateTimetables' },
       { href: '/admin/timetables', label: 'View Timetables', icon: Clock, requiredPermission: 'canAccessTimetables' },
       { href: '/admin/course-offerings', label: 'Course Offerings', icon: BookOpen, requiredPermission: 'canAccessCourses' },
+      { href: '/admin/timetable/approval', label: 'Timetable Approval', icon: UserCheck, requiredPermission: 'canPublishTimetables' },
     ]
   },
   {
@@ -130,7 +131,7 @@ const getNavigationItems = (): NavigationSection[] => [
     requiredRoles: ['admin', 'super_admin', 'hod', 'principal'],
     items: [
       { href: '/admin/reporting-analytics', label: 'Advanced Reports', icon: BarChart3, requiredPermission: 'canAccessAnalytics' },
-      { href: '/admin/timetable/analytics', label: 'Timetable Analytics', icon: Clock, requiredPermission: 'canAccessAnalytics' },
+      { href: '/admin/timetable/analytics', label: 'Timetable Analytics', icon: Clock, requiredPermission: 'canAccessTimetableAnalytics' },
       { href: '/admin/feedback-analysis', label: 'Feedback Analysis', icon: TrendingUp, requiredPermission: 'canAccessReports' },
     ]
   }
@@ -221,7 +222,7 @@ export default function AdminNavigation() {
               <div className="space-y-1">
                 {section.items.map((item) => {
                   const Icon = item.icon;
-                  const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+                  const isActive = pathname === item.href || pathname?.startsWith(item.href + '/') || false;
                   
                   return (
                     <Link key={item.href} href={item.href}>

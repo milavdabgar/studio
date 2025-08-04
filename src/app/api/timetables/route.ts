@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Timetable } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { TimetableModel, ProgramModel } from '@/lib/models';
-import { withAPIRoleAccess, type APIAccessContext } from '@/lib/auth/api-middleware';
+import { withAPIRoleAccess, withMethodPermissions, logAPIOperation, type APIAccessContext } from '@/lib/auth/api-middleware';
 
 
 // Initialize default timetables if none exist (disabled to prevent recreation of orphaned records)
@@ -134,6 +134,13 @@ async function handleCreateTimetable(request: NextRequest, context: APIAccessCon
   }
 }
 
-// Export wrapped functions for API routes
-export const GET = withAPIRoleAccess(handleGetTimetables, ['admin', 'super_admin', 'hod', 'principal', 'faculty']);
-export const POST = withAPIRoleAccess(handleCreateTimetable, ['admin', 'super_admin', 'hod', 'principal']);
+// Export wrapped functions with method-specific permissions
+export const GET = withMethodPermissions(
+  { GET: handleGetTimetables },
+  { GET: ['admin', 'super_admin', 'hod', 'principal', 'faculty'] }
+);
+
+export const POST = withMethodPermissions(
+  { POST: handleCreateTimetable },
+  { POST: 'canCreateRecords' }
+);

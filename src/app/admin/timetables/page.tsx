@@ -26,6 +26,7 @@ import { roomService } from '@/lib/services/roomService';
 import { courseService } from '@/lib/api/courses';
 import { getUserCookie, getUserAccessContext, getDepartmentDisplayName } from '@/lib/auth/role-access';
 import { DepartmentScopedPage } from '@/components/auth/PageAccessControl';
+import { auditLogger, AUDIT_RESOURCES } from '@/lib/audit/audit-logger';
 
 
 const STATUS_OPTIONS: {value: TimetableStatus, label: string}[] = [
@@ -211,6 +212,19 @@ export default function TimetableManagementPage() {
   const handleView = (timetable: Timetable) => {
     setViewTimetable(timetable);
     setIsViewDialogOpen(true);
+    
+    // Audit log
+    if (user) {
+      auditLogger.logAccess({
+        userId: user.id || 'anonymous',
+        userEmail: user.email,
+        userRole: user.activeRole,
+        resource: AUDIT_RESOURCES.TIMETABLES,
+        resourceId: timetable.id,
+        departmentId: user.departmentId,
+        details: { timetableName: timetable.name, action: 'view_details' }
+      });
+    }
   };
 
   const handleEdit = (timetable: Timetable) => {
@@ -229,13 +243,48 @@ export default function TimetableManagementPage() {
 
   const handleDelete = async (timetableId: string) => {
     setIsSubmitting(true);
+    const timetable = timetables.find(t => t.id === timetableId);
+    
     try {
       await timetableService.deleteTimetable(timetableId);
       setTimetables(prev => prev.filter(t => t.id !== timetableId));
       setSelectedTimetableIds(prev => prev.filter(id => id !== timetableId));
       toast({ title: "Timetable Deleted", description: "The timetable has been successfully deleted." });
+      
+      // Audit log success
+      if (user) {
+        auditLogger.logDelete({
+          userId: user.id || 'anonymous',
+          userEmail: user.email,
+          userRole: user.activeRole,
+          resource: AUDIT_RESOURCES.TIMETABLES,
+          resourceId: timetableId,
+          departmentId: user.departmentId,
+          details: { 
+            timetableName: timetable?.name || 'Unknown',
+            action: 'delete_timetable'
+          }
+        });
+      }
     } catch (error) {
       toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message });
+      
+      // Audit log failure
+      if (user) {
+        auditLogger.logFailure({
+          userId: user.id || 'anonymous',
+          userEmail: user.email,
+          userRole: user.activeRole,
+          action: 'DELETE',
+          resource: AUDIT_RESOURCES.TIMETABLES,
+          resourceId: timetableId,
+          departmentId: user.departmentId,
+          details: { 
+            timetableName: timetable?.name || 'Unknown',
+            action: 'delete_timetable'
+          }
+        }, error as Error);
+      }
     }
     setIsSubmitting(false);
   };
@@ -320,9 +369,45 @@ export default function TimetableManagementPage() {
       if (currentTimetable && currentTimetable.id) {
         await timetableService.updateTimetable(currentTimetable.id, timetableData);
         toast({ title: "Timetable Updated", description: "Successfully updated." });
+        
+        // Audit log update
+        if (user) {
+          auditLogger.logUpdate({
+            userId: user.id || 'anonymous',
+            userEmail: user.email,
+            userRole: user.activeRole,
+            resource: AUDIT_RESOURCES.TIMETABLES,
+            resourceId: currentTimetable.id,
+            departmentId: user.departmentId,
+            details: { 
+              timetableName: timetableData.name,
+              action: 'update_timetable',
+              entries: timetableData.entries.length,
+              status: timetableData.status
+            }
+          });
+        }
       } else {
-        await timetableService.createTimetable(timetableData);
+        const newTimetable = await timetableService.createTimetable(timetableData);
         toast({ title: "Timetable Created", description: "Successfully created." });
+        
+        // Audit log create
+        if (user) {
+          auditLogger.logCreate({
+            userId: user.id || 'anonymous',
+            userEmail: user.email,
+            userRole: user.activeRole,
+            resource: AUDIT_RESOURCES.TIMETABLES,
+            resourceId: newTimetable.id,
+            departmentId: user.departmentId,
+            details: { 
+              timetableName: timetableData.name,
+              action: 'create_timetable',
+              entries: timetableData.entries.length,
+              status: timetableData.status
+            }
+          });
+        }
       }
       const updatedTTs = await timetableService.getAllTimetables();
       setTimetables(updatedTTs);
@@ -330,6 +415,23 @@ export default function TimetableManagementPage() {
       resetForm();
     } catch (error) {
       toast({ variant: "destructive", title: "Save Failed", description: (error as Error).message });
+      
+      // Audit log failure
+      if (user) {
+        auditLogger.logFailure({
+          userId: user.id || 'anonymous',
+          userEmail: user.email,
+          userRole: user.activeRole,
+          action: currentTimetable?.id ? 'UPDATE' : 'CREATE',
+          resource: AUDIT_RESOURCES.TIMETABLES,
+          resourceId: currentTimetable?.id,
+          departmentId: user.departmentId,
+          details: { 
+            timetableName: timetableData.name,
+            action: currentTimetable?.id ? 'update_timetable' : 'create_timetable'
+          }
+        }, error as Error);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -432,7 +534,7 @@ export default function TimetableManagementPage() {
             <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2"><Clock className="h-6 w-6" />Timetable Management</CardTitle>
             <CardDescription>Create, publish, and manage academic timetables.</CardDescription>
           </div>
-          <Button onClick={() => { resetForm(); setIsDialogOpen(true); }} disabled={programs.length === 0 || batches.length === 0}><PlusCircle className="mr-2 h-5 w-5" />New Timetable</Button>
+          <Button onClick={() => { resetForm(); setIsDialogOpen(true); }} disabled={programs.length === 0 || batches.length === 0 || !accessContext.featurePermissions.canCreateRecords}><PlusCircle className="mr-2 h-5 w-5" />New Timetable</Button>
         </CardHeader>
         <CardContent>
           <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 border rounded-lg dark:border-gray-700">
@@ -501,7 +603,7 @@ export default function TimetableManagementPage() {
                     <Button variant="outline" size="sm" onClick={() => handleView(tt)} disabled={isSubmitting} className="flex-1 min-h-[40px]">
                       <Eye className="h-4 w-4 mr-1" /> View
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleEdit(tt)} disabled={isSubmitting} className="flex-1 min-h-[40px]">
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(tt)} disabled={isSubmitting || !accessContext.featurePermissions.canEditRecords} className="flex-1 min-h-[40px]">
                       <Edit className="h-4 w-4 mr-1" /> Edit
                     </Button>
                     {accessContext.featurePermissions.canDeleteRecords && (
@@ -542,7 +644,7 @@ export default function TimetableManagementPage() {
                             <Eye className="h-4 w-4" />
                             <span className="sr-only">View Timetable</span>
                           </Button>
-                          <Button variant="outline" size="icon" onClick={() => handleEdit(tt)} disabled={isSubmitting}>
+                          <Button variant="outline" size="icon" onClick={() => handleEdit(tt)} disabled={isSubmitting || !accessContext.featurePermissions.canEditRecords}>
                             <Edit className="h-4 w-4" />
                             <span className="sr-only">Edit Timetable</span>
                           </Button>
@@ -602,7 +704,7 @@ export default function TimetableManagementPage() {
               <div><Label htmlFor="ttProgram">Program *</Label><Select value={formProgramId} onValueChange={setFormProgramId} required><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{filteredPrograms.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent></Select></div>
               <div><Label htmlFor="ttBatch">Batch *</Label><Select value={formBatchId} onValueChange={setFormBatchId} required disabled={!formProgramId || filteredBatchesForForm.length === 0}><SelectTrigger><SelectValue placeholder={!formProgramId ? "Select Program First" : (filteredBatchesForForm.length === 0 ? "No batches for program" : "Select Batch")} /></SelectTrigger><SelectContent>{filteredBatchesForForm.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent></Select></div>
               <div><Label htmlFor="ttVersion">Version</Label><Input id="ttVersion" value={formVersion} onChange={e => setFormVersion(e.target.value)} /></div>
-              <div><Label htmlFor="ttStatus">Status</Label><Select value={formStatus} onValueChange={val => setFormStatus(val as TimetableStatus)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{STATUS_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent></Select></div>
+              <div><Label htmlFor="ttStatus">Status</Label><Select value={formStatus} onValueChange={val => setFormStatus(val as TimetableStatus)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{STATUS_OPTIONS.filter(s => s.value !== 'published' || accessContext.featurePermissions.canPublishTimetables).map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent></Select></div>
               <div><Label htmlFor="ttEffectiveDate">Effective Date</Label><Popover><PopoverTrigger asChild><Button variant="outline" className={cn("w-full justify-start", !formEffectiveDate && "text-muted-foreground")}><CalendarIcon className="mr-2 h-4 w-4" />{formEffectiveDate ? format(formEffectiveDate, "PPP") : <span>Pick date</span>}</Button></PopoverTrigger><PopoverContent className="w-auto p-0"><Calendar mode="single" selected={formEffectiveDate} onSelect={setFormEffectiveDate} /></PopoverContent></Popover></div>
             </div>
             <h4 className="text-md font-semibold pt-4 border-t mt-4 dark:border-gray-700">Timetable Entries</h4>
@@ -850,18 +952,24 @@ export default function TimetableManagementPage() {
               <div className="grid gap-4">
                 <h4 className="font-semibold text-primary border-b pb-2">System Information</h4>
                 <div className="grid grid-cols-2 gap-4">
+                  {accessContext.featurePermissions.canViewSensitiveData && (
                   <div>
                     <Label className="text-sm font-medium text-muted-foreground">Timetable ID</Label>
                     <p className="text-sm font-mono">{viewTimetable.id}</p>
                   </div>
+                  )}
+                  {accessContext.featurePermissions.canViewSensitiveData && (
                   <div>
                     <Label className="text-sm font-medium text-muted-foreground">Created At</Label>
                     <p className="text-sm">{viewTimetable.createdAt ? new Date(viewTimetable.createdAt).toLocaleString() : 'Not available'}</p>
                   </div>
+                  )}
+                  {accessContext.featurePermissions.canViewSensitiveData && (
                   <div>
                     <Label className="text-sm font-medium text-muted-foreground">Last Updated</Label>
                     <p className="text-sm">{viewTimetable.updatedAt ? new Date(viewTimetable.updatedAt).toLocaleString() : 'Not available'}</p>
                   </div>
+                  )}
                 </div>
               </div>
             </div>

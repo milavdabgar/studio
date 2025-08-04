@@ -57,11 +57,18 @@ interface AdvancedGenerationRequest extends AutoGenerationRequest {
 }
 import { batchService } from '@/lib/api/batches';
 import { programService } from '@/lib/api/programs';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
+import { DepartmentScopedPage } from '@/components/auth/PageAccessControl';
+import { auditLogger, AUDIT_RESOURCES } from '@/lib/audit/audit-logger';
 
 export default function AutoGenerateTimetablePage() {
   const [batches, setBatches] = useState<Batch[]>([]);
   const [programs, setPrograms] = useState<Program[]>([]);
   const [selectedBatchIds, setSelectedBatchIds] = useState<string[]>([]);
+  
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
   const [academicYear, setAcademicYear] = useState('2024-25');
   const [semester, setSemester] = useState(1);
   const [algorithm, setAlgorithm] = useState<'genetic' | 'constraint_satisfaction' | 'hybrid'>('hybrid');
@@ -227,12 +234,54 @@ export default function AutoGenerateTimetablePage() {
           title: "Generation Successful",
           description: `Generated ${result.timetables.length} timetable(s) with optimization score: ${result.optimizationScore.toFixed(2)}`
         });
+        
+        // Audit log success
+        if (user) {
+          auditLogger.logAction({
+            userId: user.id || 'anonymous',
+            userEmail: user.email,
+            userRole: user.activeRole,
+            action: 'AUTO_GENERATE',
+            resource: AUDIT_RESOURCES.TIMETABLES,
+            departmentId: user.departmentId,
+            status: 'success',
+            details: { 
+              batchCount: selectedBatchIds.length,
+              timetablesGenerated: result.timetables.length,
+              optimizationScore: result.optimizationScore,
+              algorithm,
+              academicYear,
+              semester,
+              executionTime: result.executionTime
+            }
+          });
+        }
       } else {
         toast({
           variant: "destructive",
           title: "Generation Failed",
           description: result.recommendations[0] || "Unknown error occurred"
         });
+        
+        // Audit log failure
+        if (user) {
+          auditLogger.logFailure({
+            userId: user.id || 'anonymous',
+            userEmail: user.email,
+            userRole: user.activeRole,
+            action: 'AUTO_GENERATE',
+            resource: AUDIT_RESOURCES.TIMETABLES,
+            departmentId: user.departmentId,
+            details: { 
+              batchCount: selectedBatchIds.length,
+              algorithm,
+              academicYear,
+              semester,
+              recommendations: result.recommendations,
+              conflicts: result.conflicts.length
+            }
+          });
+        }
       }
     } catch (error) {
       toast({
@@ -240,6 +289,25 @@ export default function AutoGenerateTimetablePage() {
         title: "Generation Error",
         description: (error as Error).message
       });
+      
+      // Audit log error
+      if (user) {
+        auditLogger.logFailure({
+          userId: user.id || 'anonymous',
+          userEmail: user.email,
+          userRole: user.activeRole,
+          action: 'AUTO_GENERATE',
+          resource: AUDIT_RESOURCES.TIMETABLES,
+          departmentId: user.departmentId,
+          details: { 
+            batchCount: selectedBatchIds.length,
+            algorithm,
+            academicYear,
+            semester,
+            error: (error as Error).message
+          }
+        }, error as Error);
+      }
     } finally {
       clearInterval(progressInterval);
       setProgress(100);
@@ -640,6 +708,7 @@ export default function AutoGenerateTimetablePage() {
           )}
 
           {/* Constraints */}
+          {accessContext.featurePermissions.canManageTimetableConstraints && (
           <Card>
             <CardHeader>
               <CardTitle>Constraints Configuration</CardTitle>
@@ -771,6 +840,7 @@ export default function AutoGenerateTimetablePage() {
               </div>
             </CardContent>
           </Card>
+          )}
         </div>
 
         {/* Generation Panel */}
@@ -809,7 +879,7 @@ export default function AutoGenerateTimetablePage() {
 
               <Button 
                 onClick={handleGenerateTimetables}
-                disabled={isGenerating || selectedBatchIds.length === 0 || !accessContext.featurePermissions.canCreateRecords}
+                disabled={isGenerating || selectedBatchIds.length === 0 || !accessContext.featurePermissions.canCreateRecords || !accessContext.featurePermissions.canAutoGenerateTimetables}
                 className="w-full"
               >
                 {isGenerating ? (
@@ -869,7 +939,7 @@ export default function AutoGenerateTimetablePage() {
                 </div>
 
                 {/* Advanced metrics if available */}
-                {isAdvancedMode && (generationResult as any).qualityMetrics && (
+                {isAdvancedMode && accessContext.featurePermissions.canAccessTimetableAnalytics && (generationResult as any).qualityMetrics && (
                   <div className="mt-4 p-4 border rounded-md">
                     <Label className="text-base font-medium">Advanced Quality Metrics</Label>
                     <div className="grid grid-cols-2 gap-4 mt-2 text-sm">
