@@ -17,13 +17,26 @@ const createAuthenticatedRequest = (url: string, options: RequestInit = {}) => {
   
   const authCookie = encodeURIComponent(JSON.stringify(adminUser));
   
-  return new NextRequest(url, {
-    ...options,
+  // Create clean request init without null signal
+  const cleanOptions: Record<string, any> = {
+    method: options.method || 'GET',
     headers: {
       ...options.headers,
       'Cookie': `auth_user=${authCookie}`
     }
-  });
+  };
+  
+  // Only add body if it exists
+  if (options.body) {
+    cleanOptions.body = options.body;
+  }
+  
+  // Only add signal if it exists and is not null
+  if (options.signal !== null && options.signal !== undefined) {
+    cleanOptions.signal = options.signal;
+  }
+  
+  return new NextRequest(url, cleanOptions);
 };
 
 // Mock console methods to suppress expected error/warning messages during tests

@@ -3,6 +3,7 @@ import type { FacultyProfile } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { FacultyModel } from '@/lib/models';
 import { withAPIRoleAccess, type APIAccessContext } from '@/lib/auth/api-middleware';
+import { withFacultyAudit } from '@/lib/audit/audit-middleware';
 
 type FacultyLean = Omit<FacultyProfile, 'id'> & { 
   _id: string; 
@@ -108,7 +109,7 @@ async function handleGetFaculty(request: NextRequest, context: APIAccessContext)
   }
 }
 
-export const GET = withAPIRoleAccess(handleGetFaculty, ['admin', 'super_admin', 'hod', 'principal']);
+export const GET = withFacultyAudit(withAPIRoleAccess(handleGetFaculty, ['admin', 'super_admin', 'hod', 'principal']));
 
 async function handleCreateFaculty(request: NextRequest, context: APIAccessContext) {
   try {
@@ -233,7 +234,7 @@ async function handleCreateFaculty(request: NextRequest, context: APIAccessConte
   }
 }
 
-export const POST = withAPIRoleAccess(handleCreateFaculty, ['admin', 'super_admin', 'hod', 'principal']);
+export const POST = withFacultyAudit(withAPIRoleAccess(handleCreateFaculty, ['admin', 'super_admin', 'hod', 'principal']));
 
 const generateInstituteEmailForFaculty = (firstName?: string, lastName?: string, instituteDomain: string = "gppalanpur.ac.in"): string => {
   const fn = (firstName || "").toLowerCase().replace(/[^a-z0-9]/g, '');

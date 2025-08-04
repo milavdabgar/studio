@@ -6,6 +6,8 @@ import { programService } from '@/lib/api/programs';
 import { connectMongoose } from '@/lib/mongodb';
 import { StudentModel, ProgramModel } from '@/lib/models';
 import { withAPIRoleAccess, type APIAccessContext } from '@/lib/auth/api-middleware';
+import { withStudentsAudit } from '@/lib/audit/audit-middleware';
+import { withCache, cacheKeyGenerators, cacheInvalidation } from '@/lib/cache/api-cache';
 
 const generateId = (): string => `std_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
@@ -48,7 +50,13 @@ async function handleGetStudents(request: NextRequest, context: APIAccessContext
 }
 
 // Export wrapped functions for API routes
-export const GET = withAPIRoleAccess(handleGetStudents, ['admin', 'super_admin', 'hod', 'principal', 'faculty']);
+export const GET = withCache(
+  withStudentsAudit(withAPIRoleAccess(handleGetStudents, ['admin', 'super_admin', 'hod', 'principal', 'faculty'])),
+  {
+    ttl: 300, // 5 minutes cache
+    keyGenerator: cacheKeyGenerators.students
+  }
+);
 
 async function handleCreateStudent(request: NextRequest, context: APIAccessContext) {
   try {
@@ -173,6 +181,9 @@ async function handleCreateStudent(request: NextRequest, context: APIAccessConte
       email: newStudent.instituteEmail || newStudent.personalEmail || ''
     };
 
+    // Invalidate students cache after successful creation
+    cacheInvalidation.students(context.departmentFilter);
+    
     return NextResponse.json(studentToReturn, { status: 201 });
   } catch (error) {
     console.error('Error creating student:', error);
@@ -193,4 +204,4 @@ async function handleCreateStudent(request: NextRequest, context: APIAccessConte
 }
 
 // Export wrapped functions for API routes
-export const POST = withAPIRoleAccess(handleCreateStudent, ['admin', 'super_admin', 'hod', 'principal']);
+export const POST = withStudentsAudit(withAPIRoleAccess(handleCreateStudent, ['admin', 'super_admin', 'hod', 'principal']));
