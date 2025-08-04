@@ -93,6 +93,13 @@ export const API_ACCESS_CONTROL: Record<string, UserRoleCode[]> = {
   '/api/users': ['admin', 'super_admin'],
   '/api/roles': ['admin', 'super_admin'],
   '/api/institutes': ['admin', 'super_admin'],
+  '/api/results': ['admin', 'super_admin', 'hod', 'principal'],
+  '/api/assessments': ['admin', 'super_admin', 'hod', 'principal', 'faculty'],
+  '/api/buildings': ['admin', 'super_admin', 'hod', 'principal'],
+  '/api/academic-terms': ['admin', 'super_admin', 'hod', 'principal'],
+  '/api/enrollments': ['admin', 'super_admin', 'hod', 'principal'],
+  '/api/curriculum': ['admin', 'super_admin', 'hod', 'principal', 'faculty'],
+  '/api/role-assignments': ['admin', 'super_admin'],
   
   // Department-scoped endpoints - admins and HODs
   '/api/students': ['admin', 'super_admin', 'hod', 'principal', 'faculty'],
@@ -107,8 +114,11 @@ export const API_ACCESS_CONTROL: Record<string, UserRoleCode[]> = {
   // Committee endpoints
   '/api/committees': ['admin', 'super_admin', 'committee_admin', 'committee_convener'],
   
+  // Project Fair endpoints
+  '/api/projects': ['admin', 'super_admin', 'hod', 'principal', 'faculty'],
+  '/api/project-fair': ['admin', 'super_admin', 'hod', 'principal'],
+  
   // Read-only endpoints for broader access
-  '/api/curriculum': ['admin', 'super_admin', 'hod', 'principal', 'faculty'],
   '/api/course-offerings': ['admin', 'super_admin', 'hod', 'principal', 'faculty'],
 };
 

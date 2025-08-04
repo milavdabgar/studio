@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -65,6 +66,10 @@ interface LibraryStats {
 }
 
 export default function LibraryDashboard() {
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
+
   const [books, setBooks] = useState<BookRecord[]>([]);
   const [issues, setIssues] = useState<IssueRecord[]>([]);
   const [stats, setStats] = useState<LibraryStats>({
@@ -213,18 +218,24 @@ export default function LibraryDashboard() {
             <p className="text-muted-foreground">Manage books, issues, and library operations</p>
           </div>
           <div className="flex gap-2">
+            {accessContext.featurePermissions.canCreateRecords && (
             <Button>
               <Plus className="w-4 h-4 mr-2" />
               Add Book
             </Button>
+            )}
+            {accessContext.featurePermissions.canImportData && (
             <Button variant="outline">
               <Upload className="w-4 h-4 mr-2" />
               Import Books
             </Button>
+            )}
+            {accessContext.featurePermissions.canExportData && (
             <Button variant="outline">
               <Download className="w-4 h-4 mr-2" />
               Export Report
             </Button>
+            )}
           </div>
         </div>
 

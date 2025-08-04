@@ -4,6 +4,7 @@ import { connectMongoose } from '@/lib/mongodb';
 import { RoleModel } from '@/lib/models';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { z } from 'zod';
+import { withAPIRoleAccess, type APIAccessContext } from '@/lib/auth/api-middleware';
 
 const createRoleSchema = z.object({
     name: z.string().min(1, "Role Name cannot be empty.").trim(),
@@ -38,7 +39,7 @@ const rateLimiterMiddleware = async (req: NextRequest) => {
 
 
 
-export async function GET() {
+async function handleGET(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
     
@@ -58,8 +59,17 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+export const GET = withAPIRoleAccess(handleGET, ['admin', 'super_admin']);
+
+async function handlePOST(request: NextRequest, context: APIAccessContext) {
   try {
+    // Check role management permissions
+    if (!context.featurePermissions.canManageRoles) {
+      return NextResponse.json({ 
+        message: 'Access denied. You do not have permission to manage roles.' 
+      }, { status: 403 });
+    }
+
     await rateLimiterMiddleware(request);
     await connectMongoose();
     
@@ -121,8 +131,17 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function PUT(request: NextRequest) {
+export const POST = withAPIRoleAccess(handlePOST, ['admin', 'super_admin']);
+
+async function handlePUT(request: NextRequest, context: APIAccessContext) {
   try {
+    // Check role management permissions
+    if (!context.featurePermissions.canManageRoles) {
+      return NextResponse.json({ 
+        message: 'Access denied. You do not have permission to manage roles.' 
+      }, { status: 403 });
+    }
+
     await rateLimiterMiddleware(request);
     await connectMongoose();
     
@@ -177,8 +196,17 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
+export const PUT = withAPIRoleAccess(handlePUT, ['admin', 'super_admin']);
+
+async function handleDELETE(request: NextRequest, context: APIAccessContext) {
   try {
+    // Check role management and delete permissions
+    if (!context.featurePermissions.canManageRoles || !context.featurePermissions.canDeleteRecords) {
+      return NextResponse.json({ 
+        message: 'Access denied. You do not have permission to delete roles.' 
+      }, { status: 403 });
+    }
+
     await rateLimiterMiddleware(request);
     await connectMongoose();
     
@@ -224,3 +252,5 @@ export async function DELETE(request: NextRequest) {
     }, { status: 500 });
   }
 }
+
+export const DELETE = withAPIRoleAccess(handleDELETE, ['admin', 'super_admin']);

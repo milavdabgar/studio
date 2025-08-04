@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -52,6 +53,10 @@ interface CompanyData {
 }
 
 export default function TPODashboard() {
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
+
   const [placements, setPlacements] = useState<PlacementData[]>([]);
   const [companies, setCompanies] = useState<CompanyData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -173,14 +178,18 @@ export default function TPODashboard() {
             <p className="text-muted-foreground">Manage campus placements and company visits</p>
           </div>
           <div className="flex gap-2">
+            {accessContext.featurePermissions.canCreateRecords && (
             <Button>
               <Plus className="w-4 h-4 mr-2" />
               Add Company
             </Button>
+            )}
+            {accessContext.featurePermissions.canExportData && (
             <Button variant="outline">
               <FileText className="w-4 h-4 mr-2" />
               Generate Report
             </Button>
+            )}
           </div>
         </div>
 

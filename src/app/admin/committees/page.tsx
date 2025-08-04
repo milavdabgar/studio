@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo, useCallback } from 'react';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -35,6 +36,10 @@ const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
 const NO_CONVENER_VALUE = "__NO_CONVENER__";
 
 export default function CommitteeManagementPage() {
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
+
   const [committees, setCommittees] = useState<Committee[]>([]);
   const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [facultyUsers, setFacultyUsers] = useState<User[]>([]);
@@ -388,6 +393,7 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
             </CardDescription>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            {accessContext.featurePermissions.canCreateRecords && (
              <Dialog open={isDialogOpen} onOpenChange={(isOpen) => { setIsDialogOpen(isOpen); if (!isOpen) resetForm(); }}>
               <DialogTrigger asChild>
                 <Button onClick={handleAddNew} className="w-full sm:w-auto" disabled={institutes.length === 0}>
@@ -485,12 +491,16 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
                 </form>
               </DialogContent>
             </Dialog>
+            )}
+            {accessContext.featurePermissions.canExportData && (
             <Button onClick={handleExportCommittees} variant="outline" className="w-full sm:w-auto">
               <Download className="mr-2 h-5 w-5" /> Export CSV
             </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
+          {accessContext.featurePermissions.canImportData && (
           <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
             <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Committees from CSV</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
@@ -508,6 +518,7 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
                 </p>
             </div>
           </div>
+          )}
 
           <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
@@ -536,7 +547,7 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
             </div>
           </div>
 
-          {selectedCommitteeIds.length > 0 && (
+          {selectedCommitteeIds.length > 0 && accessContext.featurePermissions.canDeleteRecords && (
              <div className="mb-4 flex items-center gap-2">
                 <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
                     <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedCommitteeIds.length})
@@ -554,11 +565,13 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3 min-w-0 flex-1">
+                    {accessContext.featurePermissions.canDeleteRecords && (
                       <Checkbox
                         checked={selectedCommitteeIds.includes(committee.id)}
                         onCheckedChange={(checked) => handleSelectCommittee(committee.id, !!checked)}
                         aria-labelledby={`committee-name-mobile-${committee.id}`}
                       />
+                    )}
                       <div className="min-w-0 flex-1">
                         <h4 id={`committee-name-mobile-${committee.id}`} className="font-semibold text-sm leading-tight">
                           {committee.name}
@@ -594,12 +607,16 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
                     <Button variant="outline" size="sm" onClick={() => handleView(committee)} disabled={isSubmitting} className="flex-1 min-h-[40px]">
                       <Eye className="h-4 w-4 mr-1" /> View
                     </Button>
+                    {accessContext.featurePermissions.canEditRecords && (
                     <Button variant="outline" size="sm" onClick={() => handleEdit(committee)} disabled={isSubmitting} className="flex-1 min-h-[40px]">
                       <Edit className="h-4 w-4 mr-1" /> Edit
                     </Button>
+                    )}
+                    {accessContext.featurePermissions.canDeleteRecords && (
                     <Button variant="destructive" size="sm" onClick={() => handleDelete(committee.id)} disabled={isSubmitting} className="min-h-[40px]">
                       <Trash2 className="h-4 w-4" />
                     </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -619,7 +636,9 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
               <Table>
                 <TableHeader>
                   <TableRow>
+                    {accessContext.featurePermissions.canDeleteRecords && (
                      <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedCommittees.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all committees on this page"/></TableHead>
+                    )}
                     <SortableTableHeader field="name" label="Committee Name" />
                     <SortableTableHeader field="code" label="Code" />
                     <TableHead>Institute</TableHead>
@@ -632,7 +651,9 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
                 <TableBody>
                   {paginatedCommittees.map((committee) => (
                     <TableRow key={committee.id} data-state={selectedCommitteeIds.includes(committee.id) ? "selected" : undefined}>
+                      {accessContext.featurePermissions.canDeleteRecords && (
                       <TableCell><Checkbox checked={selectedCommitteeIds.includes(committee.id)} onCheckedChange={(checked) => handleSelectCommittee(committee.id, !!checked)} aria-labelledby={`committee-name-${committee.id}`}/></TableCell>
+                      )}
                       <TableCell id={`committee-name-${committee.id}`} className="font-medium">{committee.name}</TableCell>
                       <TableCell>{committee.code}</TableCell>
                       <TableCell>{institutes.find(i => i.id === committee.instituteId)?.name || 'N/A'}</TableCell>
@@ -653,20 +674,24 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
                             <Eye className="h-4 w-4" />
                             <span className="sr-only">View Committee</span>
                           </Button>
+                          {accessContext.featurePermissions.canEditRecords && (
                           <Button variant="outline" size="icon" onClick={() => handleEdit(committee)} disabled={isSubmitting}>
                             <Edit className="h-4 w-4" />
                             <span className="sr-only">Edit Committee</span>
                           </Button>
+                          )}
+                          {accessContext.featurePermissions.canDeleteRecords && (
                           <Button variant="destructive" size="icon" onClick={() => handleDelete(committee.id)} disabled={isSubmitting}>
                             <Trash2 className="h-4 w-4" />
                             <span className="sr-only">Delete Committee</span>
                           </Button>
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>
                   ))}
                   {paginatedCommittees.length === 0 && (
-                     <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">No committees found. Adjust filters or add a new committee.</TableCell></TableRow>
+                     <TableRow><TableCell colSpan={accessContext.featurePermissions.canDeleteRecords ? 8 : 7} className="text-center text-muted-foreground py-8">No committees found. Adjust filters or add a new committee.</TableCell></TableRow>
                   )}
                 </TableBody>
               </Table>

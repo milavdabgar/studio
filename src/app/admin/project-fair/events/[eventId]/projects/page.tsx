@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Loader2, ArrowLeft, Briefcase, PlusCircle, Edit, Trash2, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight} from "lucide-react";
@@ -29,6 +30,10 @@ const PROJECT_CATEGORIES = ["IoT & Smart Systems", "Software Development", "Hard
 
 
 export default function EventProjectsPage() {
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
+
   const router = useRouter();
   const params = useParams();
   const eventId = params?.eventId as string;
@@ -130,6 +135,12 @@ export default function EventProjectsPage() {
 
   const filteredAndSortedProjects = useMemo(() => {
     let result = [...projects];
+    
+    // Apply role-based department filtering
+    if (accessContext.departmentFilter) {
+      result = result.filter(p => p.department === accessContext.departmentFilter);
+    }
+    
     if (searchTerm) {
       result = result.filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase()) || p.id.toLowerCase().includes(searchTerm.toLowerCase()));
     }
@@ -159,7 +170,7 @@ export default function EventProjectsPage() {
       });
     }
     return result;
-  }, [projects, searchTerm, filterDepartment, filterCategory, filterStatus, sortField, sortDirection, teams, departments]);
+  }, [projects, searchTerm, filterDepartment, filterCategory, filterStatus, sortField, sortDirection, teams, departments, accessContext.departmentFilter]);
 
   const paginatedProjects = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -212,7 +223,9 @@ export default function EventProjectsPage() {
               </CardTitle>
               <CardDescription>Manage all projects registered for this event.</CardDescription>
             </div>
+            {user && ['admin', 'super_admin', 'hod', 'principal'].includes(user.activeRole) && (
             <Button onClick={handleAddNewProject}><PlusCircle className="mr-2 h-4 w-4"/> Add New Project</Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -223,7 +236,7 @@ export default function EventProjectsPage() {
                 <div><Label htmlFor="projectStatusFilter">Status</Label><Select value={filterStatus} onValueChange={s => setFilterStatus(s as ProjectStatus | 'all')}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Statuses</SelectItem>{PROJECT_STATUS_OPTIONS.map(s=><SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}</SelectContent></Select></div>
             </div>
             
-            {selectedProjectIds.length > 0 && (
+            {selectedProjectIds.length > 0 && accessContext.featurePermissions.canDeleteRecords && (
                 <div className="mb-4 flex items-center gap-2">
                     <Button variant="destructive" onClick={handleDeleteSelected}><Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedProjectIds.length})</Button>
                     <span className="text-sm text-muted-foreground">{selectedProjectIds.length} project(s) selected.</span>
@@ -243,11 +256,13 @@ export default function EventProjectsPage() {
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center gap-3 min-w-0 flex-1">
+                            {accessContext.featurePermissions.canDeleteRecords && (
                             <Checkbox 
                               checked={selectedProjectIds.includes(project.id)} 
                               onCheckedChange={(checked) => setSelectedProjectIds(prev => checked ? [...prev, project.id] : prev.filter(id => id !== project.id))}
                               className="flex-shrink-0"
                             />
+                            )}
                             <div className="min-w-0 flex-1">
                               <h4 className="font-semibold text-sm leading-tight">{project.title}</h4>
                               <p className="text-xs text-muted-foreground">ID: {project.id}</p>
@@ -270,12 +285,16 @@ export default function EventProjectsPage() {
                         </div>
 
                         <div className="flex gap-2">
+                          {user && ['admin', 'super_admin', 'hod', 'principal'].includes(user.activeRole) && (
                           <Button variant="outline" size="sm" onClick={() => handleEditProject(project)} className="min-h-[44px] flex-1">
                             <Edit className="h-3 w-3 mr-1" />Edit
                           </Button>
+                          )}
+                          {accessContext.featurePermissions.canDeleteRecords && (
                           <Button variant="destructive" size="sm" onClick={() => handleDeleteProject(project.id)} className="min-h-[44px] flex-1">
                             <Trash2 className="h-3 w-3 mr-1" />Delete
                           </Button>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
@@ -286,7 +305,9 @@ export default function EventProjectsPage() {
                 <div className="hidden lg:block">
                   <Table>
                     <TableHeader><TableRow>
+                      {accessContext.featurePermissions.canDeleteRecords && (
                       <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedProjects.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(val) => handleSelectAll(val as boolean | 'indeterminate')}/></TableHead>
+                      )}
                       <SortableTableHeader field="id" label="Project ID" />
                       <SortableTableHeader field="title" label="Title" />
                       <SortableTableHeader field="category" label="Category" />
@@ -298,7 +319,9 @@ export default function EventProjectsPage() {
                     <TableBody>
                       {paginatedProjects.map((project) => (
                         <TableRow key={project.id} data-state={selectedProjectIds.includes(project.id) ? "selected" : undefined}>
+                          {accessContext.featurePermissions.canDeleteRecords && (
                           <TableCell><Checkbox checked={selectedProjectIds.includes(project.id)} onCheckedChange={(checked) => setSelectedProjectIds(prev => checked ? [...prev, project.id] : prev.filter(id => id !== project.id))}/></TableCell>
+                          )}
                           <TableCell>{project.id}</TableCell>
                           <TableCell className="font-medium">{project.title}</TableCell>
                           <TableCell>{project.category}</TableCell>
@@ -310,7 +333,14 @@ export default function EventProjectsPage() {
                             project.status === 'submitted' ? 'bg-blue-100 text-blue-700' :
                             'bg-yellow-100 text-yellow-700'
                           }`}>{project.status.charAt(0).toUpperCase() + project.status.slice(1)}</span></TableCell>
-                          <TableCell className="text-right space-x-1"><Button variant="outline" size="icon" className="h-7 w-7" onClick={() => handleEditProject(project)}><Edit className="h-4 w-4" /></Button><Button variant="destructive" size="icon" className="h-7 w-7" onClick={() => handleDeleteProject(project.id)}><Trash2 className="h-4 w-4" /></Button></TableCell>
+                          <TableCell className="text-right space-x-1">
+                            {user && ['admin', 'super_admin', 'hod', 'principal'].includes(user.activeRole) && (
+                            <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => handleEditProject(project)}><Edit className="h-4 w-4" /></Button>
+                            )}
+                            {accessContext.featurePermissions.canDeleteRecords && (
+                            <Button variant="destructive" size="icon" className="h-7 w-7" onClick={() => handleDeleteProject(project.id)}><Trash2 className="h-4 w-4" /></Button>
+                            )}
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

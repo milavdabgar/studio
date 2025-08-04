@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -29,6 +30,10 @@ interface DepartmentWinnerGroup {
 }
 
 export default function EventResultsPage() {
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
+
   const router = useRouter();
   const params = useParams();
   const eventId = params?.eventId as string;
@@ -175,18 +180,22 @@ export default function EventResultsPage() {
                 </CardTitle>
                 <CardDescription>Publish results and manage certificate distribution.</CardDescription>
             </div>
+            {user && ['admin', 'super_admin'].includes(user.activeRole) && (
             <Button onClick={handleTogglePublishResults} disabled={isSubmitting} variant={event.publishResults ? "destructive" : "default"}>
               {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
               {event.publishResults ? <><EyeOff className="mr-2 h-4 w-4"/>Unpublish Results</> : <><Eye className="mr-2 h-4 w-4"/>Publish Results</>}
             </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
             <Tabs defaultValue="institute_winners">
-                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 mb-6">
+                <TabsList className={`grid w-full ${user && ['admin', 'super_admin', 'hod', 'principal'].includes(user.activeRole) ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2'} mb-6`}>
                     <TabsTrigger value="institute_winners">Institute Winners</TabsTrigger>
                     <TabsTrigger value="department_winners">Department Winners</TabsTrigger>
+                    {user && ['admin', 'super_admin', 'hod', 'principal'].includes(user.activeRole) && (
                     <TabsTrigger value="certificates">Certificate Management</TabsTrigger>
+                    )}
                 </TabsList>
                 
                 <TabsContent value="institute_winners">
@@ -228,6 +237,7 @@ export default function EventResultsPage() {
                     </Card>
                 </TabsContent>
 
+                {user && ['admin', 'super_admin', 'hod', 'principal'].includes(user.activeRole) && (
                 <TabsContent value="certificates">
                     <Card>
                         <CardHeader><CardTitle>Certificate Management</CardTitle><CardDescription>Generate, download, and distribute certificates.</CardDescription></CardHeader>
@@ -278,6 +288,7 @@ export default function EventResultsPage() {
                         </CardContent>
                     </Card>
                 </TabsContent>
+                )}
             </Tabs>
         </CardContent>
       </Card>

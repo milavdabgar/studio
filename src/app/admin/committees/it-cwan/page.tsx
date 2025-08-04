@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -74,6 +75,10 @@ interface UserAccount {
 }
 
 export default function ITCWANDashboard() {
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
+
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [devices, setDevices] = useState<NetworkDevice[]>([]);
   const [users, setUsers] = useState<UserAccount[]>([]);
@@ -286,16 +291,20 @@ export default function ITCWANDashboard() {
             <p className="text-sm sm:text-base text-muted-foreground">Campus-wide area network and IT infrastructure management</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            {accessContext.featurePermissions.canCreateRecords && (
             <Button className="w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" />
               <span className="hidden sm:inline">New Ticket</span>
               <span className="sm:hidden">Ticket</span>
             </Button>
+            )}
+            {accessContext.featurePermissions.canCreateRecords && (
             <Button variant="outline" className="w-full sm:w-auto">
               <Monitor className="w-4 h-4 mr-2" />
               <span className="hidden sm:inline">Add Device</span>
               <span className="sm:hidden">Device</span>
             </Button>
+            )}
           </div>
         </div>
 

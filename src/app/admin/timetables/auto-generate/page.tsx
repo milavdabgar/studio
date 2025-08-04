@@ -274,6 +274,7 @@ export default function AutoGenerateTimetablePage() {
   };
 
   return (
+    <DepartmentScopedPage pageName="Auto-Generate Timetables">
     <div className="container mx-auto py-8 space-y-8">
       <div className="flex items-center gap-3">
         <Zap className="h-8 w-8 text-primary" />
@@ -469,19 +470,24 @@ export default function AutoGenerateTimetablePage() {
                   id="advancedMode"
                   checked={isAdvancedMode}
                   onCheckedChange={(checked) => setIsAdvancedMode(!!checked)}
+                  disabled={!accessContext.featurePermissions.canAccessAdvancedFeatures}
                 />
-                <Label htmlFor="advancedMode" className="text-base font-medium">
+                <Label htmlFor="advancedMode" className={`text-base font-medium ${!accessContext.featurePermissions.canAccessAdvancedFeatures ? 'text-muted-foreground' : ''}`}>
                   Enable Advanced Generation (Phase 3)
+                  {!accessContext.featurePermissions.canAccessAdvancedFeatures && ' (Restricted)'}
                 </Label>
               </div>
               <p className="text-sm text-muted-foreground mt-2">
-                Enables room optimization, resource management, and multi-objective optimization
+                {accessContext.featurePermissions.canAccessAdvancedFeatures 
+                  ? 'Enables room optimization, resource management, and multi-objective optimization'
+                  : 'Advanced features require additional permissions. Contact your administrator.'
+                }
               </p>
             </CardContent>
           </Card>
 
-          {/* Advanced Options */}
-          {isAdvancedMode && (
+          {/* Advanced Options */}  
+          {isAdvancedMode && accessContext.featurePermissions.canAccessAdvancedFeatures && (
             <>
               <Card>
                 <CardHeader>
@@ -803,7 +809,7 @@ export default function AutoGenerateTimetablePage() {
 
               <Button 
                 onClick={handleGenerateTimetables}
-                disabled={isGenerating || selectedBatchIds.length === 0}
+                disabled={isGenerating || selectedBatchIds.length === 0 || !accessContext.featurePermissions.canCreateRecords}
                 className="w-full"
               >
                 {isGenerating ? (
@@ -944,5 +950,6 @@ export default function AutoGenerateTimetablePage() {
         </div>
       </div>
     </div>
+    </DepartmentScopedPage>
   );
 }

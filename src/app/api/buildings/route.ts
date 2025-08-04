@@ -3,8 +3,9 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { connectMongoose } from '@/lib/mongodb';
 import { BuildingModel } from '@/lib/models';
 import type { Building } from '@/types/entities';
+import { withAPIRoleAccess, type APIAccessContext } from '@/lib/auth/api-middleware';
 
-export async function GET() {
+async function handleGET(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
     const buildings = await BuildingModel.find({});
@@ -29,7 +30,9 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+export const GET = withAPIRoleAccess(handleGET, ['admin', 'super_admin', 'hod', 'principal']);
+
+async function handlePOST(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
     const buildingData = await request.json() as Omit<Building, 'id' | 'createdAt' | 'updatedAt'>;
@@ -93,3 +96,5 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Error creating building' }, { status: 500 });
   }
 }
+
+export const POST = withAPIRoleAccess(handlePOST, ['admin', 'super_admin', 'hod', 'principal']);

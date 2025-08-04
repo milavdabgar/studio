@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -57,6 +58,10 @@ interface InnovationEvent {
 }
 
 export default function SSIPDashboard() {
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
+
   const [projects, setProjects] = useState<StartupProject[]>([]);
   const [events, setEvents] = useState<InnovationEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -204,14 +209,18 @@ export default function SSIPDashboard() {
             <p className="text-muted-foreground">Student Startup and Innovation Policy Management</p>
           </div>
           <div className="flex gap-2">
+            {accessContext.featurePermissions.canCreateRecords && (
             <Button>
               <Plus className="w-4 h-4 mr-2" />
               Add Project
             </Button>
+            )}
+            {accessContext.featurePermissions.canCreateRecords && (
             <Button variant="outline">
               <Calendar className="w-4 h-4 mr-2" />
               Schedule Event
             </Button>
+            )}
           </div>
         </div>
 

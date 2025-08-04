@@ -4,6 +4,7 @@
 
 import React, { useEffect, useState, useMemo, useCallback, FormEvent } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Loader2, ArrowLeft, Award, UserCheck } from "lucide-react";
@@ -28,6 +29,10 @@ const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
 type EvaluationStatusFilter = 'all' | 'pending' | 'completed' | 'assigned' | 'unassigned';
 
 export default function EventEvaluationsPage() {
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
+
   const router = useRouter();
   const params = useParams();
   const eventId = params?.eventId as string;
@@ -134,6 +139,12 @@ export default function EventEvaluationsPage() {
 
   const filteredAndSortedProjects = useMemo(() => {
     let result = [...projects];
+    
+    // Apply role-based department filtering
+    if (accessContext.departmentFilter) {
+      result = result.filter(p => p.department === accessContext.departmentFilter);
+    }
+    
     if (searchTerm) result = result.filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase()) || p.id.toLowerCase().includes(searchTerm.toLowerCase()));
     if (filterDepartment !== 'all') result = result.filter(p => p.department === filterDepartment);
     
@@ -169,7 +180,7 @@ export default function EventEvaluationsPage() {
       });
     }
     return result;
-  }, [projects, searchTerm, filterDepartment, filterDeptEvalStatus, filterCentralEvalStatus, sortField, sortDirection, teams, departments, getEvaluationStatus]);
+  }, [projects, searchTerm, filterDepartment, filterDeptEvalStatus, filterCentralEvalStatus, sortField, sortDirection, teams, departments, getEvaluationStatus, accessContext.departmentFilter]);
 
   const paginatedProjects = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -243,7 +254,9 @@ export default function EventEvaluationsPage() {
                                 {centralEvalInfo.score !== undefined && <span className="text-xs text-muted-foreground block">Score: {centralEvalInfo.score}%</span>}
                             </TableCell>
                             <TableCell className="text-right">
+                                {user && ['admin', 'super_admin', 'hod', 'principal'].includes(user.activeRole) && (
                                 <Button variant="outline" size="sm" onClick={() => handleOpenAssignJuryDialog(project)}><UserCheck className="mr-1 h-4 w-4"/>Assign Jury</Button>
+                                )}
                             </TableCell>
                         </TableRow>
                     );
