@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import type { AcademicTerm, Program, ProgramSemesterDateEntry } from '@/types/entities';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 
 // Extended interfaces for API responses with populated data
 interface ProgramDetails {
@@ -56,6 +57,10 @@ export default function AcademicTermManagementPage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentTerm, setCurrentTerm] = useState<Partial<ExtendedAcademicTerm> | null>(null);
@@ -432,13 +437,14 @@ export default function AcademicTermManagementPage() {
           <h1 className="text-3xl font-bold">Academic Terms</h1>
           <p className="text-muted-foreground">Manage GTU academic terms and calendars</p>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={openCreateDialog}>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Add Academic Term
-            </Button>
-          </DialogTrigger>
+        {accessContext.navigationPermissions.canAccessSettings && (
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={openCreateDialog}>
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Add Academic Term
+              </Button>
+            </DialogTrigger>
           <DialogContent className="sm:max-w-2xl">
             <DialogHeader>
               <DialogTitle>
@@ -704,6 +710,7 @@ export default function AcademicTermManagementPage() {
             </form>
           </DialogContent>
         </Dialog>
+        )}
       </div>
 
       {/* Summary Cards */}
@@ -987,21 +994,25 @@ export default function AcademicTermManagementPage() {
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => openEditDialog(term)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDelete(term)}
-                            className="text-destructive hover:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          {accessContext.navigationPermissions.canAccessSettings && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => openEditDialog(term)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          )}
+                          {accessContext.featurePermissions.canDeleteRecords && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDelete(term)}
+                              className="text-destructive hover:text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>

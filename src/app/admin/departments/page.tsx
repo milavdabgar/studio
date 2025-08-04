@@ -15,7 +15,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import type { Department, User } from '@/types/entities'; 
 import { departmentService } from '@/lib/api/departments';
-import { userService } from '@/lib/api/users'; 
+import { userService } from '@/lib/api/users';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access'; 
 
 type SortField = keyof Department | 'none';
 type SortDirection = 'asc' | 'desc';
@@ -28,6 +29,10 @@ export default function DepartmentManagementPage() {
   const [facultyUsers, setFacultyUsers] = useState<User[]>([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentDepartment, setCurrentDepartment] = useState<Partial<Department> | null>(null);
@@ -400,6 +405,7 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
             </CardDescription>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            {accessContext.canEditAllDepartments && (
              <Dialog open={isDialogOpen} onOpenChange={(isOpen) => { setIsDialogOpen(isOpen); if (!isOpen) resetForm(); }}>
               <DialogTrigger asChild>
                 <Button onClick={handleAddNew} className="w-full sm:w-auto">
@@ -468,30 +474,35 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
                 </form>
               </DialogContent>
             </Dialog>
-            <Button onClick={handleExportDepartments} variant="outline" className="w-full sm:w-auto">
-              <Download className="mr-2 h-5 w-5" /> Export CSV
-            </Button>
+            )}
+            {accessContext.featurePermissions.canExportData && (
+              <Button onClick={handleExportDepartments} variant="outline" className="w-full sm:w-auto">
+                <Download className="mr-2 h-5 w-5" /> Export CSV
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
-            <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Departments from CSV</h3>
-            <div className="flex flex-col sm:flex-row gap-2 items-center">
-              <Input type="file" id="csvImportDepartment" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
-              <Button onClick={handleImportDepartments} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto">
-                {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
-                Import
-              </Button>
-            </div>
-            <div className="flex items-center gap-2">
-                 <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="px-0 text-primary">
-                    <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
+          {accessContext.featurePermissions.canImportData && (
+            <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
+              <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Departments from CSV</h3>
+              <div className="flex flex-col sm:flex-row gap-2 items-center">
+                <Input type="file" id="csvImportDepartment" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
+                <Button onClick={handleImportDepartments} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto">
+                  {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
+                  Import
                 </Button>
-                <p className="text-xs text-muted-foreground">
-                  CSV format: id (optional), name, code, description, hodId, establishmentYear, status, instituteId.
-                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                   <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="px-0 text-primary">
+                      <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
+                  </Button>
+                  <p className="text-xs text-muted-foreground">
+                    CSV format: id (optional), name, code, description, hodId, establishmentYear, status, instituteId.
+                  </p>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
@@ -522,9 +533,11 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
 
           {selectedDepartmentIds.length > 0 && (
              <div className="mb-4 flex items-center gap-2">
-                <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
-                    <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedDepartmentIds.length})
-                </Button>
+                {accessContext.featurePermissions.canDeleteRecords && (
+                  <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
+                      <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedDepartmentIds.length})
+                  </Button>
+                )}
                 <span className="text-sm text-muted-foreground">
                     {selectedDepartmentIds.length} department(s) selected.
                 </span>
@@ -581,20 +594,24 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
                       <Eye className="h-3 w-3" />
                       <span className="ml-1">View</span>
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleEdit(department)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
-                      <Edit className="h-3 w-3" />
-                      <span className="ml-1">Edit</span>
-                    </Button>
-                    <Button 
-                      variant="destructive" 
-                      size="sm" 
-                      onClick={() => handleDelete(department.id)} 
-                      disabled={isSubmitting}
-                      className="min-h-[44px] flex-1 text-xs"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                      <span className="ml-1">Delete</span>
-                    </Button>
+                    {accessContext.canEditAllDepartments && (
+                      <Button variant="outline" size="sm" onClick={() => handleEdit(department)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
+                        <Edit className="h-3 w-3" />
+                        <span className="ml-1">Edit</span>
+                      </Button>
+                    )}
+                    {accessContext.featurePermissions.canDeleteRecords && (
+                      <Button 
+                        variant="destructive" 
+                        size="sm" 
+                        onClick={() => handleDelete(department.id)} 
+                        disabled={isSubmitting}
+                        className="min-h-[44px] flex-1 text-xs"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                        <span className="ml-1">Delete</span>
+                      </Button>
+                    )}
                   </div>
                 </Card>
               );
@@ -650,14 +667,18 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
                         <Eye className="h-4 w-4" />
                         <span className="sr-only">View Department</span>
                       </Button>
-                      <Button variant="outline" size="icon" onClick={() => handleEdit(dept)} disabled={isSubmitting}>
-                        <Edit className="h-4 w-4" />
-                        <span className="sr-only">Edit Department</span>
-                      </Button>
-                      <Button variant="destructive" size="icon" onClick={() => handleDelete(dept.id)} disabled={isSubmitting}>
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete Department</span>
-                      </Button>
+                      {accessContext.canEditAllDepartments && (
+                        <Button variant="outline" size="icon" onClick={() => handleEdit(dept)} disabled={isSubmitting}>
+                          <Edit className="h-4 w-4" />
+                          <span className="sr-only">Edit Department</span>
+                        </Button>
+                      )}
+                      {accessContext.featurePermissions.canDeleteRecords && (
+                        <Button variant="destructive" size="icon" onClick={() => handleDelete(dept.id)} disabled={isSubmitting}>
+                          <Trash2 className="h-4 w-4" />
+                          <span className="sr-only">Delete Department</span>
+                        </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

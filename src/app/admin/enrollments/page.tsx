@@ -19,6 +19,7 @@ import { courseService } from '@/lib/api/courses';
 import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
 import { format, parseISO } from 'date-fns';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 
 type SortField = keyof EnrichedEnrollment | 'none';
 type SortDirection = 'asc' | 'desc';
@@ -44,6 +45,10 @@ export default function EnrollmentManagementPage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [filterProgramId, setFilterProgramId] = useState<string>("all");
@@ -239,7 +244,7 @@ export default function EnrollmentManagementPage() {
 
                     {/* Mobile Action Buttons */}
                     <div className="flex gap-2 mt-3">
-                      {enroll.status === 'requested' && (
+                      {enroll.status === 'requested' && accessContext.featurePermissions.canApproveRequests && (
                         <>
                           <Button 
                             size="sm" 
@@ -263,7 +268,7 @@ export default function EnrollmentManagementPage() {
                           </Button>
                         </>
                       )}
-                      {enroll.status === 'enrolled' && (
+                      {enroll.status === 'enrolled' && accessContext.featurePermissions.canApproveRequests && (
                         <Button 
                           size="sm" 
                           variant="outline" 
@@ -304,13 +309,13 @@ export default function EnrollmentManagementPage() {
                         <TableCell>{enroll.createdAt ? format(parseISO(enroll.createdAt), "PPP") : 'N/A'}</TableCell>
                         <TableCell><span className={`capitalize px-2 py-0.5 text-xs rounded-full font-medium bg-${enroll.status === 'enrolled' ? 'green' : enroll.status === 'requested' ? 'yellow' : enroll.status === 'rejected' || enroll.status === 'withdrawn' ? 'red' : 'slate'}-100 text-${enroll.status === 'enrolled' ? 'green' : enroll.status === 'requested' ? 'yellow' : enroll.status === 'rejected' || enroll.status === 'withdrawn' ? 'red' : 'slate'}-700`}>{enroll.status}</span></TableCell>
                         <TableCell className="text-right space-x-1">
-                          {enroll.status === 'requested' && (
+                          {enroll.status === 'requested' && accessContext.featurePermissions.canApproveRequests && (
                             <>
                               <Button size="xs" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50 hover:text-green-700 dark:border-gray-700" onClick={() => handleUpdateStatus(enroll.id, 'enrolled')} disabled={isSubmitting}><CheckCircle className="mr-1 h-3 w-3"/>Approve</Button>
                               <Button size="xs" variant="outline" className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700 dark:border-gray-700" onClick={() => handleUpdateStatus(enroll.id, 'rejected')} disabled={isSubmitting}><XCircle className="mr-1 h-3 w-3"/>Reject</Button>
                             </>
                           )}
-                          {enroll.status === 'enrolled' && (
+                          {enroll.status === 'enrolled' && accessContext.featurePermissions.canApproveRequests && (
                                <Button size="xs" variant="outline" className="text-orange-600 border-orange-600 hover:bg-orange-50 hover:text-orange-700 dark:border-gray-700" onClick={() => handleUpdateStatus(enroll.id, 'withdrawn')} disabled={isSubmitting}><XCircle className="mr-1 h-3 w-3"/>Withdraw</Button>
                           )}
                         </TableCell>

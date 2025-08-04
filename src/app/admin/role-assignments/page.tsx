@@ -14,6 +14,7 @@ import { UserCog, Users, Shield, Search, Plus, Edit, Trash2, Eye, Loader2, Check
 import { useToast } from "@/hooks/use-toast";
 import { committeePermissions } from '@/lib/api/roles';
 import { permissionUtils, permissionCategories } from '@/lib/utils/permissions';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 
 interface User {
   id: string;
@@ -69,6 +70,10 @@ const RoleAssignmentPage = () => {
   const [assignments, setAssignments] = useState<RoleAssignment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
   const [activeTab, setActiveTab] = useState('assignments');
   
   // Form state
