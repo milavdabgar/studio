@@ -10,7 +10,7 @@ export interface AuditLog {
   timestamp: Date;
   ipAddress?: string;
   userAgent?: string;
-  status: 'success' | 'failed' | 'unauthorized';
+  status: 'success' | 'failed' | 'unauthorized' | 'denied' | 'partial_failure';
   departmentId?: string;
   sessionId?: string;
 }
@@ -23,7 +23,7 @@ export interface AuditLogEntry {
   resource: string;
   resourceId?: string;
   details?: Record<string, any>;
-  status?: 'success' | 'failed' | 'unauthorized';
+  status?: 'success' | 'failed' | 'unauthorized' | 'denied' | 'partial_failure';
   departmentId?: string;
   ipAddress?: string;
   userAgent?: string;
