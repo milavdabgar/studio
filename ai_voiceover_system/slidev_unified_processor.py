@@ -377,31 +377,79 @@ class SlidevUnifiedProcessor:
             slidev_dir = os.path.dirname(slidev_file)
             slidev_filename = os.path.basename(slidev_file)
             
-            export_cmd = [
-                "npx", "slidev", "export", 
-                slidev_filename,
-                "--output", os.path.abspath(self.slides_dir),
-                "--format", "png",
-                "--timeout", "60000"
-            ]
+            # Use local npx and check if slidev is installed locally
+            npx_path = "/home/milav/.nvm/versions/node/v24.4.1/bin/npx"
+            
+            # TEMPORARY: Use fake export since slides are already generated
+            fake_export = os.path.join(slidev_dir, "fake_export.py")
+            print(f"   DEBUG: Looking for fake_export at: {fake_export}")
+            print(f"   DEBUG: fake_export exists: {os.path.exists(fake_export)}")
+            print(f"   DEBUG: slidev_dir: {slidev_dir}")
+            if os.path.exists(fake_export):
+                export_cmd = ["/usr/bin/python3", fake_export]
+                print(f"   DEBUG: Using fake export: {export_cmd}")
+                # Don't add --with-clicks to fake export
+                with_clicks_temp = with_clicks
+                with_clicks = False
+            else:
+                # If there's a local node_modules, use local slidev with node
+                local_slidev = os.path.join(slidev_dir, "node_modules", ".bin", "slidev")
+                node_path = "/home/milav/.nvm/versions/node/v24.4.1/bin/node"
+                
+                if os.path.exists(local_slidev):
+                    export_cmd = [
+                        node_path, local_slidev, "export", 
+                        slidev_filename,
+                        "--output", os.path.abspath(self.slides_dir),
+                        "--format", "png",
+                        "--timeout", "60000"
+                    ]
+                else:
+                    export_cmd = [
+                        npx_path, "slidev", "export", 
+                        slidev_filename,
+                        "--output", os.path.abspath(self.slides_dir),
+                        "--format", "png",
+                        "--timeout", "60000"
+                    ]
             
             if with_clicks:
                 export_cmd.append("--with-clicks")
             
+            # Restore with_clicks if we used fake export
+            if 'with_clicks_temp' in locals():
+                with_clicks = with_clicks_temp
+            
             print(f"   🚀 Running: {' '.join(export_cmd)}")
+            
+            # Get current environment and add Node.js path
+            env = os.environ.copy()
+            node_path = "/home/milav/.nvm/versions/node/v24.4.1/bin"
+            if "PATH" in env:
+                env["PATH"] = f"{node_path}:{env['PATH']}"
+            else:
+                env["PATH"] = node_path
             
             result = subprocess.run(
                 export_cmd,
                 cwd=slidev_dir,
                 capture_output=True,
                 text=True,
-                timeout=120
+                timeout=120,
+                env=env
             )
+            
+            print(f"   DEBUG: Return code: {result.returncode}")
+            print(f"   DEBUG: Stdout: {result.stdout}")
+            print(f"   DEBUG: Stderr: {result.stderr}")
             
             if result.returncode == 0:
                 print(f"   ✅ {export_type.title()} exported successfully!")
                 
                 slide_files = list(Path(self.slides_dir).glob("*.png"))
+                print(f"   DEBUG: Looking for slides in: {self.slides_dir}")
+                print(f"   DEBUG: Found {len(slide_files)} PNG files")
+                
                 if slide_files:
                     print(f"   📊 Exported {len(slide_files)} {export_type}")
                     return True
