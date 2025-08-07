@@ -1,31 +1,42 @@
 ---
-theme: default
-background: https://source.unsplash.com/1024x768/?java,programming
-title: Introduction to Java - The Foundation of Modern Programming
+theme: seriph
+title: 'Introduction to Java - The Foundation of Modern Programming'
+author: 'Java Programming Course Team'
+highlighter: shiki
+lineNumbers: true
+monaco: dev
+download: true
+drawings:
+  enabled: true
+  persist: false
+  presenterOnly: false
+remoteAssets: true
+transition: slide-left
+fonts:
+  sans: 'Roboto'
+  serif: 'Roboto Slab'
+  mono: 'Fira Code'
+css: unocss
+colorSchema: auto
 info: |
   ## Java Programming (4343203)
   
-  Lecture 1: Introduction to Java - The Foundation of Modern Programming
+  **Lecture 1: Introduction to Java - The Foundation of Modern Programming**
   
-  Diploma in ICT - Semester IV
-  Gujarat Technological University
+  Diploma in ICT - Semester IV | Gujarat Technological University
 
-  Master Java's history, revolutionary features, and real-world applications.
-  Build strong conceptual foundations for professional development.
+  🎯 **Learning Goals:**
+  - Master Java's evolution from 1991-2024
+  - Understand WORA principle and JVM architecture
+  - Explore real-world Java applications
+  - Analyze why enterprises choose Java
+  - Build foundation for advanced programming
+  
+  **Duration:** 90 minutes | **Interactive Elements:** Included
 class: text-center
-highlighter: shiki
-drawings:
-  persist: false
-transition: slide-left
-mdc: true
-fonts:
-  sans: 'Inter'
-  serif: 'Georgia'
-  mono: 'Fira Code'
-colorSchema: auto
 ---
 
-# Introduction to Java
+# Introduction to Java ☕
 ## Lecture 1
 
 **Java Programming (4343203)**  
@@ -256,11 +267,11 @@ Now let's explore why Java was created in the first place.
 layout: default
 ---
 
-# Java's Revolutionary Features - Deep Dive
+# Java's Revolutionary Features
 
-<div class="grid grid-cols-3 gap-6">
+<div class="grid grid-cols-3 gap-8">
 
-<div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl">
+<div>
 
 ## 🎯 **Simplicity & Power**
 
@@ -274,14 +285,14 @@ layout: default
 
 **Real Impact:**
 - 40% faster development vs C++
-- 60% fewer bugs in production
+- 60% fewer bugs in production  
 - Easier team collaboration
 
 </v-clicks>
 
 </div>
 
-<div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl">
+<div>
 
 ## 🔒 **Enterprise Security**
 
@@ -302,7 +313,7 @@ layout: default
 
 </div>
 
-<div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl">
+<div>
 
 ## ⚡ **Performance Excellence**
 
@@ -325,33 +336,31 @@ layout: default
 
 </div>
 
-<div v-click="10" class="mt-8">
+<v-click>
 
 ## 🌟 The WORA Revolution
 
-<div class="bg-gradient-to-r from-yellow-50 via-orange-50 to-red-50 p-6 rounded-xl">
+<div class="grid grid-cols-4 gap-4 text-center mt-8">
 
-<div class="grid grid-cols-4 gap-4 text-center">
-
-<div class="bg-white p-4 rounded-lg shadow">
+<div class="bg-blue-50 p-4 rounded-lg">
 <strong>Write Once</strong><br/>
 <code class="text-sm">HelloWorld.java</code>
 <div class="text-green-600 text-2xl">✅</div>
 </div>
 
-<div class="bg-white p-4 rounded-lg shadow">
+<div class="bg-green-50 p-4 rounded-lg">
 <strong>Compile Once</strong><br/>
 <code class="text-sm">HelloWorld.class</code>
 <div class="text-blue-600 text-2xl">⚙️</div>
 </div>
 
-<div class="bg-white p-4 rounded-lg shadow">
+<div class="bg-purple-50 p-4 rounded-lg">
 <strong>Run Anywhere</strong><br/>
 <span class="text-sm">Windows, Linux, macOS</span>
 <div class="text-purple-600 text-2xl">🌍</div>
 </div>
 
-<div class="bg-white p-4 rounded-lg shadow">
+<div class="bg-orange-50 p-4 rounded-lg">
 <strong>Save Millions</strong><br/>
 <span class="text-sm">Development Cost</span>
 <div class="text-orange-600 text-2xl">💰</div>
@@ -359,13 +368,7 @@ layout: default
 
 </div>
 
-</div>
-
-</div>
-
-<div v-click="11" class="mt-6 p-4 bg-gradient-to-r from-indigo-50 to-cyan-50 rounded-lg">
-<strong>🚀 Pro Insight:</strong> Java's features aren't just technical advantages—they're business solutions that have saved the industry billions in development costs!
-</div>
+</v-click>
 
 ---
 layout: default
@@ -506,159 +509,57 @@ In the big data world, technologies like Hadoop and Apache Kafka are built on Ja
 -->
 
 ---
-layout: center
+layout: default
 ---
 
-# Java Powers Your Digital Life - Impact Analysis
-
-<div class="grid grid-cols-2 gap-8">
-
-<div>
-
-## 🌍 **Global Java Ecosystem**
+# Java Powers Your Digital Life
 
 <div class="space-y-6">
 
-<div v-click class="bg-gradient-to-r from-blue-50 to-indigo-100 p-4 rounded-xl">
-<h3 class="font-bold text-lg mb-2">🏦 **Financial Services** (Critical Infrastructure)</h3>
-<div class="grid grid-cols-2 gap-4 text-sm">
-<div>
-<strong>Indian Banks:</strong><br/>
-• HDFC Bank (100M+ users)<br/>
-• SBI Online (450M accounts)<br/>
-• ICICI Bank (50M+ digital users)<br/>
-• PayTM (350M+ wallets)
-</div>
-<div>
-<strong>Why Java?</strong><br/>
-• Handles 10K+ transactions/sec<br/>
-• 99.99% uptime requirement<br/>
-• Zero tolerance for security bugs<br/>
-• Regulatory compliance built-in
-</div>
-</div>
-</div>
+<v-clicks>
 
-<div v-click class="bg-gradient-to-r from-green-50 to-emerald-100 p-4 rounded-xl">
-<h3 class="font-bold text-lg mb-2">🛒 **E-Commerce Giants** (Scale Champions)</h3>
-<div class="grid grid-cols-2 gap-4 text-sm">
-<div>
-<strong>Global Leaders:</strong><br/>
-• Amazon (300M+ active users)<br/>
-• Flipkart (400M+ registered)<br/>
-• eBay (182M+ buyers)<br/>
-• Alibaba (1B+ annual users)
-</div>
-<div>
-<strong>Java's Role:</strong><br/>
-• Microservices architecture<br/>
-• Real-time inventory management<br/>
-• Payment processing systems<br/>
-• Recommendation engines
-</div>
-</div>
-</div>
+## 🏦 Financial Services
+- **HDFC Bank** (100M+ users), **SBI Online** (450M accounts)
+- **ICICI Bank** (50M+ users), **PayTM** (350M+ wallets)
+- Handles 10K+ transactions/sec with 99.99% uptime
 
-<div v-click class="bg-gradient-to-r from-purple-50 to-violet-100 p-4 rounded-xl">
-<h3 class="font-bold text-lg mb-2">📱 **Mobile & Social** (User Experience)</h3>
-<div class="grid grid-cols-2 gap-4 text-sm">
-<div>
-<strong>Everyday Apps:</strong><br/>
-• WhatsApp (2B+ users)<br/>
-• Instagram (2B+ monthly)<br/>
-• Uber (118M+ monthly)<br/>
-• Netflix (230M+ subscribers)
-</div>
-<div>
-<strong>Backend Power:</strong><br/>
-• Message routing systems<br/>
-• Image processing pipelines<br/>
-• Location services<br/>
-• Content delivery networks
-</div>
-</div>
-</div>
+## 🛒 E-Commerce Giants  
+- **Amazon** (300M+ users), **Flipkart** (400M+ registered)
+- **eBay** (182M+ buyers), **Alibaba** (1B+ users)
+- Powers microservices and real-time inventory systems
+
+## 📱 Mobile & Social
+- **WhatsApp** (2B+ users), **Instagram** (2B+ monthly) 
+- **Uber** (118M+ users), **Netflix** (230M+ subscribers)
+- Backend message routing and content delivery
+
+</v-clicks>
 
 </div>
 
-</div>
+::right::
 
-<div>
+<v-clicks>
 
-## 📊 **Java's Market Dominance**
+## 📊 Market Impact
 
-<div class="space-y-4">
+**Usage Statistics:**
+- 3+ billion devices run Java
+- 9+ million developers worldwide  
+- #2 most popular language
 
-<div v-click class="bg-gradient-to-br from-orange-50 to-red-100 p-4 rounded-xl">
-<h3 class="font-bold mb-3">🎯 **By the Numbers**</h3>
-<div class="grid grid-cols-2 gap-4 text-sm">
-<div>
-<strong>Usage Statistics:</strong><br/>
-• 3+ billion devices run Java<br/>
-• 9+ million developers worldwide<br/>
-• 45% of enterprise applications<br/>
-• #2 most popular language (GitHub)
-</div>
-<div>
-<strong>Business Impact:</strong><br/>
-• $4.2 trillion digital economy<br/>
-• 97% of enterprise desktops<br/>
-• 89% of enterprise servers<br/>
-• 125+ million TV devices
-</div>
-</div>
-</div>
+**Career Opportunities:**
+- 4.2M+ jobs globally
+- ₹8.5L average salary (India)
+- $95K average salary (US)
 
-<div v-click class="bg-gradient-to-br from-cyan-50 to-blue-100 p-4 rounded-xl">
-<h3 class="font-bold mb-3">💼 **Career Opportunities**</h3>
-<div class="grid grid-cols-2 gap-4 text-sm">
-<div>
-<strong>Job Market:</strong><br/>
-• 4.2M+ Java jobs globally<br/>
-• ₹8.5L average salary (India)<br/>
-• $95K average salary (US)<br/>
-• 15% year-over-year growth
-</div>
-<div>
-<strong>Industries Hiring:</strong><br/>
-• FinTech & Banking<br/>
-• E-commerce & Retail<br/>
-• Healthcare Systems<br/>
-• Government Projects
-</div>
-</div>
-</div>
+**Future Areas:**
+- Cloud microservices
+- Big Data Analytics
+- Machine Learning
+- Blockchain Applications
 
-<div v-click class="bg-gradient-to-br from-yellow-50 to-amber-100 p-4 rounded-xl">
-<h3 class="font-bold mb-3">🚀 **Future Trends**</h3>
-<div class="text-sm space-y-2">
-<strong>Emerging Areas:</strong><br/>
-• Cloud-native microservices<br/>
-• Big Data & Analytics (Hadoop, Spark)<br/>
-• IoT & Edge Computing<br/>
-• Machine Learning Pipelines (DL4J)<br/>
-• Blockchain Applications
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<div v-click class="mt-8 p-6 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 rounded-xl">
-<div class="text-center">
-<h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
-🌟 Java: The Invisible Force Powering Modern Life
-</h3>
-<p class="text-lg text-gray-700">
-From your morning coffee order (Starbucks app) to your evening Netflix binge,<br/>
-from banking transactions to social media feeds—Java is the silent engine<br/>
-that makes our connected world possible.
-</p>
-</div>
-</div>
+</v-clicks>
 
 <!--
 Let me show you some concrete examples of how Java impacts your daily life.
@@ -814,96 +715,49 @@ layout: default
 3. What makes Java suitable for large-scale enterprise applications?
 
 ---
-layout: center
-class: text-center
+layout: two-cols
+class: gap-16
 ---
 
 # Knowledge Consolidation & Action Plan
 
-<div class="grid grid-cols-3 gap-6">
+## 🧠 **What You've Mastered**
 
-<div class="bg-gradient-to-br from-blue-50 to-indigo-100 p-6 rounded-xl">
-<h3 class="font-bold text-lg mb-4">🧠 **Mastery Achieved**</h3>
-<ul class="text-left space-y-2 text-sm">
-<li>✅ **Historical Context**: Java's 30+ year evolution</li>
-<li>✅ **Technical Foundation**: WORA & JVM architecture</li>
-<li>✅ **Feature Analysis**: 13 core capabilities</li>
-<li>✅ **Market Intelligence**: $4.2T digital economy</li>
-<li>✅ **Career Insights**: 9M+ developer community</li>
-<li>✅ **Industry Applications**: 7 major domains</li>
-</ul>
-<div class="mt-4 p-3 bg-blue-100 rounded-lg">
-<strong>🎯 Comprehension Level:</strong> <span class="text-blue-600">Foundation Expert</span>
-</div>
-</div>
+<v-clicks>
 
-<div class="bg-gradient-to-br from-green-50 to-emerald-100 p-6 rounded-xl">
-<h3 class="font-bold text-lg mb-4">🚀 **Immediate Actions**</h3>
-<div class="space-y-3">
-<div class="bg-white p-3 rounded-lg shadow-sm">
-<strong class="text-green-600">Week 1:</strong> Environment Setup<br/>
-<span class="text-sm">Install JDK 21, configure IDE, first "Hello World"</span>
-</div>
-<div class="bg-white p-3 rounded-lg shadow-sm">
-<strong class="text-green-600">Week 2:</strong> Core Syntax<br/>
-<span class="text-sm">Variables, data types, basic operations</span>
-</div>
-<div class="bg-white p-3 rounded-lg shadow-sm">
-<strong class="text-green-600">Week 3:</strong> OOP Fundamentals<br/>
-<span class="text-sm">Classes, objects, inheritance basics</span>
-</div>
-<div class="bg-white p-3 rounded-lg shadow-sm">
-<strong class="text-green-600">Week 4:</strong> Mini Project<br/>
-<span class="text-sm">Build a student management system</span>
-</div>
-</div>
-</div>
+- ✅ Java's evolution (1991-2024)
+- ✅ WORA & JVM architecture
+- ✅ Core capabilities & features
+- ✅ Real-world applications
 
-<div class="bg-gradient-to-br from-purple-50 to-violet-100 p-6 rounded-xl">
-<h3 class="font-bold text-lg mb-4">🎯 **Success Metrics**</h3>
-<div class="space-y-3">
-<div class="bg-white p-3 rounded-lg">
-<strong>📊 Knowledge Check:</strong><br/>
-<div class="grid grid-cols-2 gap-2 text-xs mt-2">
-<span class="bg-green-100 px-2 py-1 rounded">History ✓</span>
-<span class="bg-green-100 px-2 py-1 rounded">Features ✓</span>
-<span class="bg-green-100 px-2 py-1 rounded">Applications ✓</span>
-<span class="bg-green-100 px-2 py-1 rounded">Career Path ✓</span>
-</div>
-</div>
-<div class="bg-white p-3 rounded-lg">
-<strong>💡 Understanding Depth:</strong><br/>
-<div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-<div class="bg-gradient-to-r from-purple-400 to-purple-600 h-2 rounded-full" style="width: 85%"></div>
-</div>
-<span class="text-xs text-gray-600">85% - Ready for practical programming</span>
-</div>
-<div class="bg-white p-3 rounded-lg">
-<strong>🎯 Next Milestone:</strong><br/>
-<span class="text-sm">Complete first Java application within 2 weeks</span>
-</div>
-</div>
-</div>
+</v-clicks>
 
-</div>
+<v-click>
 
-<div class="mt-8 p-6 bg-gradient-to-r from-yellow-50 via-orange-50 to-red-50 rounded-xl border-l-4 border-orange-400">
-<div class="flex items-center justify-between">
-<div>
-<h3 class="text-xl font-bold text-orange-800">🔥 Challenge Accepted?</h3>
-<p class="text-orange-700 mt-2">Can you explain Java's WORA principle to a friend in under 2 minutes?<br/>
-That's your homework for tonight! 🎯</p>
-</div>
-<div class="text-6xl">☕</div>
-</div>
-</div>
+**🎯 Status: Foundation Expert**
 
-<div v-click class="mt-6 text-center">
-<div class="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-xl shadow-lg transform hover:scale-105 transition-transform">
-<span class="text-2xl font-bold">Ready to Code the Future? 🚀</span><br/>
-<span class="text-lg">Next: Hands-on Java Environment Setup!</span>
-</div>
-</div>
+</v-click>
+
+::right::
+
+<v-clicks>
+
+## 🚀 **Your 4-Week Journey**
+
+- **Week 1:** Environment Setup
+- **Week 2:** Core Syntax
+- **Week 3:** OOP Fundamentals  
+- **Week 4:** Mini Project
+
+## 🎯 **Tonight's Challenge**
+
+Explain Java's WORA principle to a friend in under 2 minutes!
+
+## ✨ **You're Ready!**
+
+Next: Java Environment Setup
+
+</v-clicks>
 
 <!--
 Let's recap what we've accomplished in this introductory lecture.
@@ -978,52 +832,82 @@ layout: default
 </div>
 
 ---
-layout: default
+layout: two-cols
 ---
 
-# Java Market Demand & Career Opportunities
+# Java Application Domains
 
-## 💼 Job Roles for Java Developers
+## 🏢 **E-Commerce Giants**
 
-<div class="grid grid-cols-2 gap-6">
+<v-clicks>
 
-<div>
+- **Amazon** (300M+ users)
+- **Flipkart** (400M+ registered) 
+- **eBay** (182M+ buyers)
+- **Alibaba** (1B+ users)
 
-### 🚀 Entry Level
-- **Junior Java Developer**
-- **Software Trainee**
-- **Java Intern**
-- **Application Developer**
+**Java Powers:** Microservices, Payment processing, Recommendations
 
-### 🌟 Mid Level
-- **Senior Java Developer**
-- **Full Stack Developer**
-- **Backend Developer**
-- **Software Engineer**
+</v-clicks>
 
-</div>
+::right::
 
-<div>
+<v-clicks>
 
-### 🎯 Senior Level
-- **Java Architect**
-- **Technical Lead**
-- **Principal Engineer**
-- **DevOps Engineer**
+## 📱 **Mobile & Social**
+- **WhatsApp** (2B+ users)
+- **Instagram** (2B+ monthly)
+- **Uber** (118M+ users)
+- **Netflix** (230M+ subscribers)
 
-### 📈 Specialized Roles
-- **Android Developer**
-- **Spring Boot Developer**
-- **Microservices Developer**
-- **Big Data Engineer**
+## 💼 **Career Impact**
+- 4.2M+ Java jobs globally
+- ₹8.5L average salary (India)
+- 15% year-over-year growth
 
-</div>
+</v-clicks>
 
-</div>
+---
+layout: two-cols
+---
 
-<div class="mt-6 p-4 bg-green-50 rounded-lg">
-<strong>💰 Salary Ranges in India:</strong> Entry: ₹3-6L, Mid: ₹6-15L, Senior: ₹15-40L per annum
-</div>
+# Java Career Opportunities
+
+## 🚀 **Entry to Mid Level**
+
+<v-clicks>
+
+**Entry Level:**
+- Junior Java Developer
+- Software Trainee
+- Java Intern
+
+**Mid Level:**
+- Senior Java Developer
+- Full Stack Developer
+- Backend Developer
+
+</v-clicks>
+
+::right::
+
+<v-clicks>
+
+## 🎯 **Senior & Specialized**
+
+**Senior Level:**
+- Java Architect
+- Technical Lead
+- Principal Engineer
+
+**Specialized Roles:**
+- Android Developer
+- Spring Boot Developer
+- Big Data Engineer
+
+**💰 Salaries:** Entry: ₹3-6L, Mid: ₹6-15L, Senior: ₹15-40L
+
+</v-clicks>
 
 ---
 layout: default
@@ -1031,53 +915,26 @@ layout: default
 
 # Java Success Stories
 
-## 🏆 Companies Built on Java
+## 🏆 **Companies Built on Java**
 
-<div class="grid grid-cols-3 gap-6">
+<v-clicks>
 
-<div class="bg-blue-50 p-4 rounded-lg text-center">
-<h3 class="font-bold mb-2">🔍 Google</h3>
-<p class="text-sm">Android OS, Gmail backend, Google Docs</p>
-</div>
+- **🔍 Google** - Android OS, Gmail backend
+- **🛒 Amazon** - E-commerce platform, AWS services
+- **📱 Uber** - Backend services, real-time processing
+- **💳 PayPal** - Payment processing, security systems
 
-<div class="bg-green-50 p-4 rounded-lg text-center">
-<h3 class="font-bold mb-2">🛒 Amazon</h3>
-<p class="text-sm">E-commerce platform, AWS services</p>
-</div>
+</v-clicks>
 
-<div class="bg-purple-50 p-4 rounded-lg text-center">
-<h3 class="font-bold mb-2">📱 Uber</h3>
-<p class="text-sm">Backend services, real-time processing</p>
-</div>
+<v-click>
 
-<div class="bg-yellow-50 p-4 rounded-lg text-center">
-<h3 class="font-bold mb-2">💳 PayPal</h3>
-<p class="text-sm">Payment processing, security systems</p>
-</div>
+## 🎯 **Why These Giants Choose Java**
+- Scalability for millions of users
+- Enterprise-grade security  
+- Platform independence
+- Extensive library ecosystem
 
-<div class="bg-red-50 p-4 rounded-lg text-center">
-<h3 class="font-bold mb-2">📺 Netflix</h3>
-<p class="text-sm">Streaming infrastructure, microservices</p>
-</div>
-
-<div class="bg-indigo-50 p-4 rounded-lg text-center">
-<h3 class="font-bold mb-2">💼 LinkedIn</h3>
-<p class="text-sm">Social networking, data processing</p>
-</div>
-
-</div>
-
-<div class="mt-8 text-center">
-<div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg">
-<h3 class="font-bold text-xl mb-3">🎯 Why These Giants Choose Java</h3>
-<div class="grid grid-cols-2 gap-4 text-sm">
-<div>• Scalability for millions of users</div>
-<div>• Enterprise-grade security</div>
-<div>• Platform independence</div>
-<div>• Extensive library ecosystem</div>
-</div>
-</div>
-</div>
+</v-click>
 
 ---
 layout: default
@@ -1085,55 +942,56 @@ layout: default
 
 # Java Version Evolution & Impact
 
-<div class="text-sm">
+## 🚀 **Major Java Releases**
 
-## 🚀 Major Java Releases & Key Features
+<v-clicks>
 
-| Version | Year | Key Features | Impact |
-|---------|------|--------------|--------|
-| **Java 8** | 2014 | Lambda expressions, Streams API | Revolutionary functional programming |
-| **Java 9** | 2017 | Module system (Jigsaw) | Better application structure |
-| **Java 11** | 2018 | LTS, HTTP Client API | Long-term enterprise support |
-| **Java 17** | 2021 | LTS, Records, Pattern matching | Modern syntax improvements |
-| **Java 21** | 2023 | LTS, Virtual threads, Vector API | Performance and concurrency boost |
+- **Java 8** (2014) - Lambda expressions, Streams API
+- **Java 11** (2018) - LTS, HTTP Client API  
+- **Java 17** (2021) - LTS, Records, Pattern matching
+- **Java 21** (2023) - LTS, Virtual threads, Vector API
+
+</v-clicks>
+
+<div class="grid grid-cols-2 gap-8 mt-6">
+
+<div>
+
+<v-click>
+
+## 📊 **LTS Strategy**
+- LTS versions every 3 years
+- Extended support (8+ years)
+- Preferred for enterprise
+- More stable and tested
+
+</v-click>
 
 </div>
 
-<div class="mt-6 grid grid-cols-2 gap-6">
+<div>
 
-<div class="bg-blue-50 p-4 rounded-lg">
-<h3 class="font-bold mb-3">📊 LTS (Long Term Support) Strategy</h3>
-<ul class="text-sm space-y-1">
-<li>• LTS versions every 3 years</li>
-<li>• Extended support (8+ years)</li>
-<li>• Preferred for enterprise applications</li>
-<li>• More stable and tested</li>
-</ul>
-</div>
+<v-click>
 
-<div class="bg-green-50 p-4 rounded-lg">
-<h3 class="font-bold mb-3">⚡ Release Cadence Benefits</h3>
-<ul class="text-sm space-y-1">
-<li>• New features every 6 months</li>
-<li>• Faster innovation cycle</li>
-<li>• Preview features for early adoption</li>
-<li>• Backward compatibility maintained</li>
-</ul>
+## ⚡ **Release Benefits**
+- New features every 6 months
+- Faster innovation cycle
+- Preview features available
+- Backward compatibility maintained
+
+</v-click>
+
 </div>
 
 </div>
 
 ---
-layout: default
+layout: two-cols
 ---
 
 # Java Performance & Benchmarks
 
-<div class="grid grid-cols-2 gap-8">
-
-<div>
-
-## 🎯 Performance Advantages
+## 🎯 **Performance Advantages**
 
 <v-clicks>
 
@@ -1142,42 +1000,29 @@ layout: default
 - **Hotspot JVM** - Runtime performance improvements
 - **Multithreading** - Efficient concurrent processing
 - **Native Integration** - JNI for system-level access
-- **Profiling Tools** - Built-in performance monitoring
 
 </v-clicks>
 
-</div>
-
-<div>
-
-## 📈 Benchmark Comparisons
+::right::
 
 <v-clicks>
 
-### **Execution Speed**
+## 📈 **Benchmark Comparisons**
+
+**Execution Speed:**
 - Java: 5-10x faster than Python
 - Java: 2-3x slower than C/C++
 - Java: Similar to C# performance
 
-### **Memory Usage**
+**Memory & Startup:**
 - Efficient heap management
 - Predictable garbage collection
-- Configurable memory settings
-
-### **Startup Time**
-- Traditional: ~100-500ms
+- Traditional: ~100-500ms startup
 - Modern (GraalVM): ~10-50ms
-- Spring Boot: ~2-5 seconds
+
+**⚡ Tip:** Performance improves over time due to JIT!
 
 </v-clicks>
-
-</div>
-
-</div>
-
-<div class="mt-8 p-4 bg-yellow-50 rounded-lg">
-<strong>⚡ Performance Tip:</strong> Java's performance improves over time due to JIT compiler optimizations!
-</div>
 
 ---
 layout: default
@@ -1187,235 +1032,165 @@ layout: default
 
 ## 🗺️ Your Journey to Java Mastery
 
-```mermaid
-graph TD
-    A["📚 Java Basics<br/>(Syntax, Variables, Operators)"] --> B["🎯 OOP Concepts<br/>(Classes, Objects, Inheritance)"]
-    B --> C["🔧 Advanced Java<br/>(Collections, Exceptions, I/O)"]
-    C --> D["🌐 Web Development<br/>(Servlets, JSP, Spring)"]
-    C --> E["📱 Mobile Development<br/>(Android SDK)"]
-    C --> F["🏢 Enterprise Java<br/>(Spring Boot, Microservices)"]
-    
-    D --> G["🚀 Full Stack<br/>(React/Angular + Java)"]
-    E --> H["📲 Advanced Android<br/>(Kotlin, Architecture)"]
-    F --> I["☁️ Cloud & DevOps<br/>(Docker, Kubernetes, AWS)"]
-    
-    style A fill:#e3f2fd
-    style B fill:#e8f5e8
-    style C fill:#fff3e0
-    style D fill:#fce4ec
-    style E fill:#f3e5f5
-    style F fill:#e0f2f1
-```
+<div class="grid grid-cols-2 gap-8">
 
-<div class="mt-6 text-center text-sm text-gray-600">
-<strong>Estimated Timeline:</strong> 6-12 months for proficiency, 2-3 years for expertise
+<div>
+
+### 📚 **Foundation (Months 1-3)**
+- Java Basics & Syntax
+- OOP Concepts
+- Collections & Exceptions
+
+### 🌐 **Web Track**
+- Servlets & JSP
+- Spring Framework
+- Full Stack Development
+
 </div>
 
+<div>
+
+### 📱 **Mobile Track**
+- Android SDK
+- Kotlin Integration
+- Mobile Architecture
+
+### 🏢 **Enterprise Track**
+- Spring Boot
+- Microservices
+- Cloud & DevOps
+
+</div>
+
+</div>
+
+**Timeline:** 6-12 months for proficiency, 2-3 years for expertise
+
 ---
-layout: default
+layout: two-cols
 ---
 
 # Java Community & Resources
 
-<div class="grid grid-cols-2 gap-8">
-
-<div>
-
-## 🌍 Community Platforms
+## 🌍 **Community Platforms**
 
 <v-clicks>
 
 - **Stack Overflow** - Q&A and problem solving
-- **Reddit r/learnjava** - Beginner-friendly discussions
-- **GitHub** - Open source projects and code
-- **Java User Groups** - Local meetups and events
+- **Reddit r/learnjava** - Beginner discussions
+- **GitHub** - Open source projects
+- **Java User Groups** - Local meetups
 - **Oracle Java Community** - Official resources
-- **Baeldung** - High-quality Java tutorials
+- **Baeldung** - Quality tutorials
 
 </v-clicks>
 
-</div>
-
-<div>
-
-## 📚 Learning Resources
+::right::
 
 <v-clicks>
 
-- **Official Oracle Docs** - Comprehensive reference
-- **Java Code Geeks** - Articles and tutorials
-- **Spring.io Guides** - Framework documentation
+## 📚 **Learning Resources**
+
+- **Official Oracle Docs** - Reference
+- **Java Code Geeks** - Tutorials
+- **Spring.io Guides** - Framework docs
 - **YouTube Channels** - Video tutorials
 - **Coursera/Udemy** - Structured courses
 - **Books** - Head First Java, Effective Java
 
+## 🎯 **GTU Resources**
+- GTU Website - Syllabus & papers
+- Study Materials - Unit-wise content
+- Lab Manuals - Practical exercises
+
 </v-clicks>
 
-</div>
-
-</div>
-
-## 🎯 GTU-Specific Resources
-- **GTU Website** - Syllabus and previous papers
-- **Study Materials** - Unit-wise content
-- **Lab Manuals** - Practical exercises
-- **Mock Tests** - Examination preparation
-
 ---
-layout: default
+layout: two-cols
 ---
 
 # Industry Trends & Future of Java
 
-<div class="grid grid-cols-2 gap-8">
-
-<div>
-
-## 📈 Current Trends (2024)
+## 📈 **Current Trends (2024)**
 
 <v-clicks>
 
-- **Cloud-Native Development** - Microservices, containers
+- **Cloud-Native Development** - Microservices
 - **Reactive Programming** - WebFlux, RxJava
-- **AI/ML Integration** - Deep learning frameworks
-- **GraalVM Adoption** - Native image compilation
-- **Project Loom** - Virtual threads for scalability
-- **Jakarta EE** - Enterprise Java evolution
+- **AI/ML Integration** - Deep learning
+- **GraalVM Adoption** - Native compilation
+- **Project Loom** - Virtual threads
+- **Jakarta EE** - Enterprise evolution
 
 </v-clicks>
 
-</div>
-
-<div>
-
-## 🔮 Future Outlook
+::right::
 
 <v-clicks>
 
-- **Performance Improvements** - Continued JVM optimization
-- **Modern Language Features** - Pattern matching, records
-- **Cloud Integration** - Better serverless support
+## 🔮 **Future Outlook**
+
+- **Performance** - JVM optimization
+- **Modern Features** - Pattern matching
+- **Cloud Integration** - Serverless support
 - **Developer Experience** - Simplified tooling
-- **Security Enhancements** - Built-in security features
-- **Ecosystem Growth** - New frameworks and libraries
+- **Security** - Built-in features
+- **Ecosystem Growth** - New frameworks
+
+## 🚀 **Java's Future**
+
+Java evolves with modern needs while keeping core strengths: platform independence, security, enterprise readiness.
 
 </v-clicks>
 
-</div>
-
-</div>
-
-<div class="mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
-<h3 class="font-bold text-lg mb-3">🚀 Why Java Remains Relevant</h3>
-<p class="text-sm">Java continues to evolve with modern programming needs while maintaining its core strengths of platform independence, security, and enterprise readiness. The large existing codebase and continuous innovation ensure Java's relevance for decades to come.</p>
-</div>
-
 ---
-layout: center
-class: text-center
+layout: two-cols
 ---
 
-# Interactive Q&A & Knowledge Validation
+# Q&A & Knowledge Check
 
-<div class="grid grid-cols-2 gap-8">
+## 🤔 **Critical Thinking**
 
-<div>
+<v-clicks>
 
-## 🤔 **Critical Thinking Questions**
+**🧠 Why do platform-specific JVMs exist if Java is "write once, run anywhere"?**
 
-<div class="space-y-4">
+**🎯 Why do banks choose Java over Python/JavaScript?**
 
-<div v-click class="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-lg">
-<strong class="text-blue-700">🧠 Analytical Question:</strong><br/>
-<span class="text-sm">"If Java is 'write once, run anywhere,' why do we still have platform-specific JVMs? Isn't this contradictory?"</span>
-<div class="mt-2 text-xs text-blue-600">💡 Hint: Think about abstraction layers</div>
-</div>
+**🚀 Will Java remain relevant with cloud-native apps?**
 
-<div v-click class="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg">
-<strong class="text-green-700">🎯 Strategic Question:</strong><br/>
-<span class="text-sm">"Why do banks choose Java over Python or JavaScript for core systems? What specific features justify the decision?"</span>
-<div class="mt-2 text-xs text-green-600">💡 Hint: Consider security, performance, and scalability</div>
-</div>
+</v-clicks>
 
-<div v-click class="bg-gradient-to-r from-purple-50 to-violet-50 p-4 rounded-lg">
-<strong class="text-purple-700">🚀 Future-Focused Question:</strong><br/>
-<span class="text-sm">"With the rise of cloud-native applications, will Java remain relevant in the next decade?"</span>
-<div class="mt-2 text-xs text-purple-600">💡 Hint: Research Project Loom and GraalVM</div>
-</div>
+## 🔥 **Challenge**
 
-</div>
+<v-click>
 
-</div>
+Name 3 Java applications you used today!
 
-<div>
+</v-click>
 
-## 🎯 **Quick Knowledge Check**
+::right::
 
-<div class="space-y-4">
+<v-clicks>
 
-<div v-click class="bg-white p-4 rounded-lg shadow border-l-4 border-orange-400">
-<strong>🔥 Challenge 1:</strong><br/>
-<span class="text-sm">Name 3 Java applications you used today (directly or indirectly)</span>
-<div class="mt-2 p-2 bg-orange-50 rounded text-xs">
-<strong>Example:</strong> WhatsApp message → Java backend servers<br/>
-<strong>Your turn:</strong> ___________________
-</div>
-</div>
+## ✅ **Knowledge Check**
 
-<div v-click class="bg-white p-4 rounded-lg shadow border-l-4 border-green-400">
-<strong>✅ Confidence Meter:</strong><br/>
-<span class="text-sm">Rate your understanding (1-10):</span>
-<div class="mt-2 grid grid-cols-5 gap-1">
-<button class="bg-red-100 hover:bg-red-200 p-2 rounded text-xs">1-2<br/>Lost</button>
-<button class="bg-orange-100 hover:bg-orange-200 p-2 rounded text-xs">3-4<br/>Confused</button>
-<button class="bg-yellow-100 hover:bg-yellow-200 p-2 rounded text-xs">5-6<br/>Getting It</button>
-<button class="bg-green-100 hover:bg-green-200 p-2 rounded text-xs">7-8<br/>Confident</button>
-<button class="bg-blue-100 hover:bg-blue-200 p-2 rounded text-xs">9-10<br/>Expert</button>
-</div>
-</div>
+- History ✓
+- Features ✓  
+- Applications ✓
+- Career Path ✓
 
-<div v-click class="bg-white p-4 rounded-lg shadow border-l-4 border-purple-400">
-<strong>💭 Reflection Prompt:</strong><br/>
-<span class="text-sm">Complete this sentence:</span><br/>
-<em>"The most surprising thing I learned about Java today was..."</em>
-<div class="mt-2 p-2 bg-purple-50 rounded text-xs">
-<input class="w-full p-2 border rounded" placeholder="Write your reflection here..." />
-</div>
-</div>
+## 📚 **Preparation**
 
-</div>
+- Research JDK installation
+- Choose your IDE
+- Think of project ideas
 
-</div>
+## 🎉 **You're Ready!**
 
-</div>
+**Next:** Java Environment Setup & First Program
 
-<div v-click class="mt-8 p-6 bg-gradient-to-r from-gray-50 to-slate-100 rounded-xl">
-<div class="text-center">
-<h3 class="text-xl font-bold text-gray-800 mb-4">📚 Pre-Next-Lecture Preparation</h3>
-<div class="grid grid-cols-3 gap-4 text-sm">
-<div class="bg-white p-3 rounded-lg shadow">
-<strong class="text-blue-600">🔍 Research Task:</strong><br/>
-Find JDK installation guide for your OS
-</div>
-<div class="bg-white p-3 rounded-lg shadow">
-<strong class="text-green-600">💭 Think About:</strong><br/>
-What IDE would you prefer and why?
-</div>
-<div class="bg-white p-3 rounded-lg shadow">
-<strong class="text-purple-600">🎯 Goal Setting:</strong><br/>
-What's your first Java project idea?
-</div>
-</div>
-</div>
-</div>
-
-<div class="mt-8 text-center">
-<div class="inline-block bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-4 rounded-xl shadow-lg">
-<div class="text-2xl font-bold mb-2">🎉 Knowledge Foundation Complete!</div>
-<div class="text-lg">Next Adventure: <strong>Java Environment Setup & First Program</strong></div>
-<div class="text-sm mt-2 opacity-90">Get ready for hands-on coding! 🚀</div>
-</div>
-</div>
+</v-clicks>
 
 <!--
 We've covered a comprehensive introduction to Java programming today.
