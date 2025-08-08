@@ -1,23 +1,30 @@
 # 🎯 Slidev AI Voiceover System
 
-**Comprehensive video generation system for Slidev presentations with intelligent TTS providers and click-level synchronization.**
+**Cross-platform automated video generation system for Slidev presentations with intelligent TTS providers, auto-venv management, and click-level synchronization.**
 
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-green)](https://github.com/your-repo)
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://python.org)
+[![Python](https://img.shields.io/badge/Python-3.11-blue)](https://python.org)
+[![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)](https://github.com/your-repo)
 [![TTS](https://img.shields.io/badge/TTS-Multi--Provider-orange)](https://github.com/your-repo)
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Zero Configuration!)
 
 ```bash
-# Default: Google TTS UK English with automatic click/slide detection
-python slidev_unified_processor.py your-slides.md
+# Single command - creates venv, installs deps, generates video automatically!
+python ai_voiceover_system/slidev_unified_processor.py your-slides.md
 
-# ElevenLabs voice clone (requires API key)
-python slidev_unified_processor.py your-slides.md 5 --tts=elevenlabs
+# Process first 5 slides with ElevenLabs (requires API key)
+python ai_voiceover_system/slidev_unified_processor.py your-slides.md 5 --tts=elevenlabs
 
-# Auto fallback hierarchy (GTTS → ElevenLabs → Coqui)
-python slidev_unified_processor.py your-slides.md --tts=auto
+# Alternative: Use the bash wrapper (same functionality)
+./ai_voiceover_system/create_video.sh your-slides.md 3 --tts=gtts
 ```
+
+### 🎯 What Happens Automatically:
+1. **🔧 Virtual Environment**: Auto-creates Python 3.11 venv if missing
+2. **📦 Dependencies**: Installs all required packages (moviepy, gtts, etc.)
+3. **🎬 Video Generation**: Complete slide export → TTS → video assembly
+4. **🧹 Cleanup**: Removes all temporary files, keeps only final MP4
 
 ## 🎬 What This System Does
 
@@ -35,22 +42,62 @@ python slidev_unified_processor.py your-slides.md --tts=auto
 
 ## 📦 Installation & Setup
 
-### Prerequisites
+### 🎯 Zero-Configuration Setup (Recommended)
+
+**Just run the script!** No manual installation needed:
 
 ```bash
-# Install Slidev CLI (required for slide export)
+# The script will automatically:
+# 1. Detect or install Python 3.11
+# 2. Create virtual environment 
+# 3. Install all dependencies
+# 4. Generate your video
+
+python ai_voiceover_system/slidev_unified_processor.py your-slides.md
+```
+
+### 📋 System Requirements
+
+**Automatically Handled:**
+- ✅ **Python 3.11**: Auto-detected or installed via Homebrew (macOS)
+- ✅ **Virtual Environment**: Auto-created in `venv/`  
+- ✅ **Python Packages**: Auto-installed from `requirements.txt`
+- ✅ **Slidev CLI**: Auto-detected or shows installation instructions
+
+**Manual Installation (Optional):**
+
+```bash
+# If you want to pre-install Slidev globally (recommended)
 npm install -g @slidev/cli
 
-# Install Python dependencies
-pip install gtts moviepy requests TTS
+# If you want to manually manage Python dependencies
+pip install moviepy gtts requests
+# TTS (Coqui) auto-installs if Python 3.11 detected
 ```
 
-### Optional: ElevenLabs Setup
+### 🎤 Optional: ElevenLabs Setup
 
 ```bash
-# For voice cloning support
+# For premium voice cloning support
 export ELEVENLABS_API_KEY="your-api-key-here"
 ```
+
+### 🖥️ Cross-Platform Support
+
+**macOS:**
+- ✅ Homebrew Python 3.11 auto-detection
+- ✅ Native Slidev CLI support
+- ✅ Optimized M1/Intel compatibility
+
+**Linux:**
+- ✅ System Python 3.11 preference
+- ✅ Venv isolation for package conflicts
+- ✅ Comprehensive error handling
+
+**Windows:**
+- ✅ Cross-platform path handling
+- ✅ PowerShell activation support
+- ✅ Windows-specific optimizations
 
 ## 🎤 TTS Providers
 
@@ -65,16 +112,16 @@ export ELEVENLABS_API_KEY="your-api-key-here"
 
 ```bash
 # Google TTS UK English (default, recommended)
-python slidev_unified_processor.py slides.md --tts=gtts
+python ai_voiceover_system/slidev_unified_processor.py slides.md --tts=gtts
 
 # ElevenLabs voice cloning (premium quality)
-python slidev_unified_processor.py slides.md --tts=elevenlabs
+python ai_voiceover_system/slidev_unified_processor.py slides.md --tts=elevenlabs
 
-# Coqui neural models (offline, high quality)
-python slidev_unified_processor.py slides.md --tts=coqui
+# Coqui neural models (offline, high quality - auto-installs with Python 3.11)
+python ai_voiceover_system/slidev_unified_processor.py slides.md --tts=coqui
 
 # Automatic fallback (tries GTTS → ElevenLabs → Coqui)
-python slidev_unified_processor.py slides.md --tts=auto
+python ai_voiceover_system/slidev_unified_processor.py slides.md --tts=auto
 ```
 
 ## 📝 Content Format
@@ -139,15 +186,30 @@ Welcome to the course! Today we'll cover:
 ### Command Line Options
 
 ```bash
-# Basic usage
-python slidev_unified_processor.py <slidev-file> [max-slides] [--tts=provider]
+# Basic usage - AUTO-VENV MANAGEMENT
+python ai_voiceover_system/slidev_unified_processor.py <slidev-file> [max-slides] [--tts=provider]
 
-# Examples
-python slidev_unified_processor.py lecture.md                    # Process all slides, GTTS
-python slidev_unified_processor.py lecture.md 5                  # First 5 slides, GTTS
-python slidev_unified_processor.py lecture.md 10 --tts=elevenlabs # First 10 slides, ElevenLabs
-python slidev_unified_processor.py lecture.md --tts=auto         # All slides, auto fallback
+# Examples (all auto-manage venv and dependencies)
+python ai_voiceover_system/slidev_unified_processor.py lecture.md                    # Process all slides, GTTS
+python ai_voiceover_system/slidev_unified_processor.py lecture.md 5                  # First 5 slides, GTTS
+python ai_voiceover_system/slidev_unified_processor.py lecture.md 10 --tts=elevenlabs # First 10, ElevenLabs
+python ai_voiceover_system/slidev_unified_processor.py lecture.md --tts=auto         # All slides, auto fallback
+
+# Alternative: Bash wrapper (same auto-venv functionality)
+./ai_voiceover_system/create_video.sh lecture.md 5 --tts=gtts
 ```
+
+### 🔧 Auto-Environment Management
+
+**What happens on first run:**
+1. **🔍 Environment Check**: Detects Python version and venv status
+2. **🐍 Python 3.11 Preference**: Auto-finds or suggests installation
+3. **📦 Virtual Environment**: Creates `venv/` in project root
+4. **⬇️ Dependencies**: Installs from `requirements.txt`
+5. **🔄 Restart**: Switches to venv Python automatically
+6. **🎬 Process**: Continues with video generation
+
+**Subsequent runs:** Uses existing venv, no setup delay!
 
 ### Output Files
 
@@ -160,13 +222,19 @@ your-presentation-AUTO.mp4        # Auto provider processing
 your-presentation-COQUI.mp4       # Coqui neural processing
 ```
 
-### Preserved Audio Files
+### 🧹 Automatic Cleanup
 
-When using ElevenLabs, audio files are preserved for review:
-```
+**Temporary files are automatically cleaned up:**
+- ✅ All `.mp3` TTS audio files removed  
+- ✅ All PNG slide exports removed (`temp_unified_slides/`)
+- ✅ Only final MP4 video remains
+- ✅ Virtual environment preserved for future runs
+
+**ElevenLabs Audio Preservation (Optional):**
+```bash
+# To keep TTS audio files for review, modify cleanup behavior in script
 temp_unified_slide_1_click_0.mp3  # First slide, initial segment
 temp_unified_slide_1_click_1.mp3  # First slide, first click
-...
 ```
 
 ## 🎨 Processing Modes
@@ -254,42 +322,59 @@ Slidev Markdown File
 
 ### Common Issues
 
+**❌ "Virtual environment setup failed"**
+- **Solution**: Ensure Python 3.11 is available
+- **macOS**: `brew install python@3.11`
+- **Linux**: `sudo apt install python3.11` or equivalent
+
 **❌ "Slidev not found"**
 ```bash
+# The system will show this message and continue
 npm install -g @slidev/cli
 ```
 
+**❌ "Dependencies installation failed"**
+- **Auto-retry**: System attempts automatic fixes
+- **Manual**: Delete `venv/` folder and re-run script
+- **Check**: Ensure internet connectivity for package downloads
+
 **❌ "No click markers detected"**
-- Add `[click]` markers in HTML comments
-- System will fall back to slide-level processing
+- ✅ **Auto-handled**: System falls back to slide-level processing
+- Add `[click]` markers in HTML comments for click-sync mode
 
 **❌ "ElevenLabs API error"**
 ```bash
 export ELEVENLABS_API_KEY="your-key-here"
+# Or system falls back to GTTS automatically
 ```
 
-**❌ "Video generation failed"**
-- Check file paths are correct
-- Verify virtual environment has required packages
-- Ensure sufficient disk space for temporary files
+**❌ "Permission denied"**
+- **macOS/Linux**: Ensure script is executable
+- **Windows**: Run from elevated command prompt if needed
 
 ### Debug Mode
 
 ```bash
-# Verbose output for troubleshooting
-python slidev_unified_processor.py slides.md 1 --tts=gtts
+# Test with minimal slides for troubleshooting
+python ai_voiceover_system/slidev_unified_processor.py slides.md 1 --tts=gtts
+
+# Environment diagnostics (shows Python version, venv status, dependencies)
+python ai_voiceover_system/slidev_unified_processor.py slides.md --help
 ```
 
 ## 📊 System Comparison
 
 | Feature | Legacy Processors | Unified Processor |
 |---------|------------------|-------------------|
+| **Environment Setup** | Manual | Auto-venv management |
+| **Cross-Platform** | Limited | macOS/Linux/Windows |
+| **Python Version** | Any | Python 3.11 preferred |
 | **TTS Providers** | Single | Multiple with fallback |
 | **Mode Detection** | Manual | Automatic |
 | **Click Support** | Limited | Full `[click]` support |
-| **Error Handling** | Basic | Comprehensive |
-| **Output Naming** | Generic | Descriptive |
-| **Audio Preservation** | No | Yes (ElevenLabs) |
+| **Error Handling** | Basic | Comprehensive with retries |
+| **Cleanup** | Manual | Automatic |
+| **Dependencies** | Manual install | Auto-install from requirements.txt |
 
 ## 🚀 Advanced Features
 
@@ -302,9 +387,11 @@ python slidev_unified_processor.py slides.md 1 --tts=gtts
 
 ### Intelligent Fallbacks
 
-- **TTS Fallback**: GTTS → ElevenLabs → Coqui → Error
+- **Environment Fallback**: Python 3.11 → Python 3.10+ → Current Python
+- **TTS Fallback**: GTTS → ElevenLabs → Coqui → Error  
 - **Mode Fallback**: Click-based → Slide-based
 - **Export Fallback**: With-clicks → Standard export
+- **Dependency Fallback**: Auto-install → Manual instructions
 
 ### Professional Output
 
@@ -325,26 +412,50 @@ python slidev_unified_processor.py slides.md 1 --tts=gtts
 - Comprehensive narration generation
 - Faster processing for simple content
 
-## 🎉 Success Stories
+## 🎉 Production Features
 
+✅ **Zero Configuration**: Single command creates entire environment  
+✅ **Cross-Platform**: Identical experience on macOS, Linux, Windows  
+✅ **Auto-Environment**: Python 3.11 venv with all dependencies  
 ✅ **Perfect Synchronization**: Frame-accurate click timing  
-✅ **Multi-TTS Support**: Flexible provider options  
-✅ **Automatic Detection**: Zero configuration required  
+✅ **Smart Cleanup**: Only final video remains  
+✅ **Intelligent Fallbacks**: Handles missing dependencies gracefully  
 ✅ **Professional Quality**: Real Slidev exports preserved  
-✅ **Scalable System**: Works with any presentation size  
+
+## 🎯 Real-World Usage Example
+
+```bash
+# Complete workflow from zero to video:
+cd your-project/
+python ai_voiceover_system/slidev_unified_processor.py presentation.md 5 --tts=gtts
+
+# What happens:
+# 🔧 Creates Python 3.11 venv automatically
+# 📦 Installs moviepy, gtts, requests, TTS
+# 🎬 Exports 5 slides with click states
+# 🎤 Generates TTS for each click segment  
+# 📹 Assembles final MP4 video
+# 🧹 Cleans up all temporary files
+# ✅ Result: presentation-GTTS.mp4 ready!
+```
 
 ---
 
 ## 📞 Support
 
-For issues, feature requests, or contributions:
-1. Check troubleshooting section above
-2. Verify dependencies are installed correctly
-3. Test with minimal example first
-4. Review output logs for specific error messages
+**Quick Diagnostic:**
+```bash
+python ai_voiceover_system/slidev_unified_processor.py your-slides.md 1 --tts=gtts
+```
 
-**Status**: 🟢 **Production Ready** - Unified system operational!
+**Common Solutions:**
+1. **Environment Issues**: Delete `venv/` folder and re-run
+2. **Missing Slidev**: `npm install -g @slidev/cli` 
+3. **Python Version**: Install Python 3.11 via Homebrew/package manager
+4. **Permission Issues**: Use `chmod +x` for scripts on Unix systems
+
+**Status**: 🟢 **Production Ready** - Auto-venv system fully operational!
 
 ---
 
-*Last Updated: July 2024 - Unified Processor v1.0*
+*Last Updated: August 2024 - Auto-venv Unified Processor v2.0*
