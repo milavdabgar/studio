@@ -29,36 +29,59 @@ import argparse
 import platform
 import shutil
 from pathlib import Path
-import requests
 
 # Set TTS environment
 os.environ['COQUI_TOS_AGREED'] = '1'
 os.environ['COQUI_TTS_AGREED'] = '1'
 
-# Import dependencies with availability tracking
-try:
-    from moviepy import ImageClip, AudioFileClip, concatenate_videoclips
-    MOVIEPY_AVAILABLE = True
-except ImportError:
-    MOVIEPY_AVAILABLE = False
+def import_dependencies():
+    """Import dependencies with availability tracking after venv setup"""
+    global requests, MOVIEPY_AVAILABLE, GTTS_AVAILABLE, COQUI_TTS_AVAILABLE
+    global ImageClip, AudioFileClip, concatenate_videoclips, gTTS, TTS
+    global ELEVENLABS_API_KEY, ELEVENLABS_AVAILABLE
+    
+    try:
+        import requests
+    except ImportError:
+        print("❌ Failed to import requests - please check virtual environment setup")
+        sys.exit(1)
+    
+    try:
+        from moviepy import ImageClip, AudioFileClip, concatenate_videoclips
+        MOVIEPY_AVAILABLE = True
+    except ImportError:
+        MOVIEPY_AVAILABLE = False
 
-try:
-    from gtts import gTTS
-    GTTS_AVAILABLE = True
-except ImportError:
-    GTTS_AVAILABLE = False
+    try:
+        from gtts import gTTS
+        GTTS_AVAILABLE = True
+    except ImportError:
+        GTTS_AVAILABLE = False
 
-try:
-    from TTS.api import TTS
-    COQUI_TTS_AVAILABLE = True
-except ImportError:
-    COQUI_TTS_AVAILABLE = False
+    try:
+        from TTS.api import TTS
+        COQUI_TTS_AVAILABLE = True
+    except ImportError:
+        COQUI_TTS_AVAILABLE = False
+    
+    # Set up ElevenLabs configuration
+    ELEVENLABS_API_KEY = os.getenv('ELEVENLABS_API_KEY')
+    ELEVENLABS_AVAILABLE = bool(ELEVENLABS_API_KEY)
+    
+    return True
 
-# ElevenLabs configuration
-ELEVENLABS_API_KEY = os.getenv('ELEVENLABS_API_KEY')
-ELEVENLABS_VOICE_ID = "Milav English"
+# Initialize globals
+requests = None
+MOVIEPY_AVAILABLE = False
+GTTS_AVAILABLE = False  
+COQUI_TTS_AVAILABLE = False
+ImageClip = AudioFileClip = concatenate_videoclips = gTTS = TTS = None
+
+# ElevenLabs configuration - will be set after import_dependencies()
+ELEVENLABS_API_KEY = None
+ELEVENLABS_VOICE_ID = "Milav English" 
 ELEVENLABS_API_URL = "https://api.elevenlabs.io/v1"
-ELEVENLABS_AVAILABLE = bool(ELEVENLABS_API_KEY)
+ELEVENLABS_AVAILABLE = False
 
 class SlidevUnifiedProcessor:
     """Unified processor combining all Slidev video generation capabilities"""
@@ -914,13 +937,35 @@ def check_and_setup_venv():
     """Check for virtual environment and set it up if needed"""
     script_dir = Path(__file__).parent.absolute()
     project_root = script_dir.parent
-    venv_dir = project_root / "venv"
+    
+    # Check for existing venv in multiple locations
+    venv_candidates = [
+        project_root / "venv",           # Main project venv
+        script_dir / "venv",             # Local script venv  
+        script_dir.parent / "venv"       # Parent directory venv
+    ]
+    
+    venv_dir = None
+    for candidate in venv_candidates:
+        if candidate.exists():
+            venv_dir = candidate
+            break
+    
+    # If no existing venv found, create in main project
+    if not venv_dir:
+        venv_dir = project_root / "venv"
     
     # Check if we're already in a virtual environment
     venv_active = hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix)
+    virtual_env_var = os.environ.get('VIRTUAL_ENV')
     
-    if venv_active:
+    # Only consider truly active if both conditions are met
+    if venv_active and virtual_env_var:
         return True, "Already in virtual environment"
+    
+    print(f"🔍 Current Python: {sys.executable}")
+    print(f"🔍 VIRTUAL_ENV: {virtual_env_var}")
+    print(f"🔍 venv_active detection: {venv_active}")
     
     # Check if venv directory exists
     if not venv_dir.exists():
@@ -980,11 +1025,21 @@ def check_and_setup_venv():
 
 def main():
     """Main execution with argument parsing"""
+    print("🔧 Starting Slidev Unified Processor...")
+    
     # Check and setup virtual environment first
+    print("🔧 Checking virtual environment setup...")
     success, message = check_and_setup_venv()
     if not success:
         print(f"❌ Virtual environment setup failed: {message}")
         return
+    
+    print(f"✅ Virtual environment ready: {message}")
+    
+    # Import dependencies after venv is ready
+    print("📦 Importing dependencies...")
+    import_dependencies()
+    print("✅ Dependencies imported successfully")
     
     parser = argparse.ArgumentParser(
         description="Slidev Unified Video Processor",
