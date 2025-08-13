@@ -16,6 +16,8 @@ import { Textarea } from '@/components/ui/textarea';
 import type { Room, Building, RoomType, RoomStatus } from '@/types/entities';
 import { roomService } from '@/lib/services/roomService';
 import { buildingService } from '@/lib/services/buildingService';
+import { getUserCookie, getUserAccessContext, getDepartmentDisplayName } from '@/lib/auth/role-access';
+import { DepartmentScopedPage } from '@/components/auth/PageAccessControl';
 
 
 const ROOM_TYPE_OPTIONS: RoomType[] = ['Lecture Hall', 'Laboratory', 'Office', 'Staff Room', 'Workshop', 'Library', 'Store Room', 'Seminar Hall', 'Auditorium', 'Other'];
@@ -35,6 +37,10 @@ const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
 export default function RoomManagementPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [buildings, setBuildings] = useState<Building[]>([]);
+
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -403,7 +409,8 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,"New Academic Complex","NAC",1,Lectu
 
 
   return (
-    <div className="space-y-8">
+    <DepartmentScopedPage pageName="Room Management">
+      <div className="space-y-8">
       <Card className="shadow-xl">
         <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
@@ -580,7 +587,7 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,"New Academic Complex","NAC",1,Lectu
             </div>
           </div>
 
-          {selectedRoomIds.length > 0 && (
+          {selectedRoomIds.length > 0 && accessContext.featurePermissions.canDeleteRecords && (
              <div className="mb-4 flex items-center gap-2">
                 <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
                     <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedRoomIds.length})
@@ -910,7 +917,8 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,"New Academic Complex","NAC",1,Lectu
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </DepartmentScopedPage>
   );
 }
 

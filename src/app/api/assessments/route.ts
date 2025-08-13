@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Assessment } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { AssessmentModel } from '@/lib/models';
+import { withAPIRoleAccess, type APIAccessContext } from '@/lib/auth/api-middleware';
 
 // Initialize default assessments if none exist
 async function initializeDefaultAssessments() {
@@ -14,7 +15,7 @@ async function initializeDefaultAssessments() {
 
 const generateId = (): string => `asmnt_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-export async function GET(request: NextRequest) {
+async function handleGET(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
     await initializeDefaultAssessments();
@@ -73,7 +74,9 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export const GET = withAPIRoleAccess(handleGET, ['admin', 'super_admin', 'hod', 'principal', 'faculty']);
+
+async function handlePOST(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
     
@@ -155,3 +158,5 @@ export async function POST(request: NextRequest) {
     }, { status: 500 });
   }
 }
+
+export const POST = withAPIRoleAccess(handlePOST, ['admin', 'super_admin', 'hod', 'principal', 'faculty']);

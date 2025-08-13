@@ -4,15 +4,30 @@ import { userService } from '@/lib/api/users';
 import { instituteService } from '@/lib/api/institutes';
 import { programService } from '@/lib/api/programs';
 import { connectMongoose } from '@/lib/mongodb';
-import { StudentModel } from '@/lib/models';
+import { StudentModel, ProgramModel } from '@/lib/models';
+import { withAPIRoleAccess, type APIAccessContext } from '@/lib/auth/api-middleware';
+import { withStudentsAudit } from '@/lib/audit/audit-middleware';
+import { withCache, cacheKeyGenerators, cacheInvalidation } from '@/lib/cache/api-cache';
 
 const generateId = (): string => `std_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-export async function GET() {
+async function handleGetStudents(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
     
-    const students = await StudentModel.find({}).lean();
+    let query = {};
+    
+    // Apply department-based filtering for non-admin users
+    if (!context.canViewAllDepartments && context.departmentFilter) {
+      // Get programs in the user's department
+      const programs = await ProgramModel.find({ departmentId: context.departmentFilter }).lean();
+      const programIds = programs.map(p => p.id || p._id?.toString());
+      
+      // Filter students by programs in the user's department
+      query = { programId: { $in: programIds } };
+    }
+    
+    const students = await StudentModel.find(query).lean();
     const studentsWithId = students.map(student => ({
       ...student,
       id: student.id || (student as { _id: unknown })._id?.toString(),
@@ -34,7 +49,16 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+// Export wrapped functions for API routes
+export const GET = withCache(
+  withStudentsAudit(withAPIRoleAccess(handleGetStudents, ['admin', 'super_admin', 'hod', 'principal', 'faculty'])),
+  {
+    ttl: 300, // 5 minutes cache
+    keyGenerator: cacheKeyGenerators.students
+  }
+);
+
+async function handleCreateStudent(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
     
@@ -157,6 +181,9 @@ export async function POST(request: NextRequest) {
       email: newStudent.instituteEmail || newStudent.personalEmail || ''
     };
 
+    // Invalidate students cache after successful creation
+    cacheInvalidation.students(context.departmentFilter);
+    
     return NextResponse.json(studentToReturn, { status: 201 });
   } catch (error) {
     console.error('Error creating student:', error);
@@ -175,3 +202,6 @@ export async function POST(request: NextRequest) {
     }, { status: 500 });
   }
 }
+
+// Export wrapped functions for API routes
+export const POST = withStudentsAudit(withAPIRoleAccess(handleCreateStudent, ['admin', 'super_admin', 'hod', 'principal']));

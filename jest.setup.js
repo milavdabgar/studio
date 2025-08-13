@@ -48,6 +48,30 @@ jest.mock('./src/lib/mongodb', () => ({
   connectMongoose: jest.fn().mockResolvedValue(undefined),
 }))
 
+// Mock Radix UI Dialog for testing
+jest.mock('@radix-ui/react-dialog', () => {
+  const React = require('react');
+  return {
+    Root: ({ children, open, onOpenChange }) => {
+      const MockRoot = ({ children }) => {
+        return React.createElement(
+          'div',
+          { 'data-testid': 'dialog-root' },
+          open ? children : null
+        );
+      };
+      return React.createElement(MockRoot, { children });
+    },
+    Portal: ({ children }) => React.createElement('div', { 'data-testid': 'dialog-portal' }, children),
+    Overlay: ({ children, ...props }) => React.createElement('div', { ...props, 'data-testid': 'dialog-overlay' }, children),
+    Content: ({ children, ...props }) => React.createElement('div', { role: 'dialog', 'data-testid': 'dialog-content', ...props }, children),
+    Trigger: ({ children, ...props }) => React.createElement('button', { ...props, 'data-testid': 'dialog-trigger' }, children),
+    Close: ({ children, ...props }) => React.createElement('button', { ...props, 'data-testid': 'dialog-close' }, children),
+    Title: ({ children, ...props }) => React.createElement('h2', { ...props, 'data-testid': 'dialog-title' }, children),
+    Description: ({ children, ...props }) => React.createElement('p', { ...props, 'data-testid': 'dialog-description' }, children),
+  };
+})
+
 // Global test utilities
 global.console = {
   ...console,

@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, ArrowLeft, Users } from "lucide-react";
@@ -13,6 +14,10 @@ import { projectEventService } from '@/lib/api/projectEvents';
 // TODO: Import TeamTable and TeamForm components when they are created
 
 export default function EventTeamsPage() {
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
+
   const router = useRouter();
   const params = useParams();
   const eventId = params?.eventId as string;

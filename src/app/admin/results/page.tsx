@@ -15,6 +15,7 @@ import type { Result, UploadBatch, BranchAnalysis, ResultFilterParams, Paginatio
 import { resultService } from '@/lib/api/results';
 import { programService } from '@/lib/api/programs';
 import { examinationService } from '@/lib/api/examinations'; // For exam name filter
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 
 
 type SortField = keyof Result | 'programName' | 'none'; 
@@ -25,6 +26,10 @@ const ITEMS_PER_PAGE_OPTIONS = [20, 50, 100, 200];
 export default function AdminResultsPage() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<'results' | 'batches' | 'analysis'>('results');
+  
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
   
   const [results, setResults] = useState<Result[]>([]);
   const [batches, setBatches] = useState<UploadBatch[]>([]);
@@ -397,9 +402,11 @@ export default function AdminResultsPage() {
   const renderBatchesTab = () => (
     <div className="space-y-4">
       <div className="flex justify-end">
+        {accessContext.featurePermissions.canImportData && (
          <Link href="/admin/results/import" passHref>
             <Button variant="outline"><UploadCloud className="mr-2 h-4 w-4"/> Go to Import Page</Button>
          </Link>
+        )}
       </div>
       {isLoading ? (
          <div className="text-center py-8"><Loader2 className="h-8 w-8 animate-spin mx-auto my-4 text-primary" /></div>
@@ -415,14 +422,16 @@ export default function AdminResultsPage() {
                   {batch.count} results • Last upload: {new Date(batch.latestUpload).toLocaleString()}
                 </div>
               </div>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => {setSelectedBatchIdForDelete(batch._id); setShowDeleteConfirm(true);}}
-                disabled={isSubmitting}
-              >
-                <Trash2 className="mr-2 h-4 w-4" /> Delete Batch & Results
-              </Button>
+              {accessContext.featurePermissions.canDeleteRecords && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => {setSelectedBatchIdForDelete(batch._id); setShowDeleteConfirm(true);}}
+                  disabled={isSubmitting}
+                >
+                  <Trash2 className="mr-2 h-4 w-4" /> Delete Batch & Results
+                </Button>
+              )}
             </li>
           ))}
         </ul>
@@ -499,18 +508,22 @@ export default function AdminResultsPage() {
                 <CardDescription className="text-sm sm:text-base">View, manage, and analyze student academic results.</CardDescription>
             </div>
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                 <Link href="/admin/results/import" passHref>
+                {accessContext.featurePermissions.canImportData && (
+                  <Link href="/admin/results/import" passHref>
                     <Button variant="outline" className="w-full sm:w-auto min-h-[44px]">
                       <UploadCloud className="mr-2 h-4 w-4"/>
                       <span className="sm:hidden">Import</span>
                       <span className="hidden sm:inline">Import Results Page</span>
                     </Button>
-                 </Link>
-                <Button onClick={handleExportResults} variant="outline" disabled={results.length === 0 || isLoading} className="w-full sm:w-auto min-h-[44px]">
-                  <Download className="mr-2 h-4 w-4"/>
-                  <span className="sm:hidden">Export</span>
-                  <span className="hidden sm:inline">Export Filtered CSV</span>
-                </Button>
+                  </Link>
+                )}
+                {accessContext.featurePermissions.canExportData && (
+                  <Button onClick={handleExportResults} variant="outline" disabled={results.length === 0 || isLoading} className="w-full sm:w-auto min-h-[44px]">
+                    <Download className="mr-2 h-4 w-4"/>
+                    <span className="sm:hidden">Export</span>
+                    <span className="hidden sm:inline">Export Filtered CSV</span>
+                  </Button>
+                )}
             </div>
         </CardHeader>
         <CardContent className="p-4 sm:p-6">

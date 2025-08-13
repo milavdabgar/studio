@@ -23,6 +23,7 @@ import { courseService } from '@/lib/api/courses';
 import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
 import { userService } from '@/lib/api/users'; // For faculty selection
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 
 const ASSESSMENT_TYPE_OPTIONS: AssessmentType[] = ['Quiz', 'Midterm', 'Final Exam', 'Assignment', 'Project', 'Lab Work', 'Presentation', 'Other'];
 const ASSESSMENT_STATUS_OPTIONS: { value: AssessmentStatus, label: string }[] = [
@@ -44,7 +45,11 @@ export default function AssessmentManagementPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [programs, setPrograms] = useState<Program[]>([]);
   const [batches, setBatches] = useState<Batch[]>([]);
-  const [facultyList, setFacultyList] = useState<FacultyUser[]>([]); 
+  const [facultyList, setFacultyList] = useState<FacultyUser[]>([]);
+  
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user); 
   
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -463,6 +468,7 @@ asm_s1,Midterm 1,crs1,CS101,prog1,DCE,batch1,2024-2027,Midterm,"Covers first 3 u
             </CardDescription>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            {accessContext.navigationPermissions.canAccessCourses && (
              <Dialog open={isDialogOpen} onOpenChange={(isOpen) => { setIsDialogOpen(isOpen); if (!isOpen) resetForm(); }}>
               <DialogTrigger asChild>
                 <Button onClick={handleAddNew} className="w-full sm:w-auto" disabled={courses.length === 0 || programs.length === 0}>
@@ -589,29 +595,34 @@ asm_s1,Midterm 1,crs1,CS101,prog1,DCE,batch1,2024-2027,Midterm,"Covers first 3 u
                 </form>
               </DialogContent>
             </Dialog>
-            <Button onClick={handleExportAssessments} variant="outline" className="w-full sm:w-auto">
-              <Download className="mr-2 h-5 w-5" /> Export CSV
-            </Button>
+            )}
+            {accessContext.featurePermissions.canExportData && (
+              <Button onClick={handleExportAssessments} variant="outline" className="w-full sm:w-auto">
+                <Download className="mr-2 h-5 w-5" /> Export CSV
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
-            <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Assessments from CSV</h3>
-            <div className="flex flex-col sm:flex-row gap-2 items-center">
-              <Input type="file" id="csvImportAssessment" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
-              <Button onClick={handleImportAssessments} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto">
-                {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>} Import
-              </Button>
-            </div>
-            <div className="flex items-center gap-2">
-                 <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="px-0 text-primary">
-                    <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
+          {accessContext.featurePermissions.canImportData && (
+            <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
+              <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Assessments from CSV</h3>
+              <div className="flex flex-col sm:flex-row gap-2 items-center">
+                <Input type="file" id="csvImportAssessment" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
+                <Button onClick={handleImportAssessments} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto">
+                  {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>} Import
                 </Button>
-                <p className="text-xs text-muted-foreground">
-                  CSV fields: id (opt), name, courseId/courseSubcode, programId/programCode, batchId/batchName, type, maxMarks, status, etc.
-                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                   <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="px-0 text-primary">
+                      <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
+                  </Button>
+                  <p className="text-xs text-muted-foreground">
+                    CSV fields: id (opt), name, courseId/courseSubcode, programId/programCode, batchId/batchName, type, maxMarks, status, etc.
+                  </p>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
@@ -659,9 +670,11 @@ asm_s1,Midterm 1,crs1,CS101,prog1,DCE,batch1,2024-2027,Midterm,"Covers first 3 u
 
           {selectedAssessmentIds.length > 0 && (
              <div className="mb-4 flex items-center gap-2">
-                <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
-                    <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedAssessmentIds.length})
-                </Button>
+                {accessContext.featurePermissions.canDeleteRecords && (
+                  <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
+                      <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedAssessmentIds.length})
+                  </Button>
+                )}
                 <span className="text-sm text-muted-foreground">
                     {selectedAssessmentIds.length} assessment(s) selected.
                 </span>
@@ -730,20 +743,24 @@ asm_s1,Midterm 1,crs1,CS101,prog1,DCE,batch1,2024-2027,Midterm,"Covers first 3 u
                       <Eye className="h-3 w-3" />
                       <span className="ml-1">View</span>
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleEdit(assessment)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
-                      <Edit className="h-3 w-3" />
-                      <span className="ml-1">Edit</span>
-                    </Button>
-                    <Button 
-                      variant="destructive" 
-                      size="sm" 
-                      onClick={() => handleDelete(assessment.id)} 
-                      disabled={isSubmitting}
-                      className="min-h-[44px] flex-1 text-xs"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                      <span className="ml-1">Delete</span>
-                    </Button>
+                    {accessContext.navigationPermissions.canAccessCourses && (
+                      <Button variant="outline" size="sm" onClick={() => handleEdit(assessment)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
+                        <Edit className="h-3 w-3" />
+                        <span className="ml-1">Edit</span>
+                      </Button>
+                    )}
+                    {accessContext.featurePermissions.canDeleteRecords && (
+                      <Button 
+                        variant="destructive" 
+                        size="sm" 
+                        onClick={() => handleDelete(assessment.id)} 
+                        disabled={isSubmitting}
+                        className="min-h-[44px] flex-1 text-xs"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                        <span className="ml-1">Delete</span>
+                      </Button>
+                    )}
                   </div>
                 </Card>
               );
@@ -795,14 +812,18 @@ asm_s1,Midterm 1,crs1,CS101,prog1,DCE,batch1,2024-2027,Midterm,"Covers first 3 u
                         <Eye className="h-4 w-4" />
                         <span className="sr-only">View Assessment</span>
                       </Button>
-                      <Button variant="outline" size="icon" onClick={() => handleEdit(assessment)} disabled={isSubmitting}>
-                        <Edit className="h-4 w-4" />
-                        <span className="sr-only">Edit Assessment</span>
-                      </Button>
-                      <Button variant="destructive" size="icon" onClick={() => handleDelete(assessment.id)} disabled={isSubmitting}>
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete Assessment</span>
-                      </Button>
+                      {accessContext.navigationPermissions.canAccessCourses && (
+                        <Button variant="outline" size="icon" onClick={() => handleEdit(assessment)} disabled={isSubmitting}>
+                          <Edit className="h-4 w-4" />
+                          <span className="sr-only">Edit Assessment</span>
+                        </Button>
+                      )}
+                      {accessContext.featurePermissions.canDeleteRecords && (
+                        <Button variant="destructive" size="icon" onClick={() => handleDelete(assessment.id)} disabled={isSubmitting}>
+                          <Trash2 className="h-4 w-4" />
+                          <span className="sr-only">Delete Assessment</span>
+                        </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

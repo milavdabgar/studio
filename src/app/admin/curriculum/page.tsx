@@ -18,6 +18,7 @@ import type { Curriculum, Program, Course } from '@/types/entities';
 import { curriculumService } from '@/lib/api/curriculum';
 import { programService } from '@/lib/api/programs';
 import { courseService } from '@/lib/api/courses';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 import { format, parseISO } from 'date-fns';
 import { cn } from "@/lib/utils";
 
@@ -40,6 +41,10 @@ export default function CurriculumManagementPage() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentCurriculum, setCurrentCurriculum] = useState<Partial<Curriculum> | null>(null);
@@ -461,8 +466,12 @@ curr_2,prog_dme_gpp,DME,2.1,2025-01-01,draft,course_me101_dme_gpp,ME101,1,false
               {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Zap className="mr-2 h-5 w-5" />}
               Smart Generate All
             </Button>
-            <Button onClick={handleAddNew} className="w-full sm:w-auto" disabled={programs.length === 0}><PlusCircle className="mr-2 h-5 w-5" /> New Curriculum</Button>
-            <Button onClick={handleExportCurricula} variant="outline" className="w-full sm:w-auto"><Download className="mr-2 h-5 w-5" /> Export CSV</Button>
+            {accessContext.navigationPermissions.canAccessPrograms && (
+              <Button onClick={handleAddNew} className="w-full sm:w-auto" disabled={programs.length === 0}><PlusCircle className="mr-2 h-5 w-5" /> New Curriculum</Button>
+            )}
+            {accessContext.featurePermissions.canExportData && (
+              <Button onClick={handleExportCurricula} variant="outline" className="w-full sm:w-auto"><Download className="mr-2 h-5 w-5" /> Export CSV</Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>

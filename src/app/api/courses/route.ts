@@ -1,14 +1,33 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Course } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
-import { CourseModel } from '@/lib/models';
+import { CourseModel, ProgramModel } from '@/lib/models';
+import { withAPIRoleAccess, type APIAccessContext } from '@/lib/auth/api-middleware';
 
 
-export async function GET() {
+async function handleGetCourses(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
-    const courses = await CourseModel.find();
-    return NextResponse.json(courses);
+    
+    let query = {};
+    
+    // Apply department-based filtering for non-admin users
+    if (!context.canViewAllDepartments && context.departmentFilter) {
+      // Get programs in the user's department
+      const programs = await ProgramModel.find({ departmentId: context.departmentFilter }).lean();
+      const programIds = programs.map(p => p.id || p._id?.toString());
+      
+      // Filter courses by programs in the user's department
+      query = { programId: { $in: programIds } };
+    }
+    
+    const courses = await CourseModel.find(query).lean();
+    const coursesWithId = courses.map(course => ({
+      ...course,
+      id: course.id || (course as { _id: unknown })._id?.toString()
+    }));
+    
+    return NextResponse.json(coursesWithId);
   } catch (error) {
     console.error('Error fetching courses:', error);
     return NextResponse.json({ 
@@ -18,7 +37,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+async function handleCreateCourse(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
     const courseData = await request.json() as Omit<Course, 'id' | 'createdAt' | 'updatedAt'>;
@@ -32,6 +51,13 @@ export async function POST(request: NextRequest) {
     }
     if (!courseData.departmentId) {
       return NextResponse.json({ message: 'Department ID is required.' }, { status: 400 });
+    }
+    
+    // Check if user has access to the department
+    if (!context.canEditAllDepartments && context.departmentFilter && courseData.departmentId !== context.departmentFilter) {
+      return NextResponse.json({ 
+        message: 'Access denied. You can only create courses for your assigned department.' 
+      }, { status: 403 });
     }
     if (!courseData.programId) {
       return NextResponse.json({ message: 'Program ID is required.' }, { status: 400 });
@@ -97,3 +123,7 @@ export async function POST(request: NextRequest) {
     }, { status: 500 });
   }
 }
+
+// Export wrapped functions for API routes
+export const GET = withAPIRoleAccess(handleGetCourses, ['admin', 'super_admin', 'hod', 'principal', 'faculty']);
+export const POST = withAPIRoleAccess(handleCreateCourse, ['admin', 'super_admin', 'hod', 'principal']);

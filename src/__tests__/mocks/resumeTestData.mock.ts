@@ -460,3 +460,24 @@ export const mockEmptyResumeData: ResumeData = {
   internships: [],
   certifications: []
 };
+
+// Simple test to ensure mock data is valid
+describe('Mock Resume Data', () => {
+  it('should have valid mock student data', () => {
+    expect(mockStudent.id).toBeDefined();
+    expect(mockStudent.firstName).toBe('John');
+    expect(mockStudent.skills).toHaveLength(4);
+  });
+
+  it('should have valid mock resume data', () => {
+    expect(mockResumeData.fullName).toBe('John David Doe');
+    expect(mockResumeData.skills).toHaveLength(4);
+    expect(mockResumeData.projects).toHaveLength(2);
+  });
+
+  it('should have valid empty resume data', () => {
+    expect(mockEmptyResumeData.fullName).toBe('Test Student');
+    expect(mockEmptyResumeData.skills).toHaveLength(0);
+    expect(mockEmptyResumeData.projects).toHaveLength(0);
+  });
+});

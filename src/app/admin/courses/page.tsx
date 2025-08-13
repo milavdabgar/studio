@@ -18,6 +18,8 @@ import type { Course, Department, Program } from '@/types/entities';
 import { courseService } from '@/lib/api/courses';
 import { departmentService } from '@/lib/api/departments';
 import { programService } from '@/lib/api/programs';
+import { getUserCookie, getUserAccessContext, getDepartmentDisplayName } from '@/lib/auth/role-access';
+import { DepartmentScopedPage } from '@/components/auth/PageAccessControl';
 
 // Dropdown options for categorical fields
 const ACADEMIC_YEARS = [
@@ -56,6 +58,10 @@ export default function CourseManagementPage() {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [programs, setPrograms] = useState<Program[]>([]);
   const [filteredPrograms, setFilteredPrograms] = useState<Program[]>([]);
+
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -130,15 +136,22 @@ export default function CourseManagementPage() {
   }, [fetchInitialData]);
 
   useEffect(() => {
+    let availablePrograms = programs;
+    
+    // Apply role-based filtering first
+    if (!accessContext.canViewAllDepartments && accessContext.departmentFilter) {
+      availablePrograms = programs.filter(p => p.departmentId === accessContext.departmentFilter);
+    }
+    
     if (formDepartmentId) {
-      setFilteredPrograms(programs.filter(p => p.departmentId === formDepartmentId));
-      if(!programs.find(p => p.id === formProgramId && p.departmentId === formDepartmentId)){
+      setFilteredPrograms(availablePrograms.filter(p => p.departmentId === formDepartmentId));
+      if(!availablePrograms.find(p => p.id === formProgramId && p.departmentId === formDepartmentId)){
         setFormProgramId(''); 
       }
     } else {
-      setFilteredPrograms(programs); // Show all programs if no department selected, or handle as needed
+      setFilteredPrograms(availablePrograms); // Show available programs based on role
     }
-  }, [formDepartmentId, programs, formProgramId]);
+  }, [formDepartmentId, programs, formProgramId, accessContext.canViewAllDepartments, accessContext.departmentFilter]);
 
 
   const resetForm = () => {
@@ -437,8 +450,29 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
     setCurrentPage(1); 
   };
   
+  // Apply role-based filtering to programs and departments
+  const filteredDepartments = useMemo(() => {
+    if (!accessContext.canViewAllDepartments && accessContext.departmentFilter) {
+      return departments.filter(dept => dept.id === accessContext.departmentFilter);
+    }
+    return departments;
+  }, [departments, accessContext.canViewAllDepartments, accessContext.departmentFilter]);
+
+  const filteredProgramsForRBAC = useMemo(() => {
+    if (!accessContext.canViewAllDepartments && accessContext.departmentFilter) {
+      return programs.filter(program => program.departmentId === accessContext.departmentFilter);
+    }
+    return programs;
+  }, [programs, accessContext.canViewAllDepartments, accessContext.departmentFilter]);
+
   const filteredAndSortedCourses = useMemo(() => {
     let result = [...courses];
+
+    // Apply role-based department filtering first
+    if (!accessContext.canViewAllDepartments && accessContext.departmentFilter) {
+      const allowedProgramIds = filteredProgramsForRBAC.map(p => p.id);
+      result = result.filter(course => allowedProgramIds.includes(course.programId));
+    }
 
     if (searchTerm) {
       result = result.filter(c => 
@@ -488,7 +522,7 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
       });
     }
     return result;
-  }, [courses, programs, searchTerm, filterSemesterVal, filterProgramVal, filterEffFromVal, sortField, sortDirection]);
+  }, [courses, programs, searchTerm, filterSemesterVal, filterProgramVal, filterEffFromVal, sortField, sortDirection, accessContext.canViewAllDepartments, accessContext.departmentFilter, filteredProgramsForRBAC]);
 
   const totalPages = Math.ceil(filteredAndSortedCourses.length / itemsPerPage);
   const paginatedCourses = useMemo(() => {
@@ -556,7 +590,8 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
 
 
   return (
-    <div className="space-y-8">
+    <DepartmentScopedPage pageName="Course Management">
+      <div className="space-y-8">
       <Card className="shadow-xl">
         <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
@@ -617,9 +652,9 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
                   {/* Department & Program */}
                   <div className="md:col-span-1">
                     <Label htmlFor="departmentId">Department *</Label>
-                    <Select value={formDepartmentId} onValueChange={val => {setFormDepartmentId(val); setFormProgramId('');}} disabled={isSubmitting || departments.length === 0} required>
+                    <Select value={formDepartmentId} onValueChange={val => {setFormDepartmentId(val); setFormProgramId('');}} disabled={isSubmitting || filteredDepartments.length === 0} required>
                       <SelectTrigger id="departmentId"><SelectValue placeholder="Select Department" /></SelectTrigger>
-                      <SelectContent>{departments.map(d => <SelectItem key={d.id} value={d.id}>{d.name} ({d.code})</SelectItem>)}</SelectContent>
+                      <SelectContent>{filteredDepartments.map(d => <SelectItem key={d.id} value={d.id}>{d.name} ({d.code})</SelectItem>)}</SelectContent>
                     </Select>
                   </div>
                   <div className="md:col-span-1">
@@ -764,11 +799,11 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
             </div>
             <div>
               <Label htmlFor="filterProgram">Filter by Program</Label>
-              <Select value={filterProgramVal} onValueChange={setFilterProgramVal} disabled={programs.length === 0}>
+              <Select value={filterProgramVal} onValueChange={setFilterProgramVal} disabled={filteredProgramsForRBAC.length === 0}>
                 <SelectTrigger id="filterProgram"><SelectValue placeholder="All Programs" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Programs</SelectItem>
-                  {programs.map(p => <SelectItem key={p.id} value={p.id}>{p.name} ({p.code})</SelectItem>)}
+                  {filteredProgramsForRBAC.map(p => <SelectItem key={p.id} value={p.id}>{p.name} ({p.code})</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -784,7 +819,7 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
             </div>
           </div>
 
-          {selectedCourseIds.length > 0 && (
+          {selectedCourseIds.length > 0 && accessContext.featurePermissions.canDeleteRecords && (
              <div className="mb-4 flex items-center gap-2">
                 <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
                     <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedCourseIds.length})
@@ -803,11 +838,13 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
                 <Card key={course.id} className="p-4">
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <Checkbox 
-                        checked={selectedCourseIds.includes(course.id)} 
-                        onCheckedChange={(checked) => handleSelectCourse(course.id, !!checked)}
-                        className="flex-shrink-0"
-                      />
+                      {accessContext.featurePermissions.canDeleteRecords && (
+                        <Checkbox 
+                          checked={selectedCourseIds.includes(course.id)} 
+                          onCheckedChange={(checked) => handleSelectCourse(course.id, !!checked)}
+                          className="flex-shrink-0"
+                        />
+                      )}
                       <div className="min-w-0 flex-1">
                         <h3 className="font-medium text-sm leading-tight">{course.subjectName}</h3>
                         <p className="text-xs text-muted-foreground">{course.subcode}</p>
@@ -846,9 +883,11 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
                     <Button variant="outline" size="sm" onClick={() => handleEdit(course)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
                       <Edit className="h-3 w-3" />
                     </Button>
-                    <Button variant="destructive" size="sm" onClick={() => handleDelete(course.id)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
+                    {accessContext.featurePermissions.canDeleteRecords && (
+                      <Button variant="destructive" size="sm" onClick={() => handleDelete(course.id)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    )}
                   </div>
                 </Card>
               );
@@ -866,7 +905,9 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
             <Table>
               <TableHeader>
                 <TableRow>
-                   <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedCourses.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all courses on this page"/></TableHead>
+                   {accessContext.featurePermissions.canDeleteRecords && (
+                     <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedCourses.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all courses on this page"/></TableHead>
+                   )}
                   <SortableTableHeader field="effFrom" label="Eff From" />
                   <SortableTableHeader field="programId" label="Program" />
                   <SortableTableHeader field="semester" label="Sem" />
@@ -879,7 +920,9 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
               <TableBody>
                 {paginatedCourses.map((course) => (
                   <TableRow key={course.id} data-state={selectedCourseIds.includes(course.id) ? "selected" : undefined}>
-                    <TableCell><Checkbox checked={selectedCourseIds.includes(course.id)} onCheckedChange={(checked) => handleSelectCourse(course.id, !!checked)} aria-labelledby={`course-name-${course.id}`}/></TableCell>
+                    {accessContext.featurePermissions.canDeleteRecords && (
+                      <TableCell><Checkbox checked={selectedCourseIds.includes(course.id)} onCheckedChange={(checked) => handleSelectCourse(course.id, !!checked)} aria-labelledby={`course-name-${course.id}`}/></TableCell>
+                    )}
                     <TableCell>{course.effFrom || 'N/A'}</TableCell>
                     <TableCell>{programs.find(p => p.id === course.programId)?.code || 'N/A'}</TableCell>
                     <TableCell>{course.semester}</TableCell>
@@ -902,10 +945,12 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
                           <Edit className="h-4 w-4" />
                           <span className="sr-only">Edit Course</span>
                         </Button>
-                        <Button variant="destructive" size="icon" onClick={() => handleDelete(course.id)} disabled={isSubmitting}>
-                          <Trash2 className="h-4 w-4" />
-                          <span className="sr-only">Delete Course</span>
-                        </Button>
+                        {accessContext.featurePermissions.canDeleteRecords && (
+                          <Button variant="destructive" size="icon" onClick={() => handleDelete(course.id)} disabled={isSubmitting}>
+                            <Trash2 className="h-4 w-4" />
+                            <span className="sr-only">Delete Course</span>
+                          </Button>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -1104,7 +1149,8 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </DepartmentScopedPage>
   );
 }
 

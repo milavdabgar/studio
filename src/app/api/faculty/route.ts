@@ -2,6 +2,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { FacultyProfile } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { FacultyModel } from '@/lib/models';
+import { withAPIRoleAccess, type APIAccessContext } from '@/lib/auth/api-middleware';
+import { withFacultyAudit } from '@/lib/audit/audit-middleware';
 
 type FacultyLean = Omit<FacultyProfile, 'id'> & { 
   _id: string; 
@@ -22,11 +24,18 @@ try {
   deletedMockData = new Set<string>();
 }
 
-export async function GET() {
+async function handleGetFaculty(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
     
-    const faculty = await FacultyModel.find({}).lean() as FacultyLean[];
+    let query = {};
+    
+    // Apply department-based filtering for non-admin users
+    if (!context.canViewAllDepartments && context.departmentFilter) {
+      query = { departmentId: context.departmentFilter };
+    }
+    
+    const faculty = await FacultyModel.find(query).lean() as FacultyLean[];
     
     // Add mock faculty for test user "u3b" if it doesn't exist and hasn't been deleted
     const testFacultyExists = faculty.some(f => f.userId === 'u3b');
@@ -100,7 +109,9 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+export const GET = withFacultyAudit(withAPIRoleAccess(handleGetFaculty, ['admin', 'super_admin', 'hod', 'principal']));
+
+async function handleCreateFaculty(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
     
@@ -222,6 +233,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Error creating faculty' }, { status: 500 });
   }
 }
+
+export const POST = withFacultyAudit(withAPIRoleAccess(handleCreateFaculty, ['admin', 'super_admin', 'hod', 'principal']));
 
 const generateInstituteEmailForFaculty = (firstName?: string, lastName?: string, instituteDomain: string = "gppalanpur.ac.in"): string => {
   const fn = (firstName || "").toLowerCase().replace(/[^a-z0-9]/g, '');

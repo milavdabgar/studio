@@ -2,12 +2,21 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Program } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { ProgramModel } from '@/lib/models';
+import { withAPIRoleAccess, type APIAccessContext } from '@/lib/auth/api-middleware';
 
 
-export async function GET() {
+async function handleGetPrograms(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
-    const programs = await ProgramModel.find();
+    
+    let query = {};
+    
+    // Apply department-based filtering for non-admin users
+    if (!context.canViewAllDepartments && context.departmentFilter) {
+      query = { departmentId: context.departmentFilter };
+    }
+    
+    const programs = await ProgramModel.find(query);
     return NextResponse.json(programs);
   } catch (error) {
     console.error('Error fetching programs:', error);
@@ -15,7 +24,9 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+export const GET = withAPIRoleAccess(handleGetPrograms, ['admin', 'super_admin', 'hod', 'principal', 'faculty']);
+
+async function handleCreateProgram(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
     const programData = await request.json() as Omit<Program, 'id' | 'createdAt' | 'updatedAt'>;
@@ -88,3 +99,5 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Error creating program' }, { status: 500 });
   }
 }
+
+export const POST = withAPIRoleAccess(handleCreateProgram, ['admin', 'super_admin', 'hod', 'principal']);

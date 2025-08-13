@@ -22,6 +22,7 @@ import { studentService } from '@/lib/api/students';
 import { programService } from '@/lib/api/programs';
 import { instituteService } from '@/lib/api/institutes';
 import { batchService } from '@/lib/api/batches';
+import { getUserCookie, getUserAccessContext, getDepartmentDisplayName } from '@/lib/auth/role-access';
 
 const STUDENT_STATUS_OPTIONS: { value: StudentStatus; label: string }[] = [
   { value: "active", label: "Active" },
@@ -56,6 +57,10 @@ export default function AdminStudentsPage() {
   const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [batches, setBatches] = useState<Batch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -118,8 +123,25 @@ export default function AdminStudentsPage() {
         instituteService.getAllInstitutes(),
         batchService.getAllBatches()
       ]);
-      setStudentList(studentData);
-      setPrograms(programData);
+      // Apply role-based filtering for students
+      let filteredStudentData = studentData;
+      let filteredProgramData = programData;
+      
+      if (!accessContext.canViewAllDepartments && accessContext.departmentFilter) {
+        const allowedDepartment = getDepartmentDisplayName(accessContext.departmentFilter);
+        // Filter programs by department first
+        filteredProgramData = programData.filter(program => 
+          program.departmentId === accessContext.departmentFilter
+        );
+        // Then filter students by allowed programs
+        const allowedProgramIds = filteredProgramData.map(p => p.id);
+        filteredStudentData = studentData.filter(student => 
+          allowedProgramIds.includes(student.programId)
+        );
+      }
+      
+      setStudentList(filteredStudentData);
+      setPrograms(filteredProgramData);
       setInstitutes(instituteData);
       setBatches(batchData);
       if (programData.length > 0 && !formProgramId) {
@@ -130,7 +152,7 @@ export default function AdminStudentsPage() {
       toast({ variant: "destructive", title: "Error", description: "Could not load student data" });
     }
     setIsLoading(false);
-  }, [formProgramId, toast]);
+  }, [formProgramId, toast, accessContext]);
 
   useEffect(() => {
     fetchInitialData();
@@ -909,56 +931,64 @@ export default function AdminStudentsPage() {
                 </form>
               </DialogContent>
             </Dialog>
-            <Button onClick={handleExportStudents} variant="outline" className="w-full sm:w-auto min-h-[44px]">
-              <Download className="mr-2 h-4 w-4 sm:h-5 sm:w-5" /> 
-              <span className="sm:hidden">Export</span>
-              <span className="hidden sm:inline">Export CSV</span>
-            </Button>
+            {accessContext.featurePermissions.canExportData && (
+              <Button onClick={handleExportStudents} variant="outline" className="w-full sm:w-auto min-h-[44px]">
+                <Download className="mr-2 h-4 w-4 sm:h-5 sm:w-5" /> 
+                <span className="sm:hidden">Export</span>
+                <span className="hidden sm:inline">Export CSV</span>
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent className="p-4 sm:p-6">
-          <div className="mb-4 sm:mb-6 p-3 sm:p-4 border rounded-lg space-y-3 sm:space-y-4 dark:border-gray-700">
-            <h3 className="text-base sm:text-lg font-medium flex items-center gap-2"><UploadCloud className="h-4 w-4 sm:h-5 sm:w-5 text-primary"/>Import Students (Standard Format)</h3>
-            <div className="flex flex-col sm:flex-row gap-2 items-center">
-              <Input type="file" id="csvImportStudents" accept=".csv" onChange={handleFileChange} className="flex-grow min-h-[44px] text-sm" disabled={isSubmitting} />
-              <Button onClick={handleImportStudents} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto min-h-[44px] text-sm">
-                {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
-                <span className="sm:hidden">Import</span>
-                <span className="hidden sm:inline">Import Standard</span>
-              </Button>
+          <>
+          {accessContext.featurePermissions.canImportData && (
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 border rounded-lg space-y-3 sm:space-y-4 dark:border-gray-700">
+              <h3 className="text-base sm:text-lg font-medium flex items-center gap-2"><UploadCloud className="h-4 w-4 sm:h-5 sm:w-5 text-primary"/>Import Students (Standard Format)</h3>
+              <div className="flex flex-col sm:flex-row gap-2 items-center">
+                <Input type="file" id="csvImportStudents" accept=".csv" onChange={handleFileChange} className="flex-grow min-h-[44px] text-sm" disabled={isSubmitting} />
+                <Button onClick={handleImportStudents} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto min-h-[44px] text-sm">
+                  {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
+                  <span className="sm:hidden">Import</span>
+                  <span className="hidden sm:inline">Import Standard</span>
+                </Button>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="px-0 text-primary w-fit">
+                  <FileSpreadsheet className="mr-1 h-4 w-4" /> 
+                  <span className="text-xs sm:text-sm">Download Sample (Standard)</span>
+                </Button>
+                <p className="text-xs text-muted-foreground">
+                  Use for general student data import/update. Requires enrollmentNumber, firstName, lastName, programId, status.
+                </p>
+              </div>
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-              <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="px-0 text-primary w-fit">
-                <FileSpreadsheet className="mr-1 h-4 w-4" /> 
-                <span className="text-xs sm:text-sm">Download Sample (Standard)</span>
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                Use for general student data import/update. Requires enrollmentNumber, firstName, lastName, programId, status.
-              </p>
-            </div>
-          </div>
+          )}
 
-          <div className="mb-4 sm:mb-6 p-3 sm:p-4 border rounded-lg space-y-3 sm:space-y-4 dark:border-gray-700">
-            <h3 className="text-base sm:text-lg font-medium flex items-center gap-2"><UploadCloud className="h-4 w-4 sm:h-5 sm:w-5 text-accent"/>Import GTU Student Data</h3>
-            <div className="flex flex-col sm:flex-row gap-2 items-center">
-              <Input type="file" id="gtuCsvImportStudents" accept=".csv" onChange={handleGtuFileChange} className="flex-grow min-h-[44px] text-sm" disabled={isSubmitting} />
-              <Button onClick={handleImportGtuStudents} disabled={isSubmitting || !selectedGtuFile || programs.length === 0} className="w-full sm:w-auto min-h-[44px] text-sm bg-accent hover:bg-accent/90 text-accent-foreground">
-                {isSubmitting && selectedGtuFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
-                <span className="sm:hidden">Import GTU</span>
-                <span className="hidden sm:inline">Import GTU Data</span>
-              </Button>
-            </div>
-            {programs.length === 0 && <p className="text-xs text-destructive">GTU Import disabled: No programs found. Please add programs first.</p>}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-              <Button onClick={handleDownloadGtuSampleCsv} variant="link" size="sm" className="px-0 text-accent w-fit">
-                <FileSpreadsheet className="mr-1 h-4 w-4" /> 
-                <span className="text-xs sm:text-sm">Download Sample (GTU)</span>
+          {accessContext.featurePermissions.canImportData && (
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 border rounded-lg space-y-3 sm:space-y-4 dark:border-gray-700">
+              <h3 className="text-base sm:text-lg font-medium flex items-center gap-2"><UploadCloud className="h-4 w-4 sm:h-5 sm:w-5 text-accent"/>Import GTU Student Data</h3>
+              <div className="flex flex-col sm:flex-row gap-2 items-center">
+                <Input type="file" id="gtuCsvImportStudents" accept=".csv" onChange={handleGtuFileChange} className="flex-grow min-h-[44px] text-sm" disabled={isSubmitting} />
+                <Button onClick={handleImportGtuStudents} disabled={isSubmitting || !selectedGtuFile || programs.length === 0} className="w-full sm:w-auto min-h-[44px] text-sm bg-accent hover:bg-accent/90 text-accent-foreground">
+                  {isSubmitting && selectedGtuFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
+                  <span className="sm:hidden">Import GTU</span>
+                  <span className="hidden sm:inline">Import GTU Data</span>
+                </Button>
+              </div>
+              {programs.length === 0 && <p className="text-xs text-destructive">GTU Import disabled: No programs found. Please add programs first.</p>}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <Button onClick={handleDownloadGtuSampleCsv} variant="link" size="sm" className="px-0 text-accent w-fit">
+                  <FileSpreadsheet className="mr-1 h-4 w-4" /> 
+                  <span className="text-xs sm:text-sm">Download Sample (GTU)</span>
               </Button>
               <p className="text-xs text-muted-foreground">
                 Import student data using the official GTU CSV format.
               </p>
             </div>
           </div>
+          )}
+          </>
 
           <div className="mb-4 sm:mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 p-3 sm:p-4 border rounded-lg dark:border-gray-700">
             <div>
@@ -1033,7 +1063,12 @@ export default function AdminStudentsPage() {
                 <span className="sm:hidden">Assign Batch ({selectedStudentIds.length})</span>
                 <span className="hidden sm:inline">Assign to Batch ({selectedStudentIds.length})</span>
               </Button>
-              <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting} className="w-full sm:w-auto min-h-[44px]">
+              <Button 
+                variant="destructive" 
+                onClick={handleDeleteSelected} 
+                disabled={isSubmitting || !accessContext.featurePermissions.canDeleteRecords} 
+                className="w-full sm:w-auto min-h-[44px]"
+              >
                 <Trash2 className="mr-2 h-4 w-4" /> 
                 <span className="sm:hidden">Delete ({selectedStudentIds.length})</span>
                 <span className="hidden sm:inline">Delete Selected ({selectedStudentIds.length})</span>
@@ -1105,7 +1140,13 @@ export default function AdminStudentsPage() {
                     <Button variant="outline" size="sm" onClick={() => handleEdit(student)} disabled={isSubmitting} className="flex-1 min-h-[40px]">
                       <Edit className="h-4 w-4 mr-1" /> Edit
                     </Button>
-                    <Button variant="destructive" size="sm" onClick={() => handleDelete(student.id)} disabled={isSubmitting} className="min-h-[40px]">
+                    <Button 
+                      variant="destructive" 
+                      size="sm" 
+                      onClick={() => handleDelete(student.id)} 
+                      disabled={isSubmitting || !accessContext.featurePermissions.canDeleteRecords} 
+                      className="min-h-[40px]"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>

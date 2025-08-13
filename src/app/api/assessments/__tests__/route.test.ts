@@ -20,6 +20,47 @@ jest.mock('@/lib/mongodb', () => ({
   connectMongoose: jest.fn(),
 }));
 
+// Mock the authentication middleware
+jest.mock('@/lib/auth/api-middleware', () => ({
+  withAPIRoleAccess: (handler: any, requiredRoles: any) => 
+    (request: any) => handler(request, {
+      user: {
+        email: 'test@gpp.ac.in',
+        name: 'Test User',
+        activeRole: 'admin',
+        availableRoles: ['admin'],
+        departmentId: 'dept_test',
+        instituteId: 'gpp'
+      },
+      canViewAllDepartments: true,
+      canEditAllDepartments: true,
+      allowedDepartments: ['dept_test'],
+      featurePermissions: {
+        canDeleteRecords: true,
+        canImportData: true,
+        canExportData: true,
+        canManageRoles: true,
+        canApproveRequests: true,
+        canCreateRecords: true,
+        canEditRecords: true,
+        canViewSensitiveData: true,
+        canAccessAdvancedFeatures: true,
+        canPublishTimetables: true,
+        canAutoGenerateTimetables: true,
+        canManageTimetableConstraints: true,
+        canAccessTimetableAnalytics: true
+      }
+    }),
+  extractAuthUser: jest.fn(() => ({
+    email: 'test@gpp.ac.in',
+    name: 'Test User',
+    activeRole: 'admin',
+    availableRoles: ['admin'],
+    departmentId: 'dept_test',
+    instituteId: 'gpp'
+  }))
+}));
+
 // Create shared mock functions
 const mockSave = jest.fn();
 const mockToJSON = jest.fn();
@@ -48,6 +89,36 @@ const { AssessmentModel } = require('@/lib/models');
 const mockFind = AssessmentModel.find as jest.MockedFunction<any>;
 const mockFindOne = AssessmentModel.findOne as jest.MockedFunction<any>;
 const mockCountDocuments = AssessmentModel.countDocuments as jest.MockedFunction<any>;
+
+// Helper function to create mock API context
+const createMockContext = () => ({
+  user: {
+    email: 'test@gpp.ac.in',
+    name: 'Test User',
+    activeRole: 'admin' as const,
+    availableRoles: ['admin' as const],
+    departmentId: 'dept_test',
+    instituteId: 'gpp'
+  },
+  canViewAllDepartments: true,
+  canEditAllDepartments: true,
+  allowedDepartments: ['dept_test'],
+  featurePermissions: {
+    canDeleteRecords: true,
+    canImportData: true,
+    canExportData: true,
+    canManageRoles: true,
+    canApproveRequests: true,
+    canCreateRecords: true,
+    canEditRecords: true,
+    canViewSensitiveData: true,
+    canAccessAdvancedFeatures: true,
+    canPublishTimetables: true,
+    canAutoGenerateTimetables: true,
+    canManageTimetableConstraints: true,
+    canAccessTimetableAnalytics: true
+  }
+});
 const mockInsertMany = AssessmentModel.insertMany as jest.MockedFunction<any>;
 const mockAssessmentModel = AssessmentModel;
 

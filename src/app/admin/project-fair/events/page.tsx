@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo, useCallback } from 'react';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -36,6 +37,10 @@ const EVENT_STATUS_OPTIONS: { value: ProjectEventStatus, label: string }[] = [
 ];
 
 export default function ProjectEventManagementPage() {
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
+
   const [events, setEvents] = useState<ProjectEvent[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -372,6 +377,7 @@ evt_s1,TechFest 2025,"Annual technical festival",2024-25,2025-03-15T10:00:00Z,20
             </CardDescription>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            {user && ['admin', 'super_admin', 'hod', 'principal'].includes(user.activeRole) && (
              <Dialog open={isDialogOpen} onOpenChange={(isOpen) => { setIsDialogOpen(isOpen); if (!isOpen) resetForm(); }}>
               <DialogTrigger asChild>
                 <Button onClick={handleAddNew} className="w-full sm:w-auto">
@@ -440,12 +446,16 @@ evt_s1,TechFest 2025,"Annual technical festival",2024-25,2025-03-15T10:00:00Z,20
                 </form>
               </DialogContent>
             </Dialog>
+            )}
+            {accessContext.featurePermissions.canExportData && (
             <Button onClick={handleExportEvents} variant="outline" className="w-full sm:w-auto">
               <Download className="mr-2 h-5 w-5" /> Export CSV
             </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
+          {accessContext.featurePermissions.canImportData && (
           <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
             <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Project Events from CSV</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
@@ -463,6 +473,7 @@ evt_s1,TechFest 2025,"Annual technical festival",2024-25,2025-03-15T10:00:00Z,20
                 </p>
             </div>
           </div>
+          )}
 
           <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
@@ -491,7 +502,7 @@ evt_s1,TechFest 2025,"Annual technical festival",2024-25,2025-03-15T10:00:00Z,20
             </div>
           </div>
 
-          {selectedEventIds.length > 0 && (
+          {selectedEventIds.length > 0 && accessContext.featurePermissions.canDeleteRecords && (
              <div className="mb-4 flex items-center gap-2">
                 <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
                     <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedEventIds.length})
@@ -509,11 +520,13 @@ evt_s1,TechFest 2025,"Annual technical festival",2024-25,2025-03-15T10:00:00Z,20
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3 min-w-0 flex-1">
+                      {accessContext.featurePermissions.canDeleteRecords && (
                       <Checkbox 
                         checked={selectedEventIds.includes(eventItem.id)} 
                         onCheckedChange={(checked) => handleSelectEvent(eventItem.id, !!checked)}
                         className="flex-shrink-0"
                       />
+                      )}
                       <div className="min-w-0 flex-1">
                         <h4 className="font-semibold text-sm leading-tight">{eventItem.name}</h4>
                         <p className="text-xs text-muted-foreground">{eventItem.academicYear}</p>
@@ -563,12 +576,16 @@ evt_s1,TechFest 2025,"Annual technical festival",2024-25,2025-03-15T10:00:00Z,20
                         <AwardIcon className="h-3 w-3" />
                       </Button>
                     </Link>
+                    {user && ['admin', 'super_admin', 'hod', 'principal'].includes(user.activeRole) && (
                     <Button variant="outline" size="sm" onClick={() => handleEdit(eventItem)} disabled={isSubmitting} className="min-h-[44px] w-full">
                       <Edit className="h-3 w-3" />
                     </Button>
+                    )}
+                    {accessContext.featurePermissions.canDeleteRecords && (
                     <Button variant="destructive" size="sm" onClick={() => handleDelete(eventItem.id)} disabled={isSubmitting} className="min-h-[44px] w-full">
                       <Trash2 className="h-3 w-3" />
                     </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -588,7 +605,9 @@ evt_s1,TechFest 2025,"Annual technical festival",2024-25,2025-03-15T10:00:00Z,20
             <Table>
               <TableHeader>
                 <TableRow>
+                  {accessContext.featurePermissions.canDeleteRecords && (
                    <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedEvents.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all events on this page"/></TableHead>
+                  )}
                   <SortableTableHeader field="name" label="Event Name" />
                   <SortableTableHeader field="academicYear" label="Academic Year" />
                   <SortableTableHeader field="eventDate" label="Event Date" />
@@ -600,7 +619,9 @@ evt_s1,TechFest 2025,"Annual technical festival",2024-25,2025-03-15T10:00:00Z,20
               <TableBody>
                 {paginatedEvents.map((eventItem) => (
                   <TableRow key={eventItem.id} data-state={selectedEventIds.includes(eventItem.id) ? "selected" : undefined}>
+                    {accessContext.featurePermissions.canDeleteRecords && (
                     <TableCell><Checkbox checked={selectedEventIds.includes(eventItem.id)} onCheckedChange={(checked) => handleSelectEvent(eventItem.id, !!checked)} aria-labelledby={`event-name-${eventItem.id}`}/></TableCell>
+                    )}
                     <TableCell id={`event-name-${eventItem.id}`} className="font-medium">{eventItem.name}</TableCell>
                     <TableCell>{eventItem.academicYear}</TableCell>
                     <TableCell>{eventItem.eventDate && isValid(parseISO(eventItem.eventDate)) ? format(parseISO(eventItem.eventDate), 'dd MMM yyyy') : '-'}</TableCell>
@@ -641,13 +662,17 @@ evt_s1,TechFest 2025,"Annual technical festival",2024-25,2025-03-15T10:00:00Z,20
                          >
                           <Button variant="ghost" size="sm" title="Manage Results"><AwardIcon className="h-4 w-4" /></Button>
                       </Link>
+                      {user && ['admin', 'super_admin', 'hod', 'principal'].includes(user.activeRole) && (
                       <Button variant="outline" size="icon" onClick={() => handleEdit(eventItem)} disabled={isSubmitting}><Edit className="h-4 w-4" /><span className="sr-only">Edit Event</span></Button>
+                      )}
+                      {accessContext.featurePermissions.canDeleteRecords && (
                       <Button variant="destructive" size="icon" onClick={() => handleDelete(eventItem.id)} disabled={isSubmitting}><Trash2 className="h-4 w-4" /><span className="sr-only">Delete Event</span></Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
                 {paginatedEvents.length === 0 && (
-                   <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No events found. Adjust filters or add a new event.</TableCell></TableRow>
+                   <TableRow><TableCell colSpan={accessContext.featurePermissions.canDeleteRecords ? 7 : 6} className="text-center text-muted-foreground py-8">No events found. Adjust filters or add a new event.</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>

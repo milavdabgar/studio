@@ -13,6 +13,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Role } from '@/types/entities';
 import { roleService, allPermissions } from '@/lib/api/roles';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
 
@@ -20,6 +21,10 @@ export default function RoleManagementPage() {
   const [roles, setRoles] = useState<Role[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentRole, setCurrentRole] = useState<Partial<Role> | null>(null);
@@ -304,6 +309,7 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
             </CardDescription>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            {accessContext.featurePermissions.canManageRoles && (
              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button onClick={handleAddNew} className="w-full sm:w-auto">
@@ -380,34 +386,41 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
                 </form>
               </DialogContent>
             </Dialog>
-            <Button onClick={handleExportRoles} variant="outline" className="w-full sm:w-auto">
-              <Download className="mr-2 h-5 w-5" /> Export CSV
-            </Button>
+            )}
+            {accessContext.featurePermissions.canExportData && (
+              <Button onClick={handleExportRoles} variant="outline" className="w-full sm:w-auto">
+                <Download className="mr-2 h-5 w-5" /> Export CSV
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg dark:border-gray-700">
-            <h3 className="text-lg font-medium mb-2 flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Roles from CSV</h3>
-            <div className="flex flex-col sm:flex-row gap-2 items-center">
-              <Input type="file" id="csvImport" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
-              <Button onClick={handleImportRoles} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto">
-                {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
-                Import
+          {accessContext.featurePermissions.canImportData && (
+            <div className="mb-6 p-4 border rounded-lg dark:border-gray-700">
+              <h3 className="text-lg font-medium mb-2 flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Roles from CSV</h3>
+              <div className="flex flex-col sm:flex-row gap-2 items-center">
+                <Input type="file" id="csvImport" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
+                <Button onClick={handleImportRoles} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto">
+                  {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
+                  Import
+                </Button>
+              </div>
+               <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="mt-2 px-0 text-primary">
+                  <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
               </Button>
+              <p className="text-xs text-muted-foreground mt-2">
+                CSV format: id (optional, for updates), name, code, description, permissions (semicolon-separated, e.g., &quot;perm_code1;perm_code2&quot;).
+              </p>
             </div>
-             <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="mt-2 px-0 text-primary">
-                <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
-            </Button>
-            <p className="text-xs text-muted-foreground mt-2">
-              CSV format: id (optional, for updates), name, code, description, permissions (semicolon-separated, e.g., &quot;perm_code1;perm_code2&quot;).
-            </p>
-          </div>
+          )}
 
           {selectedRoleIds.length > 0 && (
              <div className="mb-4 flex items-center gap-2">
-                <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
-                    <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedRoleIds.length})
-                </Button>
+                {accessContext.featurePermissions.canDeleteRecords && (
+                  <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
+                      <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedRoleIds.length})
+                  </Button>
+                )}
                 <span className="text-sm text-muted-foreground">
                     {selectedRoleIds.length} role(s) selected.
                 </span>
@@ -467,20 +480,24 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
                       <Eye className="h-3 w-3" />
                       <span className="ml-1">View</span>
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleEdit(role)} disabled={isSubmitting || (role.isSystemRole && !role.isCommitteeRole && role.code !== 'admin' && role.code !== 'super_admin')} className="min-h-[44px] flex-1 text-xs">
-                      <Edit className="h-3 w-3" />
-                      <span className="ml-1">Edit</span>
-                    </Button>
-                    <Button 
-                      variant="destructive" 
-                      size="sm" 
-                      onClick={() => handleDelete(role.id)} 
-                      disabled={isSubmitting || role.code === 'admin' || role.code === 'super_admin' || (role.isSystemRole && !role.isCommitteeRole)}
-                      className="min-h-[44px] flex-1 text-xs"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                      <span className="ml-1">Delete</span>
-                    </Button>
+                    {accessContext.featurePermissions.canManageRoles && (
+                      <Button variant="outline" size="sm" onClick={() => handleEdit(role)} disabled={isSubmitting || (role.isSystemRole && !role.isCommitteeRole && role.code !== 'admin' && role.code !== 'super_admin')} className="min-h-[44px] flex-1 text-xs">
+                        <Edit className="h-3 w-3" />
+                        <span className="ml-1">Edit</span>
+                      </Button>
+                    )}
+                    {accessContext.featurePermissions.canDeleteRecords && (
+                      <Button 
+                        variant="destructive" 
+                        size="sm" 
+                        onClick={() => handleDelete(role.id)} 
+                        disabled={isSubmitting || role.code === 'admin' || role.code === 'super_admin' || (role.isSystemRole && !role.isCommitteeRole)}
+                        className="min-h-[44px] flex-1 text-xs"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                        <span className="ml-1">Delete</span>
+                      </Button>
+                    )}
                   </div>
                 </Card>
               );
@@ -533,14 +550,18 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
                         <Eye className="h-4 w-4" />
                         <span className="sr-only">View Role</span>
                       </Button>
-                      <Button variant="outline" size="icon" onClick={() => handleEdit(role)} disabled={isSubmitting || (role.isSystemRole && !role.isCommitteeRole && role.code !== 'admin' && role.code !== 'super_admin')}>
-                        <Edit className="h-4 w-4" />
-                        <span className="sr-only">Edit Role</span>
-                      </Button>
-                      <Button variant="destructive" size="icon" onClick={() => handleDelete(role.id)} disabled={isSubmitting || role.code === 'admin' || role.code === 'super_admin' || (role.isSystemRole && !role.isCommitteeRole)}>
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete Role</span>
-                      </Button>
+                      {accessContext.featurePermissions.canManageRoles && (
+                        <Button variant="outline" size="icon" onClick={() => handleEdit(role)} disabled={isSubmitting || (role.isSystemRole && !role.isCommitteeRole && role.code !== 'admin' && role.code !== 'super_admin')}>
+                          <Edit className="h-4 w-4" />
+                          <span className="sr-only">Edit Role</span>
+                        </Button>
+                      )}
+                      {accessContext.featurePermissions.canDeleteRecords && (
+                        <Button variant="destructive" size="icon" onClick={() => handleDelete(role.id)} disabled={isSubmitting || role.code === 'admin' || role.code === 'super_admin' || (role.isSystemRole && !role.isCommitteeRole)}>
+                          <Trash2 className="h-4 w-4" />
+                          <span className="sr-only">Delete Role</span>
+                        </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

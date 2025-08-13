@@ -16,6 +16,7 @@ import { Textarea } from '@/components/ui/textarea';
 import type { Building as BuildingType, Institute } from '@/types/entities'; // Renamed Building to BuildingType
 import { buildingService } from '@/lib/services/buildingService';
 import { instituteService } from '@/lib/api/institutes';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 
 type BuildingStatus = 'active' | 'inactive' | 'under_maintenance' | 'demolished';
 const BUILDING_STATUS_OPTIONS: { value: BuildingStatus, label: string }[] = [
@@ -36,6 +37,10 @@ export default function BuildingManagementPage() {
   const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentBuilding, setCurrentBuilding] = useState<Partial<BuildingType> | null>(null);
@@ -374,6 +379,7 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,"Governme
             </CardDescription>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            {accessContext.navigationPermissions.canAccessSettings && (
              <Dialog open={isDialogOpen} onOpenChange={(isOpen) => { setIsDialogOpen(isOpen); if (!isOpen) resetForm(); }}>
               <DialogTrigger asChild>
                 <Button onClick={handleAddNew} className="w-full sm:w-auto" disabled={institutes.length === 0}>
@@ -420,29 +426,34 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,"Governme
                 </form>
               </DialogContent>
             </Dialog>
-            <Button onClick={handleExportBuildings} variant="outline" className="w-full sm:w-auto">
-              <Download className="mr-2 h-5 w-5" /> Export CSV
-            </Button>
+            )}
+            {accessContext.featurePermissions.canExportData && (
+              <Button onClick={handleExportBuildings} variant="outline" className="w-full sm:w-auto">
+                <Download className="mr-2 h-5 w-5" /> Export CSV
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
-            <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Buildings from CSV</h3>
-            <div className="flex flex-col sm:flex-row gap-2 items-center">
-              <Input type="file" id="csvImportBuilding" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
-              <Button onClick={handleImportBuildings} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto">
-                {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>} Import
-              </Button>
-            </div>
-            <div className="flex items-center gap-2">
-                 <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="px-0 text-primary">
-                    <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
+          {accessContext.featurePermissions.canImportData && (
+            <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
+              <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Buildings from CSV</h3>
+              <div className="flex flex-col sm:flex-row gap-2 items-center">
+                <Input type="file" id="csvImportBuilding" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
+                <Button onClick={handleImportBuildings} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto">
+                  {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>} Import
                 </Button>
-                <p className="text-xs text-muted-foreground">
-                  CSV fields: id (optional), name, code, description, instituteId OR (instituteName and instituteCode), status, constructionYear, numberOfFloors, totalAreaSqFt.
-                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                   <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="px-0 text-primary">
+                      <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
+                  </Button>
+                  <p className="text-xs text-muted-foreground">
+                    CSV fields: id (optional), name, code, description, instituteId OR (instituteName and instituteCode), status, constructionYear, numberOfFloors, totalAreaSqFt.
+                  </p>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
@@ -473,9 +484,11 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,"Governme
 
           {selectedBuildingIds.length > 0 && (
              <div className="mb-4 flex items-center gap-2">
-                <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
-                    <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedBuildingIds.length})
-                </Button>
+                {accessContext.featurePermissions.canDeleteRecords && (
+                  <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
+                      <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedBuildingIds.length})
+                  </Button>
+                )}
                 <span className="text-sm text-muted-foreground">
                     {selectedBuildingIds.length} building(s) selected.
                 </span>
@@ -542,20 +555,24 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,"Governme
                       <Eye className="h-3 w-3" />
                       <span className="ml-1">View</span>
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleEdit(building)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
-                      <Edit className="h-3 w-3" />
-                      <span className="ml-1">Edit</span>
-                    </Button>
-                    <Button 
-                      variant="destructive" 
-                      size="sm" 
-                      onClick={() => handleDelete(building.id)} 
-                      disabled={isSubmitting}
-                      className="min-h-[44px] flex-1 text-xs"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                      <span className="ml-1">Delete</span>
-                    </Button>
+                    {accessContext.navigationPermissions.canAccessSettings && (
+                      <Button variant="outline" size="sm" onClick={() => handleEdit(building)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
+                        <Edit className="h-3 w-3" />
+                        <span className="ml-1">Edit</span>
+                      </Button>
+                    )}
+                    {accessContext.featurePermissions.canDeleteRecords && (
+                      <Button 
+                        variant="destructive" 
+                        size="sm" 
+                        onClick={() => handleDelete(building.id)} 
+                        disabled={isSubmitting}
+                        className="min-h-[44px] flex-1 text-xs"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                        <span className="ml-1">Delete</span>
+                      </Button>
+                    )}
                   </div>
                 </Card>
               );
@@ -603,14 +620,18 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,"Governme
                         <Eye className="h-4 w-4" />
                         <span className="sr-only">View Building</span>
                       </Button>
-                      <Button variant="outline" size="icon" onClick={() => handleEdit(building)} disabled={isSubmitting}>
-                        <Edit className="h-4 w-4" />
-                        <span className="sr-only">Edit Building</span>
-                      </Button>
-                      <Button variant="destructive" size="icon" onClick={() => handleDelete(building.id)} disabled={isSubmitting}>
+                      {accessContext.navigationPermissions.canAccessSettings && (
+                        <Button variant="outline" size="icon" onClick={() => handleEdit(building)} disabled={isSubmitting}>
+                          <Edit className="h-4 w-4" />
+                          <span className="sr-only">Edit Building</span>
+                        </Button>
+                      )}
+                      {accessContext.featurePermissions.canDeleteRecords && (
+                        <Button variant="destructive" size="icon" onClick={() => handleDelete(building.id)} disabled={isSubmitting}>
                         <Trash2 className="h-4 w-4" />
                         <span className="sr-only">Delete Building</span>
                       </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

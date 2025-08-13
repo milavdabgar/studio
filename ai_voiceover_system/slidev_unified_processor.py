@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Slidev Unified Video Processor
 ==============================
@@ -26,37 +26,62 @@ import time
 import re
 import subprocess
 import argparse
+import platform
+import shutil
 from pathlib import Path
-import requests
 
 # Set TTS environment
 os.environ['COQUI_TOS_AGREED'] = '1'
 os.environ['COQUI_TTS_AGREED'] = '1'
 
-# Import dependencies with availability tracking
-try:
-    from moviepy import ImageClip, AudioFileClip, concatenate_videoclips
-    MOVIEPY_AVAILABLE = True
-except ImportError:
-    MOVIEPY_AVAILABLE = False
+def import_dependencies():
+    """Import dependencies with availability tracking after venv setup"""
+    global requests, MOVIEPY_AVAILABLE, GTTS_AVAILABLE, COQUI_TTS_AVAILABLE
+    global ImageClip, AudioFileClip, concatenate_videoclips, gTTS, TTS
+    global ELEVENLABS_API_KEY, ELEVENLABS_AVAILABLE
+    
+    try:
+        import requests
+    except ImportError:
+        print("❌ Failed to import requests - please check virtual environment setup")
+        sys.exit(1)
+    
+    try:
+        from moviepy import ImageClip, AudioFileClip, concatenate_videoclips
+        MOVIEPY_AVAILABLE = True
+    except ImportError:
+        MOVIEPY_AVAILABLE = False
 
-try:
-    from gtts import gTTS
-    GTTS_AVAILABLE = True
-except ImportError:
-    GTTS_AVAILABLE = False
+    try:
+        from gtts import gTTS
+        GTTS_AVAILABLE = True
+    except ImportError:
+        GTTS_AVAILABLE = False
 
-try:
-    from TTS.api import TTS
-    COQUI_TTS_AVAILABLE = True
-except ImportError:
-    COQUI_TTS_AVAILABLE = False
+    try:
+        from TTS.api import TTS
+        COQUI_TTS_AVAILABLE = True
+    except ImportError:
+        COQUI_TTS_AVAILABLE = False
+    
+    # Set up ElevenLabs configuration
+    ELEVENLABS_API_KEY = os.getenv('ELEVENLABS_API_KEY')
+    ELEVENLABS_AVAILABLE = bool(ELEVENLABS_API_KEY)
+    
+    return True
 
-# ElevenLabs configuration
-ELEVENLABS_API_KEY = os.getenv('ELEVENLABS_API_KEY')
-ELEVENLABS_VOICE_ID = "Milav English"
+# Initialize globals
+requests = None
+MOVIEPY_AVAILABLE = False
+GTTS_AVAILABLE = False  
+COQUI_TTS_AVAILABLE = False
+ImageClip = AudioFileClip = concatenate_videoclips = gTTS = TTS = None
+
+# ElevenLabs configuration - will be set after import_dependencies()
+ELEVENLABS_API_KEY = None
+ELEVENLABS_VOICE_ID = "Milav English" 
 ELEVENLABS_API_URL = "https://api.elevenlabs.io/v1"
-ELEVENLABS_AVAILABLE = bool(ELEVENLABS_API_KEY)
+ELEVENLABS_AVAILABLE = False
 
 class SlidevUnifiedProcessor:
     """Unified processor combining all Slidev video generation capabilities"""
@@ -80,11 +105,23 @@ class SlidevUnifiedProcessor:
     
     def _display_capabilities(self):
         """Display available capabilities and TTS providers"""
-        print(f"📦 Available Components:")
+        print(f"🖥️  Platform: {platform.system()} {platform.machine()}")
+        
+        # Show Python environment info
+        venv_active = hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix)
+        venv_path = os.environ.get('VIRTUAL_ENV', 'None')
+        print(f"🐍 Python: {sys.executable}")
+        print(f"📦 Virtual Env: {'✅ Active' if venv_active else '❌ Not Active'} ({venv_path})")
+        
+        print(f"\n📦 Available Components:")
         print(f"   ✅ MoviePy: {MOVIEPY_AVAILABLE}")
         print(f"   {'✅' if GTTS_AVAILABLE else '❌'} Google TTS: {GTTS_AVAILABLE}")
         print(f"   {'✅' if ELEVENLABS_AVAILABLE else '❌'} ElevenLabs: {ELEVENLABS_AVAILABLE}")
         print(f"   {'✅' if COQUI_TTS_AVAILABLE else '❌'} Coqui TTS: {COQUI_TTS_AVAILABLE}")
+        
+        # Check Slidev availability
+        slidev_available = self._find_slidev_command() is not None
+        print(f"   {'✅' if slidev_available else '❌'} Slidev CLI: {slidev_available}")
         
         print(f"\n🎤 TTS Provider: {self.tts_provider.upper()}")
         
@@ -97,6 +134,11 @@ class SlidevUnifiedProcessor:
             available_providers.append("coqui")
         
         print(f"🔄 Available Providers: {', '.join(available_providers)}")
+        
+        # Virtual environment reminder for Linux
+        if platform.system() == 'Linux' and not venv_active:
+            print(f"\n💡 Linux Tip: Consider using virtual environment:")
+            print(f"   python -m venv venv && source venv/bin/activate && pip install -r requirements.txt")
     
     def _initialize_tts_provider(self):
         """Initialize the selected TTS provider"""
@@ -362,8 +404,29 @@ class SlidevUnifiedProcessor:
         return slide_data if (slide_data['title'] or slide_data['content'] or 
                             slide_data['bullet_points'] or slide_data['speaker_notes']) else None
     
+    def _find_slidev_command(self):
+        """Find the appropriate slidev command for the current system"""
+        # First, try to find slidev in PATH (global installation)
+        slidev_cmd = shutil.which('slidev')
+        if slidev_cmd:
+            return ['slidev']
+        
+        # Try npx slidev (most common)
+        npx_cmd = shutil.which('npx')
+        if npx_cmd:
+            return ['npx', 'slidev']
+        
+        # Try node if npm/npx not in PATH
+        node_cmd = shutil.which('node')
+        if node_cmd:
+            # Check for local installation
+            if os.path.exists('./node_modules/.bin/slidev'):
+                return [node_cmd, './node_modules/.bin/slidev']
+        
+        return None
+    
     def export_slides(self, slidev_file, with_clicks=False):
-        """Export slides using slidev export command"""
+        """Export slides using slidev export command with cross-platform support"""
         export_type = "click states" if with_clicks else "slides"
         print(f"📤 Exporting {export_type}...")
         
@@ -374,11 +437,18 @@ class SlidevUnifiedProcessor:
         os.makedirs(self.slides_dir, exist_ok=True)
         
         try:
-            slidev_dir = os.path.dirname(slidev_file)
+            slidev_dir = os.path.dirname(os.path.abspath(slidev_file))
             slidev_filename = os.path.basename(slidev_file)
             
-            export_cmd = [
-                "npx", "slidev", "export", 
+            # Find appropriate slidev command
+            slidev_cmd = self._find_slidev_command()
+            if not slidev_cmd:
+                print(f"   ❌ Slidev not found. Install with: npm install -g @slidev/cli")
+                return False
+            
+            # Build export command
+            export_cmd = slidev_cmd + [
+                "export",
                 slidev_filename,
                 "--output", os.path.abspath(self.slides_dir),
                 "--format", "png",
@@ -402,6 +472,7 @@ class SlidevUnifiedProcessor:
                 print(f"   ✅ {export_type.title()} exported successfully!")
                 
                 slide_files = list(Path(self.slides_dir).glob("*.png"))
+                
                 if slide_files:
                     print(f"   📊 Exported {len(slide_files)} {export_type}")
                     return True
@@ -416,8 +487,9 @@ class SlidevUnifiedProcessor:
         except subprocess.TimeoutExpired:
             print(f"   ❌ Slidev export timed out")
             return False
-        except FileNotFoundError:
-            print(f"   ❌ Slidev not found. Install with: npm install -g @slidev/cli")
+        except FileNotFoundError as e:
+            print(f"   ❌ Command not found: {e}")
+            print(f"   💡 Install Slidev with: npm install -g @slidev/cli")
             return False
         except Exception as e:
             print(f"   ❌ Export error: {str(e)}")
@@ -854,7 +926,6 @@ class SlidevUnifiedProcessor:
         # Remove temporary slides directory
         try:
             if os.path.exists(self.slides_dir):
-                import shutil
                 shutil.rmtree(self.slides_dir)
                 print(f"   🗑️ Removed directory: {self.slides_dir}")
         except Exception as e:
@@ -862,8 +933,114 @@ class SlidevUnifiedProcessor:
         
         print("✅ Cleanup completed!")
 
+def check_and_setup_venv():
+    """Check for virtual environment and set it up if needed"""
+    script_dir = Path(__file__).parent.absolute()
+    project_root = script_dir.parent
+    
+    # Check for existing venv in multiple locations
+    venv_candidates = [
+        project_root / "venv",           # Main project venv
+        script_dir / "venv",             # Local script venv  
+        script_dir.parent / "venv"       # Parent directory venv
+    ]
+    
+    venv_dir = None
+    for candidate in venv_candidates:
+        if candidate.exists():
+            venv_dir = candidate
+            break
+    
+    # If no existing venv found, create in main project
+    if not venv_dir:
+        venv_dir = project_root / "venv"
+    
+    # Check if we're already in a virtual environment
+    venv_active = hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix)
+    virtual_env_var = os.environ.get('VIRTUAL_ENV')
+    
+    # Only consider truly active if both conditions are met
+    if venv_active and virtual_env_var:
+        return True, "Already in virtual environment"
+    
+    print(f"🔍 Current Python: {sys.executable}")
+    print(f"🔍 VIRTUAL_ENV: {virtual_env_var}")
+    print(f"🔍 venv_active detection: {venv_active}")
+    
+    # Check if venv directory exists
+    if not venv_dir.exists():
+        print(f"🔧 Creating virtual environment at {venv_dir}...")
+        
+        # Prefer Python 3.11 for Coqui TTS compatibility
+        python_candidates = [
+            "/opt/homebrew/bin/python3.11",  # Homebrew Python 3.11 (macOS)
+            "/usr/local/bin/python3.11",     # Alternative location
+            "python3.11",                    # System PATH
+            sys.executable                   # Current Python as fallback
+        ]
+        
+        python_exe = sys.executable
+        for candidate in python_candidates:
+            try:
+                result = subprocess.run([candidate, "--version"], capture_output=True, text=True)
+                if result.returncode == 0 and "3.11" in result.stdout:
+                    python_exe = candidate
+                    print(f"   🐍 Using Python 3.11: {candidate}")
+                    break
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                continue
+        
+        try:
+            subprocess.run([python_exe, "-m", "venv", str(venv_dir)], check=True)
+            print("✅ Virtual environment created successfully")
+        except subprocess.CalledProcessError as e:
+            return False, f"Failed to create virtual environment: {e}"
+    
+    # Try to activate venv by restarting with venv python
+    venv_python = venv_dir / ("Scripts" if platform.system() == "Windows" else "bin") / "python"
+    
+    if venv_python.exists() and str(venv_python) != sys.executable:
+        print(f"🔄 Switching to virtual environment Python...")
+        
+        # Install requirements if they don't exist
+        requirements_file = script_dir / "requirements.txt"
+        if requirements_file.exists():
+            print("📦 Installing/updating dependencies...")
+            try:
+                subprocess.run([str(venv_python), "-m", "pip", "install", "--upgrade", "pip"], check=True, capture_output=True)
+                subprocess.run([str(venv_python), "-m", "pip", "install", "-r", str(requirements_file)], check=True, capture_output=True)
+                print("✅ Dependencies installed successfully")
+            except subprocess.CalledProcessError as e:
+                print(f"⚠️ Warning: Failed to install dependencies: {e}")
+        
+        # Re-run the script with venv python
+        print(f"🚀 Restarting with virtual environment...")
+        try:
+            os.execv(str(venv_python), [str(venv_python)] + sys.argv)
+        except Exception as e:
+            print(f"⚠️ Failed to restart with venv, continuing with current Python: {e}")
+            return True, "Continuing with current Python"
+    
+    return True, "Using existing virtual environment"
+
 def main():
     """Main execution with argument parsing"""
+    print("🔧 Starting Slidev Unified Processor...")
+    
+    # Check and setup virtual environment first
+    print("🔧 Checking virtual environment setup...")
+    success, message = check_and_setup_venv()
+    if not success:
+        print(f"❌ Virtual environment setup failed: {message}")
+        return
+    
+    print(f"✅ Virtual environment ready: {message}")
+    
+    # Import dependencies after venv is ready
+    print("📦 Importing dependencies...")
+    import_dependencies()
+    print("✅ Dependencies imported successfully")
+    
     parser = argparse.ArgumentParser(
         description="Slidev Unified Video Processor",
         formatter_class=argparse.RawDescriptionHelpFormatter,

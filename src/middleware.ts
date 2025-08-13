@@ -2,6 +2,8 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import type { UserRole as UserRoleCode } from '@/types/entities'; // UserRole is now UserRoleCode
+import { authMiddleware, getUserFromRequest } from '@/middleware/authMiddleware';
+import { generalApiRateLimiter, authRateLimiter } from '@/middleware/apiRateLimiter';
 
 // This would ideally fetch from an API or shared config in a real app
 // For middleware, direct API fetch might be slow. Consider embedding essential roles or using a faster mechanism.
@@ -139,19 +141,53 @@ const ROLE_ACCESS_CONTROL: Record<string, UserRoleCode[]> = {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const authenticatedUser = isAuthenticated(request);
   
   // Debug logging
   console.log(`[Middleware] Pathname: ${pathname}`);
   
-  // Allow static assets and API routes to pass through
+  // Handle API routes with authentication and rate limiting
+  if (pathname.startsWith('/api/')) {
+    // Apply rate limiting to API routes
+    if (pathname.startsWith('/api/auth/')) {
+      // Stricter rate limiting for auth endpoints
+      const rateLimitResult = await authRateLimiter(request);
+      if (rateLimitResult.status === 429) {
+        return rateLimitResult;
+      }
+    } else {
+      // General rate limiting for other API routes
+      const rateLimitResult = await generalApiRateLimiter(request);
+      if (rateLimitResult.status === 429) {
+        return rateLimitResult;
+      }
+    }
+    
+    // Apply JWT authentication to protected API routes
+    const isPublicApiRoute = pathname.startsWith('/api/auth/') || 
+                             pathname.startsWith('/api/public/') ||
+                             pathname === '/api/health';
+    
+    if (!isPublicApiRoute) {
+      const authResult = await authMiddleware(request);
+      if (authResult.status === 401 || authResult.status === 500) {
+        return authResult;
+      }
+      return authResult;
+    }
+    
+    return NextResponse.next();
+  }
+  
+  // Allow static assets to pass through
   if (pathname.startsWith('/_next/') || 
-      pathname.startsWith('/api/') || 
       pathname.startsWith('/slidev-builds/') ||
       pathname.includes('.')) { // Common check for files like .ico, .png
     console.log(`[Middleware] Allowing static asset: ${pathname}`);
     return NextResponse.next();
   }
+  
+  // For web pages, use cookie-based authentication
+  const authenticatedUser = isAuthenticated(request);
 
   // Check if the route is public first
   // Note: /faculty/ prefix is for public faculty profiles, not protected faculty dashboard routes

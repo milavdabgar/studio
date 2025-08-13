@@ -3,11 +3,12 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Institute } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { InstituteModel } from '@/lib/models';
+import { withAPIRoleAccess, type APIAccessContext } from '@/lib/auth/api-middleware';
 
 const generateInstituteId = (): string => `inst_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 
-export async function GET() {
+async function handleGET(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
     
@@ -26,7 +27,9 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+export const GET = withAPIRoleAccess(handleGET, ['admin', 'super_admin', 'hod', 'principal']);
+
+async function handlePOST(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
     
@@ -81,3 +84,5 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Error creating institute' }, { status: 500 });
   }
 }
+
+export const POST = withAPIRoleAccess(handlePOST, ['admin', 'super_admin', 'hod', 'principal']);

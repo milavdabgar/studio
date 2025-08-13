@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, ArrowLeft, Users, Briefcase, CalendarCheck, Award, MapPin, ListChecks, Settings } from "lucide-react";
@@ -14,6 +15,10 @@ import Link from 'next/link';
 import { format, isValid, parseISO } from 'date-fns';
 
 export default function ProjectEventDashboardPage() {
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
+
   const router = useRouter();
   const params = useParams();
   const eventId = params?.eventId as string;
@@ -75,22 +80,30 @@ export default function ProjectEventDashboardPage() {
     );
   }
 
-  const dashboardCards = [
-    { title: "Total Projects", value: String(stats?.total ?? projects.length), icon: Briefcase, color: "text-blue-500", href: `/admin/project-fair/events/${eventId}/projects` },
-    { title: "Total Teams", value: String(new Set(projects.map(p => p.teamId)).size), icon: Users, color: "text-green-500", href: `/admin/project-fair/events/${eventId}/teams` },
-    { title: "Evaluated Projects", value: String(stats?.evaluated ?? projects.filter(p => p.deptEvaluation?.completed || p.centralEvaluation?.completed).length), icon: CalendarCheck, color: "text-purple-500", href: `/admin/project-fair/events/${eventId}/evaluations` },
-    { title: "Winners Published", value: event.publishResults ? "Yes" : "No", icon: Award, color: event.publishResults ? "text-yellow-500" : "text-gray-500", href: `/admin/project-fair/events/${eventId}/results` },
+  const allDashboardCards = [
+    { title: "Total Projects", value: String(stats?.total ?? projects.length), icon: Briefcase, color: "text-blue-500", href: `/admin/project-fair/events/${eventId}/projects`, roles: ['admin', 'super_admin', 'hod', 'principal', 'faculty'] },
+    { title: "Total Teams", value: String(new Set(projects.map(p => p.teamId)).size), icon: Users, color: "text-green-500", href: `/admin/project-fair/events/${eventId}/teams`, roles: ['admin', 'super_admin', 'hod', 'principal'] },
+    { title: "Evaluated Projects", value: String(stats?.evaluated ?? projects.filter(p => p.deptEvaluation?.completed || p.centralEvaluation?.completed).length), icon: CalendarCheck, color: "text-purple-500", href: `/admin/project-fair/events/${eventId}/evaluations`, roles: ['admin', 'super_admin', 'hod', 'principal', 'faculty'] },
+    { title: "Winners Published", value: event.publishResults ? "Yes" : "No", icon: Award, color: event.publishResults ? "text-yellow-500" : "text-gray-500", href: `/admin/project-fair/events/${eventId}/results`, roles: ['admin', 'super_admin', 'hod', 'principal', 'faculty'] },
   ];
 
-  const managementLinks = [
-    { label: "Manage Projects", href: `/admin/project-fair/events/${eventId}/projects`, icon: Briefcase },
-    { label: "Manage Teams", href: `/admin/project-fair/events/${eventId}/teams`, icon: Users },
-    { label: "Assign Locations", href: `/admin/project-fair/events/${eventId}/locations`, icon: MapPin },
-    { label: "Manage Schedule", href: `/admin/project-fair/events/${eventId}/schedule`, icon: ListChecks },
-    { label: "Jury & Evaluations", href: `/admin/project-fair/events/${eventId}/evaluations`, icon: Award },
-    { label: "Results & Certificates", href: `/admin/project-fair/events/${eventId}/results`, icon: CalendarCheck },
-    { label: "Event Settings", href: `/admin/project-fair/events/edit/${eventId}`, icon: Settings },
+  const dashboardCards = allDashboardCards.filter(card => 
+    user && card.roles.includes(user.activeRole)
+  );
+
+  const allManagementLinks = [
+    { label: "Manage Projects", href: `/admin/project-fair/events/${eventId}/projects`, icon: Briefcase, roles: ['admin', 'super_admin', 'hod', 'principal', 'faculty'] },
+    { label: "Manage Teams", href: `/admin/project-fair/events/${eventId}/teams`, icon: Users, roles: ['admin', 'super_admin', 'hod', 'principal'] },
+    { label: "Assign Locations", href: `/admin/project-fair/events/${eventId}/locations`, icon: MapPin, roles: ['admin', 'super_admin', 'hod', 'principal'] },
+    { label: "Manage Schedule", href: `/admin/project-fair/events/${eventId}/schedule`, icon: ListChecks, roles: ['admin', 'super_admin', 'hod', 'principal'] },
+    { label: "Jury & Evaluations", href: `/admin/project-fair/events/${eventId}/evaluations`, icon: Award, roles: ['admin', 'super_admin', 'hod', 'principal', 'faculty'] },
+    { label: "Results & Certificates", href: `/admin/project-fair/events/${eventId}/results`, icon: CalendarCheck, roles: ['admin', 'super_admin', 'hod', 'principal', 'faculty'] },
+    { label: "Event Settings", href: `/admin/project-fair/events/edit/${eventId}`, icon: Settings, roles: ['admin', 'super_admin', 'hod', 'principal'] },
   ];
+
+  const managementLinks = allManagementLinks.filter(link => 
+    user && link.roles.includes(user.activeRole)
+  );
 
   return (
     <div className="space-y-8">

@@ -3,6 +3,7 @@ import type { Result, ResultFilterParams } from '@/types/entities';
 import { v4 as uuidv4 } from 'uuid';
 import { connectMongoose } from '@/lib/mongodb';
 import { ResultModel } from '@/lib/models';
+import { withAPIRoleAccess, type APIAccessContext } from '@/lib/auth/api-middleware';
 
 // Initialize default results if none exist
 async function initializeDefaultResults() {
@@ -40,7 +41,7 @@ async function initializeDefaultResults() {
   }
 }
 
-export async function GET(request: NextRequest) {
+async function handleGET(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
     await initializeDefaultResults();
@@ -92,11 +93,20 @@ export async function GET(request: NextRequest) {
   }
 }
 
+export const GET = withAPIRoleAccess(handleGET, ['admin', 'super_admin', 'hod', 'principal']);
 
 
 
-export async function POST(request: NextRequest) { 
+
+async function handlePOST(request: NextRequest, context: APIAccessContext) { 
   try {
+    // Check import data permissions for result creation/updates
+    if (!context.featurePermissions.canImportData) {
+      return NextResponse.json({ 
+        message: 'Access denied. You do not have permission to import/create results data.' 
+      }, { status: 403 });
+    }
+
     await connectMongoose();
     
     const resultDataToCreate = await request.json() as Omit<Result, '_id' | 'createdAt' | 'updatedAt'>;
@@ -167,3 +177,5 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Critical error processing result data. Please check server logs.' }, { status: 500 });
   }
 }
+
+export const POST = withAPIRoleAccess(handlePOST, ['admin', 'super_admin', 'hod', 'principal']);

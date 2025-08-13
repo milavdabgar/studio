@@ -34,8 +34,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (email: string, password: string) => {
-    // Mock login
+    // Mock login with small delay to simulate async
     console.log(`Mock login attempt for ${email} with password ${password}`);
+    await new Promise(resolve => setTimeout(resolve, 10));
     setUser({ id: '1', name: 'Test User', email });
   };
 

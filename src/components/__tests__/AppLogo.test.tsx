@@ -27,7 +27,7 @@ describe('AppLogo', () => {
 
   it('applies other SVG props', () => {
     render(<AppLogo data-testid="app-logo-svg" fill="red" />);
-    const svgElement = screen.getByTestId('app-logo-svg');
-    expect(svgElement).toHaveAttribute('fill', 'red');
+    const svgElements = screen.getAllByTestId('app-logo-svg');
+    expect(svgElements[0]).toHaveAttribute('fill', 'red');
   });
 });

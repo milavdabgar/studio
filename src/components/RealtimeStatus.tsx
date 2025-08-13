@@ -66,7 +66,7 @@ export function RealtimeStatus({
   if (showLabel) {
     return (
       <TooltipProvider>
-        <div className={`flex items-center gap-2 ${className}`}>
+      <div className={`flex items-center gap-2 ${className}`} data-testid="realtime-status-label">
           <Tooltip>
             <TooltipTrigger asChild>
               <Badge 
@@ -102,7 +102,7 @@ export function RealtimeStatus({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className={`inline-flex items-center gap-1 ${className}`}>
+        <div className={`inline-flex items-center gap-1 ${className}`} data-testid="realtime-status-icon">
             <div className={`${config.color}`}>
               {config.icon}
             </div>

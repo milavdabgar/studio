@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectMongoose } from '@/lib/mongodb';
 import { AcademicTermModel, ProgramModel } from '@/lib/models';
+import { withAPIRoleAccess, type APIAccessContext } from '@/lib/auth/api-middleware';
 
 // GET /api/academic-terms - Get all academic terms with optional filtering
-export async function GET(request: NextRequest) {
+async function handleGET(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
 
@@ -74,8 +75,10 @@ export async function GET(request: NextRequest) {
   }
 }
 
+export const GET = withAPIRoleAccess(handleGET, ['admin', 'super_admin', 'hod', 'principal']);
+
 // POST /api/academic-terms - Create new academic term
-export async function POST(request: NextRequest) {
+async function handlePOST(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
 
@@ -201,3 +204,5 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export const POST = withAPIRoleAccess(handlePOST, ['admin', 'super_admin', 'hod', 'principal']);

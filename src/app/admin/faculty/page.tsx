@@ -20,7 +20,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import type { Faculty, FacultyStatus, JobType, Gender, Institute, StaffCategory } from '@/types/entities'; 
 import { STAFF_CATEGORY_OPTIONS } from '@/types/entities'; // Import STAFF_CATEGORY_OPTIONS
 import { facultyService } from '@/lib/api/faculty';
-import { instituteService } from '@/lib/api/institutes'; 
+import { instituteService } from '@/lib/api/institutes';
+import { getUserCookie, getUserAccessContext, getDepartmentDisplayName } from '@/lib/auth/role-access'; 
 
 const DEPARTMENT_OPTIONS = [
   "Computer Engineering",
@@ -95,6 +96,10 @@ export default function FacultyManagementPage() {
   const [facultyList, setFacultyList] = useState<Faculty[]>([]);
   const [institutes, setInstitutes] = useState<Institute[]>([]); 
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -109,7 +114,11 @@ export default function FacultyManagementPage() {
   const [formMiddleName, setFormMiddleName] = useState('');
   const [formLastName, setFormLastName] = useState('');
   const [formPersonalEmail, setFormPersonalEmail] = useState('');
-  const [formDepartment, setFormDepartment] = useState(DEPARTMENT_OPTIONS[0]);
+  const [formDepartment, setFormDepartment] = useState(
+    accessContext.canViewAllDepartments 
+      ? DEPARTMENT_OPTIONS[0] 
+      : (accessContext.departmentFilter ? getDepartmentDisplayName(accessContext.departmentFilter) : DEPARTMENT_OPTIONS[0])
+  );
   const [formDesignation, setFormDesignation] = useState(DESIGNATION_OPTIONS[0]);
   const [formJobType, setFormJobType] = useState<JobType>('Regular');
   const [formStaffCategory, setFormStaffCategory] = useState<StaffCategory>('Teaching'); // Added
@@ -148,7 +157,17 @@ export default function FacultyManagementPage() {
         facultyService.getAllFaculty(),
         instituteService.getAllInstitutes()
       ]);
-      setFacultyList(facultyData);
+      
+      // Apply role-based filtering
+      let filteredFacultyData = facultyData;
+      if (!accessContext.canViewAllDepartments && accessContext.departmentFilter) {
+        const allowedDepartment = getDepartmentDisplayName(accessContext.departmentFilter);
+        filteredFacultyData = facultyData.filter(faculty => 
+          faculty.department === allowedDepartment
+        );
+      }
+      
+      setFacultyList(filteredFacultyData);
       setInstitutes(instituteData);
       if (instituteData.length > 0 && !formInstituteId) {
         setFormInstituteId(instituteData[0].id); 
@@ -158,7 +177,7 @@ export default function FacultyManagementPage() {
       toast({ variant: "destructive", title: "Error", description: "Could not load faculty data" });
     }
     setIsLoading(false);
-  }, [formInstituteId, toast]);
+  }, [formInstituteId, toast, accessContext]);
 
   useEffect(() => {
     fetchInitialData();
@@ -763,12 +782,19 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                   </div>
                   <div className="sm:col-span-1 lg:col-span-1">
                     <Label htmlFor="facultyDepartment" className="text-sm font-medium">Department *</Label>
-                    <Select value={formDepartment} onValueChange={(value) => setFormDepartment(value)} disabled={isSubmitting} required>
+                    <Select value={formDepartment} onValueChange={(value) => setFormDepartment(value)} disabled={isSubmitting || !accessContext.canEditAllDepartments} required>
                         <SelectTrigger id="facultyDepartment" className="mt-1 min-h-[44px]"><SelectValue placeholder="Select Department"/></SelectTrigger>
                         <SelectContent>
-                            {DEPARTMENT_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
+                            {(accessContext.canViewAllDepartments ? DEPARTMENT_OPTIONS : 
+                              accessContext.departmentFilter ? [getDepartmentDisplayName(accessContext.departmentFilter)] : []
+                            ).map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
                         </SelectContent>
                     </Select>
+                    {!accessContext.canEditAllDepartments && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        You can only manage faculty in your department
+                      </p>
+                    )}
                   </div>
                   <div className="sm:col-span-1 lg:col-span-1">
                     <Label htmlFor="facultyDesignation" className="text-sm font-medium">Designation</Label>
@@ -835,24 +861,27 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                 </form>
               </DialogContent>
             </Dialog>
-            <Button onClick={handleExportFaculty} variant="outline" className="w-full sm:w-auto min-h-[44px]">
-              <Download className="mr-2 h-4 w-4 sm:h-5 sm:w-5" /> 
-              <span className="sm:hidden">Export</span>
-              <span className="hidden sm:inline">Export CSV</span>
-            </Button>
+            {accessContext.featurePermissions.canExportData && (
+              <Button onClick={handleExportFaculty} variant="outline" className="w-full sm:w-auto min-h-[44px]">
+                <Download className="mr-2 h-4 w-4 sm:h-5 sm:w-5" /> 
+                <span className="sm:hidden">Export</span>
+                <span className="hidden sm:inline">Export CSV</span>
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent className="p-4 sm:p-6">
-          <div className="mb-4 sm:mb-6 p-3 sm:p-4 border rounded-lg space-y-3 sm:space-y-4 dark:border-gray-700">
-            <h3 className="text-base sm:text-lg font-medium flex items-center gap-2"><UploadCloud className="h-4 w-4 sm:h-5 sm:w-5 text-primary"/>Import Staff (Standard Format)</h3>
-            <div className="flex flex-col sm:flex-row gap-2 items-center">
-              <Input type="file" id="csvImportFaculty" accept=".csv" onChange={handleFileChange} className="flex-grow min-h-[44px] text-sm" disabled={isSubmitting} />
-              <Button onClick={handleImportFaculty} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto min-h-[44px] text-sm">
-                {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
-                <span className="sm:hidden">Import</span>
-                <span className="hidden sm:inline">Import Standard</span>
-              </Button>
-            </div>
+          {accessContext.featurePermissions.canImportData && (
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 border rounded-lg space-y-3 sm:space-y-4 dark:border-gray-700">
+              <h3 className="text-base sm:text-lg font-medium flex items-center gap-2"><UploadCloud className="h-4 w-4 sm:h-5 sm:w-5 text-primary"/>Import Staff (Standard Format)</h3>
+              <div className="flex flex-col sm:flex-row gap-2 items-center">
+                <Input type="file" id="csvImportFaculty" accept=".csv" onChange={handleFileChange} className="flex-grow min-h-[44px] text-sm" disabled={isSubmitting} />
+                <Button onClick={handleImportFaculty} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto min-h-[44px] text-sm">
+                  {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
+                  <span className="sm:hidden">Import</span>
+                  <span className="hidden sm:inline">Import Standard</span>
+                </Button>
+              </div>
             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                  <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="px-0 text-primary w-fit">
                     <FileSpreadsheet className="mr-1 h-4 w-4" /> 
@@ -862,18 +891,20 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                   Use for general staff data import/update. Requires staffCode, firstName, lastName, department, status.
                 </p>
             </div>
-          </div>
-
-          <div className="mb-4 sm:mb-6 p-3 sm:p-4 border rounded-lg space-y-3 sm:space-y-4 dark:border-gray-700">
-            <h3 className="text-base sm:text-lg font-medium flex items-center gap-2"><UploadCloud className="h-4 w-4 sm:h-5 sm:w-5 text-accent"/>Import GTU Faculty Data</h3>
-            <div className="flex flex-col sm:flex-row gap-2 items-center">
-              <Input type="file" id="gtuCsvImportFaculty" accept=".csv" onChange={handleGtuFileChange} className="flex-grow min-h-[44px] text-sm" disabled={isSubmitting} />
-              <Button onClick={handleImportGtuFaculty} disabled={isSubmitting || !selectedGtuFile || institutes.length === 0} className="w-full sm:w-auto min-h-[44px] text-sm bg-accent hover:bg-accent/90 text-accent-foreground">
-                {isSubmitting && selectedGtuFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
-                <span className="sm:hidden">Import GTU</span>
-                <span className="hidden sm:inline">Import GTU Data</span>
-              </Button>
             </div>
+          )}
+
+          {accessContext.featurePermissions.canImportData && (
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 border rounded-lg space-y-3 sm:space-y-4 dark:border-gray-700">
+              <h3 className="text-base sm:text-lg font-medium flex items-center gap-2"><UploadCloud className="h-4 w-4 sm:h-5 sm:w-5 text-accent"/>Import GTU Faculty Data</h3>
+              <div className="flex flex-col sm:flex-row gap-2 items-center">
+                <Input type="file" id="gtuCsvImportFaculty" accept=".csv" onChange={handleGtuFileChange} className="flex-grow min-h-[44px] text-sm" disabled={isSubmitting} />
+                <Button onClick={handleImportGtuFaculty} disabled={isSubmitting || !selectedGtuFile || institutes.length === 0} className="w-full sm:w-auto min-h-[44px] text-sm bg-accent hover:bg-accent/90 text-accent-foreground">
+                  {isSubmitting && selectedGtuFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
+                  <span className="sm:hidden">Import GTU</span>
+                  <span className="hidden sm:inline">Import GTU Data</span>
+                </Button>
+              </div>
              {institutes.length === 0 && <p className="text-xs text-destructive">GTU Import disabled: No institutes found. Please add institutes first.</p>}
             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                  <Button onClick={handleDownloadGtuSampleCsv} variant="link" size="sm" className="px-0 text-accent w-fit">
@@ -884,7 +915,8 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                   Import faculty data using the official GTU CSV format. Select default institute for new users above.
                 </p>
             </div>
-          </div>
+            </div>
+          )}
 
           <div className="mb-4 sm:mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 p-3 sm:p-4 border rounded-lg dark:border-gray-700">
             <div>
@@ -944,7 +976,12 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
           
           {selectedFacultyIds.length > 0 && (
              <div className="mb-4 flex flex-col sm:flex-row sm:items-center gap-2">
-                <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting} className="w-full sm:w-auto min-h-[44px]">
+                <Button 
+                  variant="destructive" 
+                  onClick={handleDeleteSelected} 
+                  disabled={isSubmitting || !accessContext.featurePermissions.canDeleteRecords} 
+                  className="w-full sm:w-auto min-h-[44px]"
+                >
                     <Trash2 className="mr-2 h-4 w-4" /> 
                     <span className="sm:hidden">Delete ({selectedFacultyIds.length})</span>
                     <span className="hidden sm:inline">Delete Selected ({selectedFacultyIds.length})</span>
@@ -1010,7 +1047,13 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                     <Button variant="outline" size="sm" onClick={() => handleEdit(faculty)} disabled={isSubmitting} className="flex-1 min-h-[40px]">
                       <Edit className="h-4 w-4 mr-1" /> Edit
                     </Button>
-                    <Button variant="destructive" size="sm" onClick={() => handleDelete(faculty.id)} disabled={isSubmitting} className="min-h-[40px]">
+                    <Button 
+                      variant="destructive" 
+                      size="sm" 
+                      onClick={() => handleDelete(faculty.id)} 
+                      disabled={isSubmitting || !accessContext.featurePermissions.canDeleteRecords} 
+                      className="min-h-[40px]"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>

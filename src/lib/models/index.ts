@@ -136,7 +136,11 @@ const committeeSchema = new Schema<ICommittee>({
   code: { type: String, required: true, unique: true },
   description: { type: String },
   purpose: { type: String, required: true },
-  committeeType: { type: String, default: 'Academic' },
+  committeeType: { 
+    type: String, 
+    enum: ['tpo', 'ssip', 'library', 'it_cwan', 'academic', 'administrative', 'research', 'examination', 'grievance'],
+    default: 'academic' 
+  },
   department: { type: String },
   chairperson: {
     userId: { type: String },
@@ -161,11 +165,62 @@ const committeeSchema = new Schema<ICommittee>({
     userId: { type: String, required: true },
     name: { type: String },
     email: { type: String },
-    role: { type: String, required: true }, // CommitteeMemberRole
+    role: { 
+      type: String, 
+      enum: ['convener', 'co_convener', 'member', 'secretary', 'coordinator'],
+      required: true 
+    },
     contactNumber: { type: String },
     assignmentDate: { type: String, required: true },
-    endDate: { type: String }
+    endDate: { type: String },
+    permissions: [{ type: String }], // Committee-specific permissions
+    isActive: { type: Boolean, default: true }
   }],
+  // New fields for enhanced committee management
+  settings: {
+    allowSelfRegistration: { type: Boolean, default: false },
+    maxMembers: { type: Number, default: 10 },
+    requireApproval: { type: Boolean, default: true },
+    meetingFrequency: { type: String, enum: ['weekly', 'monthly', 'quarterly', 'annually', 'as_needed'], default: 'monthly' },
+    notificationPreferences: {
+      email: { type: Boolean, default: true },
+      sms: { type: Boolean, default: false },
+      dashboard: { type: Boolean, default: true }
+    }
+  },
+  workflows: [{
+    id: { type: String, required: true },
+    name: { type: String, required: true },
+    description: { type: String },
+    steps: [{
+      stepId: { type: String, required: true },
+      stepName: { type: String, required: true },
+      assignedRole: { type: String, required: true },
+      permissions: [{ type: String }],
+      isRequired: { type: Boolean, default: true },
+      timeLimit: { type: Number }, // in hours
+      nextSteps: [{ type: String }]
+    }],
+    isActive: { type: Boolean, default: true }
+  }],
+  resources: [{
+    resourceId: { type: String, required: true },
+    resourceType: { type: String, enum: ['budget', 'room', 'equipment', 'software', 'personnel'], required: true },
+    resourceName: { type: String, required: true },
+    allocatedAmount: { type: Number },
+    utilizedAmount: { type: Number, default: 0 },
+    startDate: { type: String },
+    endDate: { type: String },
+    status: { type: String, enum: ['allocated', 'in_use', 'completed', 'expired'], default: 'allocated' }
+  }],
+  analytics: {
+    totalMeetings: { type: Number, default: 0 },
+    totalDecisions: { type: Number, default: 0 },
+    averageAttendance: { type: Number, default: 0 },
+    lastMeetingDate: { type: String },
+    nextMeetingDate: { type: String },
+    performanceScore: { type: Number, default: 0 }
+  },
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
 }, {

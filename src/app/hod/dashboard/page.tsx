@@ -218,178 +218,71 @@ export default function HODDashboardPage() {
     
     setIsLoading(true);
     try {
-      // Mock data with enhanced Phase 4 features
-      const mockMetrics: DepartmentMetrics = {
-        totalFaculty: 24,
-        totalStudents: 480,
-        totalSubjects: 18,
-        totalTimetables: 12,
-        avgWorkload: 82,
-        conflictsCount: 5,
-        utilizationRate: 87,
-        systemHealth: 'warning',
-        activeBatches: 8,
-        resourceUtilization: 78
-      };
+      // Get department ID (in real app, this would come from user profile)
+      const departmentId = 'dept_cse'; // This should come from authenticated user
+      
+      // Fetch real metrics from API
+      const metricsResponse = await fetch(`/api/hod/analytics?departmentId=${departmentId}`);
+      if (!metricsResponse.ok) throw new Error('Failed to fetch metrics');
+      const departmentMetrics: DepartmentMetrics = await metricsResponse.json();
 
-      const mockFacultyWorkloads: FacultyWorkload[] = [
-        {
-          id: '1',
-          name: 'Dr. John Smith',
-          email: 'john.smith@university.edu',
-          totalHours: 19,
-          maxHours: 18,
-          workloadPercentage: 106,
-          subjects: ['Data Structures', 'Algorithms', 'Database Systems'],
-          conflicts: 2,
-          timetables: ['CS Sem 3', 'CS Sem 5'],
-          preferences: {
-            maxHours: 18,
-            preferredDays: ['Monday', 'Wednesday', 'Friday'],
-            preferredSlots: ['09:00-10:00', '10:00-11:00']
-          },
-          alerts: [
-            {
-              type: 'overload',
-              severity: 'high',
-              message: 'Exceeding maximum teaching hours by 1 hour'
-            }
-          ]
-        },
-        {
-          id: '2',
-          name: 'Prof. Sarah Johnson',
-          email: 'sarah.johnson@university.edu',
-          totalHours: 16,
-          maxHours: 20,
-          workloadPercentage: 80,
-          subjects: ['Software Engineering', 'Web Development'],
-          conflicts: 0,
-          timetables: ['CS Sem 4', 'CS Sem 6'],
-          preferences: {
-            maxHours: 20,
-            preferredDays: ['Tuesday', 'Thursday'],
-            preferredSlots: ['14:00-15:00', '15:00-16:00']
-          },
-          alerts: []
-        },
-        {
-          id: '3',
-          name: 'Dr. Michael Brown',
-          email: 'michael.brown@university.edu',
-          totalHours: 14,
-          maxHours: 20,
-          workloadPercentage: 70,
-          subjects: ['Machine Learning', 'AI Fundamentals'],
-          conflicts: 1,
-          timetables: ['CS Sem 7', 'CS Sem 8'],
-          preferences: {
-            maxHours: 20,
-            preferredDays: ['Monday', 'Tuesday', 'Wednesday'],
-            preferredSlots: ['11:00-12:00', '12:00-13:00']
-          },
-          alerts: [
-            {
-              type: 'underload',
-              severity: 'medium',
-              message: 'Available for additional 6 teaching hours'
-            }
-          ]
+      // Fetch faculty workload data
+      const facultyResponse = await fetch(`/api/hod/faculty?departmentId=${departmentId}`);
+      if (!facultyResponse.ok) throw new Error('Failed to fetch faculty data');
+      const facultyWorkloadData: FacultyWorkload[] = await facultyResponse.json();
+
+      // Fetch timetable data
+      const timetableResponse = await fetch(`/api/hod/timetables?departmentId=${departmentId}`);
+      if (!timetableResponse.ok) throw new Error('Failed to fetch timetable data');
+      const timetableData: TimetableOverview[] = await timetableResponse.json();
+
+      // Generate alerts based on real data
+      const alerts: DepartmentAlert[] = [];
+      
+      // Check for faculty overload alerts
+      facultyWorkloadData.forEach(faculty => {
+        if (faculty.workloadPercentage > 100) {
+          alerts.push({
+            id: `overload_${faculty.id}`,
+            type: 'faculty_overload',
+            severity: 'high',
+            title: 'Faculty Overload Alert',
+            description: `${faculty.name} is assigned ${faculty.totalHours} hours (exceeds ${faculty.maxHours}-hour limit)`,
+            facultyId: faculty.id,
+            timestamp: new Date().toISOString(),
+            resolved: false,
+            actionRequired: true
+          });
         }
-      ];
-
-      const mockTimetableOverviews: TimetableOverview[] = [
-        {
-          id: '1',
-          name: 'CS Semester 3 Regular',
-          programName: 'B.Tech Computer Science',
-          batchName: 'CS-A',
-          status: 'published',
-          version: '2.1',
-          lastModified: new Date('2024-07-25'),
-          facultyCount: 8,
-          subjectCount: 6,
-          conflicts: 0,
-          qualityScore: 95,
-          resourceUtilization: 85,
-          studentCount: 60
-        },
-        {
-          id: '2',
-          name: 'CS Semester 5 Regular',
-          programName: 'B.Tech Computer Science',
-          batchName: 'CS-B',
-          status: 'pending_approval',
-          version: '1.3',
-          lastModified: new Date('2024-07-26'),
-          facultyCount: 10,
-          subjectCount: 7,
-          conflicts: 3,
-          qualityScore: 78,
-          resourceUtilization: 92,
-          studentCount: 58
-        },
-        {
-          id: '3',
-          name: 'CS Semester 7 Electives',
-          programName: 'B.Tech Computer Science',
-          batchName: 'CS-C',
-          status: 'draft',
-          version: '0.9',
-          lastModified: new Date('2024-07-24'),
-          facultyCount: 6,
-          subjectCount: 4,
-          conflicts: 2,
-          qualityScore: 82,
-          resourceUtilization: 68,
-          studentCount: 45
+      });
+      
+      // Check for timetable approval alerts
+      timetableData.forEach(timetable => {
+        if (timetable.status === 'pending_approval') {
+          alerts.push({
+            id: `approval_${timetable.id}`,
+            type: 'timetable_approval',
+            severity: timetable.conflicts > 0 ? 'high' : 'medium',
+            title: 'Timetable Pending Approval',
+            description: `${timetable.name} requires approval${timetable.conflicts > 0 ? ` with ${timetable.conflicts} conflicts` : ''}`,
+            timetableId: timetable.id,
+            timestamp: new Date().toISOString(),
+            resolved: false,
+            actionRequired: true
+          });
         }
-      ];
+      });
 
-      const mockAlerts: DepartmentAlert[] = [
-        {
-          id: '1',
-          type: 'faculty_overload',
-          severity: 'high',
-          title: 'Faculty Overload Alert',
-          description: 'Dr. John Smith is assigned 19 hours (exceeds 18-hour limit)',
-          facultyId: '1',
-          timestamp: new Date().toISOString(),
-          resolved: false,
-          actionRequired: true
-        },
-        {
-          id: '2',
-          type: 'timetable_approval',
-          severity: 'medium',
-          title: 'Timetable Pending Approval',
-          description: 'CS Semester 5 Regular requires approval with 3 conflicts',
-          timetableId: '2',
-          timestamp: new Date().toISOString(),
-          resolved: false,
-          actionRequired: true
-        },
-        {
-          id: '3',
-          type: 'room_conflict',
-          severity: 'medium',
-          title: 'Room Double Booking',
-          description: 'Lab 201 has conflicting bookings on Tuesday 10:00 AM',
-          timestamp: new Date().toISOString(),
-          resolved: false,
-          actionRequired: true
-        }
-      ];
-
-      const mockResources: ResourceOverview[] = [
+      // For now, keep resource data as mock since we don't have room utilization API yet
+      const resourceData: ResourceOverview[] = [
         {
           type: 'lab',
           id: 'lab-201',
           name: 'Computer Lab 201',
           capacity: 40,
-          utilization: 95,
-          bookings: 38,
-          conflicts: 1,
+          utilization: Math.round(Math.random() * 30 + 70),
+          bookings: Math.round(Math.random() * 10 + 35),
+          conflicts: Math.floor(Math.random() * 3),
           maintenance: false
         },
         {
@@ -397,28 +290,18 @@ export default function HODDashboardPage() {
           id: 'room-305',
           name: 'Classroom 305',
           capacity: 60,
-          utilization: 75,
-          bookings: 45,
-          conflicts: 0,
+          utilization: Math.round(Math.random() * 25 + 65),
+          bookings: Math.round(Math.random() * 15 + 40),
+          conflicts: Math.floor(Math.random() * 2),
           maintenance: false
-        },
-        {
-          type: 'lab',
-          id: 'lab-301',
-          name: 'Software Lab 301',
-          capacity: 30,
-          utilization: 87,
-          bookings: 26,
-          conflicts: 2,
-          maintenance: true
         }
       ];
 
-      setDepartmentMetrics(mockMetrics);
-      setFacultyWorkloads(mockFacultyWorkloads);
-      setTimetableOverviews(mockTimetableOverviews);
-      setDepartmentAlerts(mockAlerts);
-      setResources(mockResources);
+      setDepartmentMetrics(departmentMetrics);
+      setFacultyWorkloads(facultyWorkloadData);
+      setTimetableOverviews(timetableData);
+      setDepartmentAlerts(alerts);
+      setResources(resourceData);
 
     } catch (error) {
       console.error("Error fetching department data:", error);
@@ -512,6 +395,14 @@ export default function HODDashboardPage() {
           <Button variant="outline" size="sm" onClick={fetchDepartmentData}>
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => window.location.href = '/admin/faculty'}>
+            <Users className="h-4 w-4 mr-2" />
+            Manage Faculty
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => window.location.href = '/admin/students'}>
+            <Users className="h-4 w-4 mr-2" />
+            Manage Students
           </Button>
           <Button variant="outline" size="sm">
             <Download className="h-4 w-4 mr-2" />
@@ -749,7 +640,7 @@ export default function HODDashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {facultyWorkloads.map((faculty) => (
+                {facultyWorkloads.slice(0, 3).map((faculty) => (
                   <div key={faculty.id} className="border rounded-lg p-4">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                       <div className="flex-1">
@@ -795,28 +686,34 @@ export default function HODDashboardPage() {
                         <div>
                           <span className="text-muted-foreground">Subjects:</span>
                           <div className="flex flex-wrap gap-1 mt-1">
-                            {faculty.subjects.map((subject) => (
+                            {faculty.subjects.slice(0, 2).map((subject) => (
                               <Badge key={subject} variant="outline" className="text-xs">
                                 {subject}
                               </Badge>
                             ))}
+                            {faculty.subjects.length > 2 && (
+                              <span className="text-xs text-muted-foreground">+{faculty.subjects.length - 2} more</span>
+                            )}
                           </div>
                         </div>
                         <div>
                           <span className="text-muted-foreground">Timetables:</span>
                           <div className="flex flex-wrap gap-1 mt-1">
-                            {faculty.timetables.map((tt) => (
+                            {faculty.timetables.slice(0, 2).map((tt) => (
                               <Badge key={tt} variant="secondary" className="text-xs">
                                 {tt}
                               </Badge>
                             ))}
+                            {faculty.timetables.length > 2 && (
+                              <span className="text-xs text-muted-foreground">+{faculty.timetables.length - 2} more</span>
+                            )}
                           </div>
                         </div>
                       </div>
 
                       {faculty.alerts.length > 0 && (
                         <div className="mt-3 space-y-2">
-                          {faculty.alerts.map((alert, index) => (
+                          {faculty.alerts.slice(0, 1).map((alert, index) => (
                             <Alert key={index} className={`${getSeverityColor(alert.severity)} border-l-4`}>
                               <AlertTriangle className="h-4 w-4" />
                               <AlertDescription className="text-sm">
@@ -829,6 +726,13 @@ export default function HODDashboardPage() {
                     </div>
                   </div>
                 ))}
+                
+                <div className="flex justify-center pt-4">
+                  <Button onClick={() => window.location.href = '/admin/faculty'}>
+                    <Users className="h-4 w-4 mr-2" />
+                    Manage All Faculty
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

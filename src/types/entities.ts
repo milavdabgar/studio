@@ -682,7 +682,55 @@ export interface Committee {
     role: CommitteeMemberRole; 
     assignmentDate: Timestamp;
     endDate?: Timestamp;
+    permissions?: string[];
   }>;
+  settings?: {
+    allowSelfRegistration?: boolean;
+    maxMembers?: number;
+    requireApproval?: boolean;
+    meetingFrequency?: 'weekly' | 'monthly' | 'quarterly' | 'annually' | 'as_needed';
+    notificationPreferences?: {
+      email?: boolean;
+      sms?: boolean;
+      dashboard?: boolean;
+    };
+  };
+  workflows?: Array<{
+    id: string;
+    name: string;
+    description: string;
+    steps: Array<{
+      name: string;
+      description: string;
+      assignedRole: string;
+      estimatedDuration: number;
+    }>;
+    isActive: boolean;
+  }>;
+  resources?: Array<{
+    type: 'budget' | 'equipment' | 'space' | 'software';
+    name: string;
+    description: string;
+    allocation: {
+      amount?: number;
+      unit?: string;
+      period?: string;
+    };
+    utilizationTracking: boolean;
+  }>;
+  analytics?: {
+    performanceMetrics: Record<string, number>;
+    memberEngagement: {
+      averageAttendance: number;
+      taskCompletionRate: number;
+      communicationFrequency: number;
+    };
+    budgetUtilization: {
+      allocated: number;
+      utilized: number;
+      remaining: number;
+    };
+  };
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }

@@ -4,6 +4,7 @@ import { connectMongoose } from '@/lib/mongodb';
 import { UserModel } from '@/lib/models';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
+import { withAPIRoleAccess, type APIAccessContext } from '@/lib/auth/api-middleware';
 
 
 const generateId = (): string => `user_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
@@ -41,9 +42,12 @@ const createUserSchema = z.object({
 });
 
 
-export async function GET(request: NextRequest) {
+async function handleGetUsers(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
+    
+    // Users API is highly sensitive - only admins should have full access
+    // Department filtering not applicable since users span across departments
     
     // Simple check for authentication request
     const url = request.url || '';
@@ -112,9 +116,16 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+async function handleCreateUser(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
+    
+    // Only admins can create users - this controls system access
+    if (!context.featurePermissions.canManageRoles) {
+      return NextResponse.json({
+        message: 'Access denied. Only system administrators can create users.'
+      }, { status: 403 });
+    }
     
     let requestData = await request.json();
     
@@ -322,3 +333,8 @@ export async function POST(request: NextRequest) {
     }, { status: 500 });
   }
 }
+
+// Export wrapped functions for API routes
+// Users API is extremely sensitive - restrict to admin-level access only
+export const GET = withAPIRoleAccess(handleGetUsers, ['admin', 'super_admin']);
+export const POST = withAPIRoleAccess(handleCreateUser, ['admin', 'super_admin']);

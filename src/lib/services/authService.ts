@@ -1,15 +1,19 @@
 import { hash, compare } from 'bcryptjs';
 import { sign, verify, JwtPayload } from 'jsonwebtoken';
-import db from '@/lib/db';
+import { UserModel } from '@/lib/models';
+import { connectMongoose } from '@/lib/mongodb';
 
 export interface User {
-  id: number;
+  id: string;
   email: string;
-  password: string;
-  name?: string;
-  role?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  password?: string;
+  displayName: string;
+  fullName?: string;
+  roles: string[];
+  currentRole: string;
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
   resetToken?: string;
   resetTokenExpiry?: Date;
 }
@@ -22,12 +26,16 @@ export interface LoginCredentials {
 export interface RegisterData {
   email: string;
   password: string;
-  name?: string;
-  role?: string;
+  displayName: string;
+  fullName?: string;
+  roles?: string[];
+  currentRole?: string;
 }
 
 export interface TokenPayload extends JwtPayload {
-  userId: number;
+  userId: string;
+  email: string;
+  role: string;
 }
 
 export interface ChangePasswordData {
@@ -37,10 +45,10 @@ export interface ChangePasswordData {
 
 export class AuthService {
   static async register(userData: RegisterData): Promise<Omit<User, 'password'>> {
+    await connectMongoose();
+    
     // Check if user already exists
-    const existingUser = await db.user.findUnique({
-      where: { email: userData.email },
-    });
+    const existingUser = await UserModel.findOne({ email: userData.email });
 
     if (existingUser) {
       throw new Error('Email already registered');
@@ -50,105 +58,106 @@ export class AuthService {
     const hashedPassword = await hash(userData.password, 10);
 
     // Create user
-    const createData: {
-      email: string;
-      password: string;
-      name?: string;
-      role?: string;
-    } = {
+    const user = await UserModel.create({
       email: userData.email,
       password: hashedPassword,
-      name: userData.name,
-    };
-
-    if (userData.role) {
-      createData.role = userData.role;
-    }
-
-    const user = await db.user.create({
-      data: createData,
-    }) as User;
+      displayName: userData.displayName,
+      fullName: userData.fullName || userData.displayName,
+      roles: userData.roles || ['student'],
+      currentRole: userData.currentRole || 'student',
+      authProviders: ['password'],
+      isActive: true,
+      isEmailVerified: false
+    });
 
     // Return user without password
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword as Omit<User, 'password'>;
+    const userObj = user.toJSON();
+    return userObj as Omit<User, 'password'>;
   }
 
   static async login(credentials: LoginCredentials): Promise<{ user: User; token: string }> {
+    await connectMongoose();
+    
     // Find user by email
-    const user = await db.user.findUnique({
-      where: { email: credentials.email },
-    });
+    const user = await UserModel.findOne({ email: credentials.email }).select('+password');
 
     if (!user) {
       throw new Error('Invalid credentials');
     }
 
+    if (!user.isActive) {
+      throw new Error('Account is deactivated');
+    }
+
     // Verify password
-    const isValid = await compare(credentials.password, (user as { password: string }).password);
+    const isValid = await compare(credentials.password, user.password!);
     if (!isValid) {
       throw new Error('Invalid credentials');
     }
 
+    // Update last login
+    await UserModel.findByIdAndUpdate(user._id, {
+      lastLoginAt: new Date().toISOString()
+    });
+
     // Generate JWT token
     const token = sign(
-      { userId: user.id },
+      { 
+        userId: user.id || user._id.toString(),
+        email: user.email,
+        role: user.currentRole
+      },
       process.env.JWT_SECRET!,
-      { expiresIn: '1d' }
+      { expiresIn: '24h' }
     );
 
     // Return user without password
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...userWithoutPassword } = user;
-    return { user: userWithoutPassword as User, token };
+    const userObj = user.toJSON();
+    return { user: userObj as User, token };
   }
 
   static async verifyToken(token: string): Promise<User> {
     try {
       const payload = verify(token, process.env.JWT_SECRET!) as TokenPayload;
       
-      const user = await db.user.findUnique({
-        where: { id: payload.userId },
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      });
-
+      await connectMongoose();
+      
+      const user = await UserModel.findById(payload.userId);
+      
       if (!user) {
         throw new Error('User not found');
       }
+      
+      if (!user.isActive) {
+        throw new Error('Account is deactivated');
+      }
 
-      // Since we're using select, the password field should not be included
-      // But if the mock returns it anyway, we need to filter it out
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...userWithoutPassword } = user as User & { password?: string };
-      return userWithoutPassword as User;
+      // Return user without password (toJSON already handles this)
+      return user.toJSON() as User;
     } catch (error) {
-      if (error instanceof Error && error.message === 'User not found') {
+      if (error instanceof Error && (error.message === 'User not found' || error.message === 'Account is deactivated')) {
         throw error;
       }
       throw new Error('Invalid or expired token');
     }
   }
 
-  static async changePassword(userId: number, data: ChangePasswordData): Promise<void> {
+  static async changePassword(userId: string, data: ChangePasswordData): Promise<void> {
+    await connectMongoose();
+    
     // Get current user
-    const user = await db.user.findUnique({
-      where: { id: userId },
-    });
+    const user = await UserModel.findById(userId).select('+password');
 
     if (!user) {
       throw new Error('User not found');
     }
+    
+    if (!user.isActive) {
+      throw new Error('Account is deactivated');
+    }
 
     // Verify current password
-    const isCurrentPasswordValid = await compare(data.currentPassword, (user as { password: string }).password);
+    const isCurrentPasswordValid = await compare(data.currentPassword, user.password!);
     if (!isCurrentPasswordValid) {
       throw new Error('Current password is incorrect');
     }
@@ -157,37 +166,96 @@ export class AuthService {
     const hashedPassword = await hash(data.newPassword, 10);
 
     // Update password
-    await db.user.update({
-      where: { id: userId },
-      data: { password: hashedPassword },
+    await UserModel.findByIdAndUpdate(userId, {
+      password: hashedPassword,
+      updatedAt: new Date().toISOString()
     });
   }
 
   static async requestPasswordReset(email: string): Promise<{ token: string }> {
-    const user = await db.user.findUnique({
-      where: { email },
-    });
+    await connectMongoose();
+    
+    const user = await UserModel.findOne({ email });
 
     if (!user) {
       throw new Error('User not found');
     }
+    
+    if (!user.isActive) {
+      throw new Error('Account is deactivated');
+    }
 
     // Generate reset token
     const resetToken = sign(
-      { userId: user.id, type: 'password-reset' },
+      { 
+        userId: user.id || user._id.toString(), 
+        email: user.email,
+        type: 'password-reset' 
+      },
       process.env.JWT_SECRET!,
       { expiresIn: '1h' }
     );
 
     // Store reset token with expiry
-    await db.user.update({
-      where: { email }, // Use email instead of id
-      data: { 
+    await UserModel.findOneAndUpdate(
+      { email },
+      { 
         resetToken,
         resetTokenExpiry: new Date(Date.now() + 60 * 60 * 1000), // 1 hour from now
-      },
-    });
+        updatedAt: new Date().toISOString()
+      }
+    );
 
     return { token: resetToken };
+  }
+  
+  /**
+   * Reset password using reset token
+   */
+  static async resetPassword(token: string, newPassword: string): Promise<void> {
+    try {
+      const payload = verify(token, process.env.JWT_SECRET!) as TokenPayload & { type: string };
+      
+      if (payload.type !== 'password-reset') {
+        throw new Error('Invalid token type');
+      }
+      
+      await connectMongoose();
+      
+      const user = await UserModel.findById(payload.userId);
+      
+      if (!user) {
+        throw new Error('User not found');
+      }
+      
+      if (!user.isActive) {
+        throw new Error('Account is deactivated');
+      }
+      
+      // Check if token matches and is still valid
+      if (user.resetToken !== token) {
+        throw new Error('Invalid reset token');
+      }
+      
+      if (user.resetTokenExpiry && new Date() > user.resetTokenExpiry) {
+        throw new Error('Reset token has expired');
+      }
+      
+      // Hash new password
+      const hashedPassword = await hash(newPassword, 10);
+      
+      // Update password and clear reset token
+      await UserModel.findByIdAndUpdate(user._id, {
+        password: hashedPassword,
+        resetToken: undefined,
+        resetTokenExpiry: undefined,
+        updatedAt: new Date().toISOString()
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('Invalid or expired reset token');
+    }
   }
 }

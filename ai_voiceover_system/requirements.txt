@@ -1,0 +1,13 @@
+# AI Voiceover System Dependencies (Python 3.11 recommended)
+# Core video processing
+moviepy>=1.0.3
+
+# Text-to-Speech providers
+gtts>=2.3.0
+TTS>=0.22.0
+
+# HTTP requests for API calls
+requests>=2.31.0
+
+# Optional: ElevenLabs support (requires API key)
+# elevenlabs>=0.2.26

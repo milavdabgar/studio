@@ -3,14 +3,17 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { connectMongoose } from '@/lib/mongodb';
 import { RoomModel } from '@/lib/models';
 import type { Room } from '@/types/entities';
+import { withAPIRoleAccess, type APIAccessContext } from '@/lib/auth/api-middleware';
 
 function generateId(): string {
   return `room_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
-export async function GET() {
+async function handleGetRooms(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
+    
+    // Rooms are institute-wide resources, but can be viewed by authorized roles
     const rooms = await RoomModel.find({});
     
     // Convert to plain objects and ensure custom id is used
@@ -33,9 +36,17 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+async function handleCreateRoom(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
+    
+    // Only admins and principals can create rooms - this is infrastructure management
+    if (!context.featurePermissions.canDeleteRecords) {
+      return NextResponse.json({
+        message: 'Access denied. Insufficient permissions to create rooms.'
+      }, { status: 403 });
+    }
+    
     const roomData = await request.json() as Omit<Room, 'id' | 'createdAt' | 'updatedAt'>;
 
     // Validation
@@ -100,6 +111,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(response, { status: 201 });
   } catch (error) {
     console.error('Error creating room:', error);
-    return NextResponse.json({ message: 'Error creating room' }, { status: 500 });
+    return NextResponse.json({ 
+      message: 'Error creating room',
+      error: error instanceof Error ? error.message : 'Database save failed'
+    }, { status: 500 });
   }
 }
+
+// Export wrapped functions for API routes
+// Rooms are infrastructure resources - broad view access but restricted creation
+export const GET = withAPIRoleAccess(handleGetRooms, ['admin', 'super_admin', 'hod', 'principal', 'faculty']);
+export const POST = withAPIRoleAccess(handleCreateRoom, ['admin', 'super_admin', 'principal']);

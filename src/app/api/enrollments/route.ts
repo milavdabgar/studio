@@ -3,12 +3,13 @@ import type { Enrollment } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { EnrollmentModel, StudentModel, CourseOfferingModel } from '@/lib/models';
 import { notificationService } from '@/lib/api/notifications';
+import { withAPIRoleAccess, type APIAccessContext } from '@/lib/auth/api-middleware';
 
 
 const generateId = (): string => `enrl_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 // GET enrollments (can filter by studentId or courseOfferingId)
-export async function GET(request: NextRequest) {
+async function handleGET(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
     
@@ -52,8 +53,10 @@ export async function GET(request: NextRequest) {
   }
 }
 
+export const GET = withAPIRoleAccess(handleGET, ['admin', 'super_admin', 'hod', 'principal']);
+
 // POST to create a new enrollment (student enrolls or requests enrollment)
-export async function POST(request: NextRequest) {
+async function handlePOST(request: NextRequest, context: APIAccessContext) {
   try {
     await connectMongoose();
     
@@ -127,3 +130,5 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Error creating enrollment' }, { status: 500 });
   }
 }
+
+export const POST = withAPIRoleAccess(handlePOST, ['admin', 'super_admin', 'hod', 'principal']);

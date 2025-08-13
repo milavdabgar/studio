@@ -1612,10 +1612,16 @@ export class ResumeGenerator {
     // For HTML export, convert relative URLs to absolute URLs
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     
-    return htmlContent.replace(
-      /src="\/uploads\/photos\/([^"]+)"/g,
-      `src="${baseUrl}/uploads/photos/$1"`
-    );
+    // Handle both student photos (/uploads/photos/) and faculty photos (/uploads/faculty/)
+    return htmlContent
+      .replace(
+        /src="\/uploads\/photos\/([^"]+)"/g,
+        `src="${baseUrl}/uploads/photos/$1"`
+      )
+      .replace(
+        /src="\/uploads\/faculty\/([^"]+)"/g,
+        `src="${baseUrl}/uploads/faculty/$1"`
+      );
   }
 
   /**
@@ -1624,40 +1630,48 @@ export class ResumeGenerator {
   private convertPhotoURLsForPDF(htmlContent: string): string {
     const fs = require('fs');
     
-    // Convert relative photo URLs to base64 data URLs
-    return htmlContent.replace(
-      /src="\/uploads\/photos\/([^"]+)"/g,
-      (match, filename) => {
-        const absolutePath = path.join(process.cwd(), 'public', 'uploads', 'photos', filename);
-        
-        // Check if file exists
-        if (fs.existsSync(absolutePath)) {
-          try {
-            // Read the file and convert to base64
-            const fileBuffer = fs.readFileSync(absolutePath);
-            const base64Data = fileBuffer.toString('base64');
-            
-            // Determine MIME type based on file extension
-            const extension = path.extname(filename).toLowerCase();
-            let mimeType = 'image/jpeg'; // default
-            if (extension === '.png') mimeType = 'image/png';
-            else if (extension === '.gif') mimeType = 'image/gif';
-            else if (extension === '.webp') mimeType = 'image/webp';
-            
-            const dataUrl = `data:${mimeType};base64,${base64Data}`;
-            console.log(`Converting photo URL: ${match} -> base64 data URL (${Math.round(base64Data.length/1024)}KB)`);
-            return `src="${dataUrl}"`;
-          } catch (error) {
-            console.error(`Error reading photo file ${absolutePath}:`, error);
-            return match;
-          }
-        } else {
-          console.log(`Photo file not found: ${absolutePath}`);
-          // Return a placeholder or the original URL
+    // Helper function to convert photo URL to base64
+    const convertToBase64 = (match: string, folder: string, filename: string) => {
+      const absolutePath = path.join(process.cwd(), 'public', 'uploads', folder, filename);
+      
+      // Check if file exists
+      if (fs.existsSync(absolutePath)) {
+        try {
+          // Read the file and convert to base64
+          const fileBuffer = fs.readFileSync(absolutePath);
+          const base64Data = fileBuffer.toString('base64');
+          
+          // Determine MIME type based on file extension
+          const extension = path.extname(filename).toLowerCase();
+          let mimeType = 'image/jpeg'; // default
+          if (extension === '.png') mimeType = 'image/png';
+          else if (extension === '.gif') mimeType = 'image/gif';
+          else if (extension === '.webp') mimeType = 'image/webp';
+          
+          const dataUrl = `data:${mimeType};base64,${base64Data}`;
+          console.log(`Converting photo URL: ${match} -> base64 data URL (${Math.round(base64Data.length/1024)}KB)`);
+          return `src="${dataUrl}"`;
+        } catch (error) {
+          console.error(`Error reading photo file ${absolutePath}:`, error);
           return match;
         }
+      } else {
+        console.log(`Photo file not found: ${absolutePath}`);
+        // Return a placeholder or the original URL
+        return match;
       }
-    );
+    };
+    
+    // Convert both student and faculty photo URLs to base64 data URLs
+    return htmlContent
+      .replace(
+        /src="\/uploads\/photos\/([^"]+)"/g,
+        (match, filename) => convertToBase64(match, 'photos', filename)
+      )
+      .replace(
+        /src="\/uploads\/faculty\/([^"]+)"/g,
+        (match, filename) => convertToBase64(match, 'faculty', filename)
+      );
   }
 
   /**
@@ -1699,7 +1713,6 @@ export class ResumeGenerator {
       
       // Convert photo URLs to absolute paths for PDF generation
       const processedHTML = this.convertPhotoURLsForPDF(htmlContent);
-      console.log('Processed HTML for PDF (first 1000 chars):', processedHTML.substring(0, 1000));
       
       // Enhanced content loading with better timeout handling
       await page.setContent(processedHTML, { 

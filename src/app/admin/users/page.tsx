@@ -16,7 +16,8 @@ import type { SystemUser, UserRole as UserRoleCode, Institute, Role } from '@/ty
 import { userService } from '@/lib/api/users';
 import { instituteService } from '@/lib/api/institutes';
 import { roleService } from '@/lib/api/roles';
-import { studentService } from '@/lib/api/students'; 
+import { studentService } from '@/lib/api/students';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access'; 
 
 const STATUS_OPTIONS: { value: 'active' | 'inactive'; label: string }[] = [
   { value: "active", label: "Active" },
@@ -35,6 +36,10 @@ export default function UserManagementPage() {
   const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [allSystemRoles, setAllSystemRoles] = useState<Role[]>([]); 
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Role-based access control
+  const user = getUserCookie();
+  const accessContext = getUserAccessContext(user);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -634,30 +639,34 @@ export default function UserManagementPage() {
                 </form>
               </DialogContent>
             </Dialog>
-            <Button onClick={handleExportUsers} variant="outline" className="w-full sm:w-auto">
-              <Download className="mr-2 h-5 w-5" /> Export CSV
-            </Button>
+            {accessContext.featurePermissions.canExportData && (
+              <Button onClick={handleExportUsers} variant="outline" className="w-full sm:w-auto">
+                <Download className="mr-2 h-5 w-5" /> Export CSV
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
-            <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Users from CSV</h3>
-            <div className="flex flex-col sm:flex-row gap-2 items-center">
-              <Input type="file" id="csvImportUser" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
-              <Button onClick={handleImportUsers} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto">
-                {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
-                Import
-              </Button>
-            </div>
-            <div className="flex items-center gap-2">
-                 <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="px-0 text-primary">
-                    <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
+          {accessContext.featurePermissions.canImportData && (
+            <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
+              <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Users from CSV</h3>
+              <div className="flex flex-col sm:flex-row gap-2 items-center">
+                <Input type="file" id="csvImportUser" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
+                <Button onClick={handleImportUsers} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto">
+                  {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
+                  Import
                 </Button>
-                <p className="text-xs text-muted-foreground">
-                  CSV headers: id,displayName,fullName_GTUFormat,firstName,middleName,lastName,username,email,instituteEmail,roles(codes),isActive,instituteId,instituteName,instituteCode,password
-                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                   <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="px-0 text-primary">
+                      <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
+                  </Button>
+                  <p className="text-xs text-muted-foreground">
+                    CSV headers: id,displayName,fullName_GTUFormat,firstName,middleName,lastName,username,email,instituteEmail,roles(codes),isActive,instituteId,instituteName,instituteCode,password
+                  </p>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
@@ -707,9 +716,11 @@ export default function UserManagementPage() {
 
           {selectedUserIds.length > 0 && (
              <div className="mb-4 flex items-center gap-2">
-                <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
-                    <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedUserIds.length})
-                </Button>
+                {accessContext.featurePermissions.canDeleteRecords && (
+                  <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
+                      <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedUserIds.length})
+                  </Button>
+                )}
                 <span className="text-sm text-muted-foreground">
                     {selectedUserIds.length} user(s) selected.
                 </span>
@@ -731,9 +742,11 @@ export default function UserManagementPage() {
           </div>
           {selectedUserIds.length > 0 && (
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-                <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
-                    <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedUserIds.length})
-                </Button>
+                {accessContext.featurePermissions.canDeleteRecords && (
+                  <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
+                      <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedUserIds.length})
+                  </Button>
+                )}
                 <span className="text-sm text-muted-foreground">
                     {selectedUserIds.length} user(s) selected.
                 </span>
@@ -792,16 +805,18 @@ export default function UserManagementPage() {
                       <Edit className="h-3 w-3" />
                       <span className="ml-1">Edit</span>
                     </Button>
-                    <Button 
-                      variant="destructive" 
-                      size="sm" 
-                      onClick={() => handleDelete(user.id)} 
-                      disabled={isSubmitting || user.email === "admin@gppalanpur.ac.in" || user.instituteEmail === "admin@gppalanpur.ac.in"}
-                      className="min-h-[44px] flex-1 text-xs"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                      <span className="ml-1">Delete</span>
-                    </Button>
+                    {accessContext.featurePermissions.canDeleteRecords && (
+                      <Button 
+                        variant="destructive" 
+                        size="sm" 
+                        onClick={() => handleDelete(user.id)} 
+                        disabled={isSubmitting || user.email === "admin@gppalanpur.ac.in" || user.instituteEmail === "admin@gppalanpur.ac.in"}
+                        className="min-h-[44px] flex-1 text-xs"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                        <span className="ml-1">Delete</span>
+                      </Button>
+                    )}
                   </div>
                 </Card>
               );
@@ -866,15 +881,17 @@ export default function UserManagementPage() {
                         <Edit className="h-4 w-4" />
                         <span className="sr-only">Edit User</span>
                       </Button>
-                      <Button 
-                          variant="destructive" 
-                          size="icon" 
-                          onClick={() => handleDelete(user.id)} 
-                          disabled={isSubmitting || user.email === "admin@gppalanpur.ac.in" || user.instituteEmail === "admin@gppalanpur.ac.in"}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete User</span>
-                      </Button>
+                      {accessContext.featurePermissions.canDeleteRecords && (
+                        <Button 
+                            variant="destructive" 
+                            size="icon" 
+                            onClick={() => handleDelete(user.id)} 
+                            disabled={isSubmitting || user.email === "admin@gppalanpur.ac.in" || user.instituteEmail === "admin@gppalanpur.ac.in"}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          <span className="sr-only">Delete User</span>
+                        </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

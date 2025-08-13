@@ -55,6 +55,11 @@ export class CacheService {
     }
   }
 
+  // Public method for testing cleanup functionality
+  forceCleanup(): void {
+    this.cleanup();
+  }
+
   async get<T = unknown>(key: string): Promise<T | null> {
     const fullKey = this.getKey(key);
     
@@ -106,6 +111,12 @@ export class CacheService {
 
   async has(key: string): Promise<boolean> {
     const fullKey = this.getKey(key);
+    
+    if (this.useRedis && this.redis) {
+      const value = await this.redis.get(fullKey);
+      return value !== null;
+    }
+    
     const item = this.cache.get(fullKey);
     
     if (!item) {
