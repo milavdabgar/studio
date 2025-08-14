@@ -19,7 +19,6 @@ import {
   TrendingUp, 
   Calendar,
   Building,
-  GraduationCap,
   Target,
   Award,
   FileText,

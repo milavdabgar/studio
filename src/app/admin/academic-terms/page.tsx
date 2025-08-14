@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -89,11 +89,7 @@ export default function AcademicTermManagementPage() {
 
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
       const [termsResponse, programsResponse] = await Promise.all([
@@ -118,7 +114,11 @@ export default function AcademicTermManagementPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   // Reset form
   const resetForm = () => {
@@ -396,7 +396,7 @@ export default function AcademicTermManagementPage() {
     }
 
     return result;
-  }, [academicTerms, searchTerm, filterAcademicYear, filterProgram, filterTerm, filterStatus, sortField, sortDirection]);
+  }, [academicTerms, searchTerm, filterAcademicYear, filterProgram, filterTerm, filterStatus, sortField, sortDirection, programs]);
 
   // Pagination
   const totalItems = filteredAndSortedTerms.length;

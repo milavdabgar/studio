@@ -433,7 +433,7 @@ describe('RBAC Integration Tests', () => {
       });
 
       // Mock user lookup - default to null for new registrations
-      UserModel.findOne.mockImplementation((_query: any) => {
+      UserModel.findOne.mockImplementation(() => {
         // For registration tests, return null initially (no existing user)
         // For login tests, return user with select method
         return {

@@ -1,7 +1,8 @@
 // Auth middleware with JWT verification
 import { NextRequest, NextResponse } from 'next/server';
-import { verify } from 'jsonwebtoken';
-import { AuthService } from '@/lib/services/authService';
+import { verify, JwtPayload } from 'jsonwebtoken';
+
+export const runtime = 'nodejs';
 
 export interface AuthenticatedRequest extends NextRequest {
   user?: {
@@ -44,20 +45,25 @@ export const authMiddleware = async (req: NextRequest) => {
     }
 
     try {
-      // Verify token and get user
-      const user = await AuthService.verifyToken(token);
+      // Verify JWT token directly
+      const decoded = verify(token, jwtSecret) as JwtPayload;
+      
+      // Extract user info from JWT payload
+      if (!decoded || typeof decoded === 'string' || !decoded.userId) {
+        throw new Error('Invalid token payload');
+      }
       
       // Create a new request with user info
       const response = NextResponse.next();
       
       // Add user info to headers for API routes to access
-      response.headers.set('x-user-id', user.id.toString());
-      response.headers.set('x-user-email', user.email);
-      if (user.currentRole) {
-        response.headers.set('x-user-role', user.currentRole);
+      response.headers.set('x-user-id', decoded.userId.toString());
+      response.headers.set('x-user-email', decoded.email || '');
+      if (decoded.currentRole) {
+        response.headers.set('x-user-role', decoded.currentRole);
       }
-      if (user.displayName) {
-        response.headers.set('x-user-name', user.displayName);
+      if (decoded.displayName) {
+        response.headers.set('x-user-name', decoded.displayName);
       }
       
       return response;

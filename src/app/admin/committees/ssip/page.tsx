@@ -15,14 +15,12 @@ import {
 } from '@/components/ui/table';
 import { 
   Lightbulb, 
-  Users, 
   TrendingUp, 
   Award,
   Rocket,
   Target,
   IndianRupee,
   Calendar,
-  FileText,
   Plus,
   Eye
 } from 'lucide-react';

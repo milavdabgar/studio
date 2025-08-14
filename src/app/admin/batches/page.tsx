@@ -16,7 +16,7 @@ import { batchService } from '@/lib/api/batches';
 import { programService } from '@/lib/api/programs';
 import { studentService } from '@/lib/api/students';
 import { getIntakeCapacityForYear } from '@/lib/utils/intake-capacity';
-import { getUserCookie, getUserAccessContext, getDepartmentDisplayName } from '@/lib/auth/role-access';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 import { DepartmentScopedPage } from '@/components/auth/PageAccessControl';
 
 type SortField = keyof Batch | 'none';

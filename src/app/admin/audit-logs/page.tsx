@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,8 +22,7 @@ import {
   XCircle, 
   Search,
   Filter,
-  RefreshCw,
-  Calendar
+  RefreshCw
 } from 'lucide-react';
 import { DepartmentScopedPage } from '@/components/auth/PageAccessControl';
 import { AUDIT_ACTIONS, AUDIT_RESOURCES } from '@/lib/audit/audit-logger';
@@ -51,7 +50,7 @@ export default function AuditLogsPage() {
     search: ''
   });
 
-  const fetchAuditLogs = async () => {
+  const fetchAuditLogs = useCallback(async () => {
     try {
       setLoading(true);
       const queryParams = new URLSearchParams();
@@ -72,7 +71,7 @@ export default function AuditLogsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
 
   const fetchAuditSummary = async () => {
     try {
@@ -89,7 +88,7 @@ export default function AuditLogsPage() {
   useEffect(() => {
     fetchAuditLogs();
     fetchAuditSummary();
-  }, []);
+  }, [fetchAuditLogs]);
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value }));

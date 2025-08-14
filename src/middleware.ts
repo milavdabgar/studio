@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import type { UserRole as UserRoleCode } from '@/types/entities'; // UserRole is now UserRoleCode
-import { authMiddleware, getUserFromRequest } from '@/middleware/authMiddleware';
+import { verify, JwtPayload } from 'jsonwebtoken';
 import { generalApiRateLimiter, authRateLimiter } from '@/middleware/apiRateLimiter';
 
 // This would ideally fetch from an API or shared config in a real app
@@ -139,6 +139,8 @@ const ROLE_ACCESS_CONTROL: Record<string, UserRoleCode[]> = {
 };
 
 
+export const runtime = 'nodejs';
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
@@ -168,11 +170,60 @@ export async function middleware(request: NextRequest) {
                              pathname === '/api/health';
     
     if (!isPublicApiRoute) {
-      const authResult = await authMiddleware(request);
-      if (authResult.status === 401 || authResult.status === 500) {
-        return authResult;
+      // Inline JWT verification to avoid importing authMiddleware
+      try {
+        let token: string | undefined;
+        const authHeader = request.headers.get('authorization');
+        
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+          token = authHeader.replace('Bearer ', '').trim();
+        } else {
+          token = request.cookies.get('auth-token')?.value;
+        }
+        
+        if (!token) {
+          return NextResponse.json(
+            { error: 'No token provided', code: 'NO_TOKEN' }, 
+            { status: 401 }
+          );
+        }
+
+        const jwtSecret = process.env.JWT_SECRET;
+        if (!jwtSecret) {
+          return NextResponse.json(
+            { error: 'Server configuration error', code: 'NO_JWT_SECRET' }, 
+            { status: 500 }
+          );
+        }
+
+        // Verify JWT token directly
+        const decoded = verify(token, jwtSecret) as JwtPayload;
+        
+        if (!decoded || typeof decoded === 'string' || !decoded.userId) {
+          return NextResponse.json(
+            { error: 'Invalid token payload', code: 'INVALID_TOKEN' }, 
+            { status: 401 }
+          );
+        }
+        
+        // Create response with user headers
+        const response = NextResponse.next();
+        response.headers.set('x-user-id', decoded.userId.toString());
+        response.headers.set('x-user-email', decoded.email || '');
+        if (decoded.currentRole) {
+          response.headers.set('x-user-role', decoded.currentRole);
+        }
+        if (decoded.displayName) {
+          response.headers.set('x-user-name', decoded.displayName);
+        }
+        
+        return response;
+      } catch (error) {
+        return NextResponse.json(
+          { error: 'Invalid or expired token', code: 'INVALID_TOKEN' }, 
+          { status: 401 }
+        );
       }
-      return authResult;
     }
     
     return NextResponse.next();

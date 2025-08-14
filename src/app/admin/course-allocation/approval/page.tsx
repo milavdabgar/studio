@@ -17,21 +17,15 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  Users,
   Building,
   AlertTriangle,
-  MessageSquare,
   Filter,
   Search,
   Eye,
   ThumbsUp,
-  ThumbsDown,
-  Edit,
   BarChart3,
   Calendar,
-  User,
-  CheckCircle2,
-  AlertCircle
+  CheckCircle2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { 

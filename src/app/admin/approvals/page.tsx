@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -85,11 +85,7 @@ export default function ApprovalsPage() {
 
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchApprovalRequests();
-  }, [filter, priorityFilter]);
-
-  const fetchApprovalRequests = async () => {
+  const fetchApprovalRequests = useCallback(async () => {
     setLoading(true);
     try {
       // Mock data - in real app this would fetch from API
@@ -227,12 +223,16 @@ export default function ApprovalsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter, priorityFilter, toast]);
+
+  useEffect(() => {
+    fetchApprovalRequests();
+  }, [fetchApprovalRequests]);
 
   const handleApprovalAction = async (
     requestId: string, 
     action: 'approve' | 'reject',
-    comment?: string
+    _comment?: string
   ) => {
     setActionLoading(true);
     try {
@@ -250,7 +250,7 @@ export default function ApprovalsPage() {
       await fetchApprovalRequests();
       setSelectedRequest(null);
       setComments('');
-    } catch (error) {
+    } catch {
       toast({
         variant: "destructive",
         title: "Action Failed",
