@@ -1,5 +1,5 @@
 // @ts-nocheck - Complex mock setup causes TypeScript inference issues
-import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 import { NextRequest } from 'next/server';
 import { GET, POST } from '../app/api/allocation-sessions/route';
 import { POST as POST_EXECUTE } from '../app/api/allocation-sessions/[id]/execute/route';
@@ -11,7 +11,7 @@ jest.mock('@/lib/mongodb', () => ({
 
 // Mock models with proper typing
 jest.mock('@/lib/models', () => {
-  const createMockModel = (name: string) => {
+  const createMockModel = () => {
     const MockModel = function(this: any, data: any) {
       Object.assign(this, data);
       this.save = jest.fn().mockResolvedValue(this);
@@ -438,8 +438,6 @@ describe('Allocation API Endpoints', () => {
 
   describe('Course Allocations API', () => {
     it('should fetch allocations for a session', async () => {
-      const { CourseAllocationModel } = require('@/lib/models');
-      
       const request = new NextRequest('http://localhost:3000/api/course-allocations?sessionId=test-session-1');
       
       // Mock the route handler

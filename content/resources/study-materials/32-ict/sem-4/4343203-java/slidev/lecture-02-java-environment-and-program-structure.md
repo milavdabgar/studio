@@ -38,6 +38,18 @@ Gujarat Technological University
   </span>
 </div>
 
+<!--
+Welcome to Lecture 2 on Java Environment Setup and Program Structure.
+
+[click] In our previous lecture, we explored Java's history, features, and applications. Today, we're taking the exciting next step - setting up your development environment and writing your first Java program.
+
+[click] This lecture will transform you from someone who knows about Java to someone who can actually develop Java applications.
+
+[click] By the end of this session, you'll have a complete working Java development environment and the knowledge to compile and run Java programs confidently.
+
+Let's dive into the practical world of Java programming!
+-->
+
 ---
 layout: default
 ---
@@ -62,6 +74,24 @@ By the end of this lecture, you will be able to:
 <div v-click="7" class="text-center text-2xl text-blue-600 font-bold">
 Let's set up our Java development environment! 🛠️
 </div>
+
+<!--
+By the end of this lecture, you'll achieve several crucial learning objectives.
+
+[click] First, you'll understand the relationship between JVM, JRE, and JDK - the three core components of the Java platform architecture.
+
+[click] You'll grasp the bytecode concept, which is fundamental to Java's "write once, run anywhere" philosophy.
+
+[click] We'll explore garbage collection - Java's automatic memory management system that makes programming much safer and easier.
+
+[click] Most importantly, you'll get hands-on experience installing and configuring a complete Java development environment on your computer.
+
+[click] You'll write, compile, and execute your very first Java program - a milestone moment in your programming journey.
+
+[click] And you'll master the complete development workflow from source code to running application.
+
+[click] With these foundations in place, you'll be ready to tackle more advanced Java programming concepts!
+-->
 
 ---
 layout: center
@@ -94,6 +124,22 @@ graph TD
 <div class="bg-blue-50 p-4 rounded-lg inline-block">
 <strong>Remember:</strong> JDK ⊃ JRE ⊃ JVM
 </div>
+
+<!--
+This diagram shows the hierarchical relationship between Java's three main platform components.
+
+[click] At the top, we have the Java Development Kit (JDK), which is the complete package for Java developers.
+
+[click] The JDK contains the Java Runtime Environment (JRE), plus additional development tools like the compiler.
+
+[click] Within the JRE, we find the Java Virtual Machine (JVM), which is the runtime engine that actually executes Java programs.
+
+[click] Think of it like nesting dolls - each component contains the one below it, with each layer adding more functionality.
+
+[click] The JVM is the core execution engine, the JRE adds the libraries needed to run programs, and the JDK adds the tools needed to develop programs.
+
+[click] This relationship is crucial to understand because it determines what you need to install for different purposes - JDK for development, JRE for just running Java applications.
+-->
 </div>
 
 ---
@@ -147,6 +193,24 @@ graph TD
 
 </div>
 
+<!--
+The Java Virtual Machine is the heart of Java's platform independence.
+
+[click] The JVM is a runtime environment specifically designed to execute Java bytecode.
+
+[click] Here's the key insight - while Java bytecode is platform-independent, the JVM itself is platform-specific. We have different JVMs for Windows, Linux, and macOS.
+
+[click] The JVM takes your platform-neutral bytecode and converts it to machine code that's specific to the operating system it's running on.
+
+[click] The JVM manages memory automatically through its sophisticated memory management system.
+
+[click] This architecture diagram shows how bytecode flows through different JVM components - the class loader brings in your .class files, the method area stores class-level information, and the heap stores object instances.
+
+[click] The garbage collector automatically cleans up unused memory, and the JIT compiler optimizes your code's performance at runtime.
+
+[click] This is why the same Java program can run on any platform that has a JVM - the JVM handles all the platform-specific details for you.
+-->
+
 ---
 layout: default
 ---
@@ -191,6 +255,26 @@ layout: default
 <h3 class="font-bold text-lg mb-3">🔍 Real-World Analogy</h3>
 <p><strong>JRE is like a media player</strong> - it can play video files (.mp4) but cannot create them. Similarly, JRE can run Java programs (.class) but cannot compile them.</p>
 </div>
+
+<!--
+Let's understand what the Java Runtime Environment provides.
+
+[click] The JRE is the runtime environment needed to execute Java applications - but it cannot create them.
+
+[click] It includes the JVM we just discussed, plus all the core Java libraries that programs need to run.
+
+[click] The JRE is required on any computer that needs to run Java programs, but it doesn't include development tools.
+
+[click] You'll find the JRE bundled with many applications - web browsers used to include it for Java applets, and many enterprise applications ship with their own JRE.
+
+[click] The core Java libraries include fundamental packages like java.lang for basic functionality, java.util for data structures, and many others.
+
+[click] Think of supporting files as configuration files, property files, and other resources that Java programs might need.
+
+[click] Browser plugins for Java applets are now deprecated due to security concerns, but they were once an important part of the JRE.
+
+[click] The media player analogy is perfect - just as you need a media player to watch videos but can't create videos with it, you need JRE to run Java programs but can't create them without additional tools.
+-->
 
 ---
 layout: default
@@ -244,6 +328,34 @@ layout: default
 <strong>💼 For Developers:</strong> Always install JDK, not just JRE, for development work!
 </div>
 
+<!--
+The Java Development Kit is your complete toolkit for Java development.
+
+[click] The JDK is the complete development platform - it includes everything in the JRE plus all the tools you need to create Java applications.
+
+[click] Since it includes the JRE, installing the JDK gives you both development and runtime capabilities in one package.
+
+[click] The JDK is absolutely required if you want to write Java programs - without it, you can only run existing Java applications.
+
+[click] Modern JDK versions are free and open source, making Java development accessible to everyone.
+
+[click] We focus on Long Term Support (LTS) versions because they provide stability for enterprise development - Java 8, 11, 17, and 21 are the current LTS versions.
+
+[click] The javac compiler transforms your human-readable Java source code into bytecode that the JVM can execute.
+
+[click] The java interpreter runs your compiled bytecode on the JVM.
+
+[click] javadoc generates professional HTML documentation from your code comments.
+
+[click] The jar tool creates archive files for distributing your applications.
+
+[click] jdb provides debugging capabilities to help you find and fix problems in your code.
+
+[click] javap is a disassembler that lets you examine the bytecode that javac produces.
+
+[click] As a developer, always install the full JDK - it includes everything you need and ensures you won't run into limitations later.
+-->
+
 ---
 layout: center
 ---
@@ -293,6 +405,34 @@ sequenceDiagram
 </div>
 
 </div>
+
+<!--
+Bytecode is one of Java's most important innovations.
+
+[click] This sequence diagram shows the complete compilation and execution process that makes Java platform-independent.
+
+[click] You start with human-readable source code in .java files - this is what you write as a programmer.
+
+[click] The Java compiler (javac) transforms your source code into bytecode, stored in .class files.
+
+[click] Here's the key insight - bytecode is platform-independent intermediate code. It's not specific to Windows, Linux, or any particular processor.
+
+[click] The Java Virtual Machine then takes this platform-independent bytecode and converts it to machine code specific to the platform it's running on.
+
+[click] This two-step process is what enables Java's "write once, run anywhere" capability.
+
+[click] The advantages of bytecode include platform independence - the same .class file runs on any platform with a JVM.
+
+[click] Bytecode goes through security verification before execution, making Java programs more secure.
+
+[click] The JVM can optimize bytecode execution at runtime, often making programs faster over time.
+
+[click] Bytecode is also more compact than source code, reducing distribution size.
+
+[click] However, bytecode is not human-readable - it's designed for machine processing, not human understanding.
+
+This bytecode approach is what makes Java unique among programming languages!
+-->
 
 ---
 layout: default
@@ -356,6 +496,30 @@ graph TD
 <strong>🎯 Benefit:</strong> Java developers don't need to manually manage memory like in C/C++!
 </div>
 
+<!--
+Garbage collection is one of Java's most developer-friendly features.
+
+[click] Garbage collection provides automatic memory management - you don't need to manually allocate and deallocate memory like in languages such as C or C++.
+
+[click] The garbage collector automatically identifies objects that are no longer being used by your program and removes them from memory.
+
+[click] This prevents memory leaks, which are a common source of bugs in manual memory management languages.
+
+[click] Garbage collection runs in the background while your program executes, so you don't need to worry about it in most cases.
+
+[click] The garbage collection process has three main phases: Mark, Sweep, and Compact.
+
+[click] During the Mark phase, the garbage collector identifies which objects are still being referenced and which are no longer needed.
+
+[click] In the Sweep phase, it removes the unused objects from memory.
+
+[click] Finally, the Compact phase defragments memory to reduce fragmentation and improve performance.
+
+[click] This memory diagram shows how JVM memory is organized - heap memory for object storage, and non-heap memory for class metadata and other JVM data structures.
+
+[click] The key benefit is that as a Java developer, you can focus on solving business problems rather than managing memory - the JVM handles all the low-level memory management details for you.
+-->
+
 ---
 layout: default
 ---
@@ -400,6 +564,30 @@ layout: default
 
 </v-clicks>
 
+<!--
+Now let's get hands-on with installing Java on your system.
+
+[click] You have two main options for obtaining a Java Development Kit.
+
+[click] Oracle JDK is the commercial version from Oracle, the company that owns Java. It comes with commercial support and is guaranteed to have the latest features and security updates.
+
+[click] OpenJDK is the open-source version of Java, which is free for all uses including commercial applications. Most of the Java community uses OpenJDK.
+
+[click] For learning and most development work, OpenJDK is an excellent choice and what I recommend.
+
+[click] The installation process involves five key steps that are similar across all operating systems.
+
+[click] First, download the appropriate JDK installer for your operating system from either Oracle's website or the OpenJDK site.
+
+[click] Run the installer with administrator privileges - this ensures it can make the necessary system changes.
+
+[click] Set the JAVA_HOME environment variable to point to where the JDK was installed - this tells other tools where to find Java.
+
+[click] Add the Java bin directory to your system's PATH variable - this makes the java and javac commands available from any command prompt.
+
+[click] Finally, verify your installation by running 'java -version' in a command prompt - you should see the Java version information if everything is installed correctly.
+-->
+
 ---
 layout: default
 ---
@@ -439,17 +627,89 @@ javac -version
 <strong>⚠️ Important:</strong> Make sure JAVA_HOME points to JDK, not JRE!
 </div>
 
+<!--
+Setting up environment variables correctly is crucial for Java development.
+
+[click] On Windows systems, you'll set JAVA_HOME to point to your JDK installation directory, typically something like C:\Program Files\Java\jdk-17.
+
+[click] The PATH variable should include %JAVA_HOME%\bin so Windows can find the Java executables.
+
+[click] Always verify your installation by running both 'java -version' and 'javac -version' to ensure both the runtime and compiler are working.
+
+[click] On Linux and macOS, you'll add environment variables to your shell configuration file - usually .bashrc for Bash or .zshrc for Zsh.
+
+[click] The export command makes these variables available to all programs you run from the terminal.
+
+[click] After editing your shell configuration, run 'source ~/.bashrc' to reload the configuration without restarting your terminal.
+
+[click] Again, verify everything is working by checking both java and javac versions.
+
+[click] The key point is that JAVA_HOME must point to the JDK directory, not the JRE directory - the JDK contains the development tools you need, while JRE only contains the runtime.
+
+Proper environment setup will save you hours of troubleshooting later!
+-->
+
 ---
 layout: default
 ---
 
-# Your First Java Program - Professional Deep Dive
+# Your First Java Program - Introduction
 
-<div class="grid grid-cols-2 gap-8">
+## 🎯 **Professional Hello World Program**
 
-<div>
+<div class="text-center mb-8">
+<div class="inline-block p-6 bg-gradient-to-r from-blue-50 to-indigo-100 rounded-xl">
+<h3 class="text-2xl font-bold text-blue-800 mb-2">From Simple to Professional</h3>
+<p class="text-blue-600">Let's build a Hello World program that demonstrates real-world Java practices</p>
+</div>
+</div>
 
-## 🎯 **The Professional Hello World**
+<div class="grid grid-cols-2 gap-8 mt-8">
+
+<div v-click>
+<h3 class="text-lg font-bold mb-4">🔧 What We'll Build</h3>
+<ul class="space-y-2">
+<li>✅ Professional code structure</li>
+<li>✅ Method organization</li>
+<li>✅ Command-line arguments</li>
+<li>✅ System information display</li>
+<li>✅ Proper documentation</li>
+</ul>
+</div>
+
+<div v-click>
+<h3 class="text-lg font-bold mb-4">📚 Learning Objectives</h3>
+<ul class="space-y-2">
+<li>🎯 Understanding Java program structure</li>
+<li>🎯 Method signatures and organization</li>
+<li>🎯 Professional coding practices</li>
+<li>🎯 Real-world programming patterns</li>
+</ul>
+</div>
+
+</div>
+
+<div v-click class="mt-8 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg text-center">
+<p class="text-orange-700 font-semibold">🚀 This isn't just "Hello World" - it's your foundation for enterprise Java development!</p>
+</div>
+
+<!--
+Welcome to our deep dive into professional Java programming. Today we're going to transform the simple "Hello World" program into something that demonstrates real-world development practices.
+
+[click] We'll build a program that includes professional code structure, proper method organization, command-line argument handling, system information display, and comprehensive documentation.
+
+[click] Our learning objectives focus on understanding Java program structure, mastering method signatures and organization, applying professional coding practices, and learning real-world programming patterns that you'll use in your career.
+
+[click] This program represents the bridge from academic examples to professional development - we're building skills that real companies use in production applications.
+-->
+
+---
+layout: default
+---
+
+# The Complete Program Code
+
+## 💻 **Professional HelloWorld.java**
 
 ```java {all|1-2|4|6-8|10-12|14-16|all}
 // HelloWorld.java - Professional Version
@@ -485,17 +745,37 @@ public class HelloWorld {
 }
 ```
 
-</div>
+<!--
+Here's our complete professional Java program. Let me walk you through each section.
 
-<div>
+[click] The program starts with a comment indicating the filename - this is a professional practice for code documentation and helps maintain consistency.
 
-## 🔍 **Professional Code Analysis**
+[click] We declare our public class HelloWorld - remember, the filename must exactly match the class name, including capitalization.
 
-<div class="space-y-4">
+[click] Our main method is the entry point where program execution begins. Every Java application needs this exact method signature to run.
+
+[click] We start with the classic "Hello, World!" output, but we've enhanced it with a welcoming second line to make it more engaging.
+
+[click] Here's where we demonstrate professional code organization - we call a helper method to display program information, showing how to break code into logical, reusable pieces.
+
+[click] The program also demonstrates command-line argument handling, checking if arguments were provided and displaying them if available.
+
+[click] Our displayProgramInfo method showcases professional practices with proper Javadoc documentation and system property access to gather environment information.
+-->
+
+---
+layout: default
+---
+
+# Program Structure Analysis
+
+## 🔍 **Understanding the Architecture**
+
+<div class="grid grid-cols-2 gap-6">
 
 <div v-click class="bg-gradient-to-r from-blue-50 to-indigo-100 p-4 rounded-lg">
 <strong class="text-blue-700">🏗️ Structure Elements:</strong>
-<div class="text-sm mt-2">
+<div class="text-sm mt-3 space-y-1">
 • **Package declaration** (implicit default)<br/>
 • **Class declaration** with public modifier<br/>
 • **Main method** - application entry point<br/>
@@ -505,7 +785,7 @@ public class HelloWorld {
 
 <div v-click class="bg-gradient-to-r from-green-50 to-emerald-100 p-4 rounded-lg">
 <strong class="text-green-700">💡 Best Practices Applied:</strong>
-<div class="text-sm mt-2">
+<div class="text-sm mt-3 space-y-1">
 • **Javadoc comments** for documentation<br/>
 • **Method extraction** for reusability<br/>
 • **System properties** for environment info<br/>
@@ -513,9 +793,13 @@ public class HelloWorld {
 </div>
 </div>
 
+</div>
+
+<div class="grid grid-cols-2 gap-6 mt-6">
+
 <div v-click class="bg-gradient-to-r from-purple-50 to-violet-100 p-4 rounded-lg">
 <strong class="text-purple-700">🎯 Learning Goals:</strong>
-<div class="text-sm mt-2">
+<div class="text-sm mt-3 space-y-1">
 • Understanding method signatures<br/>
 • Exploring the Java runtime environment<br/>
 • Professional code organization<br/>
@@ -525,7 +809,7 @@ public class HelloWorld {
 
 <div v-click class="bg-gradient-to-r from-orange-50 to-red-100 p-4 rounded-lg">
 <strong class="text-orange-700">⚠️ Critical Rules:</strong>
-<div class="text-sm mt-2">
+<div class="text-sm mt-3 space-y-1">
 • **Filename = Class name** (case sensitive)<br/>
 • **One public class per file**<br/>
 • **main method signature** must be exact<br/>
@@ -535,16 +819,17 @@ public class HelloWorld {
 
 </div>
 
-</div>
+<!--
+Let's analyze the architectural components of our professional Java program.
 
-</div>
+[click] The structure includes essential elements: an implicit default package declaration, a public class declaration that makes our class accessible, the main method as our application entry point, and helper methods that demonstrate proper code organization.
 
-<div v-click class="mt-8 p-6 bg-gradient-to-r from-yellow-50 via-orange-50 to-red-50 rounded-xl">
-<div class="text-center">
-<h3 class="text-xl font-bold text-orange-800 mb-4">🚀 From Beginner to Professional in One Program</h3>
-<p class="text-orange-700">This isn't just "Hello World" - it's your first step toward writing enterprise-grade Java applications that real companies deploy to serve millions of users!</p>
-</div>
-</div>
+[click] We've applied several best practices: Javadoc comments for professional documentation, method extraction to create reusable code components, system properties access to gather environment information, and proper command-line argument handling.
+
+[click] From a learning perspective, this program teaches method signatures and how they define program behavior, exploration of the Java runtime environment through system properties, professional code organization principles, and real-world programming patterns used in industry.
+
+[click] Remember these critical rules: the filename must exactly match the class name including capitalization, you can only have one public class per file, the main method signature must be exactly as shown, and Java is case-sensitive throughout the entire language.
+-->
 
 ---
 layout: default
@@ -586,6 +871,22 @@ javac HelloWorld.java
 java HelloWorld
 ```
 
+<!--
+Let's understand the step-by-step process of compiling and running Java programs.
+
+[click] The development process starts with writing your source code in a .java file using any text editor or IDE.
+
+[click] Next, you use the javac compiler to transform your human-readable source code into platform-independent bytecode.
+
+[click] If compilation is successful, you'll have a .class file containing bytecode that can run on any platform with a JVM.
+
+[click] Finally, you use the java command to execute your bytecode on the Java Virtual Machine.
+
+[click] The command line demonstration shows the practical steps: navigate to your source directory, compile with javac, and run with java.
+
+Notice that when you run the program, you use the class name (HelloWorld) without the .class extension.
+-->
+
 ---
 layout: default
 ---
@@ -611,6 +912,26 @@ flowchart TD
     style D fill:#ffebee
     style H fill:#ffebee
 ```
+
+<!--
+This flowchart shows the complete development workflow you'll use for every Java program.
+
+[click] You start by writing your Java source code in a .java file.
+
+[click] Then you compile it using the javac compiler.
+
+[click] If there are syntax errors in your code, compilation will fail and you'll need to fix them before proceeding.
+
+[click] Once compilation succeeds, you have bytecode in a .class file.
+
+[click] You then execute your program using the java command.
+
+[click] If there are runtime errors - problems that occur while the program is running - you'll need to debug and fix your code.
+
+[click] When everything works correctly, you get your program output.
+
+[click] This workflow becomes second nature as you develop more Java programs - write, compile, fix errors, run, debug, and repeat until your program works perfectly.
+-->
 
 ---
 layout: default
@@ -665,6 +986,22 @@ system.out.println("Hello");
 <strong>⚠️ Remember:</strong> Java is case-sensitive! <code>System</code> ≠ <code>system</code>
 </div>
 
+<!--
+Let's look at the most common compilation errors you'll encounter as a beginner.
+
+[click] Syntax errors are mistakes in the structure of your code - missing semicolons are probably the most common beginner mistake.
+
+[click] Mismatched braces are another frequent issue - every opening brace must have a corresponding closing brace.
+
+[click] In Java, your public class name must exactly match your filename - if your file is called Hello.java, your class must be named Hello, not hello.
+
+[click] The main method signature must be exactly correct - it must be public, static, void, and take String[] args as a parameter.
+
+[click] Java is completely case-sensitive - System.out.println works, but system.out.println will cause a compilation error.
+
+[click] Understanding these common errors will save you time debugging - when you see a compilation error, check these basic issues first before looking for more complex problems.
+-->
+
 ---
 layout: default
 ---
@@ -716,73 +1053,81 @@ layout: default
 <strong>🎯 Recommendation:</strong> Start with command line to understand basics, then move to IDE for productivity!
 </div>
 
+<!--
+Let's compare command line development versus using an Integrated Development Environment.
+
+[click] Command line development gives you direct control over the compilation process and helps you understand exactly what's happening when you compile and run Java programs.
+
+[click] It's lightweight and fast, and excellent for learning the fundamentals.
+
+[click] However, you have to manually check for errors, there's no syntax highlighting to help you spot mistakes, no auto-completion to speed up coding, and you have to do more typing.
+
+[click] IDEs provide powerful features that dramatically increase productivity once you understand the basics.
+
+[click] Popular IDEs include IntelliJ IDEA (which most professional developers prefer), Eclipse (free and powerful), NetBeans (officially supported by Oracle), and VS Code (lightweight and growing in popularity).
+
+[click] IDEs provide syntax highlighting, auto-completion, automatic error detection, integrated debugging tools, and complete project management capabilities.
+
+[click] My recommendation is to start with command line development to truly understand the compilation and execution process, then transition to an IDE for increased productivity as you work on larger projects.
+-->
+
 ---
 layout: default
 ---
 
-# Comprehensive Hands-On Lab - Professional Java Setup
+# Hands-On Lab: Environment Setup
 
 <div class="grid grid-cols-2 gap-8">
 
 <div>
 
-## 🚀 **Lab Exercises - Progressive Complexity**
+## 🚀 **Level 1: Environment Mastery**
 
-<div class="space-y-4">
-
-<div v-click class="bg-gradient-to-r from-yellow-50 to-orange-100 p-4 rounded-xl border-l-4 border-orange-400">
-<strong class="text-orange-700">🎯 **Level 1: Environment Mastery**</strong>
-<div class="text-sm mt-2 space-y-1">
-• Install JDK 21 LTS on your system<br/>
-• Configure JAVA_HOME and PATH variables<br/>
-• Verify installation: `java --version` & `javac --version`<br/>
-• Document any issues encountered
-</div>
-<div class="mt-2 text-xs bg-orange-100 p-2 rounded">
-<strong>Success Criteria:</strong> Both commands return version 21.x.x
+<div class="text-center mb-8">
+<div class="inline-block p-4 bg-gradient-to-r from-yellow-50 to-orange-100 rounded-xl">
+<h3 class="text-xl font-bold text-orange-800 mb-2">Foundation First</h3>
+<p class="text-orange-600">Master your development environment before coding</p>
 </div>
 </div>
 
-<div v-click class="bg-gradient-to-r from-blue-50 to-indigo-100 p-4 rounded-xl border-l-4 border-blue-400">
-<strong class="text-blue-700">🎯 **Level 2: First Professional Program**</strong>
-<div class="text-sm mt-2 space-y-1">
-• Create StudentInfo.java with proper structure<br/>
-• Include: name, enrollment, college, branch<br/>
-• Add system information display<br/>
-• Handle command-line arguments
-</div>
-<div class="mt-2 text-xs bg-blue-100 p-2 rounded">
-<strong>Challenge:</strong> Make it interactive with Scanner input
-</div>
+<div class="grid grid-cols-2 gap-8">
+
+<div v-click class="bg-gradient-to-r from-blue-50 to-indigo-100 p-6 rounded-xl">
+<h3 class="text-lg font-bold text-blue-800 mb-4">🛠️ Setup Tasks</h3>
+<ul class="space-y-2 text-sm">
+<li>✅ Install JDK 21 LTS on your system</li>
+<li>✅ Configure JAVA_HOME environment variable</li>
+<li>✅ Update PATH to include JDK bin directory</li>
+<li>✅ Document any issues encountered</li>
+</ul>
 </div>
 
-<div v-click class="bg-gradient-to-r from-green-50 to-emerald-100 p-4 rounded-xl border-l-4 border-green-400">
-<strong class="text-green-700">🎯 **Level 3: Development Workflow**</strong>
-<div class="text-sm mt-2 space-y-1">
-• Master compilation: `javac *.java`<br/>
-• Execute with arguments: `java StudentInfo arg1 arg2`<br/>
-• Debug common errors (syntax, runtime)<br/>
-• Organize files in proper directory structure
+<div v-click class="bg-gradient-to-r from-green-50 to-emerald-100 p-6 rounded-xl">
+<h3 class="text-lg font-bold text-green-800 mb-4">✓ Verification Steps</h3>
+<div class="space-y-3">
+<div class="bg-gray-900 p-3 rounded text-green-400 font-mono text-sm">
+$ java --version<br/>
+$ javac --version
 </div>
-<div class="mt-2 text-xs bg-green-100 p-2 rounded">
-<strong>Pro Tip:</strong> Use package structure: com.gtu.ict.studentname
-</div>
-</div>
-
-<div v-click class="bg-gradient-to-r from-purple-50 to-violet-100 p-4 rounded-xl border-l-4 border-purple-400">
-<strong class="text-purple-700">🎯 **Level 4: IDE Integration**</strong>
-<div class="text-sm mt-2 space-y-1">
-• Install IntelliJ IDEA Community or VS Code<br/>
-• Create new Java project with proper structure<br/>
-• Configure JDK in IDE settings<br/>
-• Run and debug using IDE tools
-</div>
-<div class="mt-2 text-xs bg-purple-100 p-2 rounded">
-<strong>Bonus:</strong> Set up code formatting and style checking
+<p class="text-sm text-green-700 font-semibold">Success: Both commands return version 21.x.x</p>
 </div>
 </div>
 
 </div>
+
+<div v-click class="mt-8 p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg border-l-4 border-orange-400">
+<p class="text-orange-700 font-semibold">🎯 Goal: Establish a solid foundation for Java development</p>
+</div>
+
+<!--
+Let's start our hands-on lab with the most critical step - setting up your Java development environment properly.
+
+[click] Your setup tasks include installing JDK 21 LTS on your system, configuring the JAVA_HOME environment variable to point to your JDK installation, updating your system PATH to include the JDK bin directory, and documenting any issues you encounter for future reference.
+
+[click] Verification is crucial - run both java --version and javac --version commands. Both should return version 21.x.x to confirm your installation is successful.
+
+[click] The goal is to establish a solid foundation for Java development. Without proper environment setup, nothing else will work correctly.
+-->
 
 </div>
 
@@ -870,6 +1215,92 @@ You're ready to tackle more complex programming challenges and build real-world 
 </div>
 </div>
 
+<!--
+This comprehensive hands-on lab will give you professional-level Java development experience.
+
+[click] Level 1 focuses on environment mastery - install JDK 21 LTS, configure your environment variables properly, and verify everything works correctly. Document any issues you encounter for future reference.
+
+[click] Level 2 challenges you to create a professional program structure. Build a StudentInfo.java program that displays personal information, system details, and handles command-line arguments. The challenge is to make it interactive using Scanner for user input.
+
+[click] Level 3 develops your workflow skills - learn to compile multiple files at once, execute programs with arguments, debug common errors, and organize your code in proper directory structures. The pro tip is to start using package structures like com.gtu.ict.studentname.
+
+[click] Level 4 integrates modern development tools - install and configure an IDE like IntelliJ IDEA or VS Code, create properly structured projects, configure JDK settings, and learn to use IDE debugging tools. The bonus challenge is setting up code formatting and style checking.
+
+[click] The expected output shows what a professional Java program looks like - comprehensive information display, proper error handling, input validation, and timing information.
+
+[click] Use this mastery checklist to ensure you've completed all essential skills - from basic installation through professional IDE setup and debugging capabilities.
+
+[click] Congratulations! Completing this lab transforms you into a real Java developer with a professional development environment and the skills to build enterprise-quality applications.
+-->
+
+---
+layout: default
+---
+
+# Lab Completion and Next Steps
+
+## 🎓 **Congratulations! You're Now a Java Developer!**
+
+<div class="text-center mb-8">
+<div class="inline-block p-6 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 rounded-xl">
+<h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-600 mb-4">
+From Zero to Java Developer
+</h3>
+<p class="text-lg text-gray-700">
+You've successfully set up a professional Java development environment and mastered the fundamentals.<br/>
+You're ready to tackle complex programming challenges and build real-world applications!
+</p>
+</div>
+</div>
+
+<div class="grid grid-cols-2 gap-8">
+
+<div v-click>
+<h3 class="text-lg font-bold mb-4">🏆 Skills Mastered</h3>
+<div class="space-y-2 text-sm">
+<div class="flex items-center space-x-2">
+<span class="text-green-500">✅</span>
+<span>JDK installation and configuration</span>
+</div>
+<div class="flex items-center space-x-2">
+<span class="text-green-500">✅</span>
+<span>Professional program structure</span>
+</div>
+<div class="flex items-center space-x-2">
+<span class="text-green-500">✅</span>
+<span>Compilation and execution workflow</span>
+</div>
+<div class="flex items-center space-x-2">
+<span class="text-green-500">✅</span>
+<span>IDE setup and debugging</span>
+</div>
+</div>
+</div>
+
+<div v-click>
+<h3 class="text-lg font-bold mb-4">🚀 What's Next</h3>
+<div class="bg-blue-50 p-4 rounded-lg">
+<ul class="space-y-2 text-sm">
+<li>🎯 Object-oriented programming concepts</li>
+<li>🎯 Advanced Java features and libraries</li>
+<li>🎯 Database connectivity and web development</li>
+<li>🎯 Enterprise application development</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<!--
+Congratulations on completing the comprehensive hands-on Java lab!
+
+[click] You've successfully mastered essential skills including JDK installation and configuration, professional program structure and organization, compilation and execution workflow, and IDE setup with debugging capabilities.
+
+[click] What's next in your Java journey? You'll dive into object-oriented programming concepts, explore advanced Java features and libraries, learn database connectivity and web development, and eventually build enterprise applications.
+
+You now have a solid foundation to tackle any Java programming challenge that comes your way!
+-->
+
 ---
 layout: default
 ---
@@ -899,6 +1330,20 @@ layout: default
 </div>
 
 </div>
+
+<!--
+Let's address some common issues you might encounter during Java setup and development.
+
+[click] If you see "javac is not recognized" error, the most likely cause is that your JAVA_HOME and PATH environment variables aren't set correctly.
+
+[click] "Could not find or load main class" usually means there's a mismatch between your class name and filename, or you're running the java command from the wrong directory.
+
+[click] "Public class must be in file named" occurs when your public class name doesn't exactly match your filename - remember, Java is case-sensitive.
+
+[click] "Cannot find symbol" errors typically happen due to spelling mistakes or case sensitivity issues.
+
+Remember these troubleshooting steps when you encounter problems!
+-->
 
 ---
 layout: center
@@ -937,6 +1382,24 @@ class: text-center
 You've written your first Java program! 🎉
 </div>
 
+<!--
+Let's recap what we've accomplished in this hands-on lecture.
+
+[click] You now understand the architecture of the Java platform - how JVM, JRE, and JDK work together to provide a complete development and runtime environment.
+
+[click] You've learned about bytecode and how it enables Java's platform independence - the same code runs on Windows, Linux, and macOS without modification.
+
+[click] We covered garbage collection basics - how Java automatically manages memory so you don't have to worry about memory leaks.
+
+[click] Most importantly, you've successfully set up a Java development environment on your computer with proper environment variables.
+
+[click] And you've written, compiled, and executed your first Java program - a major milestone in your programming journey!
+
+[click] Looking ahead, our next steps will dive deeper into Java program structure, explore different types of comments, learn about coding conventions, work with more complex programs, and develop debugging techniques.
+
+[click] You should be proud of what you've accomplished today - you've transformed from someone who knows about Java to someone who can actually develop Java applications!
+-->
+
 ---
 layout: center
 class: text-center
@@ -953,6 +1416,16 @@ Any questions about Java environment setup or your first program?
 <div class="text-lg text-gray-600">
 Next lecture: **Java Program Structure & Comments**
 </div>
+
+<!--
+Do you have any questions about setting up your Java development environment or about writing your first Java program?
+
+[click] This is a great time to clarify any confusion about the JVM architecture, the compilation process, environment variables, or any of the development tools we've discussed.
+
+[click] In our next lecture, we'll dive deeper into Java program structure and explore the different types of comments you can use to document your code professionally.
+
+I'm excited to see the progress you'll make as we continue building your Java programming skills!
+-->
 
 ---
 layout: default
@@ -1001,6 +1474,30 @@ layout: default
 <div class="mt-6 p-4 bg-yellow-50 rounded-lg">
 <strong>💡 Tip:</strong> Use OpenJDK for free, production-ready Java development!
 </div>
+
+<!--
+Now let's walk through the detailed installation process for different operating systems.
+
+[click] For Windows installation, you start by downloading the JDK from either Oracle or OpenJDK websites.
+
+[click] Run the installer with administrator privileges to ensure it can make the necessary system changes.
+
+[click] Set up the JAVA_HOME environment variable to point to your JDK installation directory.
+
+[click] Update your PATH to include the JDK bin directory so you can run Java commands from anywhere.
+
+[click] Always verify your installation by running java -version to confirm everything is working.
+
+[click] For Linux and macOS, you can use package managers for easier installation - apt for Ubuntu, yum for CentOS, or Homebrew for macOS.
+
+[click] Manual installation involves extracting the JDK to a system directory like /usr/local/.
+
+[click] Update your shell profile (.bashrc or .zshrc) to set environment variables permanently.
+
+[click] Reload your configuration and verify that both java and javac commands work properly.
+
+OpenJDK is my recommendation because it's free, fully compatible, and production-ready for all development needs.
+-->
 
 ---
 layout: default
@@ -1056,6 +1553,24 @@ layout: default
 - **Sublime Text** - Fast with Java packages
 - **Atom** - GitHub's hackable editor
 - **Vim/Emacs** - For terminal enthusiasts
+
+<!--
+Choosing the right development environment is crucial for your productivity and learning experience.
+
+IntelliJ IDEA is widely considered the gold standard for Java development - it provides intelligent code completion that goes beyond simple text matching, powerful debugging tools with visual debugging, built-in version control integration, and excellent Spring Boot support.
+
+IntelliJ is the industry standard used by most professional Java developers, making it an excellent choice for learning professional practices.
+
+Eclipse IDE has been around for decades and offers a completely free and open-source development environment with an extensive plugin ecosystem, performs well even on older hardware, and has strong community support with plenty of learning resources available.
+
+Eclipse is excellent for learning Java programming fundamentals and is widely used in academic settings.
+
+For those who prefer a lighter-weight option, Visual Studio Code with the Java Extension Pack provides a fast, modern development experience with integrated terminal, built-in Git integration, and consistent cross-platform support.
+
+Alternative text editors like Notepad++, Sublime Text, Atom, or terminal-based editors like Vim and Emacs can be useful for quick edits, understanding the compilation process without IDE assistance, or when working with limited system resources.
+
+My recommendation is to start with IntelliJ IDEA Community Edition for the best learning experience!
+-->
 
 ---
 layout: default
@@ -1127,6 +1642,22 @@ application {
 | **Learning Curve** | Moderate | Steep | Easy |
 | **Ecosystem** | Mature | Growing | Legacy |
 
+<!--
+Build tools become essential as your Java projects grow in complexity.
+
+Build tools serve several important purposes: they automate the compilation process so you don't need to manually run javac commands, manage dependencies by automatically downloading required libraries, package your applications into distributable JAR or WAR files, execute unit and integration tests, and generate API documentation.
+
+Using build tools provides consistency across different development environments, improves efficiency in your development workflow, enables handling of large projects with many files and dependencies, and integrates seamlessly with IDEs and CI/CD pipelines.
+
+Maven uses XML-based configuration in a pom.xml file, has a mature and stable ecosystem, provides excellent IDE integration, and follows a standard directory layout that most Java developers understand. Maven is excellent for enterprise applications, Spring Boot projects, traditional Java development, and teams that prefer convention over configuration.
+
+Gradle uses Groovy or Kotlin DSL for configuration, offers faster build performance, provides flexible and customizable build scripts, and includes modern build features like incremental compilation. Gradle is particularly good for Android applications, projects with complex build requirements, performance-critical builds, and teams that want maximum flexibility.
+
+The comparison table shows the key differences - Maven and Ant use XML configuration while Gradle uses a more flexible DSL, Gradle generally offers better performance, Maven has a moderate learning curve while Gradle is steeper but Ant is easier, and Maven has the most mature ecosystem.
+
+My recommendation is to learn Maven first because it's simpler and more straightforward, then explore Gradle as you advance and need more sophisticated build capabilities.
+-->
+
 ---
 layout: default
 ---
@@ -1186,6 +1717,24 @@ layout: default
 <div class="mt-6 p-4 bg-blue-50 rounded-lg">
 <strong>⚡ Performance Tip:</strong> Monitor heap usage with `jconsole` or `jvisualvm` tools!
 </div>
+
+<!--
+Understanding Java's memory management is crucial for writing efficient applications.
+
+[click] The heap memory is where all objects are stored, divided into Young Generation for newly created objects, Old Generation for long-lived objects that have survived multiple garbage collection cycles, and Metaspace (in Java 8+) that stores class metadata, replacing the old permanent generation.
+
+[click] Non-heap memory includes the Method Area for class-level data, Code Cache for compiled native code from the JIT compiler, and Direct Memory for off-heap storage used by NIO operations.
+
+[click] Different garbage collectors serve different purposes: Serial GC is single-threaded and good for small applications with low memory requirements.
+
+[click] Parallel GC is multi-threaded and serves as the default for server applications, providing good throughput.
+
+[click] G1GC is a low-latency collector that's excellent for applications with large heap sizes and predictable pause time requirements.
+
+[click] ZGC and Shenandoah are ultra-low latency collectors designed for applications requiring sub-10ms pause times, even with very large heaps measured in terabytes.
+
+The key takeaway is that you can monitor heap usage and garbage collection behavior using built-in tools like jconsole or jvisualvm to understand your application's memory patterns and optimize performance when needed.
+-->
 
 ---
 layout: default
@@ -1247,6 +1796,30 @@ layout: default
 </div>
 </div>
 
+<!--
+Let's explore some advanced JVM features that make Java applications performant and robust.
+
+[click] Just-In-Time compilation is what makes Java programs get faster over time - initially, bytecode is interpreted directly which is slower.
+
+[click] The C1 compiler provides fast compilation with basic optimizations for frequently used code.
+
+[click] The C2 compiler does slower but more aggressive optimization for heavily used methods.
+
+[click] Tiered compilation uses both compilers strategically to get the best of both worlds - fast startup with C1 and maximum performance with C2.
+
+[click] Profile-guided optimization uses runtime feedback to make better optimization decisions, and method inlining eliminates method call overhead for small, frequently used methods.
+
+[click] JVM tuning parameters let you control various aspects of performance - heap size configuration with -Xms for initial size and -Xmx for maximum size.
+
+[click] You can specify garbage collection algorithm with options like -XX:+UseG1GC and set target pause times with MaxGCPauseMillis.
+
+[click] JIT compilation can be controlled with parameters like -XX:+TieredCompilation and compilation thresholds.
+
+[click] Monitoring and debugging options help you understand what's happening inside your application during development and production.
+
+The key principle is to always profile your application first to understand where the bottlenecks are before attempting to tune JVM parameters - premature optimization based on assumptions rather than data rarely helps and often hurts performance.
+-->
+
 ---
 layout: default
 ---
@@ -1301,6 +1874,22 @@ my-java-project/
 </div>
 
 </div>
+
+<!--
+Let's discuss best practices for organizing and structuring Java projects professionally.
+
+This project structure follows Maven/Gradle conventions with separate directories for source code (src/main/java), resources (src/main/resources), and tests (src/test/java).
+
+The package structure uses reverse domain naming (com.company.project) to ensure globally unique package names, and organizes code into logical modules like model for data classes, service for business logic, and util for utility functions.
+
+Configuration files and resources are kept separate from code, and build outputs go into target (Maven) or build (Gradle) directories.
+
+Good practices include following package naming conventions, using meaningful and descriptive class and method names, keeping classes focused on a single responsibility, writing unit tests for all public methods, and using version control systems like Git.
+
+Avoid using the default package (no package declaration), don't use magic numbers or hardcoded strings, never ignore compiler warnings as they often indicate real problems, avoid creating deep inheritance hierarchies that are hard to maintain, and never commit compiled .class files to version control.
+
+Following these practices from the beginning will make your code more maintainable, readable, and professional.
+-->
 
 ---
 layout: default
@@ -1371,6 +1960,26 @@ export PATH=$MAVEN_HOME/bin:$PATH
 
 </div>
 
+<!--
+Proper environment configuration is essential for smooth Java development.
+
+[click] JAVA_HOME should point to your JDK installation directory - this tells other tools where to find the Java Development Kit.
+
+[click] The PATH variable should include $JAVA_HOME/bin so you can run java, javac, and other Java tools from any command prompt.
+
+[click] CLASSPATH tells Java where to find class files and libraries, though modern build tools usually manage this automatically.
+
+[click] JAVA_OPTS can be used to set default JVM options like memory settings that apply to all Java applications.
+
+[click] On Windows, you configure environment variables through Control Panel → System → Advanced System Settings → Environment Variables.
+
+[click] On Linux and macOS, you add environment variables to your shell configuration file like ~/.bashrc for Bash or ~/.zshrc for Zsh, then reload the configuration with the source command.
+
+[click] Most IDEs also allow you to configure project-specific JDK settings, compiler compliance levels, and build paths that override system defaults.
+
+Proper environment setup ensures that your Java development tools work consistently across different projects and development environments.
+-->
+
 ---
 layout: default
 ---
@@ -1435,6 +2044,24 @@ layout: default
 <strong>🔍 Debugging Tip:</strong> Use `java -version` and `javac -version` to verify your installation!
 </div>
 
+<!--
+Troubleshooting Java installation and development issues is a crucial skill.
+
+[click] "Java command not found" usually means JAVA_HOME isn't set correctly or the PATH doesn't include the Java bin directory - check these environment variables first.
+
+[click] "Javac not recognized" typically means you installed only the JRE instead of the full JDK - you need the JDK for development work.
+
+[click] Version conflicts can occur when multiple Java versions are installed - use tools like update-alternatives on Linux to manage which version is active.
+
+[click] OutOfMemoryError during runtime means your application needs more heap space - increase it with the -Xmx parameter or investigate memory leaks.
+
+[click] ClassNotFoundException occurs when Java can't find a class file - check your CLASSPATH, verify JAR file locations, and ensure package declarations match directory structures.
+
+[click] UnsupportedClassVersionError happens when bytecode compiled with a newer JDK is run on an older JRE - ensure your runtime Java version matches or exceeds your compilation version.
+
+Always use 'java -version' and 'javac -version' to verify your installation and check for version mismatches when troubleshooting issues.
+-->
+
 ---
 layout: default
 ---
@@ -1489,6 +2116,24 @@ layout: default
 <strong>📊 Best Practice:</strong> Establish baseline metrics before optimizing performance!
 </div>
 
+<!--
+Monitoring and profiling Java applications is essential for maintaining performance and diagnosing issues.
+
+[click] JConsole is a built-in tool that provides real-time JVM monitoring, memory heap visualization, thread state analysis, garbage collection metrics, and MBean management.
+
+[click] You can start JConsole simply by running the jconsole command, and it will show you all running Java processes that you can monitor.
+
+[click] VisualVM offers more advanced capabilities including CPU and memory profiling, heap dump analysis, thread dump inspection, application performance monitoring, and support for plugins that extend its functionality.
+
+[click] Launch VisualVM with the jvisualvm command and use the profiler tools to get detailed performance analysis.
+
+[click] For command-line monitoring, tools like jps list running Java processes, jstat provides garbage collection statistics, jmap generates heap dumps and histograms, and jstack produces thread dumps.
+
+[click] These command-line tools are particularly useful for monitoring applications in production environments where GUI tools might not be available.
+
+The key metrics to monitor include heap utilization patterns, garbage collection frequency and duration, thread states and potential deadlocks, CPU usage patterns, and class loading behavior. Always establish baseline metrics when your application is running normally before attempting to optimize performance.
+-->
+
 ---
 layout: center
 class: text-center
@@ -1535,3 +2180,17 @@ Next: Java Program Structure and Comments! 📝
 Great job setting up Java! 👏
 </span>
 </div>
+
+<!--
+This comprehensive summary brings together everything we've covered in this lecture.
+
+[click] We've explored the Java platform architecture, understanding how JVM, JRE, and JDK components work together to provide a complete development environment.
+
+[click] You've learned about bytecode and platform independence, garbage collection and memory management, development environment setup, IDE selection and configuration, build tools and project structure, memory management concepts, and performance monitoring tools.
+
+[click] You're now ready for our next lecture with a working Java development environment, understanding of the compilation process, knowledge of memory management, familiarity with development tools, project structure best practices, basic troubleshooting skills, and performance monitoring awareness.
+
+[click] Our next topic will be Java Program Structure and Comments, where we'll dive deeper into organizing and documenting professional Java code.
+
+Congratulations on successfully completing this essential foundation lecture!
+-->

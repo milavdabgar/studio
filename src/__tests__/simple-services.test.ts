@@ -387,7 +387,7 @@ describe('Simple Services', () => {
 
       try {
         await sendSMS('+1234567890', 'This might fail');
-      } catch (error) {
+      } catch {
         // SMS failed, but other services should still work
       }
 

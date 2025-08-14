@@ -12,10 +12,6 @@ const mockRequest = (cookies: Record<string, string> = {}) => ({
   url: 'http://localhost:3000/test'
 }) as any;
 
-const mockResponse = () => ({
-  json: jest.fn(),
-  status: 200
-}) as any;
 
 describe('Role-Based Access Control System', () => {
   // Mock user data for different roles
@@ -469,8 +465,6 @@ describe('Role-Based Access Control System', () => {
     });
 
     it('should validate cookie updates', () => {
-      const originalCookie = document.cookie;
-      
       updateUserCookie(mockUsers.admin);
       
       expect(document.cookie).toContain('auth_user=');

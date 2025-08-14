@@ -1,7 +1,6 @@
 import { 
   RoomSchedulingEngine,
-  RoomRequirement,
-  RoomSchedulingResult
+  RoomRequirement
 } from '@/lib/algorithms/roomSchedulingEngine';
 import type { Room, RoomAllocation, TimetableEntry, CourseOffering, DayOfWeek } from '@/types/entities';
 

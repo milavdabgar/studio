@@ -3,7 +3,7 @@
  * Tests the complete RBAC system including authentication, authorization, field-level permissions, and audit logging
  */
 
-import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
+import { describe, test, expect, beforeEach, jest } from '@jest/globals';
 import { TimetableRBACEngine, type TimetableRBACContext } from '@/lib/auth/timetable-rbac';
 import { FieldLevelPermissions, type FieldPermissionContext } from '@/lib/auth/field-level-permissions';
 import { ComprehensiveAuditLogger, type AuditContext } from '@/lib/audit/comprehensive-audit';
@@ -433,11 +433,11 @@ describe('RBAC Integration Tests', () => {
       });
 
       // Mock user lookup - default to null for new registrations
-      UserModel.findOne.mockImplementation((query: any) => {
+      UserModel.findOne.mockImplementation((_query: any) => {
         // For registration tests, return null initially (no existing user)
         // For login tests, return user with select method
         return {
-          select: jest.fn().mockResolvedValue({
+          select: (jest.fn() as any).mockResolvedValue({
             _id: 'user123',
             id: 'user123',
             email: 'test@example.com',
@@ -454,7 +454,7 @@ describe('RBAC Integration Tests', () => {
             })
           })
         };
-      });
+      }) as jest.Mock;
       
       // By default, return null for findOne (no existing user for registration)
       UserModel.findOne.mockResolvedValue(null);
@@ -513,8 +513,8 @@ describe('RBAC Integration Tests', () => {
       jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
 
       // Mock for login - need to return an object with select method  
-      UserModel.findOne.mockImplementation(() => ({
-        select: jest.fn().mockResolvedValue({
+      (UserModel.findOne as jest.Mock).mockImplementation(() => ({
+        select: (jest.fn() as any).mockResolvedValue({
           _id: 'user123',
           id: 'user123',
           email: 'test@example.com',

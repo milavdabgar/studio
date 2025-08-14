@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { describe, it, expect, beforeEach } from '@jest/globals';
 import { createAllocationEngine } from '../lib/algorithms/allocationEngine';
 import type { 
   AllocationSession, 
@@ -475,7 +475,6 @@ describe('Allocation Engine', () => {
         mockPreferences
       );
 
-      const highPreferenceAllocations = result.allocations.filter(a => a.preferenceMatch === 'high');
       // Should have at least some preference matches
       expect(result.allocations.length).toBeGreaterThan(0);
     });
