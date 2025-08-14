@@ -58,7 +58,7 @@ export default function TPODashboard() {
 
   const [placements, setPlacements] = useState<PlacementData[]>([]);
   const [companies, setCompanies] = useState<CompanyData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalPlacements: 0,
     averagePackage: 0,

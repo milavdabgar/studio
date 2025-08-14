@@ -448,7 +448,7 @@ export default function TimetableApprovalPage() {
                                       </div>
                                       {item.comments && (
                                         <div className="mt-1 text-muted-foreground italic">
-                                          "{item.comments}"
+                                          &quot;{item.comments}&quot;
                                         </div>
                                       )}
                                     </div>

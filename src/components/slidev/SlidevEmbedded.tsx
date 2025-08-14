@@ -60,7 +60,7 @@ export function SlidevEmbedded({ presentationPath, title }: SlidevEmbeddedProps)
             <div className="text-6xl mb-4">📊</div>
             <h3 className="text-lg font-semibold text-gray-800 mb-2">Presentation Build Not Found</h3>
             <p className="text-gray-600 mb-4">
-              The Slidev presentation for "{presentationPath}" hasn't been built yet or is not available.
+              The Slidev presentation for &quot;{presentationPath}&quot; hasn&apos;t been built yet or is not available.
             </p>
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
               <p className="text-sm text-blue-800">

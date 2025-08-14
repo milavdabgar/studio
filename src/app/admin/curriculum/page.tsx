@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, PlusCircle, Edit, Trash2, BookOpenText, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, ListPlus, XCircle, Eye, Zap } from "lucide-react";
+import { CalendarIcon, PlusCircle, Edit, Trash2, BookOpenText, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Switch } from '@/components/ui/switch';
 import type { Curriculum, Program, Course } from '@/types/entities';

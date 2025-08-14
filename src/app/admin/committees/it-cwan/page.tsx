@@ -81,9 +81,9 @@ export default function ITCWANDashboard() {
 
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [devices, setDevices] = useState<NetworkDevice[]>([]);
-  const [users, setUsers] = useState<UserAccount[]>([]);
+  const [, setUsers] = useState<UserAccount[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalTickets: 0,
     openTickets: 0,

@@ -80,7 +80,7 @@ export default function LibraryDashboard() {
     popularCategory: ''
   });
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
 
   useEffect(() => {
     // Mock data - in production, fetch from APIs

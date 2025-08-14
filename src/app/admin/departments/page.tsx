@@ -107,7 +107,7 @@ export default function DepartmentManagementPage() {
       setFormEstablishmentYear(department.establishmentYear || undefined);
       setFormStatus(department.status);
       setIsDialogOpen(true);
-    } catch (error) {
+    } catch {
       toast({ 
         variant: "destructive", 
         title: "Department Not Found", 

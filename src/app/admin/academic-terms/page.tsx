@@ -549,7 +549,7 @@ export default function AcademicTermManagementPage() {
                             <div className="space-y-1">
                               <div className="flex flex-wrap gap-1">
                                 {(entry.programs || []).map(programId => {
-                                  const program = programs.find(p => p.id === programId || (p as any)._id === programId);
+                                  const program = programs.find(p => p.id === programId || (p as { _id?: string })._id === programId);
                                   return (
                                     <span key={programId} className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-primary/10 text-primary rounded text-xs font-medium">
                                       {program?.code || programId}
@@ -576,8 +576,8 @@ export default function AcademicTermManagementPage() {
                                   <SelectValue placeholder="+ Add" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  {programs.filter(p => !(entry.programs || []).includes(p.id) && !(entry.programs || []).includes((p as any)._id)).map((program) => (
-                                    <SelectItem key={program.id} value={program.id || (program as any)._id}>
+                                  {programs.filter(p => !(entry.programs || []).includes(p.id) && !(entry.programs || []).includes((p as { _id?: string })._id)).map((program) => (
+                                    <SelectItem key={program.id} value={program.id || (program as { _id?: string })._id}>
                                       {program.code}
                                     </SelectItem>
                                   ))}

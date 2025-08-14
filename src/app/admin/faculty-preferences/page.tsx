@@ -10,9 +10,9 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Filter, Edit, Trash2, PlusCircle, Users, Clock, BookOpenCheck, Star } from 'lucide-react';
+import { Plus, Search, Filter, Edit, Trash2, PlusCircle, Users, Clock, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { FacultyPreference, Faculty, Course, AcademicTerm, CoursePreference, TimePreference, TimeSlot } from '@/types/entities';
+import type { FacultyPreference, Faculty, Course, AcademicTerm, CoursePreference, TimePreference } from '@/types/entities';
 
 interface FacultyPreferenceWithDetails extends FacultyPreference {
   facultyName?: string;

@@ -62,7 +62,7 @@ export default function SSIPDashboard() {
 
   const [projects, setProjects] = useState<StartupProject[]>([]);
   const [events, setEvents] = useState<InnovationEvent[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalProjects: 0,
     activeProjects: 0,

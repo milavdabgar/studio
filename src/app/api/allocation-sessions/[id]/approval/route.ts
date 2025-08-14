@@ -307,7 +307,7 @@ export async function PUT(
       );
     }
 
-    let query: any = { sessionId: params.id };
+    const query: any = { sessionId: params.id };
     let description = '';
 
     switch (action) {

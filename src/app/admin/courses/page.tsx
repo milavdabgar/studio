@@ -18,7 +18,7 @@ import type { Course, Department, Program } from '@/types/entities';
 import { courseService } from '@/lib/api/courses';
 import { departmentService } from '@/lib/api/departments';
 import { programService } from '@/lib/api/programs';
-import { getUserCookie, getUserAccessContext, getDepartmentDisplayName } from '@/lib/auth/role-access';
+import { getUserCookie, getUserAccessContext } from '@/lib/auth/role-access';
 import { DepartmentScopedPage } from '@/components/auth/PageAccessControl';
 
 // Dropdown options for categorical fields

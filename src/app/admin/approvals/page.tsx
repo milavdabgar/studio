@@ -232,7 +232,7 @@ export default function ApprovalsPage() {
   const handleApprovalAction = async (
     requestId: string, 
     action: 'approve' | 'reject',
-    comment?: string
+    _comment?: string
   ) => {
     setActionLoading(true);
     try {
