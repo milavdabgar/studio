@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -62,11 +62,7 @@ export default function PreferenceCollectionPage() {
     reminderSchedule: ['3days', '1day'] as string[]
   });
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const [facultiesRes, termsRes] = await Promise.all([
@@ -94,7 +90,11 @@ export default function PreferenceCollectionPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const loadMockCampaigns = () => {
     const mockCampaigns: CollectionCampaign[] = [
@@ -513,7 +513,7 @@ export default function PreferenceCollectionPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <AlertCircle className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                  Select a campaign from the "Active Campaigns" tab to view response details.
+                  Select a campaign from the &quot;Active Campaigns&quot; tab to view response details.
                 </div>
               )}
             </TabsContent>

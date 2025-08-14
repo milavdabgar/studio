@@ -14,19 +14,16 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Play, 
-  Pause, 
-  Settings, 
+ 
   Users, 
   BookOpen, 
   AlertTriangle, 
   CheckCircle, 
   Clock, 
-  BarChart3,
   Filter,
   Search,
   PlusCircle,
   Edit,
-  Trash2,
   Target,
   Eye,
   RefreshCw,
@@ -76,10 +73,6 @@ import {
   Pie,
   Cell,
   Legend,
-  LineChart,
-  Line,
-  Area,
-  AreaChart
 } from 'recharts';
 import { useToast } from '@/hooks/use-toast';
 import type { 
@@ -111,7 +104,6 @@ export default function CourseAllocationPage() {
   });
   
   // Drag and drop state
-  const [isDragMode, setIsDragMode] = useState(false);
   const [draggedAllocation, setDraggedAllocation] = useState<CourseAllocationWithDetails | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [viewMode, setViewMode] = useState<'table' | 'faculty'>('faculty');
@@ -144,11 +136,7 @@ export default function CourseAllocationPage() {
     notes: ''
   });
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const [sessionsRes, facultiesRes, termsRes, programsRes] = await Promise.all([
@@ -184,7 +172,11 @@ export default function CourseAllocationPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const loadSessionDetails = async (session: AllocationSessionWithDetails) => {
     setSelectedSession(session);

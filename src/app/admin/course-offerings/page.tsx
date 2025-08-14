@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Filter, Edit, Trash2, PlusCircle, BookOpenCheck, ArrowUpDown, Download, UploadCloud, FileSpreadsheet, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from 'lucide-react';
+import { Search, Filter, Edit, Trash2, PlusCircle, BookOpenCheck, ArrowUpDown, Download, UploadCloud, FileSpreadsheet, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { CourseOffering, Course, Batch, Faculty } from '@/types/entities';
 import { courseOfferingService } from '@/lib/api/course-offerings';
@@ -69,14 +69,9 @@ export default function CourseOfferingsPage() {
   const [academicTerms, setAcademicTerms] = useState<any[]>([]);
   const [availablePrograms, setAvailablePrograms] = useState<any[]>([]);
   const [availableSemesters, setAvailableSemesters] = useState<number[]>([]);
-  const [termInfo, setTermInfo] = useState<any>(null);
+  const [, setTermInfo] = useState<any>(null);
 
-  // Fetch all data
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const [offeringsRes, coursesRes, batchesRes, facultiesRes, termsRes] = await Promise.all([
@@ -130,7 +125,12 @@ export default function CourseOfferingsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  // Fetch all data
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   // Fetch term info and set up programs/semesters
   const fetchTermInfo = async (termId: string) => {
@@ -322,8 +322,8 @@ export default function CourseOfferingsPage() {
     
     // For new course offerings, programId and semester should be available directly
     // For legacy offerings, we might need to derive them from the academic term
-    let programId = offering.programId || '';
-    let semester = offering.semester?.toString() || '';
+    const programId = offering.programId || '';
+    const semester = offering.semester?.toString() || '';
 
     const newFormData = {
       courseId: offering.courseId,
@@ -411,7 +411,7 @@ export default function CourseOfferingsPage() {
 
   // Filter and sort course offerings
   const filteredAndSortedOfferings = (() => {
-    let result = courseOfferings.filter(offering => {
+    const result = courseOfferings.filter(offering => {
       const matchesSearch = !searchTerm || 
         offering.courseName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         offering.batchName?.toLowerCase().includes(searchTerm.toLowerCase()) ||

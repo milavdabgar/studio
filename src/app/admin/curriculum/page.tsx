@@ -103,7 +103,7 @@ export default function CurriculumManagementPage() {
     if (formProgramId) {
       loadAvailableCourses(formProgramId);
     }
-  }, [formProgramId]);
+  }, [formProgramId, loadAvailableCourses]);
 
   const resetForm = () => {
     setFormProgramId(programs.length > 0 ? programs[0].id : '');
@@ -664,7 +664,7 @@ curr_2,prog_dme_gpp,DME,2.1,2025-01-01,draft,course_me101_dme_gpp,ME101,1,false
                         <div className="text-center py-8 text-muted-foreground">
                             <BookOpenText className="mx-auto h-12 w-12 mb-2 opacity-50" />
                             <p className="text-sm">No courses in curriculum yet.</p>
-                            <p className="text-xs mt-1">Use "Auto-Generate" to populate from program courses.</p>
+                            <p className="text-xs mt-1">Use &quot;Auto-Generate&quot; to populate from program courses.</p>
                         </div>
                     ) : (
                         <Table className="text-xs">

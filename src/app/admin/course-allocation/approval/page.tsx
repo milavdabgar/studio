@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -50,16 +50,6 @@ interface DepartmentSummary {
   facultyCount: number;
 }
 
-interface ApprovalRecord {
-  id: string;
-  action: string;
-  approverRole: string;
-  approverName: string;
-  approverEmail: string;
-  comments: string;
-  timestamp: string;
-  department?: string;
-}
 
 export default function AllocationApprovalPage() {
   const { toast } = useToast();
@@ -68,7 +58,7 @@ export default function AllocationApprovalPage() {
   const [allocations, setAllocations] = useState<CourseAllocationWithDetails[]>([]);
   const [approvalStats, setApprovalStats] = useState<ApprovalStats>({ pending: 0, approved: 0, rejected: 0, needsReview: 0 });
   const [departmentSummary, setDepartmentSummary] = useState<DepartmentSummary[]>([]);
-  const [faculties, setFaculties] = useState<Faculty[]>([]);
+  const [, setFaculties] = useState<Faculty[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedAllocations, setSelectedAllocations] = useState<string[]>([]);
   const [showApprovalDialog, setShowApprovalDialog] = useState(false);
@@ -89,11 +79,7 @@ export default function AllocationApprovalPage() {
     department: '' // For HOD approvals
   });
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const [sessionsRes, facultiesRes] = await Promise.all([
@@ -128,7 +114,11 @@ export default function AllocationApprovalPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast, approvalForm.approverRole]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const loadSessionApprovalData = async (session: AllocationSessionWithDetails) => {
     setSelectedSession(session);

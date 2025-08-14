@@ -223,7 +223,7 @@ export default function ApprovalsPage() {
     } finally {
       setLoading(false);
     }
-  }, [filter, priorityFilter, toast]);
+  }, [filter, priorityFilter, toast, currentUser.id]);
 
   useEffect(() => {
     fetchApprovalRequests();
@@ -232,7 +232,7 @@ export default function ApprovalsPage() {
   const handleApprovalAction = async (
     requestId: string, 
     action: 'approve' | 'reject',
-    _comment?: string
+    comment?: string
   ) => {
     setActionLoading(true);
     try {

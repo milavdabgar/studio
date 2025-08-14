@@ -357,7 +357,7 @@ export default function AcademicTermManagementPage() {
 
   // Filtering and sorting logic
   const filteredAndSortedTerms = useMemo(() => {
-    let result = academicTerms.filter(term => {
+    const result = academicTerms.filter(term => {
       const matchesSearch = term.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            (term.programAssignments || []).some(pa => {
                              const program = programs.find(p => p.id === pa.programId);

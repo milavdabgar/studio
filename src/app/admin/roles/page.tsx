@@ -504,7 +504,7 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
             })}
             {paginatedRoles.length === 0 && (
               <Card className="p-8 text-center text-muted-foreground">
-                No roles found. Click "Add New Role" or import a CSV file to create roles.
+                No roles found. Click &quot;Add New Role&quot; or import a CSV file to create roles.
               </Card>
             )}
           </div>

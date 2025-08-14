@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -97,11 +97,7 @@ export default function PreferenceCampaignsPage() {
     targetFaculties: [] as string[]
   });
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const [campaignsRes, facultiesRes] = await Promise.all([
@@ -126,7 +122,11 @@ export default function PreferenceCampaignsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleCreateOrUpdate = async () => {
     if (!formData.name || !formData.academicYear || !formData.startDate || !formData.endDate || formData.semesters.length === 0) {

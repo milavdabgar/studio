@@ -658,7 +658,7 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
                     {formIntakeCapacityRanges.length === 0 && (
                       <div className="text-center p-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
                         <p className="text-sm text-muted-foreground mb-1">No intake capacity ranges configured</p>
-                        <p className="text-xs text-muted-foreground">Click "Add Range" to define capacity periods</p>
+                        <p className="text-xs text-muted-foreground">Click &quot;Add Range&quot; to define capacity periods</p>
                       </div>
                     )}
                   </div>

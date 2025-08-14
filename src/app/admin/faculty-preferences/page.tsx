@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -56,12 +56,7 @@ export default function FacultyPreferencesPage() {
     priority: 5
   });
 
-  // Fetch all data
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const [preferencesRes, facultiesRes, coursesRes, termsRes] = await Promise.all([
@@ -105,7 +100,12 @@ export default function FacultyPreferencesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  // Fetch all data
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleCreateOrUpdate = async () => {
     // Validation

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -88,11 +88,7 @@ export default function RoomUtilizationPage() {
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const timeSlots = Array.from({ length: 12 }, (_, i) => `${8 + i}:00`);
 
-  useEffect(() => {
-    fetchUtilizationData();
-  }, [dateRange, selectedBuilding, selectedRoomType]);
-
-  const fetchUtilizationData = async () => {
+  const fetchUtilizationData = useCallback(async () => {
     setLoading(true);
     try {
       // Simulate API call to fetch room utilization data
@@ -110,7 +106,11 @@ export default function RoomUtilizationPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [dateRange, selectedBuilding, selectedRoomType]);
+
+  useEffect(() => {
+    fetchUtilizationData();
+  }, [fetchUtilizationData]);
 
   // Mock data generation functions
   const fetchRoomUtilizations = async (): Promise<RoomUtilization[]> => {
