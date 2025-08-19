@@ -5,8 +5,7 @@ import {
 } from '@/lib/models';
 import * as fs from 'fs';
 import * as path from 'path';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const csv = require('csv-parser');
+import csv from 'csv-parser';
 
 // CSV file paths
 const CSV_BASE_PATH = path.join(process.cwd(), 'data', 'csvs', 'portal-exports');
@@ -39,16 +38,16 @@ function parseCSV<T>(filePath: string): Promise<T[]> {
 // CSV data transformation functions
 function transformInstituteData(csvData: any[]): any[] {
   return csvData.map(row => ({
-    id: row.id || 'inst1',
-    name: row.name || 'Government Polytechnic Palanpur',
-    code: row.code || 'GPP',
-    domain: 'gppalanpur.ac.in',
-    address: row.address || 'Jagana, Palanpur, Gujarat 385011',
-    contactEmail: row.contactEmail || 'gp-palanpur-dte@gujarat.gov.in',
-    contactPhone: row.contactPhone || '02742-280126',
-    website: row.website || 'http://www.gppalanpur.ac.in',
+    id: row.id,
+    name: row.name,
+    code: row.code,
+    domain: 'gppalanpur.ac.in', // Default domain
+    address: row.address,
+    contactEmail: row.contactEmail,
+    contactPhone: row.contactPhone,
+    website: row.website,
     status: row.status || 'active',
-    establishmentYear: parseInt(row.establishmentYear) || 1964,
+    establishmentYear: parseInt(row.establishmentYear) || new Date().getFullYear(),
     administrators: ['user_admin_gpp'],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
@@ -61,10 +60,10 @@ function transformDepartmentData(csvData: any[]): any[] {
     name: row.name,
     code: row.code,
     description: row.description || '',
-    instituteId: row.instituteId || 'inst1',
+    instituteId: null, // Skip object ID - will be selected from dropdown
     status: row.status || 'active',
     establishmentYear: parseInt(row.establishmentYear) || 1984,
-    hodId: row.hodId || null,
+    hodId: null, // Skip object ID - will be selected from dropdown
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }));
@@ -76,8 +75,8 @@ function transformProgramData(csvData: any[]): any[] {
     name: row.name,
     code: row.code,
     description: row.description || '',
-    departmentId: row.departmentId,
-    instituteId: 'inst1',
+    departmentId: null, // Skip object ID - will be selected from dropdown
+    instituteId: null, // Skip object ID - will be selected from dropdown
     degreeType: 'Diploma',
     durationYears: parseInt(row.durationYears) || 3,
     totalSemesters: parseInt(row.totalSemesters) || 6,
@@ -96,14 +95,15 @@ function transformRoleData(csvData: any[]): any[] {
     name: row.name,
     code: row.code,
     description: row.description || '',
-    permissions: row.permissions ? row.permissions.split(';') : [],
+    permissions: row.permissions ? row.permissions.split(';').filter((p: string) => p.trim()) : [],
     isSystemRole: row.isSystemRole === 'true',
     isCommitteeRole: row.isCommitteeRole === 'true',
-    committeeId: row.committeeId || null,
+    committeeId: null, // Skip object ID - will be selected from dropdown
     scope: {
-      level: row.code === 'super_admin' ? 'system' : 
-             row.code === 'admin' ? 'institute' : 
-             row.code === 'hod' ? 'department' : 'institute'
+      level: row.code === 'admin' ? 'institute' : 
+             row.code === 'hod' ? 'department' : 
+             row.code === 'faculty' ? 'institute' :
+             row.code === 'student' ? 'institute' : 'institute'
     },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
@@ -701,8 +701,30 @@ async function seedDatabase() {
 
     // Transform CSV data
     const institutesData = institutesCSV.length > 0 ? transformInstituteData(institutesCSV) : initialInstitutes;
-    const departmentsData = departmentsCSV.length > 0 ? transformDepartmentData(departmentsCSV) : initialDepartments;
-    const programsData = programsCSV.length > 0 ? transformProgramData(programsCSV) : initialPrograms;
+    
+    // Use first institute ID for departments and programs that need it
+    const firstInstituteId = institutesData.length > 0 ? institutesData[0].id : 'inst1';
+    
+    const departmentsData = departmentsCSV.length > 0 ? 
+      transformDepartmentData(departmentsCSV).map(dept => ({
+        ...dept,
+        instituteId: firstInstituteId // Use first institute ID as fallback
+      })) : initialDepartments;
+    
+    const programsData = programsCSV.length > 0 ? 
+      transformProgramData(programsCSV).map(prog => {
+        // Find matching department from CSV data
+        const matchingDept = departmentsData.find(dept => {
+          const csvProgram = programsCSV.find((p: any) => p.id === prog.id);
+          return dept.code === (csvProgram as any)?.departmentCode;
+        });
+        return {
+          ...prog,
+          instituteId: firstInstituteId, // Use first institute ID as fallback
+          departmentId: matchingDept?.id || departmentsData[0]?.id || 'dept1' // Use matching or first department
+        };
+      }) : initialPrograms;
+      
     const rolesData = rolesCSV.length > 0 ? transformRoleData(rolesCSV) : initialRoles;
 
     // Seed institutes first (as they're referenced by other entities)
@@ -715,7 +737,10 @@ async function seedDatabase() {
 
     // Seed committees (depends on users and institutes)
     const committeeDocuments = initialCommittees.map(committee => {
-      return committee; // Keep all fields including custom id
+      return {
+        ...committee,
+        instituteId: firstInstituteId // Use first institute ID as fallback
+      };
     });
     
     await CommitteeModel.insertMany(committeeDocuments);
@@ -732,7 +757,11 @@ async function seedDatabase() {
 
     // Seed courses (depends on departments and programs)
     const courseDocuments = initialCourses.map(course => {
-      return course; // Keep all fields including custom id
+      return {
+        ...course,
+        departmentId: departmentsData[0]?.id || 'dept1', // Use first department
+        programId: programsData[0]?.id || 'prog1' // Use first program
+      };
     });
     
     await CourseModel.insertMany(courseDocuments);
@@ -740,7 +769,10 @@ async function seedDatabase() {
 
     // Seed buildings
     const buildingDocuments = initialBuildings.map(building => {
-      return building; // Keep all fields including custom id
+      return {
+        ...building,
+        instituteId: firstInstituteId // Use first institute ID as fallback
+      };
     });
     
     await BuildingModel.insertMany(buildingDocuments);
@@ -748,7 +780,10 @@ async function seedDatabase() {
 
     // Seed rooms
     const roomDocuments = initialRooms.map(room => {
-      return room; // Keep all fields including custom id
+      return {
+        ...room,
+        buildingId: buildingDocuments[0]?.id || 'bldg_admin_gpp' // Use first building ID
+      };
     });
     
     await RoomModel.insertMany(roomDocuments);
@@ -762,6 +797,7 @@ async function seedDatabase() {
     const userDocuments = initialUsers.map(user => {
       return {
         ...user, // Keep all fields including custom id
+        instituteId: firstInstituteId, // Use first institute ID as fallback
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
@@ -813,7 +849,7 @@ async function seedDatabase() {
 }
 
 // Run seeding if this file is executed directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   seedDatabase()
     .then(() => {
       console.log('Seeding completed successfully');

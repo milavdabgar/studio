@@ -1,5 +1,5 @@
 id,name,code,description,permissions,isSystemRole,isCommitteeRole,committeeId,committeeCode
-686a221fe6a9c352cf63dc7b,"Administrator",admin,"Administrative access to institute","manage_users;manage_roles;manage_settings;manage_institutes;manage_buildings;manage_rooms;manage_departments;manage_programs",false,false,,
-686a2254e6a9c352cf63dc7e,"Super Administrator",super_admin,"System-wide administrative access","*",true,false,,
-686a2270e6a9c352cf63dc81,"Student",student,"Student user","profile.view;results.view.own;attendance.view.own",false,false,,
-686a22f1e6a9c352cf63dc84,"Faculty",faculty,"Teaching staff member","students.view;results.view;attendance.manage",false,false,,
+687738585705b31007f87535,"Administrator",admin,"Admin","manage_users;view_courses;grade_assignments;evaluate_projects;manage_institutes;manage_departments;manage_roles;manage_faculty;view_feedback;manage_buildings;manage_programs;manage_settings;manage_courses;manage_rooms",false,false,,
+687738785705b31007f8753a,"Faculty",faculty,"Faculty","grade_assignments;evaluate_projects;view_feedback;manage_settings;generate_reports",false,false,,
+687738a35705b31007f87542,"HOD",hod,"HOD","view_courses;manage_faculty;manage_settings;view_department_reports",false,false,,
+6881f6361e24878d3cec32cd,"Student",student,"student","submit_assignments",false,false,,
