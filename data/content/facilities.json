@@ -27,17 +27,6 @@
     ]
   },
   {
-    "id": "hostels",
-    "name": "Student Hostels",
-    "type": "Residential",
-    "description": "Comfortable accommodation facilities for students",
-    "features": [
-      "Boys hostel: 132 capacity",
-      "Girls hostel: 48 capacity",
-      "Mess facilities"
-    ]
-  },
-  {
     "id": "classrooms",
     "name": "Smart Classrooms",
     "type": "Academic",

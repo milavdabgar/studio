@@ -29,11 +29,6 @@
     "total_departments": 6,
     "total_labs": 25,
     "library_books": 18000,
-    "hostel_capacity": {
-      "boys": 132,
-      "girls": 48,
-      "total": 180
-    },
     "internet": "200 Mbps with NAMO WiFi",
     "green_energy": "Solar plant generating 86,000 units annually"
   },

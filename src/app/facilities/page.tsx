@@ -58,8 +58,8 @@ export default function FacilitiesPage() {
                 <div className="text-sm text-gray-600 dark:text-gray-400">Library Books</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-primary">{collegeInfo.infrastructure.hostel_capacity.total}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Hostel Capacity</div>
+                <div className="text-3xl font-bold text-primary">6</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Departments</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">200</div>
@@ -240,76 +240,6 @@ export default function FacilitiesPage() {
         </div>
       </section>
 
-      {/* Hostel Information */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-800">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 dark:text-white">
-                Comfortable Accommodation
-              </h2>
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 dark:text-gray-400">
-                Our hostel facilities provide a safe and comfortable living environment for students 
-                from different parts of Gujarat and beyond.
-              </p>
-              <div className="grid md:grid-cols-2 gap-6">
-                <Card className="p-4">
-                  <div className="flex items-center space-x-3 mb-3">
-                    <Users className="h-5 w-5 text-primary" />
-                    <h3 className="font-semibold">Boys Hostel</h3>
-                  </div>
-                  <p className="text-2xl font-bold text-primary mb-1">
-                    {collegeInfo.infrastructure.hostel_capacity.boys}
-                  </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-400">Capacity</p>
-                </Card>
-                <Card className="p-4">
-                  <div className="flex items-center space-x-3 mb-3">
-                    <Users className="h-5 w-5 text-primary" />
-                    <h3 className="font-semibold">Girls Hostel</h3>
-                  </div>
-                  <p className="text-2xl font-bold text-primary mb-1">
-                    {collegeInfo.infrastructure.hostel_capacity.girls}
-                  </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-400">Capacity</p>
-                </Card>
-              </div>
-              <div className="mt-6">
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-3 dark:text-white">Hostel Features</h4>
-                <ul className="space-y-2 text-gray-600 dark:text-gray-300 dark:text-gray-400">
-                  <li className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-primary rounded-full"></div>
-                    <span>Comfortable rooms with modern amenities</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-primary rounded-full"></div>
-                    <span>Mess facilities with nutritious meals</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-primary rounded-full"></div>
-                    <span>24/7 security and warden supervision</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-primary rounded-full"></div>
-                    <span>Wi-Fi connectivity and study areas</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="bg-white dark:bg-gray-900 p-6 rounded dark:bg-gray-800-2xl shadow dark:bg-gray-800-xl dark:bg-gray-900">
-                <Image
-                  src="https://picsum.photos/seed/gpp-hostel/600/400"
-                  alt="GP Palanpur Hostel Facilities"
-                  width={600}
-                  height={400}
-                  className="rounded-xl"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Call to Action */}
       <section className="py-16 bg-white dark:bg-gray-900">

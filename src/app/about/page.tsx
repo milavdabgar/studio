@@ -267,7 +267,6 @@ export default function AboutPage() {
               </div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Campus Life</h3>
               <div className="space-y-2 text-gray-600 dark:text-gray-300 dark:text-gray-400">
-                <p><strong>{collegeInfo.infrastructure.hostel_capacity.total}</strong> Hostel Capacity</p>
                 <p>Sports Complex & Facilities</p>
                 <p>Modern Auditorium</p>
                 <p>Campus Canteen</p>
