@@ -1,0 +1,28 @@
+# Java Slidev Video Generator - Python Dependencies
+# Core video processing
+moviepy==1.0.3
+
+# Text-to-Speech
+gtts==2.5.4
+
+# HTTP requests for APIs
+requests==2.32.5
+
+# Built-in Python modules (no installation needed):
+# - argparse (built-in)
+# - pathlib (built-in)
+# - os (built-in)  
+# - sys (built-in)
+# - time (built-in)
+# - re (built-in)
+# - subprocess (built-in)
+
+# Optional TTS providers (require specific Python versions):
+# TTS>=0.22.0  # Coqui TTS - requires Python <3.12
+# elevenlabs   # ElevenLabs TTS - requires API key
+
+# System requirements:
+# - Node.js with npm
+# - @slidev/cli (npm install -g @slidev/cli)  
+# - playwright-chromium (npm install -D playwright-chromium)
+# - ffmpeg (for video processing - installed via conda/brew)

@@ -35,7 +35,7 @@ os.environ['COQUI_TTS_AGREED'] = '1'
 
 # Import dependencies with availability tracking
 try:
-    from moviepy import ImageClip, AudioFileClip, concatenate_videoclips
+    from moviepy.editor import ImageClip, AudioFileClip, concatenate_videoclips
     MOVIEPY_AVAILABLE = True
 except ImportError:
     MOVIEPY_AVAILABLE = False
@@ -719,7 +719,7 @@ class SlidevUnifiedProcessor:
                         total_duration += duration
                         
                         image_clip = ImageClip(str(slide_image), duration=duration)
-                        video_clip = image_clip.with_audio(audio_clip)
+                        video_clip = image_clip.set_audio(audio_clip)
                         video_clips.append(video_clip)
                         
                         print(f"      ✅ Processed ({duration:.1f}s)")
@@ -764,7 +764,7 @@ class SlidevUnifiedProcessor:
                     total_duration += duration
                     
                     image_clip = ImageClip(str(slide_file), duration=duration)
-                    video_clip = image_clip.with_audio(audio_clip)
+                    video_clip = image_clip.set_audio(audio_clip)
                     video_clips.append(video_clip)
                     
                     print(f"   ✅ Processed ({duration:.1f}s)")
