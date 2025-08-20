@@ -22,6 +22,10 @@ from pathlib import Path
 from datetime import datetime, timezone
 import re
 import subprocess
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Speech recognition
 try:
@@ -293,10 +297,11 @@ class PodcastToSlidesConverter:
             return None
             
         try:
-            # Get API key from config
-            api_key = self.config["api_keys"].get("google_api_key")
+            # Get API key from environment variables (preferred) or config fallback
+            api_key = os.getenv("GOOGLE_API_KEY") or self.config["api_keys"].get("google_api_key")
             if not api_key:
-                print("❌ Google API key not found in configuration")
+                print("❌ Google API key not found in environment variables or configuration")
+                print("💡 Please set GOOGLE_API_KEY in your .env file")
                 return None
             
             print("🔄 Using Google Cloud Speech REST API...")
@@ -517,8 +522,9 @@ OUTPUT FORMAT (JSON):
 """
         
         try:
-            if OPENAI_AVAILABLE and self.config["api_keys"]["openai_api_key"]:
-                return self._openai_slide_generation(prompt)
+            openai_api_key = os.getenv("OPENAI_API_KEY") or self.config["api_keys"].get("openai_api_key")
+            if OPENAI_AVAILABLE and openai_api_key:
+                return self._openai_slide_generation(prompt, openai_api_key)
             else:
                 return self._local_slide_generation(transcript, target_slides)
                 
@@ -526,10 +532,10 @@ OUTPUT FORMAT (JSON):
             print(f"❌ Slide generation failed: {e}")
             return None
     
-    def _openai_slide_generation(self, prompt):
+    def _openai_slide_generation(self, prompt, api_key):
         """Generate slides using OpenAI API"""
         try:
-            client = openai.OpenAI(api_key=self.config["api_keys"]["openai_api_key"])
+            client = openai.OpenAI(api_key=api_key)
             
             response = client.chat.completions.create(
                 model=self.config["slide_generation"]["model"],
