@@ -199,3 +199,4 @@ texput.log
 slidev-failed-builds.json
 
 venv/
+.venv/

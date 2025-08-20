@@ -1,0 +1,36 @@
+# NotebookLM Podcast Publisher - Additional Requirements
+# Audio processing
+pydub>=0.25.1
+
+# Video creation (already installed from previous setup)  
+moviepy>=1.0.3
+
+# Web requests (already installed)
+requests>=2.32.0
+
+# Audio metadata
+mutagen>=1.47.0
+
+# YouTube API (optional - for automated uploads)
+google-api-python-client>=2.100.0
+google-auth-httplib2>=0.2.0
+google-auth-oauthlib>=1.0.0
+
+# Spotify Web API (optional)
+spotipy>=2.23.0
+
+# RSS feed generation
+feedgen>=0.9.0
+
+# Audio analysis and visualization 
+librosa>=0.10.1
+matplotlib>=3.7.0
+numpy>=1.24.0
+
+# Platform-specific APIs (optional)
+# anchor-api  # Custom API wrapper
+# apple-podcasts-api  # Custom wrapper
+
+# System requirements:
+# - ffmpeg (for audio/video processing)
+# - ImageMagick (for advanced image processing in MoviePy)

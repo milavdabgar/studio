@@ -1,0 +1,51 @@
+{
+  "podcast_info": {
+    "title": "AI Generated Insights",
+    "description": "Deep dive conversations powered by NotebookLM",
+    "author": "AI Assistant",
+    "email": "your.email@example.com",
+    "language": "en-US",
+    "category": "Technology",
+    "subcategory": "Artificial Intelligence",
+    "explicit": false,
+    "copyright": "© 2025 AI Generated Content",
+    "website": "https://yourwebsite.com"
+  },
+  "youtube": {
+    "channel_name": "AI Insights",
+    "thumbnail_template": "default",
+    "description_template": "default",
+    "tags": [
+      "AI",
+      "NotebookLM",
+      "Podcast",
+      "Technology",
+      "Discussion"
+    ]
+  },
+  "audio_platforms": {
+    "apple_podcasts": {
+      "enabled": true,
+      "connect_id": ""
+    },
+    "spotify": {
+      "enabled": true,
+      "client_id": "",
+      "client_secret": ""
+    },
+    "google_podcasts": {
+      "enabled": true
+    },
+    "anchor": {
+      "enabled": true,
+      "api_key": ""
+    }
+  },
+  "processing": {
+    "audio_quality": "high",
+    "video_resolution": "1920x1080",
+    "thumbnail_size": "1280x720",
+    "enable_chapters": true,
+    "enable_transcription": true
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "episode_id": "20f43b25-54e0-4b75-9d5a-f5ee55d4ff16",
+  "title": "Mlp Week 1",
+  "description": "An AI-generated deep dive conversation exploring mlp week 1. Created with NotebookLM.",
+  "pub_date": "2025-08-20T08:41:18.486488+00:00",
+  "duration": 0,
+  "file_size": 96601625,
+  "file_hash": "f2c02f16747a1139",
+  "source_file": "/Users/milav/Code/studio/ai_voiceover_system/podcasts/MLP_Week_1.m4a",
+  "tags": [
+    "AI",
+    "NotebookLM",
+    "Podcast",
+    "Discussion",
+    "Technology",
+    "Week"
+  ],
+  "season": 1,
+  "episode": 3,
+  "files": {
+    "audio": {},
+    "video": null
+  },
+  "processing_date": "2025-08-20T08:57:55.049334+00:00",
+  "status": "processed",
+  "publishing": {
+    "youtube": {
+      "uploaded": false,
+      "video_id": null
+    },
+    "apple_podcasts": {
+      "submitted": false
+    },
+    "spotify": {
+      "submitted": false
+    },
+    "google_podcasts": {
+      "submitted": false
+    }
+  }
+}

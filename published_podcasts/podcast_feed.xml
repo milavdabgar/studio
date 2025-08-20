@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+    <channel>
+        <title>AI Generated Insights</title>
+        <description>Deep dive conversations powered by NotebookLM</description>
+        <language>en-US</language>
+        <itunes:author>AI Assistant</itunes:author>
+        <itunes:email>your.email@example.com</itunes:email>
+        <itunes:category text="Technology">
+            <itunes:category text="Artificial Intelligence" />
+        </itunes:category>
+        <link>https://yourwebsite.com</link>
+        <lastBuildDate>Wed, 20 Aug 2025 09:00:14 +0000</lastBuildDate>
+
+        <item>
+            <title>Mlp Week 1</title>
+            <description>An AI-generated deep dive conversation exploring mlp week 1. Created with NotebookLM.</description>
+            <pubDate>Wed, 20 Aug 2025 08:41:18 +0000</pubDate>
+            <itunes:duration>00:00:00</itunes:duration>
+            <guid>23a32fc9-0a6c-4778-814f-4d93d68a648a</guid>
+            <itunes:episodeType>full</itunes:episodeType>
+            <itunes:season>1</itunes:season>
+            <itunes:episode>1</itunes:episode>
+        </item>
+        <item>
+            <title>Mlp Week 1</title>
+            <description>An AI-generated deep dive conversation exploring mlp week 1. Created with NotebookLM.</description>
+            <pubDate>Wed, 20 Aug 2025 08:41:18 +0000</pubDate>
+            <itunes:duration>00:00:00</itunes:duration>
+            <guid>72f08cfc-f836-4eb3-a7e4-936e6d3e9128</guid>
+            <itunes:episodeType>full</itunes:episodeType>
+            <itunes:season>1</itunes:season>
+            <itunes:episode>2</itunes:episode>
+        </item>
+        <item>
+            <title>Mlp Week 1</title>
+            <description>An AI-generated deep dive conversation exploring mlp week 1. Created with NotebookLM.</description>
+            <pubDate>Wed, 20 Aug 2025 08:41:18 +0000</pubDate>
+            <itunes:duration>00:00:00</itunes:duration>
+            <guid>20f43b25-54e0-4b75-9d5a-f5ee55d4ff16</guid>
+            <itunes:episodeType>full</itunes:episodeType>
+            <itunes:season>1</itunes:season>
+            <itunes:episode>3</itunes:episode>
+        </item>
+        <item>
+            <title>Mlp Week 1</title>
+            <description>An AI-generated deep dive conversation exploring mlp week 1. Created with NotebookLM.</description>
+            <pubDate>Wed, 20 Aug 2025 08:41:18 +0000</pubDate>
+            <itunes:duration>00:00:00</itunes:duration>
+            <guid>ef20ec6e-f778-44e9-9797-2a918c580a4b</guid>
+            <itunes:episodeType>full</itunes:episodeType>
+            <itunes:season>1</itunes:season>
+            <itunes:episode>4</itunes:episode>
+        </item>
+    </channel>
+</rss>
