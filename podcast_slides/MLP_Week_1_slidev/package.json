@@ -1,0 +1,9 @@
+{
+  "name": "MLP_Week_1-slides",
+  "private": true,
+  "scripts": {
+    "build": "slidev build",
+    "dev": "slidev",
+    "export": "slidev export"
+  }
+}

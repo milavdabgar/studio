@@ -1,0 +1,41 @@
+{
+  "video_settings": {
+    "resolution": [
+      1920,
+      1080
+    ],
+    "fps": 30,
+    "background_color": [
+      26,
+      26,
+      46
+    ],
+    "text_color": [
+      255,
+      255,
+      255
+    ],
+    "font_size": 60,
+    "margin": 100
+  },
+  "timing": {
+    "slides_per_minute": 2.0,
+    "min_slide_duration": 10,
+    "max_slide_duration": 60,
+    "transition_duration": 1
+  },
+  "slide_layouts": {
+    "intro": {
+      "font_size": 80,
+      "center": true
+    },
+    "conclusion": {
+      "font_size": 70,
+      "center": true
+    },
+    "default": {
+      "font_size": 60,
+      "center": false
+    }
+  }
+}

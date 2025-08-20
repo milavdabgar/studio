@@ -1,0 +1,25 @@
+{
+  "speech_to_text": {
+    "service": "whisper",
+    "model": "base",
+    "language": "auto",
+    "chunk_duration": 30
+  },
+  "slide_generation": {
+    "service": "openai",
+    "model": "gpt-4",
+    "slides_per_minute": 2,
+    "style": "educational"
+  },
+  "slidev_config": {
+    "theme": "academic",
+    "layout": "default",
+    "transition": "slide-left",
+    "background": "#1a1a2e"
+  },
+  "api_keys": {
+    "openai_api_key": "",
+    "google_api_key": "",
+    "azure_api_key": ""
+  }
+}
