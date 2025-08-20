@@ -416,9 +416,10 @@ Generated from NotebookLM podcast • Enhanced with Claude Code • No separate 
             # Add original audio
             final_video = video.set_audio(audio_clip)
             
-            # Export enhanced video
-            audio_name = Path(audio_file).stem
-            output_file = self.output_dir / f"{audio_name}_ENHANCED_V2.mp4"
+            # Export enhanced video to same directory as audio file
+            audio_path = Path(audio_file)
+            audio_name = audio_path.stem
+            output_file = audio_path.parent / f"{audio_name}.mp4"
             
             print(f"🎥 Rendering enhanced video: {output_file}")
             
