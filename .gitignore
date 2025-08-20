@@ -200,3 +200,9 @@ slidev-failed-builds.json
 
 venv/
 .venv/
+
+# Large media files
+*.mp4
+*.m4a
+*.wav
+*.mp3

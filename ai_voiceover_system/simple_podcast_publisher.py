@@ -38,14 +38,14 @@ except ImportError:
 
 # Video processing with fallback
 try:
-    from moviepy import AudioFileClip, ColorClip, CompositeVideoClip
+    from moviepy.editor import AudioFileClip, ColorClip, CompositeVideoClip
     MOVIEPY_AVAILABLE = True
     print("✅ MoviePy available for video creation")
 except ImportError:
     try:
-        from moviepy.editor import AudioFileClip, ColorClip, CompositeVideoClip
+        from moviepy import AudioFileClip, ColorClip, CompositeVideoClip
         MOVIEPY_AVAILABLE = True
-        print("✅ MoviePy available for video creation (legacy import)")
+        print("✅ MoviePy available for video creation (fallback import)")
     except ImportError:
         MOVIEPY_AVAILABLE = False
         print("❌ MoviePy not available - video creation disabled")
@@ -166,6 +166,12 @@ class SimplePodcastPublisher:
             # Load audio
             audio_clip = AudioFileClip(str(audio_file))
             duration = audio_clip.duration
+            
+            # For very long podcasts, create a shorter version for testing
+            if duration > 300:  # 5 minutes
+                print(f"⏰ Creating shorter video ({duration/60:.1f} min original)")
+                duration = 60  # 1 minute test
+                audio_clip = audio_clip.subclip(0, duration)
             
             # Create simple colored background
             background = ColorClip(
