@@ -1,0 +1,32 @@
+{
+  "speech_to_text": {
+    "model": "base",
+    "language": "auto",
+    "segment_duration": 30
+  },
+  "slide_generation": {
+    "slides_per_minute": 1.5,
+    "min_slide_duration": 15,
+    "max_slide_duration": 45,
+    "bullet_points_per_slide": 4,
+    "click_animations": true
+  },
+  "slidev_config": {
+    "theme": "academic",
+    "background": "#1a1a2e",
+    "transition": "slide-left",
+    "font_size": "text-xl",
+    "export_format": "png",
+    "export_with_clicks": true
+  },
+  "video_settings": {
+    "resolution": [
+      1920,
+      1080
+    ],
+    "fps": 30,
+    "bitrate": "8000k",
+    "audio_codec": "aac",
+    "video_codec": "libx264"
+  }
+}

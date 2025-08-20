@@ -1,0 +1,21 @@
+🎓 Enhanced NotebookLM Podcast to Educational Video Processor
+======================================================================
+📦 Available Components:
+   ✅ Whisper (Speech-to-Text): True
+   ✅ MoviePy (Video): True
+   ✅ PyDub (Audio): True
+   ✅ Slidev (Export): Available
+
+
+🎓 Professional NotebookLM Podcast Processing
+======================================================================
+🎵 Input: ટ્રાન્ઝિસ્ટર__નાનો_ઘટક,_મોટી_ક્રાંતિ_-_ડિજિટલ_યુગનો_પાયો.m4a
+
+STEP 1: Enhanced Transcript Analysis
+----------------------------------------
+🎤 Enhanced transcript analysis with timing...
+🔄 Loading Whisper model 'base'...
+🔄 Transcribing with detailed timing...
+OMP: Info #276: omp_set_nested routine deprecated, please use omp_set_max_active_levels instead.
+/opt/homebrew/Caskroom/miniconda/base/lib/python3.13/multiprocessing/resource_tracker.py:301: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown: {'/mp-5et5sp2y'}
+  warnings.warn(
