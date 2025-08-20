@@ -1,9 +1,21 @@
 {
   "speech_to_text": {
-    "service": "whisper",
-    "model": "base",
-    "language": "auto",
-    "chunk_duration": 30
+    "default_service": "whisper",
+    "services": {
+      "whisper": {
+        "model": "base",
+        "chunk_duration": 30
+      },
+      "google": {
+        "project_id": "",
+        "location": "global"
+      }
+    },
+    "language_routing": {
+      "gu": "google",
+      "en": "whisper",
+      "auto": "whisper"
+    }
   },
   "slide_generation": {
     "service": "openai",
@@ -19,7 +31,7 @@
   },
   "api_keys": {
     "openai_api_key": "",
-    "google_api_key": "",
+    "google_api_key": "AIzaSyBwDQ-VrHraBoyycHkC1QrX8Wa-iilRXZY",
     "azure_api_key": ""
   }
 }

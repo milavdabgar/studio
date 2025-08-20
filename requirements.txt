@@ -20,6 +20,9 @@ imageio-ffmpeg>=0.6.0
 # Text-to-Speech (for slidev processor) 
 gTTS>=2.5.4
 
+# Speech-to-Text (Google Cloud for Gujarati)
+google-cloud-speech>=2.33.0
+
 # Utility packages
 tqdm>=4.67.1
 click>=8.1.8

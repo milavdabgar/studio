@@ -37,6 +37,14 @@ try:
 except ImportError:
     WHISPER_AVAILABLE = False
 
+# Google Cloud Speech
+try:
+    from google.cloud import speech
+    import google.auth
+    GOOGLE_SPEECH_AVAILABLE = True
+except ImportError:
+    GOOGLE_SPEECH_AVAILABLE = False
+
 # Audio processing
 try:
     from pydub import AudioSegment
@@ -75,10 +83,14 @@ class PodcastToSlidesConverter:
         print(f"   {'✅' if PYDUB_AVAILABLE else '❌'} PyDub (Audio): {PYDUB_AVAILABLE}")
         print(f"   {'✅' if OPENAI_AVAILABLE else '❌'} OpenAI (Slide Generation): {OPENAI_AVAILABLE}")
         print(f"   {'✅' if WHISPER_AVAILABLE else '❌'} Whisper Python: {WHISPER_AVAILABLE}")
+        print(f"   {'✅' if GOOGLE_SPEECH_AVAILABLE else '❌'} Google Cloud Speech: {GOOGLE_SPEECH_AVAILABLE}")
         
         # Check for system dependencies
-        ffmpeg_available = pydub_which('ffmpeg') if pydub_which else False
-        print(f"   {'✅' if ffmpeg_available else '❌'} FFmpeg: {'Available' if ffmpeg_available else 'Not found'}")
+        if PYDUB_AVAILABLE:
+            ffmpeg_available = pydub_which('ffmpeg') if pydub_which else False
+            print(f"   {'✅' if ffmpeg_available else '❌'} FFmpeg: {'Available' if ffmpeg_available else 'Not found'}")
+        else:
+            print(f"   ❌ FFmpeg: Cannot check (PyDub not available)")
         print()
     
     def load_config(self):
@@ -121,50 +133,95 @@ class PodcastToSlidesConverter:
             
             return default_config
     
-    def convert_audio_to_text(self, audio_file, method="whisper"):
-        """Convert audio to text using various methods"""
+    def convert_audio_to_text(self, audio_file, method="auto", language="auto"):
+        """Convert audio to text using various methods with language-based routing"""
         print("🎤 Converting audio to text...")
         
         audio_path = Path(audio_file)
         transcript_file = self.output_dir / f"{audio_path.stem}_transcript.txt"
         
+        # Determine best service based on language if method is auto
+        if method == "auto":
+            # Use new language routing from config
+            language_routing = self.config["speech_to_text"].get("language_routing", {})
+            if language in language_routing:
+                method = language_routing[language]
+            else:
+                method = self.config["speech_to_text"]["default_service"]
+            print(f"🔀 Auto-selected {method} for language: {language}")
+        
         if method == "whisper":
-            return self._whisper_transcription(audio_file, transcript_file)
+            return self._whisper_transcription(audio_file, transcript_file, language)
         elif method == "google":
-            return self._google_transcription(audio_file, transcript_file)
+            return self._google_speech_transcription(audio_file, transcript_file, language)
         elif method == "speech_recognition":
             return self._speech_recognition_transcription(audio_file, transcript_file)
         else:
             raise ValueError(f"Unknown transcription method: {method}")
     
-    def _whisper_transcription(self, audio_file, output_file):
+    def _whisper_transcription(self, audio_file, output_file, language="auto"):
         """Use OpenAI Whisper Python library for transcription"""
         if not WHISPER_AVAILABLE:
             print("❌ Whisper Python library not available")
             return None
             
         try:
-            model_name = self.config["speech_to_text"]["model"]
-            language = self.config["speech_to_text"]["language"]
+            whisper_config = self.config["speech_to_text"]["services"]["whisper"]
+            model_name = whisper_config["model"]
             
             print(f"🔄 Loading Whisper model '{model_name}'...")
             model = whisper.load_model(model_name)
             
             print("🔄 Transcribing audio...")
             
+            # Enhanced transcription options for better accuracy
+            transcribe_options = {
+                "fp16": False,  # Better for CPU
+                "verbose": True,
+                "temperature": 0.0,  # More deterministic
+                "compression_ratio_threshold": 2.4,
+                "logprob_threshold": -1.0,
+                "no_speech_threshold": 0.6
+            }
+            
             # Set language if specified
             if language != "auto":
-                result = model.transcribe(str(audio_file), language=language)
+                print(f"🌐 Using language: {language}")
+                transcribe_options["language"] = language
+                result = model.transcribe(str(audio_file), **transcribe_options)
             else:
-                result = model.transcribe(str(audio_file))
+                print("🌐 Auto-detecting language...")
+                result = model.transcribe(str(audio_file), **transcribe_options)
             
             transcript = result["text"]
+            detected_language = result.get("language", "unknown")
+            
+            # Language validation for Gujarati
+            if language == "gu" and detected_language != "gu":
+                print(f"⚠️  Warning: Expected Gujarati (gu) but detected {detected_language}")
+                print("🔄 Retrying with forced Gujarati language...")
+                
+                # Force Gujarati transcription
+                transcribe_options["language"] = "gu"
+                result = model.transcribe(str(audio_file), **transcribe_options)
+                transcript = result["text"]
+                detected_language = result.get("language", "gu")
             
             # Save transcript
             output_file.write_text(transcript, encoding='utf-8')
             print(f"✅ Whisper transcription completed: {len(transcript)} characters")
-            print(f"📄 Detected language: {result.get('language', 'unknown')}")
+            print(f"📄 Detected language: {detected_language}")
             print(f"💾 Saved to: {output_file}")
+            
+            # Additional validation for Gujarati script
+            if language == "gu":
+                gujarati_chars = sum(1 for char in transcript if '\u0A80' <= char <= '\u0AFF')
+                total_chars = len(transcript.replace(' ', '').replace('\n', ''))
+                if total_chars > 0:
+                    gujarati_ratio = gujarati_chars / total_chars
+                    print(f"📊 Gujarati script ratio: {gujarati_ratio:.2%}")
+                    if gujarati_ratio < 0.5:
+                        print("⚠️  Warning: Low Gujarati script ratio - transcript may be inaccurate")
             
             return transcript
             
@@ -227,6 +284,182 @@ class PodcastToSlidesConverter:
             
         except Exception as e:
             print(f"❌ Speech recognition failed: {e}")
+            return None
+    
+    def _google_speech_transcription(self, audio_file, output_file, language="gu"):
+        """Use Google Cloud Speech-to-Text REST API for transcription"""
+        if not PYDUB_AVAILABLE:
+            print("❌ PyDub not available for audio conversion")
+            return None
+            
+        try:
+            # Get API key from config
+            api_key = self.config["api_keys"].get("google_api_key")
+            if not api_key:
+                print("❌ Google API key not found in configuration")
+                return None
+            
+            print("🔄 Using Google Cloud Speech REST API...")
+            
+            # Convert audio to proper format for Google Speech
+            print("🔄 Converting audio for Google Speech...")
+            audio = AudioSegment.from_file(str(audio_file))
+            
+            # Convert to mono, 16kHz for better recognition
+            audio = audio.set_channels(1).set_frame_rate(16000)
+            
+            # For REST API, we need to convert to base64
+            temp_audio_file = self.output_dir / "temp_google_speech.flac"
+            audio.export(str(temp_audio_file), format="flac")
+            
+            # Read and encode audio as base64
+            import base64
+            with open(temp_audio_file, "rb") as audio_file_obj:
+                audio_content = base64.b64encode(audio_file_obj.read()).decode('utf-8')
+            
+            # Language mapping
+            language_codes = {
+                "gu": "gu-IN",  # Gujarati (India)
+                "en": "en-US",  # English (US)
+                "hi": "hi-IN",  # Hindi (India)
+                "auto": "gu-IN"  # Default to Gujarati
+            }
+            
+            language_code = language_codes.get(language, "gu-IN")
+            print(f"🌐 Using Google Speech language: {language_code}")
+            
+            # Handle long audio files by chunking
+            audio_duration = len(audio) / 1000.0  # seconds
+            chunk_duration_ms = 50 * 1000  # 50 seconds per chunk (under 1 minute limit)
+            
+            transcript_parts = []
+            confidence_scores = []
+            
+            if audio_duration > 50:  # > 50 seconds, need chunking
+                print(f"🔄 Processing long audio ({audio_duration/60:.1f} min) in chunks...")
+                
+                for chunk_start in range(0, len(audio), chunk_duration_ms):
+                    chunk_end = min(chunk_start + chunk_duration_ms, len(audio))
+                    chunk_audio = audio[chunk_start:chunk_end]
+                    
+                    # Export chunk
+                    chunk_file = self.output_dir / f"temp_chunk_{chunk_start//chunk_duration_ms}.flac"
+                    chunk_audio.export(str(chunk_file), format="flac")
+                    
+                    # Encode chunk
+                    with open(chunk_file, "rb") as chunk_file_obj:
+                        chunk_content = base64.b64encode(chunk_file_obj.read()).decode('utf-8')
+                    
+                    # Process chunk
+                    request_data = {
+                        "config": {
+                            "encoding": "FLAC",
+                            "sampleRateHertz": 16000,
+                            "languageCode": language_code,
+                            "enableAutomaticPunctuation": True,
+                        },
+                        "audio": {
+                            "content": chunk_content
+                        }
+                    }
+                    
+                    print(f"🔄 Processing chunk {chunk_start//chunk_duration_ms + 1}...")
+                    url = f"https://speech.googleapis.com/v1/speech:recognize?key={api_key}"
+                    
+                    response = requests.post(
+                        url,
+                        json=request_data,
+                        headers={"Content-Type": "application/json"}
+                    )
+                    
+                    if response.status_code == 200:
+                        result = response.json()
+                        if "results" in result:
+                            for res in result["results"]:
+                                if "alternatives" in res and res["alternatives"]:
+                                    alternative = res["alternatives"][0]
+                                    transcript_parts.append(alternative.get("transcript", ""))
+                                    confidence_scores.append(alternative.get("confidence", 0))
+                    else:
+                        print(f"⚠️  Chunk {chunk_start//chunk_duration_ms + 1} failed: {response.status_code}")
+                    
+                    # Cleanup chunk file
+                    chunk_file.unlink()
+                    
+            else:
+                print("🔄 Processing short audio...")
+                # Process whole file for short audio
+                request_data = {
+                    "config": {
+                        "encoding": "FLAC",
+                        "sampleRateHertz": 16000,
+                        "languageCode": language_code,
+                        "enableAutomaticPunctuation": True,
+                    },
+                    "audio": {
+                        "content": audio_content
+                    }
+                }
+                
+                url = f"https://speech.googleapis.com/v1/speech:recognize?key={api_key}"
+                
+                response = requests.post(
+                    url,
+                    json=request_data,
+                    headers={"Content-Type": "application/json"}
+                )
+                
+                if response.status_code != 200:
+                    print(f"❌ Google Speech API error: {response.status_code}")
+                    print(f"Response: {response.text}")
+                    temp_audio_file.unlink()
+                    return None
+                
+                result = response.json()
+                
+                if "results" in result:
+                    for res in result["results"]:
+                        if "alternatives" in res and res["alternatives"]:
+                            alternative = res["alternatives"][0]
+                            transcript_parts.append(alternative.get("transcript", ""))
+                            confidence_scores.append(alternative.get("confidence", 0))
+            
+            transcript = " ".join(transcript_parts)
+            avg_confidence = sum(confidence_scores) / len(confidence_scores) if confidence_scores else 0
+            
+            # Cleanup temp file
+            temp_audio_file.unlink()
+            
+            if not transcript:
+                print("❌ Google Speech returned empty transcript")
+                return None
+            
+            # Save transcript
+            output_file.write_text(transcript, encoding='utf-8')
+            print(f"✅ Google Speech transcription completed: {len(transcript)} characters")
+            print(f"📊 Average confidence: {avg_confidence:.2%}")
+            print(f"💾 Saved to: {output_file}")
+            
+            # Validation for Gujarati script
+            if language == "gu":
+                gujarati_chars = sum(1 for char in transcript if '\u0A80' <= char <= '\u0AFF')
+                total_chars = len(transcript.replace(' ', '').replace('\n', ''))
+                if total_chars > 0:
+                    gujarati_ratio = gujarati_chars / total_chars
+                    print(f"📊 Gujarati script ratio: {gujarati_ratio:.2%}")
+                    if gujarati_ratio > 0.5:
+                        print("✅ Good Gujarati script ratio - transcript looks accurate")
+                    else:
+                        print("⚠️  Warning: Low Gujarati script ratio - please verify transcript")
+            
+            return transcript
+            
+        except Exception as e:
+            print(f"❌ Google Speech transcription failed: {e}")
+            # Cleanup temp file if it exists
+            temp_audio_file = self.output_dir / "temp_google_speech.flac"
+            if temp_audio_file.exists():
+                temp_audio_file.unlink()
             return None
     
     def analyze_transcript_for_slides(self, transcript, audio_duration=None):
@@ -468,13 +701,13 @@ Educational content from AI-generated podcast
         
         return markdown
     
-    def process_podcast_to_slides(self, audio_file, transcribe_method="whisper"):
+    def process_podcast_to_slides(self, audio_file, transcribe_method="auto", language="auto"):
         """Complete pipeline: podcast → transcript → slides → slidev"""
         print(f"\n🎓 Processing podcast to educational slides: {Path(audio_file).name}")
         print("=" * 80)
         
         # Step 1: Convert audio to text
-        transcript = self.convert_audio_to_text(audio_file, transcribe_method)
+        transcript = self.convert_audio_to_text(audio_file, transcribe_method, language)
         if not transcript:
             print("❌ Failed to transcribe audio")
             return None
@@ -537,8 +770,10 @@ Examples:
     )
     
     parser.add_argument('audio_file', help='Input audio file (M4A, MP3, WAV)')
-    parser.add_argument('--method', choices=['whisper', 'google', 'speech_recognition'], 
-                       default='whisper', help='Transcription method')
+    parser.add_argument('--method', choices=['auto', 'whisper', 'google', 'speech_recognition'], 
+                       default='auto', help='Transcription method (auto uses language routing)')
+    parser.add_argument('--language', choices=['auto', 'gu', 'en', 'hi'], 
+                       default='auto', help='Audio language (gu=Gujarati, en=English, hi=Hindi)')
     parser.add_argument('--config', default='podcast_slides_config.json', help='Configuration file')
     
     args = parser.parse_args()
@@ -548,7 +783,7 @@ Examples:
         return
     
     converter = PodcastToSlidesConverter(args.config)
-    result = converter.process_podcast_to_slides(args.audio_file, args.method)
+    result = converter.process_podcast_to_slides(args.audio_file, args.method, args.language)
     
     if result:
         print(f"\n🎉 Next steps:")
