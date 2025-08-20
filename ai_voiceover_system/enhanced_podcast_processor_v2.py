@@ -141,11 +141,14 @@ class EnhancedPodcastProcessorV2:
         """Create enhanced Slidev markdown in root directory (like unified processor)"""
         audio_name = Path(audio_file).stem
         
-        # Create in root directory with ASCII-safe filename  
-        # Convert Unicode characters to ASCII to avoid Slidev/UnoCSS issues
+        # Create in podcasts/slidev directory (like working Java processor)
+        # This approach avoids UnoCSS configuration conflicts
+        podcasts_slidev_dir = self.root_dir / "ai_voiceover_system" / "podcasts" / "slidev"
+        podcasts_slidev_dir.mkdir(parents=True, exist_ok=True)
+        
         safe_name = "podcast_enhanced_slides"
         slidev_filename = f"{safe_name}.md"
-        slidev_path = self.root_dir / slidev_filename
+        slidev_path = podcasts_slidev_dir / slidev_filename
         
         print(f"📝 Creating enhanced Slidev in root directory: {slidev_filename}")
         
@@ -168,8 +171,9 @@ class: text-center
 highlighter: shiki
 lineNumbers: false
 fonts:
-  mono: 'Fira Code, Monaco, Consolas, monospace'
-  sans: 'Inter, system-ui, sans-serif'
+  sans: 'Inter'
+  serif: 'Georgia'  
+  mono: 'Fira Code'
 info: |
   ## {title.replace('_', ' ').title()}
   Enhanced educational content with click animations
@@ -316,25 +320,28 @@ Generated from NotebookLM podcast • Enhanced with Claude Code • No separate 
         return content
     
     def export_slides_from_root(self, slidev_file):
-        """Export slides using root project's Slidev (like unified processor)"""
-        print("📤 Exporting slides with click animations using root Slidev...")
+        """Export slides using root project's Slidev from podcasts/slidev directory"""
+        print("📤 Exporting slides with click animations from podcasts/slidev directory...")
         
         slidev_filename = slidev_file.name
+        slidev_dir = slidev_file.parent
         
         try:
-            # Export using root project's Slidev installation
+            # Export from podcasts/slidev directory (like working Java processor)
+            # This approach avoids UnoCSS configuration conflicts
             export_cmd = [
                 "npx", "slidev", "export", 
                 slidev_filename,
                 "--output", str(self.output_dir.absolute()),
                 "--format", "png",
                 "--with-clicks",
-                "--timeout", "120000"
+                "--timeout", "60000"
             ]
             
             print(f"   Running: {' '.join(export_cmd)}")
-            result = subprocess.run(export_cmd, cwd=self.root_dir, 
-                                  capture_output=True, text=True, timeout=150)
+            print(f"   Working directory: {slidev_dir}")
+            result = subprocess.run(export_cmd, cwd=slidev_dir, 
+                                  capture_output=True, text=True, timeout=90)
             
             if result.returncode == 0:
                 print("✅ Slides exported successfully using root Slidev")
@@ -495,6 +502,9 @@ Generated from NotebookLM podcast • Enhanced with Claude Code • No separate 
             except:
                 pass
             
+            # Clean up temporary files (PNG slides, temp audio)
+            self.cleanup_temp_files()
+            
             return {
                 "video": video_file,
                 "slides_count": len(slide_images),
@@ -502,6 +512,37 @@ Generated from NotebookLM podcast • Enhanced with Claude Code • No separate 
             }
         
         return None
+    
+    def cleanup_temp_files(self):
+        """Clean up temporary files (like unified processor)"""
+        print("\n🧹 Cleaning up temporary files...")
+        
+        # Remove PNG slide images from output directory
+        try:
+            png_files = list(self.output_dir.glob("*.png"))
+            for png_file in png_files:
+                png_file.unlink()
+                print(f"   🗑️ Removed: {png_file.name}")
+            
+            if png_files:
+                print(f"   🧹 Removed {len(png_files)} slide PNG files")
+        except Exception as e:
+            print(f"   ⚠️ Could not remove PNG files: {e}")
+        
+        # Remove any other temporary files but preserve transcripts
+        try:
+            temp_files = []
+            # Look for temp audio files
+            temp_files.extend(self.output_dir.glob("temp_*.m4a"))
+            temp_files.extend(self.output_dir.glob("temp_*.mp3"))
+            
+            for temp_file in temp_files:
+                temp_file.unlink()
+                print(f"   🗑️ Removed: {temp_file.name}")
+        except Exception as e:
+            print(f"   ⚠️ Could not remove temp files: {e}")
+        
+        print("✅ Cleanup completed! (Transcripts preserved as useful material)")
 
 def main():
     parser = argparse.ArgumentParser(
