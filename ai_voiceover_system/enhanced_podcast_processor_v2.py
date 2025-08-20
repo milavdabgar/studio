@@ -21,10 +21,18 @@ import re
 import tempfile
 
 try:
-    from moviepy.editor import AudioFileClip, ImageClip, concatenate_videoclips
+    # MoviePy 2.2.1+ uses direct imports instead of editor module
+    from moviepy.audio.io.AudioFileClip import AudioFileClip
+    from moviepy.video.VideoClip import ImageClip
+    from moviepy.video.compositing.CompositeVideoClip import concatenate_videoclips
     MOVIEPY_AVAILABLE = True
 except ImportError:
-    MOVIEPY_AVAILABLE = False
+    try:
+        # Fallback to older MoviePy versions with editor module
+        from moviepy.editor import AudioFileClip, ImageClip, concatenate_videoclips
+        MOVIEPY_AVAILABLE = True
+    except ImportError:
+        MOVIEPY_AVAILABLE = False
 
 class EnhancedPodcastProcessorV2:
     """Enhanced processor using root project's Slidev installation"""
@@ -431,7 +439,8 @@ Generated from NotebookLM podcast • Enhanced with Claude Code • No separate 
                 temp_audiofile=str(self.output_dir / "temp_audio.m4a"),
                 remove_temp=True,
                 verbose=False,
-                logger='bar'
+                logger='bar',
+                ffmpeg_params=['-pix_fmt', 'yuv420p']
             )
             
             # Cleanup
