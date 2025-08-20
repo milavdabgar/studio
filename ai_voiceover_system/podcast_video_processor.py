@@ -383,10 +383,12 @@ class PodcastVideoProcessor:
                 fps=self.config["video_settings"]["fps"],
                 codec='libx264',
                 audio_codec='aac',
+                preset='fast',
                 temp_audiofile=str(self.output_dir / "temp_audio.m4a"),
                 remove_temp=True,
-                verbose=False,
-                logger=None
+                write_logfile=False,
+                verbose=True,
+                logger='bar'
             )
             
             # Cleanup
