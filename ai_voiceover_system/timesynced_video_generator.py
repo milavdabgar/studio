@@ -281,27 +281,34 @@ def export_slidev_images(slidev_file: Path, output_dir: Path) -> List[Path]:
         return []
 
 def create_slide_timeline(subtitles: List[SubtitleSegment], slides: List[SlideInfo], 
-                         audio_duration: float) -> List[Tuple[SlideInfo, float, float]]:
-    """Create timeline mapping slides to time segments based on content analysis"""
-    print("⏰ Creating slide timeline...")
+                         audio_duration: float, slide_images: List[Path]) -> List[Tuple[int, float, float]]:
+    """Create timeline mapping slide images to time segments based on speaker notes and click timing"""
+    print("⏰ Creating slide timeline with click animations...")
     
-    if not slides:
-        raise ValueError("No slides available")
+    if not slide_images:
+        raise ValueError("No slide images available")
     
     timeline = []
     
-    # Simple strategy: divide audio duration equally among slides
-    slide_duration = audio_duration / len(slides)
+    # Strategy: Map each PNG image to equal time segments across the full audio
+    # This ensures all exported slides/clicks are used throughout the video
+    image_duration = audio_duration / len(slide_images)
     
-    for i, slide in enumerate(slides):
-        start_time = i * slide_duration
-        end_time = min((i + 1) * slide_duration, audio_duration)
-        timeline.append((slide, start_time, end_time))
+    for i, image_path in enumerate(slide_images):
+        start_time = i * image_duration
+        end_time = min((i + 1) * image_duration, audio_duration)
+        timeline.append((i, start_time, end_time))
+        
+        # Extract slide number from filename (e.g., "010-13.png" -> slide 10, click 13)
+        filename = image_path.name
+        if '-' in filename:
+            slide_num = filename.split('-')[0]
+            print(f"   Image {i+1:2d}: {start_time:5.1f}s-{end_time:5.1f}s ({image_duration:.1f}s) - {filename}")
     
-    print(f"✅ Created timeline with {len(timeline)} slide segments")
+    print(f"✅ Created timeline with {len(timeline)} image segments for {len(slide_images)} click animations")
     return timeline
 
-def create_video(audio_file: Path, slide_timeline: List[Tuple[SlideInfo, float, float]], 
+def create_video(audio_file: Path, slide_timeline: List[Tuple[int, float, float]], 
                 slide_images: List[Path], output_file: Path):
     """Create final video with time-synced slides"""
     print("🎬 Creating time-synced video...")
@@ -312,20 +319,16 @@ def create_video(audio_file: Path, slide_timeline: List[Tuple[SlideInfo, float, 
     # Load audio
     audio_clip = AudioFileClip(str(audio_file))
     
-    # Create video clips for each slide
+    # Create video clips for each slide image
     video_clips = []
     
-    for i, (slide_info, start_time, end_time) in enumerate(slide_timeline):
+    for image_index, start_time, end_time in slide_timeline:
         duration = end_time - start_time
         
-        # Find corresponding image
-        if i < len(slide_images):
-            image_path = slide_images[i]
-        else:
-            # Reuse last image if we don't have enough
-            image_path = slide_images[-1]
+        # Get the corresponding image
+        image_path = slide_images[image_index]
         
-        print(f"   Slide {slide_info.slide_number}: {duration:.1f}s - {slide_info.title}")
+        print(f"   Frame {image_index+1}: {duration:.1f}s - {image_path.name}")
         
         # Create image clip
         img_clip = ImageClip(str(image_path), duration=duration)
@@ -496,7 +499,7 @@ Examples:
         print(f"🎵 Audio duration: {audio_duration:.1f} seconds")
         
         # Create slide timeline
-        slide_timeline = create_slide_timeline(subtitles, slides, audio_duration)
+        slide_timeline = create_slide_timeline(subtitles, slides, audio_duration, slide_images)
         
         # Create video
         create_video(audio_file, slide_timeline, slide_images, output_file)
