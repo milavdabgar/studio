@@ -245,7 +245,7 @@ def export_slidev_images(slidev_file: Path, output_dir: Path) -> List[Path]:
             '--output', str(export_dir.absolute()),
             '--format', 'png',
             '--with-clicks',
-            '--timeout', '30000'
+            '--timeout', '90000'
         ]
         
         print(f"   Running: {' '.join(cmd)}")
@@ -380,6 +380,52 @@ def cleanup_slide_images(slide_images: List[Path]):
     
     print(f"✅ Cleaned up {cleaned_count} slide images")
 
+def cleanup_slidev_exports(slidev_file: Path):
+    """Clean up slidev export directories created in the slidev project folder"""
+    print("🧹 Cleaning up slidev export directories...")
+    
+    slidev_dir = slidev_file.parent
+    cleaned_dirs = []
+    
+    # Common export directory names that slidev creates
+    export_patterns = ["*_slides", "exported_*", "corrected_*", "basic_*", "dist"]
+    
+    for pattern in export_patterns:
+        for export_dir in slidev_dir.glob(pattern):
+            if export_dir.is_dir():
+                try:
+                    # Remove all PNG files in the directory
+                    png_count = 0
+                    for png_file in export_dir.glob("*.png"):
+                        png_file.unlink()
+                        png_count += 1
+                    
+                    # Try to remove the directory if it's empty or only has non-important files
+                    if png_count > 0 or not any(f for f in export_dir.iterdir() if f.suffix in ['.png', '.jpg', '.jpeg', '.gif']):
+                        try:
+                            # Remove any remaining files that are not important
+                            for file in export_dir.iterdir():
+                                if file.is_file() and file.suffix.lower() in ['.png', '.jpg', '.jpeg', '.gif', '.svg']:
+                                    file.unlink()
+                            
+                            # Try to remove directory if empty
+                            if not any(export_dir.iterdir()):
+                                export_dir.rmdir()
+                                cleaned_dirs.append(str(export_dir.name))
+                            elif png_count > 0:
+                                cleaned_dirs.append(f"{export_dir.name} (PNG files)")
+                        except Exception as e:
+                            if png_count > 0:
+                                cleaned_dirs.append(f"{export_dir.name} (PNG files)")
+                            print(f"   Warning: Could not remove directory {export_dir}: {e}")
+                    
+                except Exception as e:
+                    print(f"   Warning: Could not clean {export_dir}: {e}")
+    
+    if cleaned_dirs:
+        print(f"   Cleaned: {', '.join(cleaned_dirs)}")
+    print("✅ Cleaned up slidev exports")
+
 def main():
     parser = argparse.ArgumentParser(
         description="Create time-synced educational videos from audio, subtitles, and slides",
@@ -457,6 +503,9 @@ Examples:
         
         # Clean up slide images
         cleanup_slide_images(slide_images)
+        
+        # Clean up slidev export directories
+        cleanup_slidev_exports(slidev_file)
         
         print(f"\n🎉 Time-synced video created successfully!")
         print(f"📁 Video: {output_file}")
