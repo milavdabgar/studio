@@ -1,32 +1,49 @@
-# 🎯 Slidev AI Voiceover System
+# 🎯 AI Voiceover System
 
-**Comprehensive video generation system for Slidev presentations with intelligent TTS providers and click-level synchronization.**
+**Comprehensive educational content creation platform that transforms podcasts, audio content, and presentations into professional educational videos with synchronized visuals.**
 
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-green)](https://github.com/your-repo)
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://python.org)
-[![TTS](https://img.shields.io/badge/TTS-Multi--Provider-orange)](https://github.com/your-repo)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-green)](https://github.com/milavdabgar/studio)
+[![Python](https://img.shields.io/badge/Python-3.13-blue)](https://python.org)
+[![MoviePy](https://img.shields.io/badge/MoviePy-1.0.3-orange)](https://github.com/Zulko/moviepy)
+[![Multi-Language](https://img.shields.io/badge/Multi--Language-Gujarati%20%7C%20English-purple)](https://github.com/milavdabgar/studio)
 
 ## 🚀 Quick Start
 
+### ⭐ Time-Synced Video Generation (Latest)
 ```bash
-# Default: Google TTS UK English with automatic click/slide detection
-python slidev_unified_processor.py your-slides.md
+# Create educational video from YouTube audio and slides
+python ai_voiceover_system/youtube_podcast_downloader.py "https://youtube.com/watch?v=VIDEO_ID"
+python ai_voiceover_system/timesynced_video_generator.py audio.m4a subtitles.vtt slides.md
+```
+
+### 🎬 Traditional Slidev Processing
+```bash
+# Google TTS with automatic click/slide detection
+python ai_voiceover_system/slidev_unified_processor.py your-slides.md
 
 # ElevenLabs voice clone (requires API key)
-python slidev_unified_processor.py your-slides.md 5 --tts=elevenlabs
+python ai_voiceover_system/slidev_unified_processor.py your-slides.md 5 --tts=elevenlabs
 
 # Auto fallback hierarchy (GTTS → ElevenLabs → Coqui)
-python slidev_unified_processor.py your-slides.md --tts=auto
+python ai_voiceover_system/slidev_unified_processor.py your-slides.md --tts=auto
 ```
 
 ## 🎬 What This System Does
 
-**Input**: Slidev markdown files with presenter notes  
-**Output**: Professional MP4 videos with perfect audio-visual synchronization  
-**Magic**: Automatically detects click animations and synchronizes narration timing
+**Primary Pipeline**: Audio/YouTube content + Subtitles + Slidev presentations → Professional educational videos  
+**Secondary Pipeline**: Slidev markdown with presenter notes → Synchronized video presentations  
+**Magic**: Intelligent timing synchronization, multi-language support, and automatic cleanup
 
 ### 🎯 Key Features
 
+#### ⭐ Latest: Time-Synced Video Generation
+- ✅ **YouTube Integration**: Download audio and subtitles from YouTube videos
+- ✅ **Perfect Timing**: Subtitle-based slide synchronization
+- ✅ **Multi-Language**: Tested with Gujarati, English, and other languages
+- ✅ **Automatic Cleanup**: Removes temporary files after processing
+- ✅ **Python 3.13 Ready**: Latest Python compatibility with MoviePy 1.x
+
+#### 🎬 Traditional Slidev Processing
 - ✅ **Smart Processing**: Auto-detects click vs slide-based content
 - ✅ **Multi-TTS Support**: Google TTS, ElevenLabs, Coqui neural models
 - ✅ **Perfect Synchronization**: Click-level narration timing
@@ -38,12 +55,22 @@ python slidev_unified_processor.py your-slides.md --tts=auto
 ### Prerequisites
 
 ```bash
-# Install Slidev CLI (required for slide export)
-npm install -g @slidev/cli
+# Python 3.13 environment (recommended)
+python -m venv .venv
+source .venv/bin/activate  # On macOS/Linux
 
 # Install Python dependencies
-pip install gtts moviepy requests TTS
+pip install -r requirements.txt
+
+# Node.js dependencies for Slidev
+npm install slidev
 ```
+
+### Core Dependencies
+- **Python 3.13+** - Latest Python runtime
+- **MoviePy 1.0.3** - Video processing and rendering  
+- **Slidev** - Presentation framework
+- **Optional**: gTTS, ElevenLabs, OpenAI APIs
 
 ### Optional: ElevenLabs Setup
 
@@ -325,13 +352,34 @@ python slidev_unified_processor.py slides.md 1 --tts=gtts
 - Comprehensive narration generation
 - Faster processing for simple content
 
+## 🏆 Recent Achievements (2024)
+
+### ✅ Python 3.13 Migration & Compatibility (December 2024)
+- **Complete system upgrade** to Python 3.13
+- **Fixed MoviePy 1.x compatibility** across 7+ files in the codebase
+- **Resolved dependency conflicts** (decorator, pydub, audioop deprecation)
+- **Tested end-to-end pipeline** with real educational content
+
+### ✅ Time-Synced Video Generation Pipeline (November 2024)
+- **Developed timesynced_video_generator.py** - Professional video creation from YouTube/audio + slides
+- **YouTube integration** for automatic audio and subtitle download
+- **Multi-language testing** with Gujarati educational content (347.5-second video, 10 slides)
+- **Automatic cleanup system** - PNG files removed after video completion
+
+### ✅ Enhanced Processing & Quality (October 2024)
+- **Multiple TTS engine support** with intelligent fallback (gTTS, ElevenLabs, OpenAI)
+- **Progressive click animations** in Slidev presentations
+- **Professional video rendering** with H.264/AAC optimization
+- **Cross-language compatibility** verified (Gujarati content + English timing)
+
 ## 🎉 Success Stories
 
-✅ **Perfect Synchronization**: Frame-accurate click timing  
-✅ **Multi-TTS Support**: Flexible provider options  
-✅ **Automatic Detection**: Zero configuration required  
-✅ **Professional Quality**: Real Slidev exports preserved  
-✅ **Scalable System**: Works with any presentation size  
+✅ **Perfect Synchronization**: Frame-accurate click timing and subtitle-based transitions  
+✅ **Multi-TTS Support**: Flexible provider options with intelligent fallback  
+✅ **Python 3.13 Ready**: Latest Python compatibility with all modern features  
+✅ **Multi-Language**: Tested with Gujarati, English, and cross-language scenarios  
+✅ **Professional Quality**: Real Slidev exports and YouTube-grade video output  
+✅ **Scalable System**: Works with any presentation size and content type  
 
 ---
 
@@ -343,8 +391,17 @@ For issues, feature requests, or contributions:
 3. Test with minimal example first
 4. Review output logs for specific error messages
 
-**Status**: 🟢 **Production Ready** - Unified system operational!
+**Status**: 🟢 **Production Ready** - Time-synced video generation and unified processing operational!
+
+### 📋 Quick Reference
+
+| Component | File | Purpose |
+|-----------|------|---------|
+| **⭐ Video Generation** | `timesynced_video_generator.py` | Main time-synced video creation |
+| **Content Acquisition** | `youtube_podcast_downloader.py` | Download YouTube audio/subtitles |
+| **Slidev Processing** | `slidev_unified_processor.py` | Traditional Slidev presentations |
+| **Publishing** | `podcast_publisher.py` | Complete publishing pipeline |
 
 ---
 
-*Last Updated: July 2024 - Unified Processor v1.0*
+*Last Updated: December 2024 - Time-Synced Video Generation v2.0 + Python 3.13 Ready*

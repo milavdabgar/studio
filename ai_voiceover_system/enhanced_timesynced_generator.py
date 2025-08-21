@@ -31,6 +31,15 @@ import tempfile
 from dataclasses import dataclass
 from typing import List, Optional, Tuple, Dict
 import math
+import glob
+
+# Import the new intelligent slide generator
+try:
+    from intelligent_slide_generator import IntelligentSlideGenerator
+    INTELLIGENT_GENERATOR_AVAILABLE = True
+except ImportError:
+    INTELLIGENT_GENERATOR_AVAILABLE = False
+    print("⚠️ Intelligent slide generator not available - using legacy generator")
 
 # MoviePy imports
 try:
@@ -83,9 +92,58 @@ class EnhancedTimeSyncedGenerator:
         self.subtitle_segments = []
         self.total_duration = 0
         
+    def detect_and_load_transcript(self, audio_file: Path, subtitle_file: Path) -> Tuple[List[SubtitleSegment], str]:
+        """Detect language and load appropriate transcript"""
+        print("🌐 Detecting language and loading appropriate transcript...")
+        
+        # Extract base name without extension for pattern matching
+        audio_base = audio_file.stem
+        subtitle_base = subtitle_file.stem
+        
+        # Check if files contain Gujarati characters or patterns
+        is_gujarati = bool(re.search(r'[\u0A80-\u0AFF]', audio_base + subtitle_base))
+        
+        if is_gujarati:
+            print("📚 Detected Gujarati content")
+            # Look for Gujarati VTT file (.gu.vtt)
+            gu_vtt = subtitle_file.parent / f"{subtitle_base}.gu.vtt"
+            if gu_vtt.exists():
+                print(f"✅ Using Gujarati transcript: {gu_vtt.name}")
+                segments = self.parse_vtt_subtitles(gu_vtt)
+                return segments, 'gujarati'
+            else:
+                print("⚠️ Gujarati VTT not found, checking for patterns...")
+                # Look for any .gu.vtt file in the directory
+                gu_files = list(subtitle_file.parent.glob("*.gu.vtt"))
+                if gu_files:
+                    print(f"✅ Using Gujarati transcript: {gu_files[0].name}")
+                    segments = self.parse_vtt_subtitles(gu_files[0])
+                    return segments, 'gujarati'
+        else:
+            print("📚 Detected English content")
+            # Look for English VTT file (.en.vtt)
+            en_vtt = subtitle_file.parent / f"{subtitle_base}.en.vtt"
+            if en_vtt.exists():
+                print(f"✅ Using English transcript: {en_vtt.name}")
+                segments = self.parse_vtt_subtitles(en_vtt)
+                return segments, 'english'
+            else:
+                # Look for any .en.vtt file in the directory
+                en_files = list(subtitle_file.parent.glob("*.en.vtt"))
+                if en_files:
+                    print(f"✅ Using English transcript: {en_files[0].name}")
+                    segments = self.parse_vtt_subtitles(en_files[0])
+                    return segments, 'english'
+        
+        # Fallback to provided subtitle file
+        print(f"🔄 Using provided subtitle file: {subtitle_file.name}")
+        segments = self.parse_vtt_subtitles(subtitle_file)
+        language = 'gujarati' if is_gujarati else 'english'
+        return segments, language
+    
     def parse_vtt_subtitles(self, vtt_file: Path) -> List[SubtitleSegment]:
         """Parse VTT subtitle file with enhanced timing analysis"""
-        print("📝 Parsing VTT subtitles...")
+        print(f"📝 Parsing VTT subtitles from {vtt_file.name}...")
         
         segments = []
         
@@ -161,6 +219,37 @@ class EnhancedTimeSyncedGenerator:
         
         total_seconds = hours * 3600 + minutes * 60 + seconds + milliseconds / 1000
         return total_seconds
+    
+    def generate_intelligent_slides(self, vtt_file: Path, target_slides: int = 10) -> Optional[Path]:
+        """Generate slides using the intelligent slide generator if available"""
+        if not INTELLIGENT_GENERATOR_AVAILABLE:
+            print("⚠️ Intelligent generator not available, falling back to legacy method")
+            return None
+        
+        try:
+            print(f"🧠 Using Intelligent Slide Generator for enhanced content analysis...")
+            
+            generator = IntelligentSlideGenerator()
+            intelligent_slides = generator.generate_slides_from_vtt(vtt_file, target_slides)
+            
+            if not intelligent_slides:
+                print("❌ Intelligent generator failed, falling back to legacy")
+                return None
+            
+            # Create output filename
+            output_file = vtt_file.parent / f"{vtt_file.stem}_intelligent_slides.md"
+            
+            if generator.create_slidev_markdown(intelligent_slides, output_file):
+                print(f"✅ Intelligent slides generated: {output_file}")
+                return output_file
+            else:
+                print("❌ Failed to create intelligent Slidev markdown")
+                return None
+                
+        except Exception as e:
+            print(f"❌ Intelligent generator error: {e}")
+            print("🔄 Falling back to legacy generator")
+            return None
     
     def analyze_content_structure(self, segments: List[SubtitleSegment], target_slides: int = 10) -> List[EnhancedSlide]:
         """Analyze transcript to create logical slide structure with click points"""
@@ -347,63 +436,89 @@ class EnhancedTimeSyncedGenerator:
         return clean_sentences
     
     def _create_presenter_notes(self, segments: List[SubtitleSegment], click_points: List[ClickPoint]) -> str:
-        """Create presenter notes with click markers"""
+        """Create presenter notes with click markers and timing information"""
         if not segments:
             return ""
         
         notes = []
         
-        # Add introduction
-        notes.append("આ સ્લાઇડમાં આપણે મુખ્ય વિષયો સમજીશું.")
+        # Add introduction with context
+        if segments:
+            intro_text = segments[0].text[:100] if segments[0].text else "આ સ્લાઇડમાં આપણે મુખ્ય વિષયો સમજીશું"
+            notes.append(f"આજે આપણે {intro_text}... વિશે શીખવાના છીએ.")
         
-        # Add click-based content with cleaned text
+        # Add click-based content with proper timing
         for i, click_point in enumerate(click_points):
-            click_marker = f"[click:{i+1}]" if i > 0 else "[click]"
-            
-            # Clean the content for presenter notes
-            cleaned_content = re.sub(r'\s+', ' ', click_point.content)
-            cleaned_content = re.sub(r'[>&]+', '', cleaned_content)
-            cleaned_content = re.sub(r'હા\s*', '', cleaned_content)
-            cleaned_content = cleaned_content.strip()
-            
-            # Remove repetitive patterns like auto-transcript artifacts
-            words = cleaned_content.split()
-            cleaned_words = []
-            prev_word = ""
-            
-            for word in words:
-                # Skip if same word repeated immediately
-                if word != prev_word:
-                    cleaned_words.append(word)
-                    prev_word = word
-            
-            cleaned_content = ' '.join(cleaned_words)
-            
-            # Extract key phrases instead of full sentences
-            if len(cleaned_content) > 100:
-                # Find key technical terms and concepts
-                key_phrases = []
-                for phrase in cleaned_content.split():
-                    if any(term in phrase.lower() for term in ['ટ્રાન્ઝિસ્ટર', 'સેમીકન્ડક્ટર', 'એમ્પ્લીફાય', 'બેલ', 'લેબ', 'શોધ', 'ટેકનોલોજી']):
-                        context_start = max(0, cleaned_content.find(phrase) - 30)
-                        context_end = min(len(cleaned_content), cleaned_content.find(phrase) + 50)
-                        context = cleaned_content[context_start:context_end].strip()
-                        if len(context) > 20:
-                            key_phrases.append(context)
-                            break
-                
-                meaningful_part = key_phrases[0] if key_phrases else cleaned_content[:80]
+            # Use proper click marker format like in Java lecture
+            if i == 0:
+                click_marker = "[click]"
             else:
-                meaningful_part = cleaned_content
+                click_marker = f"[click]"  # Standard format, let Slidev handle numbering
+            
+            # Clean and enhance the content for presenter notes
+            cleaned_content = self._clean_transcript_text(click_point.content)
+            
+            # Add timing context for better synchronization
+            timing_info = f" (આશરે {click_point.timestamp:.0f} સેકન્ડ પર)"
+            
+            # Extract meaningful phrases with context
+            meaningful_part = self._extract_meaningful_phrase(cleaned_content)
             
             if meaningful_part and len(meaningful_part.strip()) > 10:
-                notes.append(f"{click_marker} {meaningful_part.strip()}...")
+                notes.append(f"{click_marker} {meaningful_part.strip()}{timing_info}")
         
-        # Add conclusion
+        # Add conclusion with timing
         if len(click_points) > 1:
-            notes.append("[click] આ મુદ્દાઓ સમજવાથી આપણને વિષયની સ્પષ્ટતા મળે છે.")
+            final_timing = click_points[-1].timestamp if click_points else 0
+            notes.append(f"[click] આ મુદ્દાઓ સમજવાથી આપણને વિષયની સ્પષ્ટતા મળે છે. (અંતે {final_timing:.0f} સેકન્ડ પર)")
         
-        return ' '.join(notes)
+        return '\n\n'.join(notes)
+    
+    def _clean_transcript_text(self, text: str) -> str:
+        """Clean transcript text for better readability"""
+        # Remove common transcript artifacts
+        cleaned = re.sub(r'\s+', ' ', text)
+        cleaned = re.sub(r'[>&]+', '', cleaned)
+        cleaned = re.sub(r'હા\s*', '', cleaned)
+        cleaned = re.sub(r'[.]{2,}', '.', cleaned)
+        
+        # Remove repetitive patterns
+        words = cleaned.split()
+        cleaned_words = []
+        prev_word = ""
+        
+        for word in words:
+            if word != prev_word or word.lower() in ['the', 'and', 'or', 'but', 'આ', 'એ', 'અને']:
+                cleaned_words.append(word)
+                prev_word = word
+        
+        return ' '.join(cleaned_words).strip()
+    
+    def _extract_meaningful_phrase(self, content: str) -> str:
+        """Extract meaningful phrase for presenter notes"""
+        if len(content) <= 100:
+            return content
+        
+        # Look for key technical terms and extract context
+        key_terms = ['ટ્રાન્ઝિસ્ટર', 'સેમીકન્ડક્ટર', 'એમ્પ્લીફાય', 'બેલ', 'લેબ', 'શોધ', 'ટેકનોલોજી',
+                    'કમ્પ્યુટર', 'ટેકનોલોજી', 'વિકાસ', 'ઉપયોગ', 'ફાયદા', 'મહત્વ']
+        
+        for term in key_terms:
+            if term in content:
+                # Find sentence containing the term
+                sentences = re.split(r'[.!?]+', content)
+                for sentence in sentences:
+                    if term in sentence and len(sentence.strip()) > 20:
+                        return sentence.strip()
+        
+        # Fallback to first meaningful sentence
+        sentences = re.split(r'[.!?]+', content)
+        for sentence in sentences:
+            if len(sentence.strip()) > 30:
+                return sentence.strip()
+        
+        # Final fallback to truncated content
+        return content[:80] + "..." if len(content) > 80 else content
     
     def generate_enhanced_slidev(self, slides: List[EnhancedSlide], output_file: Path) -> bool:
         """Generate Slidev markdown with click animations and presenter notes"""
@@ -421,6 +536,9 @@ class EnhancedTimeSyncedGenerator:
         # Conclusion slide
         content += self._create_conclusion_slide()
         
+        # End slide
+        content += self._create_end_slide()
+        
         try:
             with open(output_file, 'w', encoding='utf-8') as f:
                 f.write(content)
@@ -435,18 +553,23 @@ class EnhancedTimeSyncedGenerator:
     def _create_slidev_header(self) -> str:
         """Create Slidev frontmatter with theme and settings"""
         return """---
-theme: academic
+theme: default
 background: #1a1a2e
 class: text-center
 highlighter: shiki
 lineNumbers: false
+fonts:
+  mono: 'Fira Code, Monaco, Consolas, monospace'
+  sans: 'Inter, system-ui, sans-serif'
 info: |
-  ## Enhanced Educational Presentation
-  Generated with click animations and presenter notes
+  ## Enhanced Educational Presentation with Click Animations
+  Generated from NotebookLM podcast using enhanced processor
+  Time-synced with subtitle timing for perfect synchronization
 drawings:
   persist: false
 transition: slide-left
-title: Enhanced Time-Synced Presentation
+title: Enhanced Time-Synced Presentation with Click Animations
+colorSchema: dark
 ---
 
 """
@@ -484,43 +607,38 @@ title: Enhanced Time-Synced Presentation
 """
     
     def _create_content_slide(self, slide: EnhancedSlide) -> str:
-        """Create content slide with click animations"""
+        """Create content slide with click animations like Java lecture style"""
         slide_content = f"""# {slide.title}
 
-<div class="grid grid-cols-1 gap-6">
+<div class="text-left mt-12 space-y-4">
 
 """
         
-        # Add content blocks with click animations
+        # Add content blocks with click animations in professional layout
         for i, block in enumerate(slide.content_blocks):
-            if i == 0:
-                slide_content += f"""<div>
-
-### મુખ્ય મુદ્દો:
-{block}
-
-</div>
-
-"""
-            else:
-                slide_content += f"""<div v-click="{i}">
-
-### વિગતો:
-{block}
-
+            click_number = i + 1
+            slide_content += f"""<div v-click="{click_number}" class="flex items-start space-x-4 p-4 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition-all duration-300">
+  <div class="text-blue-400 text-2xl font-bold">•</div>
+  <div class="text-white text-xl leading-relaxed">{block}</div>
 </div>
 
 """
         
-        # Add conclusion with final click
-        final_click = len(slide.content_blocks)
-        slide_content += f"""<div v-click="{final_click}" class="mt-8 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
-<strong>🎯 મુખ્ય વાત:</strong> આ સ્લાઇડના મુદ્દાઓ સમજવા માત્ર આગળ વધીએ!
+        # Add timing information and navigation
+        total_clicks = len(slide.content_blocks)
+        slide_content += f"""</div>
+
+<div v-click="{total_clicks + 1}" class="absolute bottom-8 left-8 text-gray-400">
+  <div class="text-sm">Slide {slide.slide_number} of Total • Duration: {slide.total_duration:.0f}s</div>
 </div>
 
+<div v-click="{total_clicks + 1}" class="absolute bottom-8 right-8 text-blue-400">
+  <carbon:arrow-right class="text-2xl animate-pulse" />
 </div>
 
 <!--
+Enhanced slide {slide.slide_number}: {total_clicks} click animations
+Audio timing: Based on subtitle segments
 {slide.presenter_notes}
 -->
 
@@ -531,43 +649,94 @@ title: Enhanced Time-Synced Presentation
         return slide_content
     
     def _create_conclusion_slide(self) -> str:
-        """Create conclusion slide"""
-        return """# નિષ્કર્ષ
-## આ શિક્ષણ યાત્રાનો સાર
+        """Create conclusion slide with click animations"""
+        return """# 🎯 Summary & Conclusion
 
-<v-clicks>
+<div class="grid grid-cols-1 gap-8 mt-12">
 
-- ✅ આપણે મુખ્ય વિષયો સમજ્યા
-- ✅ નવી માહિતી મેળવી  
-- ✅ ઉપયોગી જ્ઞાન પ્રાપ્ત કર્યું
-- ✅ ભવિષ્યની તૈયારી કરી
-
-</v-clicks>
-
-<div v-click="5" class="mt-8 text-center">
-<div class="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl">
-<h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-blue-600 mb-4">
-🌟 આભાર!
-</h3>
-<p class="text-lg text-gray-700">
-આ શિક્ષણ સત્રમાં ભાગ લેવા બદલ આભાર!
-</p>
+<div v-click="1" class="p-8 bg-gradient-to-r from-blue-900/40 to-purple-900/40 rounded-xl border border-blue-500/30">
+  <h3 class="text-2xl font-bold text-blue-300 mb-4">📚 Comprehensive Coverage</h3>
+  <p class="text-gray-200 text-lg">In-depth exploration with detailed analysis and insights</p>
 </div>
+
+<div v-click="2" class="p-8 bg-gradient-to-r from-green-900/40 to-teal-900/40 rounded-xl border border-green-500/30">
+  <h3 class="text-2xl font-bold text-green-300 mb-4">🔍 Key Learning Points</h3>
+  <p class="text-gray-200 text-lg">Important concepts and principles clearly explained</p>
+</div>
+
+<div v-click="3" class="p-8 bg-gradient-to-r from-purple-900/40 to-pink-900/40 rounded-xl border border-purple-500/30">
+  <h3 class="text-2xl font-bold text-purple-300 mb-4">🚀 Practical Applications</h3>
+  <p class="text-gray-200 text-lg">Real-world relevance and future implications</p>
+</div>
+
+</div>
+
+<div v-click="4" class="mt-16 text-center">
+  <h2 class="text-4xl font-bold text-yellow-400 mb-4">Thank You! 🎉</h2>
+  <p class="text-xl text-gray-300">Enhanced Educational Content Complete</p>
 </div>
 
 <!--
+Enhanced conclusion with gradient backgrounds and professional styling
+Generated with Enhanced Podcast Processor V2
+
 આજે આપણે જે શીખ્યા તેનો સરસંગ્રહ કરીએ.
 
-[click] આપણે આ વિષયના મુખ્ય મુદ્દાઓ સમજ્યા છે.
+[click] આપણે આ વિષયના મુખ્ય મુદ્દાઓ વિગતથી સમજ્યા છે અને ઊંડી સમજ મેળવી છે.
 
-[click] નવી અને ઉપયોગી માહિતી મેળવી છે.
+[click] મહત્વપૂર્ણ ખ્યાલો અને સિદ્ધાંતો સ્પષ્ટતાથી સમજાવવામાં આવ્યા છે અને આપણે તેમને સારી રીતે સમજી શક્યા છીએ.
 
-[click] આ જ્ઞાન આપણા ભવિષ્યમાં કામ આવશે.
+[click] વાસ્તવિક જીવનમાં ઉપયોગ અને ભવિષ્યની સંભાવનાઓ વિશે પણ આપણે જાણ્યું છે.
 
-[click] આ શિક્ષણ યાત્રામાં ભાગ લેવા બદલ આભાર!
+[click] આ શિક્ષણ સત્રમાં ભાગ લેવા બદલ આભાર! આ જ્ઞાન આપણા ભવિષ્યમાં ઉપયોગી થશે.
 
 આગામી સત્રમાં મળીશું!
 -->
+
+---
+"""
+    
+    def _create_end_slide(self) -> str:
+        """Create end slide with technical information"""
+        return """---
+layout: end
+class: text-center
+---
+
+# 🎓 Enhanced Educational Content
+
+## Created with Enhanced Podcast Processor V2
+
+<div class="grid grid-cols-2 gap-8 mt-12">
+
+<div class="text-left">
+  <h3 class="text-xl font-bold text-blue-400 mb-4">✨ Features</h3>
+  <ul class="text-gray-300 space-y-2">
+    <li>• Progressive Click Animations</li>
+    <li>• Rich Visual Design</li>  
+    <li>• Professional Layouts</li>
+    <li>• Audio Synchronization</li>
+    <li>• Intelligent Content Analysis</li>
+  </ul>
+</div>
+
+<div class="text-left">
+  <h3 class="text-xl font-bold text-green-400 mb-4">🛠️ Technology</h3>
+  <ul class="text-gray-300 space-y-2">
+    <li>• Slidev Framework</li>
+    <li>• Vue.js Components</li>
+    <li>• TailwindCSS Styling</li>
+    <li>• Subtitle-based Timing</li>
+    <li>• Python 3.13 Compatible</li>
+  </ul>
+</div>
+
+</div>
+
+<div class="mt-12 text-gray-400">
+Generated from podcast audio with subtitle timing • Enhanced with Claude Code • Click animations synchronized
+</div>
+
 
 ---
 """
@@ -578,7 +747,8 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python enhanced_timesynced_generator.py audio.m4a subtitles.vtt --generate-slides
+  python enhanced_timesynced_generator.py audio.m4a subtitles.vtt --generate-slides --intelligent
+  python enhanced_timesynced_generator.py audio.m4a subtitles.vtt --generate-slides --slides-count 8
   python enhanced_timesynced_generator.py audio.m4a subtitles.vtt --slides existing_slides.md --output video.mp4
         """
     )
@@ -587,6 +757,7 @@ Examples:
     parser.add_argument('subtitle_file', help='Subtitle file (VTT)')
     parser.add_argument('--slides', help='Existing Slidev file (optional)')
     parser.add_argument('--generate-slides', action='store_true', help='Generate new Slidev with click animations')
+    parser.add_argument('--intelligent', action='store_true', help='Use intelligent slide generator (recommended)')
     parser.add_argument('--output', help='Output video file (default: auto-generated)')
     parser.add_argument('--slides-count', type=int, default=10, help='Number of slides to generate (default: 10)')
     
@@ -608,33 +779,101 @@ Examples:
     print(f"   📝 Subtitles: {subtitle_file.name}")
     
     try:
-        # Parse subtitles
-        segments = generator.parse_vtt_subtitles(subtitle_file)
+        # Detect language and parse appropriate subtitles
+        segments, detected_language = generator.detect_and_load_transcript(audio_file, subtitle_file)
+        print(f"🌐 Language detected: {detected_language}")
         
         if args.generate_slides:
-            # Generate enhanced slides with click animations
-            slides = generator.analyze_content_structure(segments, args.slides_count)
+            slidev_file = None
             
-            # Create Slidev file
-            slidev_file = audio_file.parent / f"{audio_file.stem}_enhanced_slides.md"
-            if generator.generate_enhanced_slidev(slides, slidev_file):
+            # Try intelligent generator first if requested or available
+            if args.intelligent or INTELLIGENT_GENERATOR_AVAILABLE:
+                try:
+                    print("🧠 Using intelligent slide generation...")
+                    
+                    # Find appropriate VTT file based on detected language
+                    vtt_pattern = "*.gu.vtt" if detected_language == 'gujarati' else "*.en.vtt"
+                    vtt_files = list(subtitle_file.parent.glob(vtt_pattern))
+                    
+                    if vtt_files:
+                        intelligent_gen = IntelligentSlideGenerator()
+                        slidev_file = audio_file.parent / f"{audio_file.stem}_intelligent_slides.md"
+                        
+                        if intelligent_gen.generate_slides_from_vtt(vtt_files[0], slidev_file, args.slides_count):
+                            print(f"✅ Intelligent Slidev generated with {detected_language} content: {slidev_file}")
+                        else:
+                            print("⚠️ Intelligent generation failed, falling back to legacy method...")
+                            slidev_file = None
+                    else:
+                        print(f"⚠️ No appropriate VTT file found for {detected_language}, using legacy method...")
+                        slidev_file = None
+                        
+                except Exception as e:
+                    print(f"⚠️ Intelligent generation failed ({e}), using legacy method...")
+                    slidev_file = None
+            
+            # Fallback to legacy generator if intelligent fails or not requested
+            if slidev_file is None:
+                print("🔄 Using legacy slide generation...")
+                slides = generator.analyze_content_structure(segments, args.slides_count)
+                
+                # Create Slidev file
+                slidev_file = audio_file.parent / f"{audio_file.stem}_enhanced_slides.md"
+                if not generator.generate_enhanced_slidev(slides, slidev_file):
+                    return 1
+            
+            if slidev_file:
                 print(f"✅ Enhanced Slidev generated: {slidev_file}")
                 print(f"🚀 Next steps:")
                 print(f"   1. Review and customize the generated slides")
                 print(f"   2. Export slides: npx slidev export {slidev_file.name} --with-clicks")
-                print(f"   3. Create video using the original timesynced_video_generator.py")
+                print(f"   3. Create video using the enhanced processor")
             else:
                 return 1
         
         elif args.slides:
-            # Use existing slides file
+            # Use existing slides file and create video
             slidev_file = Path(args.slides)
             if not slidev_file.exists():
                 print(f"❌ Slides file not found: {slidev_file}")
                 return 1
             
             print(f"📊 Using existing slides: {slidev_file}")
-            print(f"🚀 Use timesynced_video_generator.py to create video")
+            
+            # Auto-generate video if requested
+            if args.output:
+                print(f"🎬 Creating time-synced video...")
+                video_output = Path(args.output)
+                
+                # Import and use the timesynced video generator
+                try:
+                    from timesynced_video_generator import main as create_timesynced_video
+                    
+                    # Call timesynced video generator with proper arguments
+                    import sys
+                    original_argv = sys.argv
+                    sys.argv = [
+                        'timesynced_video_generator.py',
+                        str(audio_file),
+                        str(subtitle_file),
+                        str(slidev_file),
+                        '--output', str(video_output)
+                    ]
+                    
+                    result = create_timesynced_video()
+                    sys.argv = original_argv
+                    
+                    if result == 0:
+                        print(f"✅ Enhanced click-animated video created: {video_output}")
+                    else:
+                        print(f"❌ Video creation failed")
+                        return 1
+                        
+                except Exception as e:
+                    print(f"⚠️ Could not auto-create video: {e}")
+                    print(f"🚀 Use: python timesynced_video_generator.py {audio_file} {subtitle_file} {slidev_file} --output {args.output}")
+            else:
+                print(f"🚀 Next: python timesynced_video_generator.py {audio_file} {subtitle_file} {slidev_file}")
         
         else:
             print("❌ Please specify either --generate-slides or --slides")
