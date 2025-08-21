@@ -141,7 +141,7 @@ def download_subtitles(url, output_dir, video_info, languages=['gu', 'en']):
         try:
             print(f"   Downloading {lang} subtitles...")
             
-            subtitle_filename = f"{safe_title}.{lang}.%(ext)s"
+            subtitle_filename = f"{safe_title}.%(ext)s"
             
             cmd = [
                 'yt-dlp',
@@ -156,7 +156,8 @@ def download_subtitles(url, output_dir, video_info, languages=['gu', 'en']):
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
             
             if result.returncode == 0:
-                # Find downloaded subtitle files
+                # Find downloaded subtitle files (yt-dlp automatically adds language code)
+                # Pattern: title.gu.vtt (not title.gu.gu.vtt)
                 sub_files = list(output_dir.glob(f"{safe_title}.{lang}.*"))
                 if sub_files:
                     for sub_file in sub_files:
