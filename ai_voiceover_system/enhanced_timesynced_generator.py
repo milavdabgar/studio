@@ -175,6 +175,7 @@ class EnhancedTimeSyncedGenerator:
         self.slides = []
         self.subtitle_segments = []
         self.total_duration = 0
+        self.detected_language = 'gujarati'  # Default language
         
     def detect_and_load_transcript(self, audio_file: Path, subtitle_file: Path) -> Tuple[List[SubtitleSegment], str]:
         """Detect language and load appropriate transcript"""
@@ -194,6 +195,7 @@ class EnhancedTimeSyncedGenerator:
             if gu_vtt.exists():
                 print(f"✅ Using Gujarati transcript: {gu_vtt.name}")
                 segments = self.parse_vtt_subtitles(gu_vtt)
+                self.detected_language = 'gujarati'
                 return segments, 'gujarati'
             else:
                 print("⚠️ Gujarati VTT not found, checking for patterns...")
@@ -202,6 +204,7 @@ class EnhancedTimeSyncedGenerator:
                 if gu_files:
                     print(f"✅ Using Gujarati transcript: {gu_files[0].name}")
                     segments = self.parse_vtt_subtitles(gu_files[0])
+                    self.detected_language = 'gujarati'
                     return segments, 'gujarati'
         else:
             print("📚 Detected English content")
@@ -210,6 +213,7 @@ class EnhancedTimeSyncedGenerator:
             if en_vtt.exists():
                 print(f"✅ Using English transcript: {en_vtt.name}")
                 segments = self.parse_vtt_subtitles(en_vtt)
+                self.detected_language = 'english'
                 return segments, 'english'
             else:
                 # Look for any .en.vtt file in the directory
@@ -217,12 +221,14 @@ class EnhancedTimeSyncedGenerator:
                 if en_files:
                     print(f"✅ Using English transcript: {en_files[0].name}")
                     segments = self.parse_vtt_subtitles(en_files[0])
+                    self.detected_language = 'english'
                     return segments, 'english'
         
         # Fallback to provided subtitle file
         print(f"🔄 Using provided subtitle file: {subtitle_file.name}")
         segments = self.parse_vtt_subtitles(subtitle_file)
         language = 'gujarati' if is_gujarati else 'english'
+        self.detected_language = language
         return segments, language
     
     def parse_vtt_subtitles(self, vtt_file: Path) -> List[SubtitleSegment]:
@@ -370,10 +376,15 @@ class EnhancedTimeSyncedGenerator:
             # Create click points (every 3-4 sentences or every 20-30 seconds)
             click_points = self._create_click_points(slide_segments, slide_num)
             
-            # Generate slide title and content
-            title = self._generate_slide_title(slide_text, slide_num)
-            content_blocks = self._extract_content_blocks(slide_sentences)
+            # Generate slide title and content using topic-agnostic methods
+            title = self._generate_slide_title(slide_text, slide_num, self.detected_language)
+            content_blocks = self._extract_content_blocks(slide_text, self.detected_language)
             presenter_notes = self._create_presenter_notes(slide_segments, click_points)
+            
+            # DEBUG: Print to see what we're getting
+            print(f"🔍 Slide {slide_num}: Title='{title}', Content blocks={len(content_blocks)}")
+            for i, block in enumerate(content_blocks):
+                print(f"   Block {i+1}: {block[:50]}...")
             
             slides.append(EnhancedSlide(
                 slide_number=slide_num,
@@ -479,104 +490,243 @@ class EnhancedTimeSyncedGenerator:
         
         return combined_text[:200] + '...' if len(combined_text) > 200 else combined_text
     
-    def _generate_slide_title(self, text: str, slide_num: int) -> str:
-        """Generate meaningful slide title from content"""
-        # Look for key topics and concepts
-        words = text.lower().split()
+    def _extract_key_bullet_points(self, text: str, language: str = 'gujarati') -> List[str]:
+        """Extract clean bullet points from transcript text - TOPIC AGNOSTIC"""
+        # Clean the text first
+        cleaned_text = self._clean_transcript_text(text)
         
-        # Common important terms that might indicate topics
-        key_terms = []
-        important_words = ['ટ્રાન્ઝિસ્ટર', 'transistor', 'ઇતિહાસ', 'history', 'ટેકનોલોજી', 'technology', 
-                          'ભવિષ્ય', 'future', 'વિકાસ', 'development', 'કામકાજ', 'working', 'ફાયદા', 'advantages']
+        # Language-specific patterns for identifying important content
+        importance_patterns = {
+            'gujarati': {
+                'definition_markers': ['છે', 'કહેવાય છે', 'અર્થ', 'મતલબ', 'એટલે કે'],
+                'explanation_markers': ['કારણ કે', 'જેથી', 'તેથી', 'કેમ કે'],
+                'example_markers': ['જેમ કે', 'ઉદાહરણ', 'જેવું', 'તરીકે'],
+                'important_markers': ['મહત્વનું', 'અગત્યનું', 'મુખ્ય', 'પ્રમુખ'],
+                'process_markers': ['પ્રક્રિયા', 'રીત', 'પદ્ધતિ', 'કેવી રીતે'],
+                'remove_words': ['અને', 'પણ', 'તો', 'કે', 'એ', 'હવે', 'ગત;ગત', '&gt;&gt;', 'gt;gt;', 'બાપ', 'રે'],
+                'sentence_enders': ['.', '!', '?', '।']
+            },
+            'english': {
+                'definition_markers': ['is', 'means', 'refers to', 'defined as'],
+                'explanation_markers': ['because', 'since', 'therefore', 'thus'],
+                'example_markers': ['such as', 'for example', 'like', 'including'],
+                'important_markers': ['important', 'crucial', 'key', 'main'],
+                'process_markers': ['process', 'method', 'way', 'how to'],
+                'remove_words': ['and', 'but', 'so', 'that', 'the', 'now', 'well'],
+                'sentence_enders': ['.', '!', '?']
+            }
+        }
         
-        for word in words:
-            if word in important_words:
-                key_terms.append(word)
+        patterns = importance_patterns.get(language, importance_patterns['gujarati'])
         
-        if key_terms:
-            # Create title based on key terms
-            if 'ટ્રાન્ઝિસ્ટર' in text:
-                if 'ઇતિહાસ' in text:
-                    return "ટ્રાન્ઝિસ્ટરનો ઇતિહાસ"
-                elif 'કામકાજ' in text:
-                    return "ટ્રાન્ઝિસ્ટરનું કામકાજ"
-                elif 'ભવિષ્ય' in text:
-                    return "ભવિષ્યની ટેકનોલોજી"
-                else:
-                    return "ટ્રાન્ઝિસ્ટર"
-        
-        # Fallback to generic titles
-        titles = [
-            "પરિચય", "મુખ્ય વિશેષતાઓ", "ટેકનોલોજી", "કામકાજ", "ફાયદા", 
-            "ઉપયોગ", "ભવિષ્ય", "તારણો", "મહત્વ", "નિષ્કર્ષ"
-        ]
-        return titles[min(slide_num - 1, len(titles) - 1)]
-    
-    def _extract_content_blocks(self, sentences: List[str]) -> List[str]:
-        """Extract key content blocks for slide bullets"""
-        if not sentences:
-            return []
-        
-        # Join all sentences and clean thoroughly
-        full_text = ' '.join(sentences)
-        
-        # Remove artifacts and repeated patterns
-        full_text = re.sub(r'[>&]+', '', full_text)
-        full_text = re.sub(r'હા\s*', '', full_text)
-        full_text = re.sub(r'\s+', ' ', full_text)
-        
-        # Remove exact repetitions (common in auto-generated transcripts)
-        words = full_text.split()
-        cleaned_words = []
-        prev_window = []
-        window_size = 3
-        
-        for i, word in enumerate(words):
-            # Check for immediate repetition patterns
-            current_window = words[max(0, i-window_size):i]
-            next_window = words[i:i+window_size]
-            
-            # If this word sequence already appeared recently, skip
-            if next_window and len(next_window) == window_size:
-                if next_window in [prev_window[j:j+window_size] for j in range(max(0, len(prev_window)-20), len(prev_window))]:
-                    continue
-            
-            cleaned_words.append(word)
-            prev_window = cleaned_words
-        
-        cleaned_text = ' '.join(cleaned_words)
-        
-        # Split into meaningful sentences
-        sentences = re.split(r'[.!?]', cleaned_text)
-        clean_sentences = []
-        seen_concepts = set()
+        # Split into sentences
+        sentences = re.split(r'[.!?।]+', cleaned_text)
+        bullet_points = []
         
         for sentence in sentences:
             sentence = sentence.strip()
-            if len(sentence) < 30:
+            if len(sentence) < 20 or len(sentence) > 120:  # Skip too short/long sentences
                 continue
-                
-            # Extract key concepts for deduplication
-            concepts = set(re.findall(r'\b\w{4,}\b', sentence.lower()))
             
-            # Check for conceptual overlap
-            is_duplicate = False
-            for seen in seen_concepts:
-                seen_set = set(seen) if isinstance(seen, frozenset) else seen
-                overlap = len(concepts & seen_set)
-                total = len(concepts | seen_set)
-                if total > 0 and overlap / total > 0.6:  # 60% conceptual overlap
-                    is_duplicate = True
-                    break
+            # Check for important content markers
+            importance_score = 0
             
-            if not is_duplicate and concepts:
-                clean_sentences.append(sentence)
-                seen_concepts.add(frozenset(concepts))
+            # Score based on content patterns
+            for marker in patterns['definition_markers']:
+                if marker in sentence.lower():
+                    importance_score += 3
+            
+            for marker in patterns['explanation_markers']:
+                if marker in sentence.lower():
+                    importance_score += 2
+            
+            for marker in patterns['important_markers']:
+                if marker in sentence.lower():
+                    importance_score += 2
+            
+            for marker in patterns['process_markers']:
+                if marker in sentence.lower():
+                    importance_score += 2
+            
+            # Clean the sentence for bullet point
+            clean_sentence = sentence
+            for word in patterns['remove_words']:
+                clean_sentence = re.sub(r'\b' + word + r'\b', '', clean_sentence, flags=re.IGNORECASE)
+            
+            clean_sentence = re.sub(r'\s+', ' ', clean_sentence).strip()
+            
+            # Add if important enough and unique
+            if importance_score >= 2 and clean_sentence:
+                # Avoid duplicates
+                is_duplicate = False
+                for existing in bullet_points:
+                    if self._calculate_similarity(clean_sentence, existing) > 0.7:
+                        is_duplicate = True
+                        break
                 
-                if len(clean_sentences) >= 3:  # Limit to 3 meaningful blocks
-                    break
+                if not is_duplicate:
+                    bullet_points.append(clean_sentence)
+            
+            # Limit bullets per slide
+            if len(bullet_points) >= 4:
+                break
         
-        return clean_sentences
+        # If no good bullets found, extract key phrases
+        if not bullet_points:
+            bullet_points = self._extract_key_phrases(cleaned_text, language, max_bullets=3)
+        
+        return bullet_points[:4]  # Max 4 bullets per slide
+    
+    def _calculate_similarity(self, text1: str, text2: str) -> float:
+        """Calculate similarity between two texts (simple word overlap)"""
+        words1 = set(text1.lower().split())
+        words2 = set(text2.lower().split())
+        
+        if not words1 or not words2:
+            return 0.0
+        
+        intersection = words1.intersection(words2)
+        union = words1.union(words2)
+        
+        return len(intersection) / len(union) if union else 0.0
+    
+    def _extract_key_phrases(self, text: str, language: str, max_bullets: int = 3) -> List[str]:
+        """Extract key phrases when no clear bullet points found"""
+        sentences = re.split(r'[.!?।]+', text)
+        phrases = []
+        
+        for sentence in sentences[:max_bullets * 2]:  # Check more sentences
+            sentence = sentence.strip()
+            if 30 <= len(sentence) <= 80:  # Medium length sentences
+                phrases.append(sentence)
+            
+            if len(phrases) >= max_bullets:
+                break
+        
+        return phrases[:max_bullets]
+
+    def _generate_slide_title(self, text: str, slide_num: int, language: str = 'gujarati') -> str:
+        """Generate meaningful slide title from content - TOPIC AGNOSTIC & IMPROVED"""
+        cleaned_text = self._clean_transcript_text(text)
+        
+        if not cleaned_text:
+            return self._get_generic_title(slide_num, language)
+        
+        # Extract meaningful phrases rather than individual words
+        sentences = re.split(r'[.!?।]+', cleaned_text)
+        title_candidates = []
+        
+        for sentence in sentences[:3]:  # Check first 3 sentences
+            sentence = sentence.strip()
+            if len(sentence) < 10:
+                continue
+            
+            if language == 'gujarati':
+                # Pattern 1: "X શું છે" / "X કેવું" → Extract X as meaningful concept
+                match = re.search(r'([\w\s]{3,20})\s+(શું\s+છે|કેવું|વિશે|અંગે)', sentence)
+                if match:
+                    candidate = match.group(1).strip()
+                    if len(candidate.split()) <= 3:  # Max 3 words for title
+                        title_candidates.append(candidate)
+                
+                # Pattern 2: Look for topic-defining phrases at start of sentence
+                words = sentence.split()
+                if len(words) >= 2:
+                    # Take first 2-3 meaningful words as potential title
+                    first_phrase = ' '.join(words[:3])
+                    # Filter out common sentence starters
+                    if not any(starter in first_phrase.lower() for starter in 
+                             ['આજે', 'આપણે', 'હવે', 'તો', 'પણ', 'એવી', 'આ', 'તેમ']):
+                        title_candidates.append(first_phrase)
+            
+            else:  # English
+                match = re.search(r'([\w\s]{3,20})\s+(is|are|means|refers to)', sentence)
+                if match:
+                    candidate = match.group(1).strip()
+                    if len(candidate.split()) <= 3:
+                        title_candidates.append(candidate)
+                
+                words = sentence.split()
+                if len(words) >= 2:
+                    first_phrase = ' '.join(words[:3])
+                    if not any(starter in first_phrase.lower() for starter in 
+                             ['today', 'now', 'so', 'but', 'the', 'this', 'these']):
+                        title_candidates.append(first_phrase)
+        
+        # Select best title: prefer shorter, more meaningful titles
+        if title_candidates:
+            # Filter candidates by quality
+            good_candidates = []
+            for candidate in title_candidates:
+                candidate = candidate.strip()
+                if 5 <= len(candidate) <= 25 and len(candidate.split()) <= 3:
+                    good_candidates.append(candidate)
+            
+            if good_candidates:
+                # Prefer shorter titles
+                return min(good_candidates, key=len)
+        
+        return self._get_generic_title(slide_num, language)
+    
+    def _get_generic_title(self, slide_num: int, language: str) -> str:
+        """Get generic slide title based on slide progression"""
+        generic_titles = {
+            'gujarati': [
+                'પરિચય અને મુખ્ય વિષય',  # Introduction and Main Topic
+                'મુખ્ય મુદ્દાઓ અને વિગતો',    # Key Points and Details
+                'મહત્વની બાબતો',             # Important Matters
+                'વિશેષ લક્ષણો અને ફાયદા',     # Special Features and Benefits
+                'વ્યવહારિક ઉપયોગ',           # Practical Applications
+                'નિષ્કર્ષ અને સારાંશ'         # Conclusion and Summary
+            ],
+            'english': [
+                'Introduction & Overview', 'Key Concepts', 'Important Details',
+                'Main Features', 'Applications', 'Summary & Conclusion'
+            ]
+        }
+        
+        titles = generic_titles.get(language, generic_titles['gujarati'])
+        return titles[slide_num % len(titles)]
+    
+    def _extract_content_blocks(self, text: str, language: str = 'gujarati') -> List[str]:
+        """Extract clean bullet points for slide content - TOPIC AGNOSTIC & ROBUST"""
+        if not text:
+            return ["• Main content point"]  # Ensure no empty slides
+        
+        # Clean the text thoroughly first
+        cleaned_text = self._clean_transcript_text(text)
+        if not cleaned_text:
+            return ["• Key discussion point"]
+        
+        # Try topic-agnostic bullet point extraction
+        bullet_points = self._extract_key_bullet_points(cleaned_text, language)
+        
+        # If no bullets found, create fallback bullets from sentences
+        if not bullet_points:
+            bullet_points = self._create_fallback_bullets(cleaned_text)
+        
+        # Format bullets nicely
+        formatted_bullets = []
+        for bullet in bullet_points:
+            # Clean and format each bullet
+            clean_bullet = bullet.strip()
+            if clean_bullet:
+                # Remove duplicate bullet formatting
+                clean_bullet = re.sub(r'^[•\-]+\s*', '', clean_bullet)
+                # Add consistent bullet formatting
+                clean_bullet = f"• {clean_bullet}"
+                formatted_bullets.append(clean_bullet)
+        
+        # Ensure we always have at least 2 bullets per slide
+        if not formatted_bullets:
+            formatted_bullets = [
+                "• Key topic discussed",
+                "• Important concepts covered"
+            ]
+        elif len(formatted_bullets) == 1:
+            formatted_bullets.append("• Additional details")
+        
+        return formatted_bullets[:4]  # Max 4 bullets per slide
     
     def _create_presenter_notes(self, segments: List[SubtitleSegment], click_points: List[ClickPoint]) -> str:
         """Create enhanced presenter notes with content-aware timing and context"""
@@ -638,24 +788,62 @@ class EnhancedTimeSyncedGenerator:
         return '\n'.join(notes)
     
     def _clean_transcript_text(self, text: str) -> str:
-        """Clean transcript text for better readability"""
-        # Remove common transcript artifacts
-        cleaned = re.sub(r'\s+', ' ', text)
-        cleaned = re.sub(r'[>&]+', '', cleaned)
-        cleaned = re.sub(r'હા\s*', '', cleaned)
-        cleaned = re.sub(r'[.]{2,}', '.', cleaned)
+        """Clean transcript text for better readability - ENHANCED"""
+        if not text:
+            return ""
         
-        # Remove repetitive patterns
+        # Step 1: Remove HTML entities and artifacts
+        cleaned = re.sub(r'&gt;&gt;', '', text)  # Remove HTML artifacts
+        cleaned = re.sub(r'&[a-zA-Z]+;', '', cleaned)  # Remove other HTML entities
+        cleaned = re.sub(r'gt;gt;', '', cleaned)  # Remove malformed HTML
+        cleaned = re.sub(r'[><]+', '', cleaned)  # Remove angle brackets
+        
+        # Step 2: Clean up spacing and common issues
+        cleaned = re.sub(r'\s+', ' ', cleaned)  # Multiple spaces to single
+        cleaned = re.sub(r'હા\s*', '', cleaned)  # Remove filler words
+        cleaned = re.sub(r'[.]{2,}', '.', cleaned)  # Multiple dots to single
+        
+        # Step 3: Remove numbers that are artifacts (like "13 સેક્સટીલિયન બાપ રે 13")
+        cleaned = re.sub(r'\b\d+\s+([ક-હ]+)\s+\d+\b', r'\1', cleaned)  # Remove number patterns
+        cleaned = re.sub(r'\b\d{1,3}\s*પછી\s*\d+\b', '', cleaned)  # Remove "13 પછી 210" patterns
+        
+        # Step 4: Remove repetitive patterns and duplicates
         words = cleaned.split()
         cleaned_words = []
         prev_word = ""
         
         for word in words:
-            if word != prev_word or word.lower() in ['the', 'and', 'or', 'but', 'આ', 'એ', 'અને']:
+            word = word.strip()
+            if word and (word != prev_word or word.lower() in ['the', 'and', 'or', 'but', 'આ', 'એ', 'અને']):
                 cleaned_words.append(word)
                 prev_word = word
         
         return ' '.join(cleaned_words).strip()
+    
+    def _create_fallback_bullets(self, text: str) -> List[str]:
+        """Create fallback bullet points from sentences when main extraction fails"""
+        if not text:
+            return []
+        
+        # Split into sentences
+        sentences = re.split(r'[.!?।]+', text)
+        bullets = []
+        
+        for sentence in sentences:
+            sentence = sentence.strip()
+            if len(sentence) > 15 and len(sentence) < 100:  # Good length for bullets
+                # Clean up the sentence
+                clean_sentence = re.sub(r'^\W+', '', sentence)  # Remove leading punctuation
+                clean_sentence = re.sub(r'\W+$', '', clean_sentence)  # Remove trailing punctuation
+                clean_sentence = clean_sentence.strip()
+                
+                if clean_sentence and len(clean_sentence) > 10:
+                    bullets.append(clean_sentence)
+                    
+                if len(bullets) >= 3:  # Max 3 fallback bullets
+                    break
+        
+        return bullets
     
     def _analyze_click_content(self, content: str, segments: List[SubtitleSegment], 
                               start_time: float, end_time: float) -> Dict[str, any]:
