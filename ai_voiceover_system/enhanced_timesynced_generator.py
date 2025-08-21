@@ -41,6 +41,14 @@ except ImportError:
     INTELLIGENT_GENERATOR_AVAILABLE = False
     print("⚠️ Intelligent slide generator not available - using legacy generator")
 
+# Import the new AI-powered slide generator  
+try:
+    from ai_slide_generator import AISlideGenerator
+    AI_GENERATOR_AVAILABLE = True
+except ImportError:
+    AI_GENERATOR_AVAILABLE = False
+    print("⚠️ AI slide generator not available - using fallback generators")
+
 # MoviePy imports
 try:
     from moviepy.editor import AudioFileClip, ImageClip, concatenate_videoclips
@@ -310,6 +318,30 @@ class EnhancedTimeSyncedGenerator:
         total_seconds = hours * 3600 + minutes * 60 + seconds + milliseconds / 1000
         return total_seconds
     
+    def generate_ai_slides(self, vtt_file: Path, target_slides: int = 10) -> Optional[Path]:
+        """Generate slides using the AI-powered slide generator (Claude API)"""
+        if not AI_GENERATOR_AVAILABLE:
+            print("⚠️ AI generator not available, falling back to intelligent generator")
+            return None
+        
+        try:
+            print(f"🤖 Using AI-Powered Slide Generator with Claude API...")
+            
+            generator = AISlideGenerator()
+            output_file = generator.generate_slides_from_vtt(vtt_file, target_slides)
+            
+            if output_file:
+                print(f"✅ AI slides generated: {output_file}")
+                return Path(output_file)
+            else:
+                print("❌ AI generator failed, falling back to intelligent generator")
+                return None
+                
+        except Exception as e:
+            print(f"❌ AI generator error: {e}")
+            print("🔄 Falling back to intelligent generator")
+            return None
+
     def generate_intelligent_slides(self, vtt_file: Path, target_slides: int = 10) -> Optional[Path]:
         """Generate slides using the intelligent slide generator if available"""
         if not INTELLIGENT_GENERATOR_AVAILABLE:
@@ -1143,7 +1175,8 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python enhanced_timesynced_generator.py audio.m4a subtitles.vtt --generate-slides --intelligent
+  python enhanced_timesynced_generator.py audio.m4a subtitles.vtt --generate-slides --ai
+  python enhanced_timesynced_generator.py audio.m4a subtitles.vtt --generate-slides --intelligent  
   python enhanced_timesynced_generator.py audio.m4a subtitles.vtt --generate-slides --slides-count 8
   python enhanced_timesynced_generator.py audio.m4a subtitles.vtt --slides existing_slides.md --output video.mp4
         """
@@ -1153,7 +1186,8 @@ Examples:
     parser.add_argument('subtitle_file', help='Subtitle file (VTT)')
     parser.add_argument('--slides', help='Existing Slidev file (optional)')
     parser.add_argument('--generate-slides', action='store_true', help='Generate new Slidev with click animations')
-    parser.add_argument('--intelligent', action='store_true', help='Use intelligent slide generator (recommended)')
+    parser.add_argument('--ai', action='store_true', help='Use AI-powered slide generator with Claude API (best quality)')
+    parser.add_argument('--intelligent', action='store_true', help='Use intelligent slide generator (good quality)')
     parser.add_argument('--output', help='Output video file (default: auto-generated)')
     parser.add_argument('--slides-count', type=int, default=10, help='Number of slides to generate (default: 10)')
     
@@ -1182,28 +1216,38 @@ Examples:
         if args.generate_slides:
             slidev_file = None
             
-            # Try intelligent generator first if requested or available
-            if args.intelligent or INTELLIGENT_GENERATOR_AVAILABLE:
+            # Find appropriate VTT file based on detected language
+            vtt_pattern = "*.gu.vtt" if detected_language == 'gujarati' else "*.en.vtt"
+            vtt_files = list(subtitle_file.parent.glob(vtt_pattern))
+            
+            if not vtt_files:
+                # Fallback to original subtitle file
+                vtt_files = [subtitle_file]
+            
+            # Try AI generator first if requested or available
+            if args.ai or (AI_GENERATOR_AVAILABLE and not args.intelligent):
+                try:
+                    print("🤖 Using AI-powered slide generation with Claude API...")
+                    slidev_file = generator.generate_ai_slides(vtt_files[0], args.slides_count)
+                    if slidev_file:
+                        print(f"✅ AI Slidev generated with {detected_language} content: {slidev_file}")
+                    else:
+                        print("⚠️ AI generation failed, trying intelligent generator...")
+                        slidev_file = None
+                except Exception as e:
+                    print(f"⚠️ AI generation failed ({e}), trying intelligent generator...")
+                    slidev_file = None
+            
+            # Try intelligent generator if AI failed or was not requested
+            if slidev_file is None and (args.intelligent or INTELLIGENT_GENERATOR_AVAILABLE):
                 try:
                     print("🧠 Using intelligent slide generation...")
-                    
-                    # Find appropriate VTT file based on detected language
-                    vtt_pattern = "*.gu.vtt" if detected_language == 'gujarati' else "*.en.vtt"
-                    vtt_files = list(subtitle_file.parent.glob(vtt_pattern))
-                    
-                    if vtt_files:
-                        intelligent_gen = IntelligentSlideGenerator()
-                        slidev_file = audio_file.parent / f"{audio_file.stem}_intelligent_slides.md"
-                        
-                        if intelligent_gen.generate_slides_from_vtt(vtt_files[0], slidev_file, args.slides_count):
-                            print(f"✅ Intelligent Slidev generated with {detected_language} content: {slidev_file}")
-                        else:
-                            print("⚠️ Intelligent generation failed, falling back to legacy method...")
-                            slidev_file = None
+                    slidev_file = generator.generate_intelligent_slides(vtt_files[0], args.slides_count)
+                    if slidev_file:
+                        print(f"✅ Intelligent Slidev generated with {detected_language} content: {slidev_file}")
                     else:
-                        print(f"⚠️ No appropriate VTT file found for {detected_language}, using legacy method...")
+                        print("⚠️ Intelligent generation failed, falling back to legacy method...")
                         slidev_file = None
-                        
                 except Exception as e:
                     print(f"⚠️ Intelligent generation failed ({e}), using legacy method...")
                     slidev_file = None
