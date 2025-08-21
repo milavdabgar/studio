@@ -84,6 +84,90 @@ class EnhancedSlide:
     presenter_notes: str
     total_duration: float
 
+class ContentTimingAnalyzer:
+    """Analyzes VTT transcript content to find semantic breaks and natural timing points"""
+    
+    def __init__(self, segments: List[SubtitleSegment]):
+        self.segments = segments
+        self.topic_keywords = {
+            'gujarati': ['ટ્રાન્ઝિસ્ટર', 'સેમીકન્ડક્ટર', 'ડિવાઇસ', 'ટેકનોલોજી', 'શોધ', 'વિજ્ઞાન', 
+                        'ઇલેક્ટ્રોનિક્સ', 'કમ્પ્યુટર', 'એમ્પ્લીફાય', 'સ્વીચ', 'કરન્ટ', 'વોલ્ટેજ'],
+            'english': ['transistor', 'semiconductor', 'device', 'technology', 'invention', 'science',
+                       'electronics', 'computer', 'amplify', 'switch', 'current', 'voltage']
+        }
+        
+    def find_semantic_breaks(self) -> List[int]:
+        """Identify segment indices where semantic breaks occur"""
+        semantic_breaks = []
+        
+        for i, segment in enumerate(self.segments[:-1]):  # Exclude last segment
+            current_text = segment.text.lower()
+            next_segment = self.segments[i + 1]
+            next_text = next_segment.text.lower()
+            
+            # Topic transition detection
+            has_topic_transition = self._detect_topic_transition(current_text, next_text)
+            
+            # Speaker change detection (indicated by >> in VTT)
+            has_speaker_change = '&gt;&gt;' in next_text or '&gt;&gt;' in current_text
+            
+            # Question-answer patterns
+            has_qa_pattern = current_text.endswith('?') or 'કે ' in current_text or 'શું ' in current_text
+            
+            # Long pause detection (timing gap)
+            timing_gap = next_segment.start_time - segment.end_time
+            has_long_pause = timing_gap > 2.0  # More than 2 seconds
+            
+            # Content completion markers
+            has_completion_marker = any(marker in current_text for marker in 
+                ['બરાબર', 'હા', 'સમજાયું', 'ઠીક છે', 'આમ', 'તેથી'])
+            
+            if (has_topic_transition or has_speaker_change or has_qa_pattern or 
+                has_long_pause or has_completion_marker):
+                semantic_breaks.append(i + 1)  # Break after current segment
+        
+        # Remove breaks that are too close together (less than 10 seconds apart)
+        filtered_breaks = []
+        last_break_time = 0
+        
+        for break_idx in semantic_breaks:
+            break_time = self.segments[break_idx].start_time
+            if break_time - last_break_time >= 10:  # At least 10 seconds between breaks
+                filtered_breaks.append(break_idx)
+                last_break_time = break_time
+        
+        return filtered_breaks
+    
+    def _detect_topic_transition(self, current_text: str, next_text: str) -> bool:
+        """Detect when the topic changes between segments"""
+        # Get keywords from both segments
+        current_keywords = self._extract_keywords(current_text)
+        next_keywords = self._extract_keywords(next_text)
+        
+        # If no common keywords and both have topic keywords, it's likely a transition
+        if current_keywords and next_keywords:
+            common_keywords = current_keywords.intersection(next_keywords)
+            if len(common_keywords) == 0:
+                return True
+        
+        # Explicit transition phrases
+        transition_phrases = ['આવો', 'હવે', 'પછી', 'તો', 'અને', 'પણ', 'તેથી', 'આમ']
+        has_transition_phrase = any(phrase in next_text for phrase in transition_phrases)
+        
+        return has_transition_phrase
+    
+    def _extract_keywords(self, text: str) -> set:
+        """Extract topic keywords from text"""
+        keywords = set()
+        
+        # Check both Gujarati and English keywords
+        for lang, word_list in self.topic_keywords.items():
+            for keyword in word_list:
+                if keyword.lower() in text.lower():
+                    keywords.add(keyword)
+        
+        return keywords
+
 class EnhancedTimeSyncedGenerator:
     """Enhanced generator with click animations and presenter notes"""
     
@@ -304,37 +388,96 @@ class EnhancedTimeSyncedGenerator:
         return slides
     
     def _create_click_points(self, segments: List[SubtitleSegment], slide_num: int) -> List[ClickPoint]:
-        """Create click points based on natural speech pauses and content"""
+        """Create content-aware click points based on natural speech patterns and semantic breaks"""
         click_points = []
         
         if not segments:
             return click_points
         
-        # Group segments into logical click points (every 20-30 seconds)
-        click_duration = 25  # seconds per click
-        slide_start = segments[0].start_time
+        # Analyze content for semantic breaks and natural pauses
+        content_analyzer = ContentTimingAnalyzer(segments)
+        semantic_breaks = content_analyzer.find_semantic_breaks()
         
         current_click = 0
-        current_time = slide_start
+        click_start_time = segments[0].start_time
         current_content = []
         
-        for segment in segments:
+        for i, segment in enumerate(segments):
             current_content.append(segment.text)
             
-            # Create click point if we've accumulated enough content/time
-            if (segment.end_time - current_time >= click_duration and len(current_content) >= 2) or segment == segments[-1]:
+            # Check if this is a semantic break point or natural boundary
+            is_semantic_break = i in semantic_breaks
+            is_natural_pause = self._detect_natural_pause(segment, segments[i+1] if i+1 < len(segments) else None)
+            is_minimum_duration = (segment.end_time - click_start_time) >= 15  # At least 15 seconds
+            is_maximum_duration = (segment.end_time - click_start_time) >= 40  # Max 40 seconds
+            is_last_segment = (i == len(segments) - 1)
+            
+            # Create click point based on content analysis
+            should_create_click = (
+                (is_semantic_break and is_minimum_duration) or
+                (is_natural_pause and is_minimum_duration and len(current_content) >= 2) or
+                is_maximum_duration or
+                is_last_segment
+            )
+            
+            if should_create_click:
+                # Clean and structure the content for this click
+                cleaned_content = self._extract_meaningful_content(current_content)
+                
                 click_points.append(ClickPoint(
                     click_number=current_click,
                     timestamp=segment.end_time,
-                    content=' '.join(current_content),
+                    content=cleaned_content,
                     slide_number=slide_num
                 ))
                 
                 current_click += 1
-                current_time = segment.end_time
+                click_start_time = segment.end_time
                 current_content = []
         
+        print(f"🎯 Created {len(click_points)} content-aware click points for slide {slide_num}")
         return click_points
+    
+    def _detect_natural_pause(self, current_segment: SubtitleSegment, next_segment: Optional[SubtitleSegment]) -> bool:
+        """Detect natural pauses in speech based on timing gaps and punctuation"""
+        if not next_segment:
+            return True
+            
+        # Check for timing gap (pause in speech)
+        gap = next_segment.start_time - current_segment.end_time
+        has_timing_gap = gap > 1.0  # More than 1 second pause
+        
+        # Check for sentence endings or punctuation
+        text = current_segment.text.strip()
+        has_sentence_ending = text.endswith(('.', '!', '?', '।'))  # Including Gujarati danda
+        has_pause_markers = any(marker in text for marker in ['અને', 'તો', 'પણ', 'કે', '&gt;&gt;'])
+        
+        return has_timing_gap or has_sentence_ending or has_pause_markers
+    
+    def _extract_meaningful_content(self, content_segments: List[str]) -> str:
+        """Extract and clean meaningful content from segments"""
+        combined_text = ' '.join(content_segments)
+        
+        # Clean HTML entities and formatting
+        combined_text = re.sub(r'&gt;&gt;', '', combined_text)
+        combined_text = re.sub(r'<[^>]+>', '', combined_text)
+        combined_text = re.sub(r'\s+', ' ', combined_text).strip()
+        
+        # Extract key phrases and topics
+        sentences = re.split(r'[.!?।]+', combined_text)
+        meaningful_sentences = []
+        
+        for sentence in sentences:
+            sentence = sentence.strip()
+            if len(sentence) > 10 and any(word in sentence for word in 
+                ['ટ્રાન્ઝિસ્ટર', 'સેમીકન્ડક્ટર', 'ડિવાઇસ', 'એમ્પ્લીફાય', 'ટેકનોલોજી', 
+                 'શોધ', 'વિજ્ઞાન', 'ઇલેક્ટ્રોનિક્સ', 'કમ્પ્યુટર']):
+                meaningful_sentences.append(sentence)
+        
+        if meaningful_sentences:
+            return '. '.join(meaningful_sentences[:2])  # Take top 2 meaningful sentences
+        
+        return combined_text[:200] + '...' if len(combined_text) > 200 else combined_text
     
     def _generate_slide_title(self, text: str, slide_num: int) -> str:
         """Generate meaningful slide title from content"""
@@ -436,43 +579,63 @@ class EnhancedTimeSyncedGenerator:
         return clean_sentences
     
     def _create_presenter_notes(self, segments: List[SubtitleSegment], click_points: List[ClickPoint]) -> str:
-        """Create presenter notes with click markers and timing information"""
+        """Create enhanced presenter notes with content-aware timing and context"""
         if not segments:
             return ""
         
         notes = []
+        notes.append("Content-Aware Speaker Notes:")
+        notes.append("")
         
-        # Add introduction with context
-        if segments:
-            intro_text = segments[0].text[:100] if segments[0].text else "આ સ્લાઇડમાં આપણે મુખ્ય વિષયો સમજીશું"
-            notes.append(f"આજે આપણે {intro_text}... વિશે શીખવાના છીએ.")
-        
-        # Add click-based content with proper timing
         for i, click_point in enumerate(click_points):
+            # Calculate precise timing for this click
+            start_time = click_points[i-1].timestamp if i > 0 else segments[0].start_time
+            end_time = click_point.timestamp
+            
+            # Analyze content context and importance
+            content_analysis = self._analyze_click_content(click_point.content, segments, start_time, end_time)
+            
+            # Format timing with precise seconds
+            start_mins = int(start_time // 60)
+            start_secs = start_time % 60
+            end_mins = int(end_time // 60)  
+            end_secs = end_time % 60
+            timing_str = f"{start_mins}:{start_secs:05.2f}-{end_mins}:{end_secs:05.2f}"
+            
             # Use proper click marker format like in Java lecture
-            if i == 0:
-                click_marker = "[click]"
-            else:
-                click_marker = f"[click]"  # Standard format, let Slidev handle numbering
+            click_marker = "[click]"
+            context_marker = self._get_content_marker(content_analysis)
             
-            # Clean and enhance the content for presenter notes
-            cleaned_content = self._clean_transcript_text(click_point.content)
+            # Create rich presenter notes with context
+            main_note = f"{click_marker} {content_analysis['main_content']}"
+            timing_note = f"   ⏱️ Timing: {timing_str} ({context_marker})"
             
-            # Add timing context for better synchronization
-            timing_info = f" (આશરે {click_point.timestamp:.0f} સેકન્ડ પર)"
+            notes.append(main_note)
+            notes.append(timing_note)
             
-            # Extract meaningful phrases with context
-            meaningful_part = self._extract_meaningful_phrase(cleaned_content)
+            # Add contextual information
+            if content_analysis.get('key_topics'):
+                notes.append(f"   📍 Focus: {', '.join(content_analysis['key_topics'])}")
             
-            if meaningful_part and len(meaningful_part.strip()) > 10:
-                notes.append(f"{click_marker} {meaningful_part.strip()}{timing_info}")
+            if content_analysis.get('speaker_change'):
+                notes.append(f"   🎤 Speaker Change")
+            
+            if content_analysis.get('semantic_importance') == 'high':
+                notes.append(f"   ⭐ Key Concept")
+            
+            notes.append("")
         
-        # Add conclusion with timing
-        if len(click_points) > 1:
-            final_timing = click_points[-1].timestamp if click_points else 0
-            notes.append(f"[click] આ મુદ્દાઓ સમજવાથી આપણને વિષયની સ્પષ્ટતા મળે છે. (અંતે {final_timing:.0f} સેકન્ડ પર)")
+        # Add comprehensive timing summary
+        total_duration = segments[-1].end_time - segments[0].start_time
+        avg_click_duration = total_duration / len(click_points) if click_points else 0
         
-        return '\n\n'.join(notes)
+        notes.append("📊 Content Synchronization Analysis:")
+        notes.append(f"   • Total Duration: {total_duration:.1f} seconds")
+        notes.append(f"   • Average Click Duration: {avg_click_duration:.1f} seconds")
+        notes.append(f"   • Timing Method: Content-aware with semantic breaks")
+        notes.append(f"   • Click Points: {len(click_points)} optimized for content flow")
+        
+        return '\n'.join(notes)
     
     def _clean_transcript_text(self, text: str) -> str:
         """Clean transcript text for better readability"""
@@ -493,6 +656,51 @@ class EnhancedTimeSyncedGenerator:
                 prev_word = word
         
         return ' '.join(cleaned_words).strip()
+    
+    def _analyze_click_content(self, content: str, segments: List[SubtitleSegment], 
+                              start_time: float, end_time: float) -> Dict[str, any]:
+        """Analyze click content for context and importance"""
+        analysis = {
+            'main_content': self._clean_transcript_text(content),
+            'key_topics': [],
+            'speaker_change': False,
+            'semantic_importance': 'medium'
+        }
+        
+        # Find relevant segments for this time range
+        relevant_segments = [seg for seg in segments if seg.start_time >= start_time and seg.end_time <= end_time]
+        
+        # Extract key topics
+        topic_keywords = ['ટ્રાન્ઝિસ્ટર', 'સેમીકન્ડક્ટર', 'ડિવાઇસ', 'ટેકનોલોજી', 'શોધ', 'એમ્પ્લીફાય']
+        for keyword in topic_keywords:
+            if keyword in content:
+                analysis['key_topics'].append(keyword)
+        
+        # Detect speaker changes
+        analysis['speaker_change'] = '&gt;&gt;' in content
+        
+        # Determine semantic importance
+        importance_markers = ['મુખ્ય', 'અગત્યનો', 'પાયાની', 'ક્રાંતિ', 'શક્તિશાળી', 'બદલી નાખી']
+        if any(marker in content for marker in importance_markers):
+            analysis['semantic_importance'] = 'high'
+        elif len(analysis['key_topics']) >= 2:
+            analysis['semantic_importance'] = 'high'
+        
+        # Clean main content for display
+        analysis['main_content'] = self._extract_meaningful_phrase(analysis['main_content'])
+        
+        return analysis
+    
+    def _get_content_marker(self, content_analysis: Dict[str, any]) -> str:
+        """Get appropriate marker for content type"""
+        if content_analysis.get('speaker_change'):
+            return 'Speaker Change'
+        elif content_analysis.get('semantic_importance') == 'high':
+            return 'Key Concept'
+        elif content_analysis.get('key_topics'):
+            return 'Topic Focus'
+        else:
+            return 'Content'
     
     def _extract_meaningful_phrase(self, content: str) -> str:
         """Extract meaningful phrase for presenter notes"""
