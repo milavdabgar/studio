@@ -206,3 +206,16 @@ venv/
 *.m4a
 *.wav
 *.mp3
+
+# YouTube publishing credentials and tokens
+youtube_credentials.json
+youtube_token.json
+credentials/
+podcast_episode_*.json
+
+# Generated thumbnails and temporary files
+thumbnail_*.png
+podcast_thumb_*.png
+hd_thumb_*.png
+temp_*.mp4
+temp_*.png
