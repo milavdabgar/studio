@@ -355,6 +355,31 @@ def create_video(audio_file: Path, slide_timeline: List[Tuple[SlideInfo, float, 
     
     print(f"✅ Video created: {output_file}")
 
+def cleanup_slide_images(slide_images: List[Path]):
+    """Clean up exported slide images after video creation"""
+    print("🧹 Cleaning up slide images...")
+    
+    cleaned_count = 0
+    for image_path in slide_images:
+        try:
+            if image_path.exists():
+                image_path.unlink()
+                cleaned_count += 1
+        except Exception as e:
+            print(f"   Warning: Could not remove {image_path}: {e}")
+    
+    # Also try to remove the slide_images directory if it's empty
+    if slide_images:
+        slide_dir = slide_images[0].parent
+        try:
+            if slide_dir.exists() and not any(slide_dir.iterdir()):
+                slide_dir.rmdir()
+                print(f"   Removed empty directory: {slide_dir}")
+        except Exception as e:
+            print(f"   Warning: Could not remove directory {slide_dir}: {e}")
+    
+    print(f"✅ Cleaned up {cleaned_count} slide images")
+
 def main():
     parser = argparse.ArgumentParser(
         description="Create time-synced educational videos from audio, subtitles, and slides",
@@ -429,6 +454,9 @@ Examples:
         
         # Create video
         create_video(audio_file, slide_timeline, slide_images, output_file)
+        
+        # Clean up slide images
+        cleanup_slide_images(slide_images)
         
         print(f"\n🎉 Time-synced video created successfully!")
         print(f"📁 Video: {output_file}")

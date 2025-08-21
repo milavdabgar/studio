@@ -1,5 +1,5 @@
 ---
-theme: academic
+theme: default
 background: #1a1a2e
 class: text-center
 highlighter: shiki
