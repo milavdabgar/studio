@@ -35,7 +35,7 @@ os.environ['COQUI_TOS_AGREED'] = '1'
 os.environ['COQUI_TTS_AGREED'] = '1'
 
 try:
-    from moviepy import ImageClip, AudioFileClip, concatenate_videoclips
+    from moviepy.editor import ImageClip, AudioFileClip, concatenate_videoclips
     MOVIEPY_AVAILABLE = True
 except ImportError:
     MOVIEPY_AVAILABLE = False
@@ -424,7 +424,7 @@ class SlidevClickProcessorElevenLabs:
                         
                         # Use the specific click state image
                         image_clip = ImageClip(str(slide_image), duration=duration)
-                        video_clip = image_clip.with_audio(audio_clip)
+                        video_clip = image_clip.set_audio(audio_clip)
                         video_clips.append(video_clip)
                         
                         if click_num == 0:

@@ -35,15 +35,10 @@ except ImportError:
 
 # Video processing 
 try:
-    from moviepy import AudioFileClip, ImageClip, CompositeVideoClip, TextClip, ColorClip
+    from moviepy.editor import AudioFileClip, ImageClip, CompositeVideoClip, TextClip, ColorClip
     MOVIEPY_AVAILABLE = True
 except ImportError:
-    try:
-        # Try older import path
-        from moviepy.editor import AudioFileClip, ImageClip, CompositeVideoClip, TextClip, ColorClip
-        MOVIEPY_AVAILABLE = True
-    except ImportError:
-        MOVIEPY_AVAILABLE = False
+    MOVIEPY_AVAILABLE = False
 
 # Web/API libraries
 try:

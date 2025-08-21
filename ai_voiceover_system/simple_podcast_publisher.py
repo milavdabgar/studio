@@ -42,13 +42,8 @@ try:
     MOVIEPY_AVAILABLE = True
     print("✅ MoviePy available for video creation")
 except ImportError:
-    try:
-        from moviepy import AudioFileClip, ColorClip, CompositeVideoClip
-        MOVIEPY_AVAILABLE = True
-        print("✅ MoviePy available for video creation (fallback import)")
-    except ImportError:
-        MOVIEPY_AVAILABLE = False
-        print("❌ MoviePy not available - video creation disabled")
+    MOVIEPY_AVAILABLE = False
+    print("❌ MoviePy not available - video creation disabled")
 
 import requests
 

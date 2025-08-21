@@ -32,20 +32,12 @@ from dataclasses import dataclass
 from typing import List, Optional, Tuple, Dict
 import math
 
-# MoviePy imports with backward compatibility (matching enhanced_podcast_processor_v2.py)
+# MoviePy imports
 try:
-    # MoviePy 2.2.1+ uses direct imports instead of editor module
-    from moviepy.audio.io.AudioFileClip import AudioFileClip
-    from moviepy.video.VideoClip import ImageClip
-    from moviepy.video.compositing.CompositeVideoClip import concatenate_videoclips
+    from moviepy.editor import AudioFileClip, ImageClip, concatenate_videoclips
     MOVIEPY_AVAILABLE = True
 except ImportError:
-    try:
-        # Fallback to older MoviePy versions with editor module
-        from moviepy.editor import AudioFileClip, ImageClip, concatenate_videoclips
-        MOVIEPY_AVAILABLE = True
-    except ImportError:
-        MOVIEPY_AVAILABLE = False
+    MOVIEPY_AVAILABLE = False
 
 # Audio processing
 try:

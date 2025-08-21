@@ -21,18 +21,10 @@ import re
 import tempfile
 
 try:
-    # MoviePy 2.2.1+ uses direct imports instead of editor module
-    from moviepy.audio.io.AudioFileClip import AudioFileClip
-    from moviepy.video.VideoClip import ImageClip
-    from moviepy.video.compositing.CompositeVideoClip import concatenate_videoclips
+    from moviepy.editor import AudioFileClip, ImageClip, concatenate_videoclips
     MOVIEPY_AVAILABLE = True
 except ImportError:
-    try:
-        # Fallback to older MoviePy versions with editor module
-        from moviepy.editor import AudioFileClip, ImageClip, concatenate_videoclips
-        MOVIEPY_AVAILABLE = True
-    except ImportError:
-        MOVIEPY_AVAILABLE = False
+    MOVIEPY_AVAILABLE = False
 
 class EnhancedPodcastProcessorV2:
     """Enhanced processor using root project's Slidev installation"""
