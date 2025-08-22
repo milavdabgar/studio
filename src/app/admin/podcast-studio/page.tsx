@@ -74,7 +74,7 @@ export default function PodcastStudioPage() {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [series, setSeries] = useState<PodcastSeries[]>([])
   const [episodes, setEpisodes] = useState<Episode[]>([])
-  const [selectedSeries, setSelectedSeries] = useState<string | null>(null)
+  const [selectedSeries, setSelectedSeries] = useState<string>('all')
   const [isCreatingSeries, setIsCreatingSeries] = useState(false)
   const [isEditingEpisode, setIsEditingEpisode] = useState<string | null>(null)
 
@@ -403,14 +403,16 @@ export default function PodcastStudioPage() {
         <TabsContent value="episodes" className="space-y-6">
           <div className="flex justify-between items-center">
             <div className="flex gap-2">
-              <Select value={selectedSeries || ''} onValueChange={setSelectedSeries}>
+              <Select value={selectedSeries} onValueChange={setSelectedSeries}>
                 <SelectTrigger className="w-48">
                   <SelectValue placeholder="All Series" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Series</SelectItem>
-                  {series.map((s) => (
-                    <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                  <SelectItem value="all">All Series</SelectItem>
+                  {series && series.length > 0 && series.map((s) => (
+                    <SelectItem key={s.id} value={s.id || `series-${Math.random()}`}>
+                      {s.name || 'Unnamed Series'}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -423,7 +425,7 @@ export default function PodcastStudioPage() {
 
           <div className="space-y-3">
             {episodes
-              .filter(ep => !selectedSeries || ep.seriesId === selectedSeries)
+              .filter(ep => selectedSeries === 'all' || ep.seriesId === selectedSeries)
               .map((episode) => (
                 <EpisodeRow key={episode.id} episode={episode} />
               ))}

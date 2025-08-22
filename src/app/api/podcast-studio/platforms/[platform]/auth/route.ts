@@ -11,7 +11,7 @@ const PLATFORM_CONFIGS = {
     clientId: process.env.YOUTUBE_CLIENT_ID!,
     clientSecret: process.env.YOUTUBE_CLIENT_SECRET!,
     redirectUri: `${process.env.NEXT_PUBLIC_BASE_URL}/api/podcast-studio/platforms/youtube/callback`,
-    scopes: ['https://www.googleapis.com/auth/youtube.upload', 'https://www.googleapis.com/auth/youtube.readonly'],
+    scopes: ['https://www.googleapis.com/auth/youtube.upload', 'https://www.googleapis.com/auth/youtube.readonly', 'https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'],
     authUrl: 'https://accounts.google.com/o/oauth2/v2/auth'
   },
   spotify: {
@@ -47,10 +47,10 @@ const PLATFORM_CONFIGS = {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { platform: string } }
+  { params }: { params: Promise<{ platform: string }> }
 ) {
+  const { platform } = await params
   try {
-    const platform = params.platform
     const config = PLATFORM_CONFIGS[platform as keyof typeof PLATFORM_CONFIGS]
     
     if (!config) {
@@ -141,7 +141,7 @@ export async function GET(
     return NextResponse.redirect(authUrl)
 
   } catch (error) {
-    console.error(`OAuth initiation error for ${params.platform}:`, error)
+    console.error(`OAuth initiation error for ${platform}:`, error)
     return NextResponse.json(
       { error: 'Failed to initiate OAuth flow' },
       { status: 500 }

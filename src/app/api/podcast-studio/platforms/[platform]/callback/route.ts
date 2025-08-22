@@ -7,14 +7,14 @@ const PODCAST_DB_NAME = process.env.PODCAST_STUDIO_DB || 'gpp-next'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { platform: string } }
+  { params }: { params: Promise<{ platform: string }> }
 ) {
+  const { platform } = await params
   try {
     const { searchParams } = new URL(request.url)
     const code = searchParams.get('code')
     const state = searchParams.get('state')
     const error = searchParams.get('error')
-    const platform = params.platform
 
     if (error) {
       return NextResponse.redirect(
@@ -56,7 +56,7 @@ export async function GET(
       case 'youtube':
       case 'google':
         tokenData = await handleGoogleCallback(code, platform)
-        userInfo = await getGoogleUserInfo(tokenData.tokens)
+        userInfo = await getGoogleUserInfo(tokenData.tokens, platform)
         break
 
       case 'spotify':
@@ -101,9 +101,9 @@ export async function GET(
     )
 
   } catch (error) {
-    console.error(`OAuth callback error for ${params.platform}:`, error)
+    console.error(`OAuth callback error for ${platform}:`, error)
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/admin/podcast-studio?error=callback_failed&platform=${params.platform}`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/admin/podcast-studio?error=callback_failed&platform=${platform}`
     )
   }
 }
@@ -134,8 +134,24 @@ async function handleGoogleCallback(code: string, platform: string) {
   return { tokens }
 }
 
-async function getGoogleUserInfo(tokens: any) {
-  const oauth2Client = new google.auth.OAuth2()
+async function getGoogleUserInfo(tokens: any, platform: string) {
+  const config = {
+    youtube: {
+      clientId: process.env.YOUTUBE_CLIENT_ID!,
+      clientSecret: process.env.YOUTUBE_CLIENT_SECRET!
+    },
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!
+    }
+  }
+  
+  const platformConfig = config[platform as keyof typeof config]
+  
+  const oauth2Client = new google.auth.OAuth2(
+    platformConfig.clientId,
+    platformConfig.clientSecret
+  )
   oauth2Client.setCredentials(tokens)
 
   const oauth2 = google.oauth2({ version: 'v2', auth: oauth2Client })
