@@ -19,7 +19,11 @@ import {
   BarChart3,
   PieChart,
   Download,
-  Settings
+  Settings,
+  Podcast,
+  Mic,
+  Play,
+  Headphones
 } from 'lucide-react';
 import type { FacultyTimetableView, TimetableEntry, WorkloadAlert } from '@/types/entities';
 
@@ -314,10 +318,11 @@ export default function FacultyDashboardPage({}: FacultyDashboardPageProps) {
       </Card>
 
       <Tabs defaultValue="schedule" className="space-y-3 sm:space-y-4">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5">
           <TabsTrigger value="schedule" className="text-xs sm:text-sm">Schedule</TabsTrigger>
           <TabsTrigger value="workload" className="text-xs sm:text-sm">Workload</TabsTrigger>
           <TabsTrigger value="upcoming" className="text-xs sm:text-sm">Upcoming</TabsTrigger>
+          <TabsTrigger value="podcasts" className="text-xs sm:text-sm">Podcasts</TabsTrigger>
           <TabsTrigger value="analytics" className="text-xs sm:text-sm">Analytics</TabsTrigger>
         </TabsList>
 
@@ -487,6 +492,155 @@ export default function FacultyDashboardPage({}: FacultyDashboardPageProps) {
                     <Badge variant="outline">{entry.entryType}</Badge>
                   </div>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="podcasts">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Course-Related Podcasts */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Podcast className="h-5 w-5 text-pink-600" />
+                  Course Podcasts
+                </CardTitle>
+                <CardDescription>
+                  Podcast episodes related to your courses
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 p-3 border rounded-lg hover:shadow-md transition-shadow cursor-pointer">
+                    <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
+                      <Play className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold">Machine Learning Fundamentals</h4>
+                      <p className="text-sm text-muted-foreground">AI Research Insights • 45:30</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge variant="secondary" className="text-xs">Your Course</Badge>
+                        <Badge variant="outline" className="text-xs">New</Badge>
+                      </div>
+                    </div>
+                    <Button variant="ghost" size="sm">
+                      <Headphones className="w-4 h-4" />
+                    </Button>
+                  </div>
+
+                  <div className="flex items-center gap-3 p-3 border rounded-lg hover:shadow-md transition-shadow cursor-pointer">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center">
+                      <Play className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold">Research Methodology in CS</h4>
+                      <p className="text-sm text-muted-foreground">Academic Discussions • 38:15</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge variant="secondary" className="text-xs">Related</Badge>
+                      </div>
+                    </div>
+                    <Button variant="ghost" size="sm">
+                      <Headphones className="w-4 h-4" />
+                    </Button>
+                  </div>
+
+                  <div className="text-center pt-4">
+                    <Button variant="outline" size="sm">
+                      View All Course Podcasts
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Recording & Upload */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Mic className="h-5 w-5 text-red-600" />
+                  Create Content
+                </CardTitle>
+                <CardDescription>
+                  Record and share educational content
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg border border-pink-200">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Mic className="h-4 w-4 text-pink-600" />
+                      <h4 className="font-semibold text-pink-900">Quick Recording</h4>
+                    </div>
+                    <p className="text-sm text-pink-800 mb-3">
+                      Record course explanations or lectures directly from your browser
+                    </p>
+                    <Button size="sm" className="bg-pink-600 hover:bg-pink-700">
+                      <Mic className="w-4 h-4 mr-2" />
+                      Start Recording
+                    </Button>
+                  </div>
+
+                  <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border border-blue-200">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Podcast className="h-4 w-4 text-blue-600" />
+                      <h4 className="font-semibold text-blue-900">Upload Content</h4>
+                    </div>
+                    <p className="text-sm text-blue-800 mb-3">
+                      Share pre-recorded lectures or educational content
+                    </p>
+                    <Button size="sm" variant="outline" className="border-blue-600 text-blue-700 hover:bg-blue-50">
+                      Upload Audio
+                    </Button>
+                  </div>
+
+                  <div className="pt-2 text-center">
+                    <Button variant="ghost" size="sm" className="text-muted-foreground">
+                      View Podcast Studio →
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Recent Activity */}
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle>Recent Podcast Activity</CardTitle>
+              <CardDescription>Your recent podcast interactions and uploads</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 p-3 border rounded-lg">
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                    <CheckCircle2 className="w-4 h-4 text-green-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Episode published successfully</p>
+                    <p className="text-xs text-muted-foreground">"CNN Modulation Classification" • 2 hours ago</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 p-3 border rounded-lg">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Play className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">New episode available</p>
+                    <p className="text-xs text-muted-foreground">"Research Methodology in CS" • 1 day ago</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 p-3 border rounded-lg">
+                  <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                    <Mic className="w-4 h-4 text-orange-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Recording uploaded</p>
+                    <p className="text-xs text-muted-foreground">"Machine Learning Basics" • 3 days ago</p>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

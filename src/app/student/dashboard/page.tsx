@@ -19,7 +19,10 @@ import {
   Loader2,
   ChevronRight,
   Award,
-  BookmarkIcon
+  BookmarkIcon,
+  Podcast,
+  Headphones,
+  Play
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format, isPast, parseISO, isWithinInterval, addDays, startOfDay, endOfDay } from 'date-fns';
@@ -457,6 +460,61 @@ export default function StudentDashboard() {
                 </Button>
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        {/* Course Podcasts */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Podcast className="h-5 w-5 text-pink-600" />
+              Course Podcasts
+            </CardTitle>
+            <CardDescription>
+              Educational podcasts related to your courses
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 p-3 border rounded-lg hover:shadow-md transition-shadow cursor-pointer">
+                <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Play className="w-4 h-4 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm truncate">Machine Learning Fundamentals</p>
+                  <p className="text-xs text-muted-foreground truncate">AI Research Insights • 45:30</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Badge variant="secondary" className="text-xs">Your Course</Badge>
+                    <Badge variant="outline" className="text-xs">New</Badge>
+                  </div>
+                </div>
+                <Button variant="ghost" size="sm">
+                  <Headphones className="w-4 h-4" />
+                </Button>
+              </div>
+
+              <div className="flex items-center gap-3 p-3 border rounded-lg hover:shadow-md transition-shadow cursor-pointer">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center">
+                  <Play className="w-4 h-4 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm truncate">Research Methodology in CS</p>
+                  <p className="text-xs text-muted-foreground truncate">Academic Discussions • 38:15</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Badge variant="secondary" className="text-xs">Related</Badge>
+                  </div>
+                </div>
+                <Button variant="ghost" size="sm">
+                  <Headphones className="w-4 h-4" />
+                </Button>
+              </div>
+
+              <Button variant="outline" size="sm" className="w-full text-xs sm:text-sm" asChild>
+                <Link href="/student/podcasts">
+                  Explore All Podcasts <ChevronRight className="h-3 w-3 ml-1" />
+                </Link>
+              </Button>
+            </div>
           </CardContent>
         </Card>
 

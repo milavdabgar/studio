@@ -38,7 +38,11 @@ import {
   BotMessageSquare,
   Briefcase,
   Newspaper,
-  FileText as AssessmentIcon
+  FileText as AssessmentIcon,
+  Podcast,
+  Mic,
+  Radio,
+  Upload
 } from 'lucide-react';
 
 const DashboardPage = () => {
@@ -161,6 +165,20 @@ const DashboardPage = () => {
       ]
     },
     {
+      title: 'Content & Media',
+      description: 'Podcast studio, blog, and content management',
+      icon: Podcast,
+      color: 'text-pink-600',
+      bgColor: 'bg-pink-50 dark:bg-pink-950',
+      items: [
+        { label: 'Podcast Studio', href: '/admin/podcast-studio', icon: Podcast, description: 'Podcast series & episodes' },
+        { label: 'Audio Library', href: '/admin/podcast-studio/library', icon: Mic, description: 'Audio file management' },
+        { label: 'Publishing Hub', href: '/admin/podcast-studio/publishing', icon: Radio, description: 'Multi-platform distribution' },
+        { label: 'Media Upload', href: '/admin/podcast-studio/upload', icon: Upload, description: 'Upload audio files' },
+        { label: 'Blog Management', href: '/posts/en', icon: Newspaper, description: 'Content management' }
+      ]
+    },
+    {
       title: 'Analytics & Operations',
       description: 'Reports, analytics, and system operations',
       icon: BarChart3,
@@ -170,8 +188,7 @@ const DashboardPage = () => {
         { label: 'Reports & Analytics', href: '/admin/reporting-analytics', icon: BarChart3, description: 'Data insights' },
         { label: 'Feedback Analysis', href: '/admin/feedback-analysis', icon: BotMessageSquare, description: 'AI feedback analysis' },
         { label: 'Project Fair Events', href: '/admin/project-fair/events', icon: Briefcase, description: 'Project management' },
-        { label: 'System Settings', href: '/admin/settings', icon: Settings, description: 'System configuration' },
-        { label: 'Blog Management', href: '/posts/en', icon: Newspaper, description: 'Content management' }
+        { label: 'System Settings', href: '/admin/settings', icon: Settings, description: 'System configuration' }
       ]
     }
   ];
