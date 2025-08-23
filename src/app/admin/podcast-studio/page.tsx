@@ -17,6 +17,7 @@ import {
   AlertCircle, XCircle, Upload as UploadIcon
 } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 
 interface PodcastSeries {
   id: string
@@ -76,7 +77,9 @@ export default function PodcastStudioPage() {
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [selectedSeries, setSelectedSeries] = useState<string>('all')
   const [isCreatingSeries, setIsCreatingSeries] = useState(false)
+  const [isUploadingEpisode, setIsUploadingEpisode] = useState(false)
   const [isEditingEpisode, setIsEditingEpisode] = useState<string | null>(null)
+  const [editingSeries, setEditingSeries] = useState<PodcastSeries | null>(null)
 
   // Platform connection states
   const [platformConnections, setPlatformConnections] = useState({
@@ -94,65 +97,35 @@ export default function PodcastStudioPage() {
   }, [])
 
   const loadSeries = async () => {
-    // Mock data for now
-    setSeries([
-      {
-        id: '1',
-        name: 'AI Research Insights',
-        description: 'Deep dive conversations into cutting-edge AI research',
-        category: 'Technology',
-        language: 'en-US',
-        artwork: '/podcast-artwork-ai.jpg',
-        author: 'Milav Dabgar',
-        email: 'mail@milav.in',
-        website: 'https://milav.in',
-        explicit: false,
-        platforms: {
-          youtube: { enabled: true, channelId: 'UC123...', status: 'connected' },
-          spotify: { enabled: true, status: 'pending' },
-          apple: { enabled: true, status: 'approved' },
-          google: { enabled: true, status: 'connected' },
-          amazon: { enabled: false, status: 'not_connected' }
-        },
-        rssUrl: 'https://milav.in/api/podcasts/ai-research',
-        episodeCount: 9,
-        subscribers: 1250,
-        createdAt: '2025-08-15'
+    try {
+      const response = await fetch('/api/podcast-studio/series')
+      if (response.ok) {
+        const data = await response.json()
+        setSeries(data.series || [])
+      } else {
+        console.error('Failed to load series')
+        setSeries([])
       }
-    ])
+    } catch (error) {
+      console.error('Error loading series:', error)
+      setSeries([])
+    }
   }
 
   const loadEpisodes = async () => {
-    // Mock data for now
-    setEpisodes([
-      {
-        id: '1',
-        seriesId: '1',
-        title: 'Convolutional Neural Network Approach to Automatic Modulation Classification',
-        description: 'An in-depth exploration of CNN-based approaches for automatic modulation classification in cognitive radio systems.',
-        audioUrl: 'https://drive.google.com/uc?export=download&id=1tvjVPcmMfs-wG0o74r_aJgbFbz3N92AA',
-        duration: '18:45',
-        fileSize: 94024364,
-        episodeNumber: 1,
-        season: 1,
-        status: 'published',
-        publishDate: '2025-08-20',
-        platforms: {
-          youtube: { published: true, videoId: 'ABC123', status: 'published' },
-          spotify: { published: true, status: 'published' },
-          apple: { published: true, status: 'published' },
-          google: { published: true, status: 'published' },
-          amazon: { published: false, status: 'not_published' }
-        },
-        analytics: {
-          downloads: 342,
-          views: 1250,
-          avgListenTime: '14:20'
-        },
-        createdAt: '2025-08-15',
-        updatedAt: '2025-08-20'
+    try {
+      const response = await fetch('/api/podcast-studio/episodes')
+      if (response.ok) {
+        const data = await response.json()
+        setEpisodes(data.episodes || [])
+      } else {
+        console.error('Failed to load episodes')
+        setEpisodes([])
       }
-    ])
+    } catch (error) {
+      console.error('Error loading episodes:', error)
+      setEpisodes([])
+    }
   }
 
   const checkPlatformConnections = async () => {
@@ -237,7 +210,10 @@ export default function PodcastStudioPage() {
               ) : null
             })}
           </div>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={(e) => {
+            e.stopPropagation() // Prevent card click
+            setEditingSeries(series)
+          }}>
             Manage
           </Button>
         </div>
@@ -325,7 +301,7 @@ export default function PodcastStudioPage() {
             <Plus className="h-4 w-4 mr-2" />
             New Series
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => setIsUploadingEpisode(true)}>
             <UploadIcon className="h-4 w-4 mr-2" />
             Upload Episode
           </Button>
@@ -519,6 +495,662 @@ export default function PodcastStudioPage() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Create Series Dialog */}
+      <Dialog open={isCreatingSeries} onOpenChange={setIsCreatingSeries}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Create New Podcast Series</DialogTitle>
+            <DialogDescription>
+              Set up a new podcast series with all the necessary details for multi-platform distribution.
+            </DialogDescription>
+          </DialogHeader>
+          <CreateSeriesForm onClose={() => setIsCreatingSeries(false)} onSubmit={async (seriesData) => {
+            try {
+              const formData = new FormData()
+              Object.entries(seriesData).forEach(([key, value]) => {
+                if (value !== null && value !== undefined) {
+                  formData.append(key, value.toString())
+                }
+              })
+              
+              const response = await fetch('/api/podcast-studio/series', {
+                method: 'POST',
+                body: formData
+              })
+              
+              if (response.ok) {
+                await loadSeries() // Refresh series list
+                setIsCreatingSeries(false)
+                console.log('Series created successfully!')
+              } else {
+                const error = await response.json()
+                console.error('Failed to create series:', error.error)
+              }
+            } catch (error) {
+              console.error('Error creating series:', error)
+            }
+          }} />
+        </DialogContent>
+      </Dialog>
+
+      {/* Upload Episode Dialog */}
+      <Dialog open={isUploadingEpisode} onOpenChange={setIsUploadingEpisode}>
+        <DialogContent className="sm:max-w-[700px]">
+          <DialogHeader>
+            <DialogTitle>Upload New Episode</DialogTitle>
+            <DialogDescription>
+              Upload and configure a new podcast episode for your series.
+            </DialogDescription>
+          </DialogHeader>
+          <UploadEpisodeForm 
+            series={series} 
+            onClose={() => setIsUploadingEpisode(false)} 
+            onSubmit={async (episodeData) => {
+              try {
+                const formData = new FormData()
+                Object.entries(episodeData).forEach(([key, value]) => {
+                  if (value !== null && value !== undefined) {
+                    if (key === 'audioFile' && value instanceof File) {
+                      formData.append(key, value)
+                    } else {
+                      formData.append(key, value.toString())
+                    }
+                  }
+                })
+                
+                const response = await fetch('/api/podcast-studio/episodes', {
+                  method: 'POST',
+                  body: formData
+                })
+                
+                if (response.ok) {
+                  await loadEpisodes() // Refresh episodes list
+                  await loadSeries() // Refresh series (for episode count)
+                  setIsUploadingEpisode(false)
+                  console.log('Episode uploaded successfully!')
+                } else {
+                  const error = await response.json()
+                  console.error('Failed to upload episode:', error.error)
+                }
+              } catch (error) {
+                console.error('Error uploading episode:', error)
+              }
+            }} 
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Series Dialog */}
+      <Dialog open={!!editingSeries} onOpenChange={() => setEditingSeries(null)}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Manage Series: {editingSeries?.name}</DialogTitle>
+            <DialogDescription>
+              Edit series settings, manage platforms, or delete the series.
+            </DialogDescription>
+          </DialogHeader>
+          {editingSeries && (
+            <EditSeriesForm 
+              series={editingSeries} 
+              onClose={() => setEditingSeries(null)} 
+              onSave={async (updatedSeries) => {
+                try {
+                  const formData = new FormData()
+                  Object.entries(updatedSeries).forEach(([key, value]) => {
+                    if (value !== null && value !== undefined) {
+                      if (key === 'artwork' && value instanceof File) {
+                        formData.append(key, value)
+                      } else if (typeof value === 'object') {
+                        formData.append(key, JSON.stringify(value))
+                      } else {
+                        formData.append(key, value.toString())
+                      }
+                    }
+                  })
+                  
+                  const response = await fetch('/api/podcast-studio/series', {
+                    method: 'PUT',
+                    body: formData
+                  })
+                  
+                  if (response.ok) {
+                    await loadSeries() // Refresh series list
+                    setEditingSeries(null)
+                    console.log('Series updated successfully!')
+                  } else {
+                    const error = await response.json()
+                    console.error('Failed to update series:', error.error)
+                  }
+                } catch (error) {
+                  console.error('Error updating series:', error)
+                }
+              }}
+              onDelete={async () => {
+                try {
+                  const response = await fetch(`/api/podcast-studio/series?id=${editingSeries.id}`, {
+                    method: 'DELETE'
+                  })
+                  
+                  if (response.ok) {
+                    await loadSeries() // Refresh series list
+                    setEditingSeries(null)
+                    console.log('Series deleted successfully!')
+                  } else {
+                    const error = await response.json()
+                    console.error('Failed to delete series:', error.error)
+                  }
+                } catch (error) {
+                  console.error('Error deleting series:', error)
+                }
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
+  )
+}
+
+// Form component for creating new series
+function CreateSeriesForm({ onClose, onSubmit }: { onClose: () => void, onSubmit: (data: any) => void }) {
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    category: 'Technology',
+    language: 'en-US',
+    author: 'Milav Dabgar',
+    email: 'mail@milav.in',
+    website: 'https://milav.in',
+    explicit: false,
+    artwork: null as File | null
+  })
+
+  const categories = [
+    'Technology', 'Education', 'Business', 'Science', 'Health', 'News', 
+    'Sports', 'Entertainment', 'Arts', 'History', 'Comedy', 'Documentary'
+  ]
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onSubmit(formData)
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setFormData(prev => ({ ...prev, artwork: file }))
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4 max-h-[600px] overflow-y-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="series-name">Series Name *</Label>
+          <Input
+            id="series-name"
+            value={formData.name}
+            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+            placeholder="My Awesome Podcast"
+            required
+          />
+        </div>
+        <div>
+          <Label htmlFor="category">Category</Label>
+          <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {categories.map(cat => (
+                <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          value={formData.description}
+          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+          placeholder="Describe your podcast series..."
+          rows={3}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="author">Author</Label>
+          <Input
+            id="author"
+            value={formData.author}
+            onChange={(e) => setFormData(prev => ({ ...prev, author: e.target.value }))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="email">Contact Email</Label>
+          <Input
+            id="email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+          />
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="website">Website URL</Label>
+        <Input
+          id="website"
+          type="url"
+          value={formData.website}
+          onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="artwork">Series Artwork (JPG/PNG, 1400x1400 minimum)</Label>
+        <Input
+          id="artwork"
+          type="file"
+          accept="image/jpeg,image/jpg,image/png"
+          onChange={handleFileChange}
+        />
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <Switch
+          id="explicit"
+          checked={formData.explicit}
+          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, explicit: checked }))}
+        />
+        <Label htmlFor="explicit">Contains explicit content</Label>
+      </div>
+
+      <DialogFooter>
+        <Button type="button" variant="outline" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button type="submit" disabled={!formData.name}>
+          Create Series
+        </Button>
+      </DialogFooter>
+    </form>
+  )
+}
+
+// Form component for uploading episodes
+function UploadEpisodeForm({ series, onClose, onSubmit }: { 
+  series: PodcastSeries[], 
+  onClose: () => void, 
+  onSubmit: (data: any) => void 
+}) {
+  const [formData, setFormData] = useState({
+    seriesId: '',
+    title: '',
+    description: '',
+    audioFile: null as File | null,
+    duration: '',
+    explicit: false,
+    season: 1,
+    episode: 1,
+    publishDate: new Date().toISOString().split('T')[0],
+    tags: '',
+    transcript: ''
+  })
+
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [isUploading, setIsUploading] = useState(false)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsUploading(true)
+    // Simulate upload progress
+    const interval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval)
+          setIsUploading(false)
+          onSubmit(formData)
+          return 100
+        }
+        return prev + 10
+      })
+    }, 200)
+  }
+
+  const handleAudioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setFormData(prev => ({ ...prev, audioFile: file }))
+      // You could calculate duration here using audio APIs
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4 max-h-[600px] overflow-y-auto">
+      <div>
+        <Label htmlFor="episode-series">Select Series *</Label>
+        <Select value={formData.seriesId} onValueChange={(value) => setFormData(prev => ({ ...prev, seriesId: value }))}>
+          <SelectTrigger>
+            <SelectValue placeholder="Choose a series..." />
+          </SelectTrigger>
+          <SelectContent>
+            {series.map(s => (
+              <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div>
+        <Label htmlFor="episode-title">Episode Title *</Label>
+        <Input
+          id="episode-title"
+          value={formData.title}
+          onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+          placeholder="Episode title..."
+          required
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="episode-description">Episode Description</Label>
+        <Textarea
+          id="episode-description"
+          value={formData.description}
+          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+          placeholder="Describe this episode..."
+          rows={3}
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="audio-file">Audio File * (MP3, M4A, WAV)</Label>
+        <Input
+          id="audio-file"
+          type="file"
+          accept="audio/mp3,audio/mpeg,audio/m4a,audio/wav"
+          onChange={handleAudioChange}
+          required
+        />
+        {formData.audioFile && (
+          <p className="text-sm text-muted-foreground mt-1">
+            Selected: {formData.audioFile.name} ({Math.round(formData.audioFile.size / 1024 / 1024)} MB)
+          </p>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <Label htmlFor="season">Season</Label>
+          <Input
+            id="season"
+            type="number"
+            min="1"
+            value={formData.season}
+            onChange={(e) => setFormData(prev => ({ ...prev, season: parseInt(e.target.value) }))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="episode">Episode Number</Label>
+          <Input
+            id="episode"
+            type="number"
+            min="1"
+            value={formData.episode}
+            onChange={(e) => setFormData(prev => ({ ...prev, episode: parseInt(e.target.value) }))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="publish-date">Publish Date</Label>
+          <Input
+            id="publish-date"
+            type="date"
+            value={formData.publishDate}
+            onChange={(e) => setFormData(prev => ({ ...prev, publishDate: e.target.value }))}
+          />
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="tags">Tags (comma-separated)</Label>
+        <Input
+          id="tags"
+          value={formData.tags}
+          onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
+          placeholder="AI, technology, research"
+        />
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <Switch
+          id="episode-explicit"
+          checked={formData.explicit}
+          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, explicit: checked }))}
+        />
+        <Label htmlFor="episode-explicit">Contains explicit content</Label>
+      </div>
+
+      {isUploading && (
+        <div className="w-full bg-gray-200 rounded-full h-2">
+          <div 
+            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+            style={{ width: `${uploadProgress}%` }}
+          ></div>
+          <p className="text-sm text-center mt-2">Uploading... {uploadProgress}%</p>
+        </div>
+      )}
+
+      <DialogFooter>
+        <Button type="button" variant="outline" onClick={onClose} disabled={isUploading}>
+          Cancel
+        </Button>
+        <Button type="submit" disabled={!formData.seriesId || !formData.title || !formData.audioFile || isUploading}>
+          {isUploading ? 'Uploading...' : 'Upload Episode'}
+        </Button>
+      </DialogFooter>
+    </form>
+  )
+}
+
+// Form component for editing series
+function EditSeriesForm({ series, onClose, onSave, onDelete }: { 
+  series: PodcastSeries, 
+  onClose: () => void, 
+  onSave: (data: PodcastSeries) => void,
+  onDelete: () => void
+}) {
+  const [formData, setFormData] = useState({
+    ...series,
+    artwork: null as File | null
+  })
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+
+  const categories = [
+    'Technology', 'Education', 'Business', 'Science', 'Health', 'News', 
+    'Sports', 'Entertainment', 'Arts', 'History', 'Comedy', 'Documentary'
+  ]
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    const { artwork, ...seriesData } = formData
+    onSave(seriesData as PodcastSeries)
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setFormData(prev => ({ ...prev, artwork: file }))
+    }
+  }
+
+  const handleDelete = () => {
+    if (showDeleteConfirm) {
+      onDelete()
+    } else {
+      setShowDeleteConfirm(true)
+      setTimeout(() => setShowDeleteConfirm(false), 5000) // Reset after 5 seconds
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4 max-h-[600px] overflow-y-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="edit-series-name">Series Name *</Label>
+          <Input
+            id="edit-series-name"
+            value={formData.name}
+            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+            required
+          />
+        </div>
+        <div>
+          <Label htmlFor="edit-category">Category</Label>
+          <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {categories.map(cat => (
+                <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="edit-description">Description</Label>
+        <Textarea
+          id="edit-description"
+          value={formData.description}
+          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+          rows={3}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="edit-author">Author</Label>
+          <Input
+            id="edit-author"
+            value={formData.author}
+            onChange={(e) => setFormData(prev => ({ ...prev, author: e.target.value }))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="edit-email">Contact Email</Label>
+          <Input
+            id="edit-email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+          />
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="edit-website">Website URL</Label>
+        <Input
+          id="edit-website"
+          type="url"
+          value={formData.website}
+          onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="edit-artwork">Update Artwork (JPG/PNG, 1400x1400 minimum)</Label>
+        <Input
+          id="edit-artwork"
+          type="file"
+          accept="image/jpeg,image/jpg,image/png"
+          onChange={handleFileChange}
+        />
+        <p className="text-sm text-muted-foreground mt-1">Leave empty to keep current artwork</p>
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <Switch
+          id="edit-explicit"
+          checked={formData.explicit}
+          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, explicit: checked }))}
+        />
+        <Label htmlFor="edit-explicit">Contains explicit content</Label>
+      </div>
+
+      {/* Platform Status */}
+      <div>
+        <Label>Platform Distribution Status</Label>
+        <div className="grid grid-cols-2 gap-2 mt-2">
+          {Object.entries(formData.platforms).map(([platform, config]) => {
+            const icons = {
+              youtube: <Youtube className="h-4 w-4" />,
+              spotify: <Music className="h-4 w-4" />,
+              apple: <Apple className="h-4 w-4" />,
+              google: <Podcast className="h-4 w-4" />,
+              amazon: <Music className="h-4 w-4" />
+            }
+
+            const statusColors = {
+              connected: 'text-green-600',
+              pending: 'text-yellow-600',
+              approved: 'text-green-600',
+              not_connected: 'text-gray-600'
+            }
+
+            return (
+              <div key={platform} className="flex items-center justify-between p-2 border rounded">
+                <div className="flex items-center gap-2">
+                  {icons[platform as keyof typeof icons]}
+                  <span className="capitalize">{platform}</span>
+                </div>
+                <Badge 
+                  variant={(config.status === 'connected' || config.status === 'approved') ? 'default' : 'secondary'}
+                  className={statusColors[(config.status || 'not_connected') as keyof typeof statusColors]}
+                >
+                  {(config.status || 'not_connected').replace('_', ' ')}
+                </Badge>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      <DialogFooter className="flex justify-between">
+        <Button 
+          type="button" 
+          variant={showDeleteConfirm ? "destructive" : "outline"}
+          onClick={handleDelete}
+          className="mr-auto"
+        >
+          {showDeleteConfirm ? (
+            <>
+              <Trash2 className="h-4 w-4 mr-2" />
+              Confirm Delete
+            </>
+          ) : (
+            <>
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete Series
+            </>
+          )}
+        </Button>
+        <div className="flex gap-2">
+          <Button type="button" variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" disabled={!formData.name}>
+            Save Changes
+          </Button>
+        </div>
+      </DialogFooter>
+    </form>
   )
 }
