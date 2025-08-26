@@ -352,17 +352,27 @@ class YouTubeCleanScriptGenerator:
             combined_text = ' '.join([text for text, _ in sentence_group])
             first_timestamp = sentence_group[0][1]
             
-            # Detect speaker change based on the complete sentence/thought
-            detected_speaker = self._detect_speaker_change_simple(
-                combined_text, current_speaker, speaker_names
-            )
-            
-            if detected_speaker:
-                current_speaker = detected_speaker
+            # Force speaker change after questions (podcast Q&A pattern)
+            if combined_text.rstrip().endswith('?'):
+                # Question asked, next group should be the other speaker
+                current_speaker = current_speaker  # Keep current for this question
+                next_speaker = speaker_names[1] if current_speaker == speaker_names[0] else speaker_names[0]
+            else:
+                # Detect speaker change based on the complete sentence/thought
+                detected_speaker = self._detect_speaker_change_simple(
+                    combined_text, current_speaker, speaker_names
+                )
+                
+                if detected_speaker:
+                    current_speaker = detected_speaker
+                next_speaker = current_speaker
             
             # Assign the same speaker to all segments in this sentence group
             for text, timestamp in sentence_group:
                 speaker_segments.append((current_speaker, text, timestamp))
+            
+            # Update speaker for next iteration (especially after questions)
+            current_speaker = next_speaker
         
         # Statistics
         stats = {}
@@ -478,7 +488,7 @@ class YouTubeCleanScriptGenerator:
             # If speaker changes, complete previous speech
             if speaker != current_speaker and current_speech:
                 if current_speaker:
-                    # Join the speech parts simply
+                    # Join the speech parts simply - keep complete thoughts together
                     full_speech = ' '.join(current_speech).strip()
                     if full_speech:
                         conversation.append(f"{current_speaker}: {full_speech}")
@@ -491,14 +501,7 @@ class YouTubeCleanScriptGenerator:
             current_speech.append(text)
             current_speaker = speaker
             
-            # Break up very long speeches naturally (at ~300 characters)
-            combined_length = sum(len(part) for part in current_speech)
-            if combined_length > 300:
-                full_speech = ' '.join(current_speech).strip()
-                if full_speech:
-                    conversation.append(f"{current_speaker}: {full_speech}")
-                    conversation.append("")
-                current_speech = []
+            # No character limit splitting - keep complete thoughts per speaker
         
         # Add final speech
         if current_speech and current_speaker:
