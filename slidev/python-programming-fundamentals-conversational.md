@@ -111,46 +111,34 @@ layout: default
 
 <div class="grid grid-cols-3 gap-6">
 
-<div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl">
+<div v-click="1" class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl">
 
 ## 🎯 **C - Clarity**
-
-<v-clicks>
 
 - **Totally unambiguous** instructions
 - No confusion for programmer/machine
 - Crystal clear steps
 
-</v-clicks>
-
 </div>
 
-<div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl">
+<div v-click="2" class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl">
 
 ## ⚡ **E - Efficiency**
-
-<v-clicks>
 
 - Smart **resource usage**
 - Optimized **time & memory**
 - Think: sorting huge data sets
 - **Speed matters!**
 
-</v-clicks>
-
 </div>
 
-<div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl">
+<div v-click="3" class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl">
 
 ## 🔄 **R - Reusability**
-
-<v-clicks>
 
 - Build once, **adapt later**
 - Reuse parts for similar problems
 - **Saves a lot of work**
-
-</v-clicks>
 
 </div>
 
