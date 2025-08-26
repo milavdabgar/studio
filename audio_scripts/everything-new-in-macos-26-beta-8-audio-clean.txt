@@ -1,0 +1,178 @@
+<!--
+Dr. James: What's up everyone, WillyApple here and today Apple has released the 8th beta of MacOS Tahoe
+
+Dr. James: to developers and in this video I'll be showing you what is new inside the software.
+
+Dr. James: For me on my M4 Mac Mini it came in at 1.74 GB.
+
+Dr. James: Alright, what is new here inside this latest beta of Tahoe?
+
+Dr. James: And this is very likely going to be the final beta of Tahoe before it goes to release candidate
+
+Dr. James: mode and then eventually releases to everyone.
+
+Dr. James: So this means that this is basically just last minute bug fixes and internal changes
+
+Dr. James: only.
+
+Dr. James: So I'm just going to show you how small this beta is going to be.
+
+Dr. James: For beta 7 it is 25A35346A and then if we were to look right here it's only 5349.
+
+Dr. James: So that means that there are only 3 iterations since the previous beta which is actually
+
+Dr. James: not a whole lot.
+
+Dr. James: And in fact, everything looks identical to beta 7.
+
+Dr. James: Liquid glass, everything.
+
+Dr. James: We still have this little bug where it's showing the MacOS Sequoia version of the external
+
+Dr. James: hard drive icon.
+
+Dr. James: And then the other issue I have with the clock app where if you put in the dock in
+
+Dr. James: dark mode it doesn't show the hands.
+
+Dr. James: It just shows the clock without hands.
+
+Dr. James: Everything here looks identical but there are actually a couple of internal changes.
+
+Dr. James: So inside the code of MacOS there's actually updates to the Photos app.
+
+Dr. James: And it's basically just with the Photos framework mainly for developers.
+
+Dr. James: It's mainly private APIs which means that developers can't even use those APIs at all.
+
+Dr. James: So there isn't a whole lot inside of the Photos app at all here.
+
+Dr. James: It's just 100% identical to beta 7.
+
+Dr. James: The other thing that changed internally is inside the Contacts app.
+
+Dr. James: And it has to do with the contact posters.
+
+Dr. James: So just a warning if you're expecting anything to change inside of beta 8.
+
+Dr. James: If any last minute bugs get fixed.
+
+Dr. James: The answer is most likely probably not.
+
+Dr. James: Now Apple only usually fixes a bug if it's major enough.
+
+Dr. James: Last time I could think of a visual bug that's been fixed is in iOS 16 where inside of the
+
+Dr. James: software update screen it would just say 16.0 instead of the actual version.
+
+Dr. James: That was a little bug that's gotten fixed inside of a beta 8.
+
+Dr. James: But other than that I can think of almost nothing else that's been fixed inside of a
+
+Dr. James: beta 8 before.
+
+Dr. James: Now the reason why there are so little changes inside this latest beta of MacOS is because
+
+Dr. James: most of the developers have shifted work on something else.
+
+Dr. James: It's either maybe less likely MacOS 26 RC or what's more likely is MacOS 26.1.
+
+Dr. James: Apple is most likely working on that internally.
+
+Dr. James: Other than that they'll have something new to show us inside of MacOS 26.1 beta 1 which
+
+Dr. James: I'll definitely be covering here on the channel.
+
+Dr. James: Other than that nothing has changed inside this beta that is visual but let's talk about
+
+Dr. James: my experience.
+
+Dr. James: Everything from spotlight to everything else seems to be really good here on my M4 Mac
+
+Dr. James: Mini which is my main computer.
+
+Sarah: In fact I felt beta 7 was finally stable enough to finally put it on my Mac Mini which is
+
+Sarah: my main computer.
+
+Sarah: Pretty much the only things is once again the clock app issue where it just doesn't
+
+Sarah: show the hands inside the dock and the external hard drive icon where it shows the sequoia
+
+Sarah: version.
+
+Dr. James: Now other bugs has to do with inside the clock where alarms would just not ring for whatever
+
+Dr. James: reason if the MacBook was asleep even though it sometimes tries to.
+
+Dr. James: But other than that MacOS Tahoe seems to be very stable and I'm very excited for everybody
+
+Dr. James: around the world to finally try it.
+
+Dr. James: Now I'm going to run a quick Geekbench test so I can tell you how fast MacOS Tahoe is
+
+Dr. James: compared to the previous beta.
+
+Dr. James: Alright now let's talk about the Geekbench score.
+
+Dr. James: So beta 6 currently has the highest Geekbench score out of any MacOS beta.
+
+Dr. James: It has a 3674 on the single core and a 15131 on the multi-core.
+
+Dr. James: If we were to take a look right here we got a 3758 on the single core so that is already
+
+Dr. James: much higher and we got a 15291 on the multi-core.
+
+Dr. James: That is also much higher here so therefore MacOS Tahoe beta 8 is currently the fastest
+
+Dr. James: version of MacOS for MacOS Tahoe.
+
+Sarah: In fact we'll be comparing MacOS Ventura vs Sonoma vs Sequoia vs Tahoe inside of a
+
+Sarah: future video so be subscribed for that and click the notification bell so you'll be
+
+Sarah: notified whenever that comes out.
+
+Sarah: Anyways that is MacOS Tahoe now let's talk about what is next for Apple.
+
+Dr. James: So today is Monday August 25th and we're most likely not going to see a beta next week
+
+Dr. James: on Monday the 1st or the 2nd.
+
+Dr. James: And that's because Apple has wrapped up development on MacOS Tahoe.
+
+Dr. James: The only reason why they would release a 9th beta is if they find a major bug that
+
+Dr. James: needs to be addressed which I don't really see happening unless they count the clock
+
+Dr. James: app issue as an issue but we'll have to wait and see on that.
+
+Dr. James: So the next time we're going to see a beta is most likely here on either the 8th 9th
+
+Dr. James: or 10th and that's going to be the RC version.
+
+Dr. James: And then public release I would expect that here on the 15th.
+
+Dr. James: Apple typically likes their Monday releases and MacOS 26.1 beta 1 should release here
+
+Dr. James: on the 16th.
+
+Dr. James: So I will have a definite answer of when the RC will be coming out once Apple announces
+
+Dr. James: the iPhone 17 event which should hopefully be tomorrow so expect the RC to come out right
+
+Dr. James: after that event along with iOS and all those other platforms.
+
+Dr. James: Anyways that is MacOS Tahoe beta 8 unfortunately not a big update but I'm pretty sure the RC
+
+Dr. James: and even MacOS 26.1 beta 1 will be a lot bigger updates than this because that is what Apple
+
+Dr. James: is currently working on right now.
+
+Dr. James: And thanks for watching comment like and subscribe.
+
+Dr. James: I'll put all my apps in the description down below and I'll see you in my next video.
+
+Dr. James: Bye!
+
+-->

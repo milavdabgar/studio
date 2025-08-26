@@ -149,13 +149,79 @@ class YouTubeAudioScriptGenerator:
             return None
     
     def perform_speaker_diarization(self, audio_file: Path) -> Optional[Dict]:
-        """Perform simple speaker diarization using basic audio analysis"""
-        print(f"👥 Performing simple speaker diarization...")
+        """Perform professional speaker diarization using pyannote.audio"""
+        print(f"👥 Performing professional speaker diarization...")
         
-        # Skip pyannote for now due to authentication requirements
-        # Implement basic speaker change detection based on audio features
-        print("💡 Using simple audio-based speaker detection (no authentication required)")
-        return self._simple_audio_speaker_detection(audio_file)
+        if not PYANNOTE_AVAILABLE:
+            print("⚠️  Using fallback speaker detection (install pyannote.audio for better results)")
+            return None
+        
+        # Try to use proper pyannote models with authentication
+        return self._pyannote_speaker_detection(audio_file) or self._simple_audio_speaker_detection(audio_file)
+    
+    def _pyannote_speaker_detection(self, audio_file: Path) -> Optional[Dict]:
+        """Professional speaker diarization using pyannote.audio models"""
+        try:
+            import os
+            from pyannote.audio import Pipeline
+            
+            # Check for HuggingFace token
+            token = os.environ.get('HUGGINGFACE_HUB_TOKEN') or os.environ.get('HF_TOKEN')
+            
+            if not token:
+                print("💡 No HuggingFace token found. Set HUGGINGFACE_HUB_TOKEN environment variable")
+                print("   Visit: https://huggingface.co/settings/tokens")
+                return None
+            
+            # Try the best available models
+            model_names = [
+                "pyannote/speaker-diarization-3.1",
+                "pyannote/speaker-diarization-3.0", 
+                "pyannote/speaker-diarization"
+            ]
+            
+            pipeline = None
+            for model_name in model_names:
+                try:
+                    print(f"🔐 Loading {model_name} with authentication...")
+                    pipeline = Pipeline.from_pretrained(model_name, use_auth_token=token)
+                    print(f"✅ Successfully loaded {model_name}")
+                    break
+                except Exception as e:
+                    print(f"⚠️  Failed to load {model_name}: {str(e)[:100]}...")
+                    continue
+            
+            if pipeline is None:
+                print("❌ Could not load any pyannote models")
+                return None
+            
+            # Apply professional speaker diarization
+            print("🎯 Analyzing audio for speaker changes...")
+            diarization = pipeline(str(audio_file))
+            
+            # Convert to our format
+            speaker_segments = []
+            for turn, _, speaker in diarization.itertracks(yield_label=True):
+                speaker_segments.append({
+                    'start': turn.start,
+                    'end': turn.end,
+                    'speaker': speaker
+                })
+            
+            print(f"✅ Professional speaker diarization complete ({len(speaker_segments)} segments)")
+            
+            # Show speaker statistics
+            speakers = set(seg['speaker'] for seg in speaker_segments)
+            print(f"🎭 Detected {len(speakers)} speakers: {', '.join(speakers)}")
+            
+            return {'segments': speaker_segments}
+            
+        except ImportError:
+            print("❌ pyannote.audio not available")
+            return None
+        except Exception as e:
+            print(f"❌ Professional speaker diarization failed: {e}")
+            return None
     
     def _simple_audio_speaker_detection(self, audio_file: Path) -> Optional[Dict]:
         """Simple speaker detection based on audio energy and pause patterns"""
