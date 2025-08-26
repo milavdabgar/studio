@@ -388,7 +388,7 @@ class YouTubeCleanScriptGenerator:
             current_speech.append(text)
             current_speaker = speaker
             
-            # Break up very long speeches
+            # Break up very long speeches naturally
             combined_length = sum(len(part) for part in current_speech)
             if combined_length > 400:  # Break at ~400 characters
                 full_speech = self._merge_speech_parts(current_speech)
@@ -410,22 +410,104 @@ class YouTubeCleanScriptGenerator:
         return result
     
     def _merge_speech_parts(self, speech_parts: List[str]) -> str:
-        """Merge speech parts into natural sentences"""
+        """Merge speech parts into natural sentences, fixing only broken endings"""
         if not speech_parts:
             return ""
         
-        # Join parts with spaces
-        merged = ' '.join(speech_parts)
+        # Start with the first part
+        if len(speech_parts) == 1:
+            return speech_parts[0].strip()
         
-        # Clean up the merged text
-        merged = re.sub(r'\s+', ' ', merged)  # Multiple spaces
-        merged = re.sub(r'([.!?])\s*([a-z])', r'\1 \2', merged)  # Fix sentence spacing
+        merged_parts = []
         
-        # Ensure proper sentence ending
-        if merged and not merged[-1] in '.!?':
-            merged += '.'
+        for i, part in enumerate(speech_parts):
+            part = part.strip()
+            if not part:
+                continue
+                
+            # Check if this part ends incompletely
+            if i < len(speech_parts) - 1:  # Not the last part
+                next_part = speech_parts[i + 1].strip()
+                
+                # Only merge if current part has incomplete ending AND next part continues naturally
+                if self._is_incomplete_sentence(part) and self._continues_sentence(next_part):
+                    # Merge with next part to complete the sentence
+                    combined = f"{part} {next_part}"
+                    merged_parts.append(combined)
+                    # Skip the next part since we merged it
+                    speech_parts[i + 1] = ""  # Mark as processed
+                else:
+                    merged_parts.append(part)
+            else:
+                merged_parts.append(part)
+        
+        # Join and clean up
+        merged = ' '.join(p for p in merged_parts if p.strip())
+        merged = re.sub(r'\s+', ' ', merged)
         
         return merged.strip()
+    
+    def _is_incomplete_sentence(self, text: str) -> bool:
+        """Check if sentence ends incompletely (genuine broken sentences only)"""
+        if not text:
+            return False
+            
+        text = text.strip()
+        if not text:
+            return False
+        
+        # Check for clearly incomplete endings
+        incomplete_endings = [
+            # Articles
+            r'\b(a|an|the)\s*$',
+            # Prepositions  
+            r'\b(in|on|at|by|for|with|from|to|of|about|through|into|onto)\s*$',
+            # Conjunctions
+            r'\b(and|but|or|so|because|that|which|who|where|when)\s*$',
+            # Incomplete phrases
+            r'\b(is|are|was|were|has|have|had|will|would|could|should)\s*$',
+            r'\b(more|most|less|least|very|really|quite|rather)\s*$',
+            r'\b(this|that|these|those)\s*$',
+            # Possessives
+            r"'s\s*$",
+            # Common incomplete phrase patterns
+            r'\b(kind of|sort of|type of|all the|one of the|part of the)\s*$'
+        ]
+        
+        return any(re.search(pattern, text, re.IGNORECASE) for pattern in incomplete_endings)
+    
+    def _continues_sentence(self, text: str) -> bool:
+        """Check if text naturally continues the previous sentence"""
+        if not text:
+            return False
+            
+        text = text.strip().lower()
+        
+        # Should NOT start with these (indicates new sentence/thought)
+        new_sentence_starters = [
+            # Questions
+            r'^(what|how|why|when|where|who|can|could|would|should|do|does|did|is|are)\b',
+            # Responses  
+            r'^(yes|no|well|so|actually|basically|right|exactly|absolutely)\b',
+            # Transitions
+            r'^(now|then|next|first|second|finally|however|but|and then)\b',
+            # Speaker transitions
+            r'^(welcome|today|let\'s|tell us|explain)\b'
+        ]
+        
+        # Don't merge if next part starts a new thought
+        if any(re.match(pattern, text) for pattern in new_sentence_starters):
+            return False
+            
+        # Good continuation patterns (nouns, adjectives, etc.)
+        good_continuations = [
+            r'^[a-z][a-z\s]*$',  # Simple lowercase words (likely continuation)
+            r'^\w+ing\b',         # Gerunds
+            r'^\w+ed\b',          # Past participles  
+            r'^\w+s\b',           # Plurals
+        ]
+        
+        return any(re.match(pattern, text) for pattern in good_continuations)
     
     def save_clean_script(self, script: str, video_info: Dict) -> Path:
         """Save clean script to .txt file"""
