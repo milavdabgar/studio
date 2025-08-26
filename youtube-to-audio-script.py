@@ -647,10 +647,15 @@ class YouTubeAudioScriptGenerator:
     
     def create_clean_conversation(self, segments: List[Dict], video_info: Dict, 
                                 max_speaker_length: int = 800) -> str:
-        """Create clean conversational script with intelligent length management"""
-        print("✍️ Creating clean conversation...")
+        """Create clean conversational script with grouped consecutive speakers for better TTS"""
+        print("✍️ Creating clean conversation with speaker grouping...")
         
         conversation = ["<!--"]
+        
+        # Group consecutive same-speaker segments
+        grouped_segments = []
+        current_speaker = None
+        current_texts = []
         
         for segment in segments:
             speaker = segment['speaker']
@@ -661,22 +666,57 @@ class YouTubeAudioScriptGenerator:
             
             # Clean the text
             clean_text = self._clean_text(text)
+            if not clean_text:
+                continue
             
-            # Apply length management if needed
-            if len(clean_text) > max_speaker_length:
-                split_parts = self._split_long_text(clean_text, max_speaker_length)
-                for part in split_parts:
+            # If same speaker, accumulate text
+            if speaker == current_speaker:
+                current_texts.append(clean_text)
+            else:
+                # Save previous speaker's accumulated text
+                if current_speaker and current_texts:
+                    combined_text = ' '.join(current_texts)
+                    grouped_segments.append({
+                        'speaker': current_speaker,
+                        'text': combined_text
+                    })
+                
+                # Start new speaker group
+                current_speaker = speaker
+                current_texts = [clean_text]
+        
+        # Don't forget the final group
+        if current_speaker and current_texts:
+            combined_text = ' '.join(current_texts)
+            grouped_segments.append({
+                'speaker': current_speaker,
+                'text': combined_text
+            })
+        
+        # Generate conversation with grouped speakers
+        for group in grouped_segments:
+            speaker = group['speaker']
+            text = group['text']
+            
+            # Apply length management if needed for very long paragraphs
+            if len(text) > max_speaker_length:
+                split_parts = self._split_long_text(text, max_speaker_length)
+                for i, part in enumerate(split_parts):
                     if part.strip():
-                        conversation.append(f"{speaker}: {part.strip()}")
+                        if i == 0:
+                            conversation.append(f"{speaker}: {part.strip()}")
+                        else:
+                            # Continue same speaker on new line for readability
+                            conversation.append(f"{speaker}: {part.strip()}")
                         conversation.append("")
             else:
-                conversation.append(f"{speaker}: {clean_text}")
+                conversation.append(f"{speaker}: {text}")
                 conversation.append("")
         
         conversation.append("-->")
         
         result = '\n'.join(conversation)
-        print(f"✅ Clean conversation created ({len(result)} characters)")
+        print(f"✅ Clean conversation created with grouped speakers ({len(result)} characters)")
         return result
     
     def _clean_text(self, text: str) -> str:
