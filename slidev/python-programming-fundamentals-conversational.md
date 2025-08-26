@@ -57,14 +57,14 @@ layout: default
 
 ## 🧠 **Core Definition**
 
-<v-clicks>
+<v-click at="1">
 
 - **Step-by-step procedure**
 - Solves problems in **finite sequence**
 - Like a **recipe** for computers
 - Set of **instructions** → **specific result**
 
-</v-clicks>
+</v-click>
 
 </div>
 
@@ -72,7 +72,7 @@ layout: default
 
 ## 💡 **Key Insight**
 
-<v-clicks>
+<v-click at="2">
 
 **"Like a recipe. Exactly like a recipe!"**
 
@@ -81,20 +81,24 @@ layout: default
 - Produces consistent results
 - Foundation of **all software**
 
-</v-clicks>
+</v-click>
 
 </div>
 
 </div>
 
-<div v-click="8" class="mt-8 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+<div v-click="3" class="mt-8 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
 <strong>🎯 Remember:</strong> Algorithms are the logic behind pretty much all software!
 </div>
 
 <!--
 Dr. James: Okay, let's dive in. First concept, algorithms. Sounds maybe a bit formal, but what is an algorithm really?
 
-Sarah: Well, at its heart, it's just a step-by-step procedure. It's a way to solve a problem in a specific finite sequence of steps. Like a recipe. Exactly like a recipe. That's a great analogy. For computers, it's the set of instructions to get a certain result. And honestly, algorithms are the logic behind pretty much all software.
+[click] Sarah: Well, at its heart, it's just a step-by-step procedure. It's a way to solve a problem in a specific finite sequence of steps.
+
+[click] Sarah: Like a recipe. Exactly like a recipe. That's a great analogy. For computers, it's the set of instructions to get a certain result.
+
+[click] Sarah: And honestly, algorithms are the logic behind pretty much all software.
 
 Dr. James: Makes sense. And then
 -->
@@ -174,14 +178,14 @@ layout: default
 
 ## ✅ **V - Verification**
 
-<v-clicks>
+<v-click at="1">
 
 - **Easier to test** and debug
 - Clear steps = clear validation
 - Ensure it **works correctly**
 - Test **before coding it up**
 
-</v-clicks>
+</v-click>
 
 </div>
 
@@ -189,20 +193,20 @@ layout: default
 
 ## 🤝 **C - Communication**
 
-<v-clicks>
+<v-click at="2">
 
 - Algorithm as a **blueprint**
 - Helps people **understand** the solution
 - Enables **team collaboration**
 - Shared understanding
 
-</v-clicks>
+</v-click>
 
 </div>
 
 </div>
 
-<div v-click="8" class="mt-8 p-4 bg-gradient-to-r from-indigo-50 to-cyan-50 rounded-lg">
+<div v-click="3" class="mt-8 p-4 bg-gradient-to-r from-indigo-50 to-cyan-50 rounded-lg">
 <strong>🚀 Key Takeaway:</strong> It's really about planning it out first!
 </div>
 
@@ -227,14 +231,14 @@ class: text-center
 
 ## 🎨 **What Are Flow Charts?**
 
-<v-clicks>
+<v-click at="1">
 
 - **Visual algorithms**
 - Standard symbols + arrows
 - Show **sequence & decisions**
 - Display **flow of logic**
 
-</v-clicks>
+</v-click>
 
 </div>
 
@@ -242,20 +246,20 @@ class: text-center
 
 ## 💡 **Why Use Them?**
 
-<v-clicks>
+<v-click at="2">
 
 - **Much more graphical**
 - Grasp **overall structure quickly**
 - Like looking at a **map** instead of reading directions
 - **Visual thinking**
 
-</v-clicks>
+</v-click>
 
 </div>
 
 </div>
 
-<div v-click="8" class="mt-12 text-2xl font-bold text-blue-600">
+<div v-click="3" class="mt-12 text-2xl font-bold text-blue-600">
 "Sometimes easier to grasp the overall structure quickly" 
 </div>
 
@@ -343,14 +347,14 @@ layout: default
 
 ## ✨ **S - Clarity**
 
-<v-clicks>
+<v-click at="1">
 
 - Keep text **concise**
 - **Easy to understand** steps
 - Inside symbols should be clear
 - No ambiguity
 
-</v-clicks>
+</v-click>
 
 </div>
 
@@ -358,20 +362,20 @@ layout: default
 
 ## 🎯 **C - Consistency**
 
-<v-clicks>
+<v-click at="2">
 
 - **Same level of detail** throughout
 - **Same symbols** for same purposes
 - Uniform approach
 - Professional appearance
 
-</v-clicks>
+</v-click>
 
 </div>
 
 </div>
 
-<div v-click="8" class="mt-8 p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg">
+<div v-click="3" class="mt-8 p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg">
 <strong>💡 Next:</strong> Let's see a practical example!
 </div>
 
@@ -464,14 +468,14 @@ layout: default
 
 ## 📝 **What Are They?**
 
-<v-clicks>
+<v-click at="1">
 
 - How you **give values** to variables
 - Basic one: **equal sign** (`=`)
 - Python has **shorthand operators**
 - Combine **math + assignment**
 
-</v-clicks>
+</v-click>
 
 </div>
 
@@ -479,26 +483,26 @@ layout: default
 
 ## 💡 **Why Use Them?**
 
-<v-clicks>
+<v-click at="2">
 
 - **Shortcuts** for common operations
 - Make code **shorter**
 - Often **easier to read**
 - Especially when **updating same variable**
 
-</v-clicks>
+</v-click>
 
 </div>
 
 </div>
 
-<div v-click="8" class="mt-8">
+<div v-click="3" class="mt-8">
 
 ## 🔧 **Example**
 
 <div class="bg-gray-100 p-4 rounded-lg font-mono">
-<div v-click="9">Instead of: <code>x = x + 5</code></div>
-<div v-click="10">You can write: <code>x += 5</code></div>
+<div>Instead of: <code>x = x + 5</code></div>
+<div>You can write: <code>x += 5</code></div>
 </div>
 
 </div>
@@ -525,7 +529,7 @@ layout: default
 
 ## 📋 **Complete Set**
 
-<v-clicks>
+<v-click at="1">
 
 - **Addition**: `+=`
 - **Subtraction**: `-=`
@@ -535,7 +539,7 @@ layout: default
 - **Modulus**: `%=`
 - **Exponentiation**: `**=`
 
-</v-clicks>
+</v-click>
 
 </div>
 
@@ -543,22 +547,26 @@ layout: default
 
 ## 💭 **Key Concept**
 
-<v-clicks>
+<v-click at="2">
 
 Each operator **pairs an operation** with assignment
+
+</v-click>
+
+<v-click at="3">
 
 **Mnemonic**: "Variable assignment"
 - **Updating existing values**
 - **Modifying** what's in the variable
 - **Concise** and sometimes more **efficient**
 
-</v-clicks>
+</v-click>
 
 </div>
 
 </div>
 
-<div v-click="11" class="mt-8 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg">
+<div v-click="4" class="mt-8 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg">
 <strong>🎯 Benefit:</strong> Efficiency and cleaner code. Always good!
 </div>
 
@@ -583,18 +591,23 @@ class: text-center
 
 ## 🤔 **What Are Data Types?**
 
-<v-clicks>
+<v-click at="1">
 
 - **Classify** what kind of value a variable holds
 - Is it a **whole number**? **Text**? **True/False**?
+
+</v-click>
+
+<v-click at="2">
+
 - Computer **handles different types differently**
 - **Fundamental concept** in programming
 
-</v-clicks>
+</v-click>
 
 </div>
 
-<div v-click="5" class="mt-12 text-2xl font-bold text-blue-600">
+<div v-click="3" class="mt-12 text-2xl font-bold text-blue-600">
 "This feels really fundamental. Oh, absolutely!"
 </div>
 
@@ -620,14 +633,14 @@ layout: default
 
 ## 🧠 **How It Works**
 
-<v-clicks>
+<v-click at="1">
 
 - Python **figures it out** on its own
 - **Dynamically typed** language
 - Often **don't declare type** explicitly
 - Automatic type detection
 
-</v-clicks>
+</v-click>
 
 </div>
 
@@ -635,20 +648,20 @@ layout: default
 
 ## ⚠️ **But Remember**
 
-<v-clicks>
+<v-click at="2">
 
 - Understanding types is **still crucial**
 - Write code that **works correctly**
 - Important for **efficiency**
 - Foundation for advanced concepts
 
-</v-clicks>
+</v-click>
 
 </div>
 
 </div>
 
-<div v-click="8" class="mt-8 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg">
+<div v-click="3" class="mt-8 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg">
 <strong>💡 Key Point:</strong> Dynamic typing makes Python easy, but understanding types makes you a better programmer!
 </div>
 
@@ -750,14 +763,10 @@ class: text-center
 
 ## 🎯 **What We Covered**
 
-<v-clicks>
-
-- **Algorithms**: Step-by-step procedures
-- **Flow Charts**: Visual problem solving
-- **Assignment Operators**: Efficient coding
-- **Data Types**: Foundation of variables
-
-</v-clicks>
+<v-click at="1">- **Algorithms**: Step-by-step procedures</v-click>
+<v-click at="2">- **Flow Charts**: Visual problem solving</v-click>
+<v-click at="3">- **Assignment Operators**: Efficient coding</v-click>
+<v-click at="4">- **Data Types**: Foundation of variables</v-click>
 
 </div>
 
@@ -765,20 +774,16 @@ class: text-center
 
 ## 💡 **Key Insights**
 
-<v-clicks>
-
-- **Planning first** is crucial
-- **Visual thinking** helps understanding
-- **Efficiency matters** in code
-- **Types are fundamental** even when dynamic
-
-</v-clicks>
+<v-click at="5">- **Planning first** is crucial</v-click>
+<v-click at="6">- **Visual thinking** helps understanding</v-click>
+<v-click at="7">- **Efficiency matters** in code</v-click>
+<v-click at="8">- **Types are fundamental** even when dynamic</v-click>
 
 </div>
 
 </div>
 
-<div v-click="8" class="mt-12">
+<div v-click="9" class="mt-12">
 
 ## 🚀 **Ready for Next Steps**
 
