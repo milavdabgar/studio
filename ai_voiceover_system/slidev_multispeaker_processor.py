@@ -301,12 +301,13 @@ class SlidevMultiSpeakerProcessor:
                     name=turn['voice']
                 )
                 
-                # Audio configuration
+                # Audio configuration with volume gain
                 audio_config = texttospeech.AudioConfig(
                     audio_encoding=texttospeech.AudioEncoding.MP3,
                     effects_profile_id=['headphone-class-device'],
                     speaking_rate=1.0,
-                    pitch=0.0
+                    pitch=0.0,
+                    volume_gain_db=6.0  # Boost volume by 6dB
                 )
                 
                 # Generate audio for this turn
@@ -326,6 +327,10 @@ class SlidevMultiSpeakerProcessor:
                         # Using pydub to combine audio segments
                         from pydub import AudioSegment
                         segment = AudioSegment.from_mp3(temp_file)
+                        
+                        # Normalize and boost volume for each segment
+                        segment = segment.normalize()  # Normalize to peak volume
+                        segment = segment + 3  # Add 3dB gain
                         
                         # Add a small pause between speakers
                         if i > 0:
@@ -347,8 +352,12 @@ class SlidevMultiSpeakerProcessor:
                 for segment in audio_segments:
                     combined += segment
                 
-                # Export combined audio
-                combined.export(output_file, format="mp3")
+                # Final volume boost and normalization
+                combined = combined.normalize()  # Normalize the combined audio
+                combined = combined + 2  # Add final 2dB gain
+                
+                # Export combined audio with higher quality settings
+                combined.export(output_file, format="mp3", bitrate="192k")
                 
                 # Clean up temp files
                 for temp_file in temp_files:
