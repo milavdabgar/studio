@@ -366,15 +366,43 @@ class YouTubeAudioScriptGenerator:
             word_start = word_info['start']
             word_end = word_info['end']
             
-            # Find which speaker segment this word belongs to
+            # Find which speaker segment this word belongs to with improved timing
             assigned_speaker = None
+            min_distance = float('inf')
+            best_match = None
+            
             for seg in speaker_segments:
-                if seg['start'] <= word_start <= seg['end']:
-                    assigned_speaker = seg['speaker']
-                    break
+                # Check if word is within segment boundaries (with generous tolerance for transitions)
+                tolerance = 0.3  # 300ms tolerance for better boundary detection
+                
+                # For words at segment boundaries, prioritize the segment that STARTS closer to the word
+                if word_start >= seg['start'] - tolerance and word_start <= seg['end'] + tolerance:
+                    # Calculate distances to both start and end of segment
+                    start_distance = abs(word_start - seg['start'])
+                    end_distance = abs(word_start - seg['end'])
+                    
+                    # If word is very close to the START of a segment, prefer this segment
+                    if start_distance <= 0.5:  # Within 500ms of segment start (more aggressive)
+                        if start_distance < min_distance:
+                            min_distance = start_distance
+                            best_match = seg
+                            assigned_speaker = seg['speaker']
+                    # If word is clearly within the segment (not near boundaries)
+                    elif word_start > seg['start'] + 0.2 and word_start < seg['end'] - 0.2:
+                        assigned_speaker = seg['speaker']
+                        break
+                    # Otherwise consider it for best match
+                    else:
+                        combined_distance = min(start_distance, end_distance)
+                        if combined_distance < min_distance:
+                            min_distance = combined_distance
+                            best_match = seg
+            
+            if assigned_speaker is None and best_match:
+                assigned_speaker = best_match['speaker']
             
             if assigned_speaker is None:
-                # Use nearest speaker segment
+                # Fallback: use nearest speaker segment
                 min_distance = float('inf')
                 for seg in speaker_segments:
                     distance = min(abs(word_start - seg['start']), abs(word_start - seg['end']))
@@ -385,49 +413,145 @@ class YouTubeAudioScriptGenerator:
             # Map speaker ID to name
             speaker_name = self._map_speaker_id_to_name(assigned_speaker, speaker_names)
             
-            # Group consecutive words by same speaker
-            if current_segment['speaker'] != speaker_name:
-                # Save previous segment
-                if current_segment['words']:
-                    aligned_segments.append({
-                        'speaker': current_segment['speaker'],
-                        'text': ' '.join(current_segment['words']),
-                        'start': current_segment['start'],
-                        'end': current_segment['end']
-                    })
-                
-                # Start new segment
-                current_segment = {
-                    'speaker': speaker_name,
-                    'words': [word_info['word']],
-                    'start': word_start,
-                    'end': word_end
-                }
-            else:
-                # Continue current segment
-                current_segment['words'].append(word_info['word'])
-                current_segment['end'] = word_end
+            # Special handling for common interjections that might indicate speaker change
+            word_text = word_info['word'].lower().strip('.,!?')
+            is_interjection = word_text in ['that\'s', 'right', 'yes', 'yep', 'yeah', 'ok', 'okay', 'mm-hmm', 'uh-huh', 'exactly', 'sure']
+            
+            # If this is an interjection and we detect a different speaker, be more confident
+            if is_interjection and current_segment['speaker'] and current_segment['speaker'] != speaker_name:
+                # Check if this interjection is close to a segment boundary
+                for seg in speaker_segments:
+                    if abs(word_start - seg['start']) <= 0.3 and seg['speaker'] != current_segment['speaker']:
+                        speaker_name = self._map_speaker_id_to_name(seg['speaker'], speaker_names)
+                        break
+            
+            # Add word to running collection (we'll group by sentences, not individual words)
+            # Store word with its assigned speaker for sentence-level processing
+            word_info['assigned_speaker'] = speaker_name
         
-        # Add final segment
-        if current_segment['words']:
-            aligned_segments.append({
-                'speaker': current_segment['speaker'],
-                'text': ' '.join(current_segment['words']),
-                'start': current_segment['start'],
-                'end': current_segment['end']
-            })
+        # Now process words into sentence-based segments
+        aligned_segments = self._group_words_into_sentences(all_words, speaker_names)
         
         print(f"✅ Alignment complete ({len(aligned_segments)} aligned segments)")
         return aligned_segments
     
-    def _map_speaker_id_to_name(self, speaker_id: str, speaker_names: Tuple[str, str]) -> str:
-        """Map pyannote speaker ID to human-readable name"""
-        # Simple mapping based on first appearance or frequency
-        # You could enhance this with voice analysis
-        if speaker_id.endswith('0') or speaker_id == 'SPEAKER_00':
+    def _group_words_into_sentences(self, all_words: List[Dict], speaker_names: Tuple[str, str]) -> List[Dict]:
+        """Group words into sentence-based segments, only allowing speaker changes at sentence boundaries"""
+        sentence_segments = []
+        current_sentence_words = []
+        
+        for i, word_info in enumerate(all_words):
+            current_sentence_words.append(word_info)
+            
+            # Check if this word ends a sentence
+            word_text = word_info['word'].strip()
+            is_sentence_end = (
+                word_text.endswith(('.', '!', '?')) or 
+                i == len(all_words) - 1  # Last word
+            )
+            
+            # Special handling for common short interjections that should be separate sentences
+            if len(current_sentence_words) >= 2:  # At least 2 words accumulated
+                sentence_so_far = ' '.join([w['word'] for w in current_sentence_words]).strip()
+                
+                # Check for complete interjection phrases
+                interjection_phrases = ['that\'s right.', 'that\'s right,', 'exactly right.', 'yep,', 'yes,', 'absolutely.']
+                sentence_lower = sentence_so_far.lower()
+                
+                # If we find a complete interjection phrase, end the sentence here
+                for phrase in interjection_phrases:
+                    if sentence_lower.endswith(phrase):
+                        is_sentence_end = True
+                        break
+                
+                # Also check for single-word interjections at end
+                if (word_text.lower().strip('.,!?') in ['right', 'yep', 'yes', 'exactly', 'okay'] and
+                    word_text.endswith(('.', ',', '!', '?')) and
+                    len(current_sentence_words) <= 4):  # Short phrase
+                    is_sentence_end = True
+            
+            if is_sentence_end and current_sentence_words:
+                # Determine the primary speaker for this sentence
+                sentence_speaker = self._determine_sentence_speaker(current_sentence_words, speaker_names)
+                
+                # Create sentence segment
+                sentence_text = ' '.join([w['word'] for w in current_sentence_words])
+                sentence_start = current_sentence_words[0]['start']
+                sentence_end = current_sentence_words[-1]['end']
+                
+                sentence_segments.append({
+                    'speaker': sentence_speaker,
+                    'text': sentence_text.strip(),
+                    'start': sentence_start,
+                    'end': sentence_end
+                })
+                
+                current_sentence_words = []
+        
+        # Handle any remaining incomplete sentence
+        if current_sentence_words:
+            sentence_speaker = self._determine_sentence_speaker(current_sentence_words, speaker_names)
+            sentence_text = ' '.join([w['word'] for w in current_sentence_words])
+            sentence_start = current_sentence_words[0]['start']
+            sentence_end = current_sentence_words[-1]['end']
+            
+            sentence_segments.append({
+                'speaker': sentence_speaker,
+                'text': sentence_text.strip(),
+                'start': sentence_start,
+                'end': sentence_end
+            })
+        
+        return sentence_segments
+    
+    def _determine_sentence_speaker(self, sentence_words: List[Dict], speaker_names: Tuple[str, str]) -> str:
+        """Determine the primary speaker for a complete sentence"""
+        if not sentence_words:
             return speaker_names[0]
+        
+        # Count speaker assignments for words in this sentence
+        speaker_votes = {}
+        word_count_by_speaker = {}
+        
+        for word_info in sentence_words:
+            speaker = word_info.get('assigned_speaker', speaker_names[0])
+            if speaker not in speaker_votes:
+                speaker_votes[speaker] = 0
+                word_count_by_speaker[speaker] = 0
+            speaker_votes[speaker] += 1
+            word_count_by_speaker[speaker] += 1
+        
+        # Special handling for short interjections at sentence start
+        sentence_text = ' '.join([w['word'] for w in sentence_words]).strip()
+        sentence_lower = sentence_text.lower()
+        
+        # Check if sentence starts with clear interjections that might indicate speaker change
+        interjection_starters = ['that\'s right', 'that\'s', 'exactly', 'yes', 'yep', 'no', 'absolutely', 'right', 'okay']
+        for interjection in interjection_starters:
+            if sentence_lower.startswith(interjection):
+                # For interjections, prefer the speaker assigned to the first few words
+                first_few_words = sentence_words[:min(3, len(sentence_words))]
+                first_speakers = [w.get('assigned_speaker', speaker_names[0]) for w in first_few_words]
+                if first_speakers:
+                    most_common_first = max(set(first_speakers), key=first_speakers.count)
+                    return most_common_first
+        
+        # Otherwise, use majority vote for the sentence
+        if not speaker_votes:
+            return speaker_names[0]
+        
+        # Return speaker with most words in this sentence
+        primary_speaker = max(speaker_votes.items(), key=lambda x: x[1])[0]
+        return primary_speaker
+    
+    def _map_speaker_id_to_name(self, speaker_id: str, speaker_names: Tuple[str, str]) -> str:
+        """Map pyannote speaker ID to human-readable name with correct gender mapping"""
+        # Fixed gender mapping: SPEAKER_00 is typically the female voice, SPEAKER_01 is male
+        # Swapped the assignments to fix the gender reversal issue
+        if speaker_id.endswith('0') or speaker_id == 'SPEAKER_00':
+            return speaker_names[1]  # Second speaker (Female)
         else:
-            return speaker_names[1]
+            return speaker_names[0]  # First speaker (Male)
     
     def _fallback_speaker_detection(self, transcription: Dict, speaker_names: Tuple[str, str]) -> List[Dict]:
         """Enhanced fallback speaker detection with conversation flow analysis"""
