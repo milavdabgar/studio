@@ -1,0 +1,531 @@
+#!/usr/bin/env python3
+"""
+YouTube to Clean Two-Speaker Script Generator
+============================================
+
+Generates perfectly clean two-speaker conversational scripts from YouTube videos.
+Eliminates all repetitions and creates natural dialogue ready for AI slide generation.
+
+Usage:
+    python youtube-to-clean-script.py "https://www.youtube.com/watch?v=abc123"
+    python youtube-to-clean-script.py "https://www.youtube.com/watch?v=abc123" --speakers "Dr. James,Sarah"
+"""
+
+import os
+import sys
+import argparse
+import re
+from pathlib import Path
+from typing import List, Tuple, Optional, Dict
+import tempfile
+
+try:
+    import yt_dlp
+    YTDLP_AVAILABLE = True
+except ImportError:
+    YTDLP_AVAILABLE = False
+    print("❌ yt-dlp required: pip install yt-dlp")
+    sys.exit(1)
+
+class YouTubeCleanScriptGenerator:
+    """Generates perfectly clean two-speaker scripts from YouTube"""
+    
+    def __init__(self, output_dir: str = "clean_scripts"):
+        self.output_dir = Path(output_dir)
+        self.output_dir.mkdir(exist_ok=True)
+        
+        self.temp_dir = Path(tempfile.mkdtemp(prefix="clean_script_"))
+        print(f"🔧 Working in: {self.temp_dir}")
+    
+    def extract_video_info(self, url: str) -> Optional[Dict]:
+        """Extract video metadata"""
+        print(f"📺 Extracting video info...")
+        
+        ydl_opts = {'quiet': True, 'no_warnings': True}
+        
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            try:
+                info = ydl.extract_info(url, download=False)
+                video_info = {
+                    'title': info.get('title', 'Unknown Title'),
+                    'uploader': info.get('uploader', 'Unknown Channel'),
+                    'duration': info.get('duration', 0),
+                    'video_id': info.get('id', '')
+                }
+                
+                print(f"✅ {video_info['title']} ({video_info['duration']//60}:{video_info['duration']%60:02d})")
+                return video_info
+                
+            except Exception as e:
+                print(f"❌ Failed: {e}")
+                return None
+    
+    def download_subtitles(self, url: str, video_info: Dict, language: str = 'en') -> Optional[Path]:
+        """Download clean VTT subtitles"""
+        print(f"📥 Downloading subtitles...")
+        
+        subtitle_file = self.temp_dir / f"{video_info['video_id']}.vtt"
+        
+        # Language preferences
+        lang_priorities = ['en', 'en-orig', 'en-US'] if language == 'en' else [language, 'en']
+        
+        for lang in lang_priorities:
+            subtitle_opts = {
+                'writesubtitles': True,
+                'writeautomaticsub': True,
+                'subtitleslangs': [lang],
+                'subtitlesformat': 'vtt',
+                'skip_download': True,
+                'outtmpl': str(subtitle_file.with_suffix('')),
+                'quiet': True,
+            }
+            
+            try:
+                with yt_dlp.YoutubeDL(subtitle_opts) as ydl:
+                    ydl.download([url])
+                
+                # Find created file
+                for possible_file in [
+                    subtitle_file.parent / f"{subtitle_file.stem}.{lang}.vtt",
+                    subtitle_file.parent / f"{subtitle_file.stem}.vtt"
+                ]:
+                    if possible_file.exists():
+                        if possible_file != subtitle_file:
+                            possible_file.rename(subtitle_file)
+                        print(f"✅ Downloaded: {lang}")
+                        return subtitle_file
+                        
+            except Exception:
+                continue
+        
+        print("❌ No subtitles found")
+        return None
+    
+    def parse_vtt_to_clean_segments(self, vtt_file: Path) -> List[Tuple[str, float]]:
+        """Parse VTT to clean, de-duplicated segments with timing"""
+        print("📝 Parsing and cleaning VTT...")
+        
+        with open(vtt_file, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Extract all subtitle entries
+        segments = []
+        blocks = re.split(r'\n\s*\n', content)
+        
+        for block in blocks:
+            lines = [line.strip() for line in block.strip().split('\n')]
+            if len(lines) < 2:
+                continue
+            
+            # Find timestamp and text
+            timestamp_line = None
+            text_lines = []
+            
+            for line in lines:
+                if '-->' in line:
+                    timestamp_line = line
+                elif line and not line.startswith(('WEBVTT', 'Kind:', 'Language:', 'NOTE')):
+                    text_lines.append(line)
+            
+            if not timestamp_line or not text_lines:
+                continue
+            
+            # Parse start time
+            try:
+                start_str = timestamp_line.split('-->')[0].strip()
+                start_time = self._parse_timestamp(start_str)
+            except:
+                continue
+            
+            # Clean text completely
+            text = ' '.join(text_lines)
+            text = self._ultra_clean_text(text)
+            
+            if text and len(text) > 10:  # Only substantial segments
+                segments.append((text, start_time))
+        
+        # Sort by time and remove duplicates
+        segments = sorted(segments, key=lambda x: x[1])
+        clean_segments = self._remove_all_duplicates(segments)
+        
+        print(f"✅ {len(clean_segments)} clean segments (from {len(segments)} raw)")
+        return clean_segments
+    
+    def _parse_timestamp(self, timestamp: str) -> float:
+        """Convert timestamp to seconds"""
+        parts = timestamp.split(':')
+        if len(parts) == 3:
+            return int(parts[0]) * 3600 + int(parts[1]) * 60 + float(parts[2])
+        else:
+            return int(parts[0]) * 60 + float(parts[1])
+    
+    def _ultra_clean_text(self, text: str) -> str:
+        """Ultra-aggressive text cleaning"""
+        if not text:
+            return ""
+        
+        # Remove HTML tags and entities
+        text = re.sub(r'<[^>]+>', '', text)
+        text = re.sub(r'&[#\w]+;', '', text)
+        
+        # Remove speaker markers initially
+        text = re.sub(r'^>>\s*', '', text)
+        
+        # Normalize whitespace
+        text = re.sub(r'\s+', ' ', text)
+        
+        # Remove immediate repetitions (YouTube auto-caption artifact)
+        # Pattern: "word word" -> "word"
+        text = re.sub(r'\b(\w+)\s+\1\b', r'\1', text)
+        
+        # Remove phrase repetitions: "phrase phrase" -> "phrase"
+        words = text.split()
+        if len(words) >= 4:
+            # Check for repeated 2-word phrases
+            for i in range(len(words) - 3):
+                if words[i] == words[i+2] and words[i+1] == words[i+3]:
+                    text = text.replace(f"{words[i]} {words[i+1]} {words[i]} {words[i+1]}", 
+                                      f"{words[i]} {words[i+1]}")
+        
+        # Clean up filler words and artifacts
+        fillers = ['uh', 'um', 'er', 'ah']
+        for filler in fillers:
+            text = re.sub(rf'\b{filler}\b', '', text, flags=re.IGNORECASE)
+        
+        # Normalize punctuation
+        text = re.sub(r'\s+', ' ', text).strip()
+        
+        return text
+    
+    def _remove_all_duplicates(self, segments: List[Tuple[str, float]]) -> List[Tuple[str, float]]:
+        """Remove all forms of duplicates and overlaps"""
+        if not segments:
+            return []
+        
+        clean_segments = []
+        seen_texts = set()
+        last_text = ""
+        last_time = 0
+        
+        for text, timestamp in segments:
+            # Skip if too similar to previous
+            if (self._text_similarity(text, last_text) > 0.8 or 
+                text in seen_texts or
+                timestamp < last_time + 0.5):  # Less than 0.5 seconds apart
+                continue
+            
+            # Skip very short or repetitive content
+            if len(text) < 15 or self._is_low_quality(text):
+                continue
+            
+            clean_segments.append((text, timestamp))
+            seen_texts.add(text)
+            last_text = text
+            last_time = timestamp
+        
+        return clean_segments
+    
+    def _text_similarity(self, text1: str, text2: str) -> float:
+        """Calculate text similarity (0-1)"""
+        if not text1 or not text2:
+            return 0.0
+        
+        words1 = set(text1.lower().split())
+        words2 = set(text2.lower().split())
+        
+        if not words1 or not words2:
+            return 0.0
+        
+        return len(words1.intersection(words2)) / len(words1.union(words2))
+    
+    def _is_low_quality(self, text: str) -> bool:
+        """Check if text is low quality/filler"""
+        words = text.split()
+        if len(words) < 3:
+            return True
+        
+        # Check for repetitive patterns
+        unique_words = len(set(words))
+        if unique_words / len(words) < 0.6:  # More than 40% repeated words
+            return True
+        
+        # Check for common filler patterns
+        filler_patterns = [
+            r'^\w{1,3}\s+\w{1,3}\s+\w{1,3}$',  # Very short words only
+            r'^(the|and|but|so|that)\s+(the|and|but|so|that)',
+            r'^\d+\s+\d+',  # Number patterns
+        ]
+        
+        return any(re.match(pattern, text.lower()) for pattern in filler_patterns)
+    
+    def detect_speakers_advanced(self, segments: List[Tuple[str, float]], 
+                                speaker_names: Tuple[str, str]) -> List[Tuple[str, str, float]]:
+        """Advanced two-speaker detection"""
+        print(f"🎭 Detecting speakers: {speaker_names[0]} & {speaker_names[1]}...")
+        
+        speaker_segments = []
+        current_speaker = speaker_names[0]  # Start with first speaker
+        
+        for i, (text, timestamp) in enumerate(segments):
+            # Detect speaker changes based on content and timing
+            detected_speaker = self._detect_speaker_change_advanced(
+                text, current_speaker, speaker_names, segments, i
+            )
+            
+            if detected_speaker:
+                current_speaker = detected_speaker
+            
+            speaker_segments.append((current_speaker, text, timestamp))
+        
+        # Post-process for better accuracy
+        speaker_segments = self._smooth_speaker_transitions(speaker_segments, speaker_names)
+        
+        # Statistics
+        stats = {}
+        for speaker, text, timestamp in speaker_segments:
+            if speaker not in stats:
+                stats[speaker] = 0
+            stats[speaker] += 1
+        
+        for speaker, count in stats.items():
+            percentage = (count / len(speaker_segments)) * 100
+            print(f"   {speaker}: {count} segments ({percentage:.1f}%)")
+        
+        return speaker_segments
+    
+    def _detect_speaker_change_advanced(self, text: str, current_speaker: str, 
+                                       speaker_names: Tuple[str, str], 
+                                       all_segments: List, segment_index: int) -> Optional[str]:
+        """Advanced speaker change detection"""
+        
+        # Check for explicit markers
+        if text.startswith(('&gt;&gt;', '>>')):
+            return speaker_names[1] if current_speaker == speaker_names[0] else speaker_names[0]
+        
+        text_lower = text.lower()
+        
+        # Question patterns (usually from interviewer/host)
+        if (text.endswith('?') or 
+            any(text_lower.startswith(q) for q in ['what', 'how', 'why', 'can', 'could', 'would'])):
+            return speaker_names[0]
+        
+        # Answer/explanation patterns (usually from expert)
+        if any(text_lower.startswith(ans) for ans in ['well', 'so', 'actually', 'yes', 'no', 'absolutely']):
+            return speaker_names[1]
+        
+        # Host patterns
+        host_indicators = ['welcome', 'today', "let's", 'tell us', 'explain', "that's interesting"]
+        if any(indicator in text_lower for indicator in host_indicators):
+            return speaker_names[0]
+        
+        # Expert patterns
+        expert_indicators = ['the key point', 'fundamentally', 'essentially', 'in fact', 'you see']
+        if any(indicator in text_lower for indicator in expert_indicators):
+            return speaker_names[1]
+        
+        # Timing-based detection (gaps suggest speaker changes)
+        if segment_index > 0:
+            prev_timestamp = all_segments[segment_index - 1][1]
+            current_timestamp = all_segments[segment_index][1]
+            
+            if current_timestamp - prev_timestamp > 3.0:  # 3+ second gap
+                return speaker_names[1] if current_speaker == speaker_names[0] else speaker_names[0]
+        
+        return None  # Keep current speaker
+    
+    def _smooth_speaker_transitions(self, segments: List[Tuple[str, str, float]], 
+                                   speaker_names: Tuple[str, str]) -> List[Tuple[str, str, float]]:
+        """Smooth out erratic speaker transitions"""
+        if len(segments) < 5:
+            return segments
+        
+        smoothed = []
+        
+        for i, (speaker, text, timestamp) in enumerate(segments):
+            # Look at context (2 before, 2 after)
+            context_start = max(0, i - 2)
+            context_end = min(len(segments), i + 3)
+            context_speakers = [segments[j][0] for j in range(context_start, context_end)]
+            
+            # If this segment is isolated (different from neighbors)
+            if (i > 0 and i < len(segments) - 1 and 
+                segments[i-1][0] == segments[i+1][0] and 
+                segments[i-1][0] != speaker and
+                len(text) < 50):  # Short segments more likely to be errors
+                
+                # Use the surrounding speaker
+                speaker = segments[i-1][0]
+            
+            smoothed.append((speaker, text, timestamp))
+        
+        return smoothed
+    
+    def create_natural_conversation(self, segments: List[Tuple[str, str, float]], 
+                                   video_info: Dict) -> str:
+        """Create natural conversational flow"""
+        print("✍️ Creating natural conversation...")
+        
+        conversation = []
+        conversation.append("<!--")
+        
+        current_speaker = None
+        current_speech = []
+        
+        for speaker, text, timestamp in segments:
+            # If speaker changes, complete previous speech
+            if speaker != current_speaker and current_speech:
+                if current_speaker:
+                    # Join the speech parts naturally
+                    full_speech = self._merge_speech_parts(current_speech)
+                    if full_speech:
+                        conversation.append(f"{current_speaker}: {full_speech}")
+                        conversation.append("")
+                
+                current_speech = []
+                current_speaker = speaker
+            
+            # Add to current speech
+            current_speech.append(text)
+            current_speaker = speaker
+            
+            # Break up very long speeches
+            combined_length = sum(len(part) for part in current_speech)
+            if combined_length > 400:  # Break at ~400 characters
+                full_speech = self._merge_speech_parts(current_speech)
+                if full_speech:
+                    conversation.append(f"{current_speaker}: {full_speech}")
+                    conversation.append("")
+                current_speech = []
+        
+        # Add final speech
+        if current_speech and current_speaker:
+            full_speech = self._merge_speech_parts(current_speech)
+            if full_speech:
+                conversation.append(f"{current_speaker}: {full_speech}")
+        
+        conversation.append("-->")
+        
+        result = '\n'.join(conversation)
+        print(f"✅ Natural conversation created ({len(result)} characters)")
+        return result
+    
+    def _merge_speech_parts(self, speech_parts: List[str]) -> str:
+        """Merge speech parts into natural sentences"""
+        if not speech_parts:
+            return ""
+        
+        # Join parts with spaces
+        merged = ' '.join(speech_parts)
+        
+        # Clean up the merged text
+        merged = re.sub(r'\s+', ' ', merged)  # Multiple spaces
+        merged = re.sub(r'([.!?])\s*([a-z])', r'\1 \2', merged)  # Fix sentence spacing
+        
+        # Ensure proper sentence ending
+        if merged and not merged[-1] in '.!?':
+            merged += '.'
+        
+        return merged.strip()
+    
+    def save_clean_script(self, script: str, video_info: Dict) -> Path:
+        """Save clean script to .txt file"""
+        safe_title = re.sub(r'[^\w\s-]', '', video_info['title'])[:50]
+        safe_title = re.sub(r'[-\s]+', '-', safe_title).lower()
+        
+        output_file = self.output_dir / f"{safe_title}-clean.txt"
+        
+        with open(output_file, 'w', encoding='utf-8') as f:
+            f.write(script)
+        
+        print(f"✅ Clean script saved: {output_file}")
+        return output_file
+    
+    def cleanup(self):
+        """Clean up temporary files"""
+        try:
+            import shutil
+            shutil.rmtree(self.temp_dir)
+            print(f"🧹 Cleaned up: {self.temp_dir}")
+        except Exception:
+            pass
+    
+    def generate_clean_script(self, url: str, speaker_names: Tuple[str, str] = ("Dr. James", "Sarah"), 
+                             language: str = 'en') -> Optional[Path]:
+        """Main pipeline for clean script generation"""
+        print(f"🚀 Generating ULTRA-CLEAN two-speaker script")
+        print(f"   URL: {url}")
+        print(f"   Speakers: {speaker_names[0]} & {speaker_names[1]}")
+        print("=" * 60)
+        
+        try:
+            # Extract video info
+            video_info = self.extract_video_info(url)
+            if not video_info:
+                return None
+            
+            # Download subtitles
+            vtt_file = self.download_subtitles(url, video_info, language)
+            if not vtt_file:
+                return None
+            
+            # Parse to clean segments
+            clean_segments = self.parse_vtt_to_clean_segments(vtt_file)
+            if not clean_segments:
+                return None
+            
+            # Detect speakers
+            speaker_segments = self.detect_speakers_advanced(clean_segments, speaker_names)
+            if not speaker_segments:
+                return None
+            
+            # Create natural conversation
+            conversation = self.create_natural_conversation(speaker_segments, video_info)
+            
+            # Save clean script
+            output_file = self.save_clean_script(conversation, video_info)
+            
+            print(f"\n🎉 SUCCESS! Ultra-clean script generated")
+            print(f"📁 Output: {output_file}")
+            print(f"✨ Ready for AI slide generation")
+            
+            return output_file
+            
+        except Exception as e:
+            print(f"❌ Generation failed: {e}")
+            return None
+        finally:
+            self.cleanup()
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Generate ultra-clean two-speaker scripts from YouTube"
+    )
+    
+    parser.add_argument('url', help='YouTube video URL')
+    parser.add_argument('--speakers', help='Speaker names (comma-separated)')
+    parser.add_argument('--language', default='en', help='Subtitle language')
+    parser.add_argument('--output-dir', default='clean_scripts', help='Output directory')
+    
+    args = parser.parse_args()
+    
+    # Parse speakers
+    if args.speakers:
+        speaker_names = tuple(name.strip() for name in args.speakers.split(','))
+        if len(speaker_names) != 2:
+            print("❌ Need exactly 2 speaker names")
+            return 1
+    else:
+        speaker_names = ("Dr. James", "Sarah")
+    
+    # Generate
+    generator = YouTubeCleanScriptGenerator(args.output_dir)
+    result = generator.generate_clean_script(args.url, speaker_names, args.language)
+    
+    if result:
+        print(f"\n✨ Perfect! Use this clean script for AI slide generation!")
+        return 0
+    else:
+        return 1
+
+if __name__ == "__main__":
+    sys.exit(main())
