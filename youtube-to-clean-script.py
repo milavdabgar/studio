@@ -102,15 +102,16 @@ class YouTubeCleanScriptGenerator:
         return None
     
     def parse_vtt_to_clean_segments(self, vtt_file: Path) -> List[Tuple[str, float]]:
-        """Parse VTT to clean, de-duplicated segments with timing"""
-        print("📝 Parsing and cleaning VTT...")
+        """Parse VTT to incremental segments - extract only NEW words per timestamp"""
+        print("📝 Parsing VTT to extract incremental text...")
         
         with open(vtt_file, 'r', encoding='utf-8') as f:
             content = f.read()
         
-        # Extract all subtitle entries
+        # Parse VTT blocks and extract incremental text
         segments = []
         blocks = re.split(r'\n\s*\n', content)
+        last_text = ""
         
         for block in blocks:
             lines = [line.strip() for line in block.strip().split('\n')]
@@ -124,8 +125,10 @@ class YouTubeCleanScriptGenerator:
             for line in lines:
                 if '-->' in line:
                     timestamp_line = line
-                elif line and not line.startswith(('WEBVTT', 'Kind:', 'Language:', 'NOTE')):
-                    text_lines.append(line)
+                elif line and not line.startswith(('WEBVTT', 'Kind:', 'Language:', 'NOTE', 'align:', 'position:')):
+                    # Skip lines with HTML timing tags
+                    if not re.search(r'<\d+:\d+:\d+\.\d+>', line):
+                        text_lines.append(line)
             
             if not timestamp_line or not text_lines:
                 continue
@@ -137,19 +140,52 @@ class YouTubeCleanScriptGenerator:
             except:
                 continue
             
-            # Clean text completely
-            text = ' '.join(text_lines)
-            text = self._ultra_clean_text(text)
+            # Get current cumulative text
+            current_text = ' '.join(text_lines)
+            current_text = self._ultra_clean_text(current_text)
             
-            if text and len(text) > 10:  # Only substantial segments
-                segments.append((text, start_time))
+            if not current_text or len(current_text) < 10:
+                continue
+            
+            # Extract only the NEW part by comparing with last text
+            new_text = self._extract_new_text(last_text, current_text)
+            
+            if new_text and len(new_text) > 5:  # Only meaningful additions
+                segments.append((new_text, start_time))
+            
+            last_text = current_text
         
-        # Sort by time and remove duplicates
+        # Sort by time
         segments = sorted(segments, key=lambda x: x[1])
-        clean_segments = self._remove_all_duplicates(segments)
         
-        print(f"✅ {len(clean_segments)} clean segments (from {len(segments)} raw)")
-        return clean_segments
+        print(f"✅ {len(segments)} incremental segments extracted")
+        return segments
+    
+    def _extract_new_text(self, last_text: str, current_text: str) -> str:
+        """Extract only the NEW words added in current_text compared to last_text"""
+        if not last_text:
+            return current_text
+        
+        # Simple approach: if current text starts with last text, extract the new part
+        if current_text.startswith(last_text):
+            new_part = current_text[len(last_text):].strip()
+            return new_part
+        
+        # If texts don't overlap cleanly, use word-level comparison
+        last_words = last_text.split()
+        current_words = current_text.split()
+        
+        # Find where current diverges from last
+        common_length = 0
+        for i, (last_word, current_word) in enumerate(zip(last_words, current_words)):
+            if last_word == current_word:
+                common_length = i + 1
+            else:
+                break
+        
+        # Extract new words
+        new_words = current_words[common_length:]
+        return ' '.join(new_words) if new_words else ""
     
     def _parse_timestamp(self, timestamp: str) -> float:
         """Convert timestamp to seconds"""
@@ -257,7 +293,7 @@ class YouTubeCleanScriptGenerator:
     
     def detect_speakers_advanced(self, segments: List[Tuple[str, float]], 
                                 speaker_names: Tuple[str, str]) -> List[Tuple[str, str, float]]:
-        """Advanced two-speaker detection"""
+        """Simple two-speaker detection for clean segments"""
         print(f"🎭 Detecting speakers: {speaker_names[0]} & {speaker_names[1]}...")
         
         speaker_segments = []
@@ -265,17 +301,14 @@ class YouTubeCleanScriptGenerator:
         
         for i, (text, timestamp) in enumerate(segments):
             # Detect speaker changes based on content and timing
-            detected_speaker = self._detect_speaker_change_advanced(
-                text, current_speaker, speaker_names, segments, i
+            detected_speaker = self._detect_speaker_change_simple(
+                text, current_speaker, speaker_names
             )
             
             if detected_speaker:
                 current_speaker = detected_speaker
             
             speaker_segments.append((current_speaker, text, timestamp))
-        
-        # Post-process for better accuracy
-        speaker_segments = self._smooth_speaker_transitions(speaker_segments, speaker_names)
         
         # Statistics
         stats = {}
@@ -289,6 +322,25 @@ class YouTubeCleanScriptGenerator:
             print(f"   {speaker}: {count} segments ({percentage:.1f}%)")
         
         return speaker_segments
+    
+    def _detect_speaker_change_simple(self, text: str, current_speaker: str, speaker_names: Tuple[str, str]) -> Optional[str]:
+        """Simple speaker change detection"""
+        text_lower = text.lower()
+        
+        # Check for explicit speaker markers
+        if text.startswith(('&gt;&gt;', '>>')):
+            return speaker_names[1] if current_speaker == speaker_names[0] else speaker_names[0]
+        
+        # Question patterns (usually from host/interviewer)
+        if (text.endswith('?') or 
+            any(text_lower.startswith(q) for q in ['what', 'how', 'why', 'can', 'could', 'would', 'okay', 'so'])):
+            return speaker_names[0]
+        
+        # Answer/explanation patterns (usually from expert)
+        if any(text_lower.startswith(ans) for ans in ['well', 'actually', 'yes', 'exactly', 'right', 'absolutely']):
+            return speaker_names[1]
+        
+        return None  # Keep current speaker
     
     def _detect_speaker_change_advanced(self, text: str, current_speaker: str, 
                                        speaker_names: Tuple[str, str], 
