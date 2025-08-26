@@ -149,35 +149,85 @@ class YouTubeAudioScriptGenerator:
             return None
     
     def perform_speaker_diarization(self, audio_file: Path) -> Optional[Dict]:
-        """Perform speaker diarization to identify who speaks when"""
-        print(f"👥 Performing speaker diarization...")
+        """Perform simple speaker diarization using basic audio analysis"""
+        print(f"👥 Performing simple speaker diarization...")
         
-        if not PYANNOTE_AVAILABLE:
-            print("⚠️  Using fallback speaker detection (install pyannote.audio for better results)")
-            return None
-        
+        # Skip pyannote for now due to authentication requirements
+        # Implement basic speaker change detection based on audio features
+        print("💡 Using simple audio-based speaker detection (no authentication required)")
+        return self._simple_audio_speaker_detection(audio_file)
+    
+    def _simple_audio_speaker_detection(self, audio_file: Path) -> Optional[Dict]:
+        """Simple speaker detection based on audio energy and pause patterns"""
         try:
-            # Load pre-trained speaker diarization pipeline
-            pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization-3.1")
+            import librosa
             
-            # Apply speaker diarization
-            diarization = pipeline(str(audio_file))
+            # Load audio file
+            y, sr = librosa.load(str(audio_file), sr=16000)
             
-            # Convert to our format
+            # Calculate audio features for speaker detection
+            # 1. RMS Energy (volume changes often indicate speaker changes)
+            hop_length = 512
+            frame_length = 2048
+            rms = librosa.feature.rms(y=y, frame_length=frame_length, hop_length=hop_length)[0]
+            
+            # 2. Zero crossing rate (voice characteristics)
+            zcr = librosa.feature.zero_crossing_rate(y, frame_length=frame_length, hop_length=hop_length)[0]
+            
+            # 3. Spectral centroid (voice pitch characteristics)
+            spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr, hop_length=hop_length)[0]
+            
+            # Convert frame indices to time
+            times = librosa.frames_to_time(range(len(rms)), sr=sr, hop_length=hop_length)
+            
+            # Simple speaker change detection based on significant changes in features
             speaker_segments = []
-            for turn, _, speaker in diarization.itertracks(yield_label=True):
+            current_speaker = "SPEAKER_00"
+            segment_start = 0
+            
+            # Detect speaker changes based on energy and feature changes
+            for i in range(1, len(rms)):
+                # Calculate feature differences
+                rms_diff = abs(rms[i] - rms[i-1])
+                zcr_diff = abs(zcr[i] - zcr[i-1])
+                spectral_diff = abs(spectral_centroid[i] - spectral_centroid[i-1])
+                
+                # Normalize differences
+                rms_threshold = 0.02  # Adjust based on testing
+                zcr_threshold = 0.05
+                spectral_threshold = 200
+                
+                # Detect potential speaker change
+                if (rms_diff > rms_threshold or zcr_diff > zcr_threshold or spectral_diff > spectral_threshold):
+                    # Check if enough time has passed (avoid too frequent changes)
+                    if times[i] - segment_start > 2.0:  # At least 2 seconds
+                        # End current segment
+                        speaker_segments.append({
+                            'start': segment_start,
+                            'end': times[i],
+                            'speaker': current_speaker
+                        })
+                        
+                        # Start new segment with different speaker
+                        current_speaker = "SPEAKER_01" if current_speaker == "SPEAKER_00" else "SPEAKER_00"
+                        segment_start = times[i]
+            
+            # Add final segment
+            if segment_start < times[-1]:
                 speaker_segments.append({
-                    'start': turn.start,
-                    'end': turn.end,
-                    'speaker': speaker
+                    'start': segment_start,
+                    'end': times[-1],
+                    'speaker': current_speaker
                 })
             
-            print(f"✅ Speaker diarization complete ({len(speaker_segments)} speaker segments)")
+            print(f"✅ Simple speaker detection complete ({len(speaker_segments)} segments)")
             return {'segments': speaker_segments}
             
+        except ImportError:
+            print("⚠️  librosa not available for audio analysis")
+            return None
         except Exception as e:
-            print(f"❌ Speaker diarization failed: {e}")
-            print("💡 Falling back to pattern-based speaker detection")
+            print(f"❌ Simple speaker detection failed: {e}")
             return None
     
     def align_speakers_with_transcription(self, transcription: Dict, diarization: Optional[Dict], 
@@ -273,19 +323,25 @@ class YouTubeAudioScriptGenerator:
             return speaker_names[1]
     
     def _fallback_speaker_detection(self, transcription: Dict, speaker_names: Tuple[str, str]) -> List[Dict]:
-        """Fallback speaker detection using patterns (like our original approach)"""
-        print("💡 Using pattern-based speaker detection...")
+        """Enhanced fallback speaker detection with conversation flow analysis"""
+        print("💡 Using enhanced pattern-based speaker detection...")
         
         segments = []
-        current_speaker = speaker_names[0]  # Start with first speaker
+        current_speaker = speaker_names[0]  # Start with first speaker (host)
         
-        for segment in transcription.get('segments', []):
+        for i, segment in enumerate(transcription.get('segments', [])):
             text = segment['text'].strip()
             if not text:
                 continue
             
-            # Use our existing pattern-based detection logic
-            detected_speaker = self._detect_speaker_pattern(text, current_speaker, speaker_names)
+            # Get context from previous segments
+            prev_context = segments[-3:] if len(segments) >= 3 else segments
+            
+            # Enhanced speaker detection with context
+            detected_speaker = self._detect_speaker_pattern_enhanced(
+                text, current_speaker, speaker_names, prev_context
+            )
+            
             if detected_speaker:
                 current_speaker = detected_speaker
             
@@ -298,30 +354,65 @@ class YouTubeAudioScriptGenerator:
         
         return segments
     
-    def _detect_speaker_pattern(self, text: str, current_speaker: str, speaker_names: Tuple[str, str]) -> Optional[str]:
-        """Pattern-based speaker detection (simplified version of our original logic)"""
+    def _detect_speaker_pattern_enhanced(self, text: str, current_speaker: str, 
+                                        speaker_names: Tuple[str, str], prev_context: List[Dict]) -> Optional[str]:
+        """Enhanced pattern-based speaker detection with conversation flow analysis"""
         text_lower = text.lower().strip()
         
-        # Host patterns (questions, transitions)
+        # Short confirmatory responses usually indicate speaker change
+        if len(text.split()) <= 3:
+            confirmatory_responses = [
+                r'^(that\'s right|that\'s correct|exactly|right|yes|absolutely|precisely|correct)$',
+                r'^(true|indeed|definitely|sure|of course|yep|yeah)$',
+                r'^(makes sense|good point|i see|got it|okay)$'
+            ]
+            if any(re.match(pattern, text_lower) for pattern in confirmatory_responses):
+                # Switch to the other speaker
+                return speaker_names[1] if current_speaker == speaker_names[0] else speaker_names[0]
+        
+        # Host patterns (questions, transitions, introductions)
         host_patterns = [
             r'^(what|how|why|when|where|who|can|could|would|should|do|does|did|is|are|was|were)\b',
-            r'^(okay|so|right|now|well|let\'s|tell us|explain|that\'s interesting|sounds like)\b',
-            r'^(wow|whoa|amazing|fascinating|interesting)\b',
+            r'^(welcome|today|let\'s|okay|so|now|well|tell us|explain|help us understand)\b',
+            r'^(that\'s interesting|sounds like|and that|moving on|next|finally)\b',
+            r'^(wow|whoa|amazing|fascinating|interesting|great|perfect)\b',
+            r'\?$',  # Questions
         ]
         
-        # Expert patterns (explanations, confirmations)
+        # Expert patterns (explanations, technical content, detailed responses)
         expert_patterns = [
-            r'^(exactly|absolutely|precisely|yes|well|actually|basically)\b',
-            r'^(the key|fundamentally|essentially|technically|in fact)\b',
-            r'^(it\'s about|think of it|imagine|for example)\b',
+            r'^(well|actually|basically|essentially|fundamentally|technically|in fact)\b',
+            r'^(the key|the important|what happens|you see|think of it|imagine)\b',
+            r'^(for example|specifically|in this case|when we|if you)\b',
+            r'^(it\'s about|it depends|the reason|because|since|due to)\b',
+            r'\b(algorithm|function|variable|data|code|program|implementation)\b',  # Technical terms
         ]
         
+        # Check patterns
         if any(re.search(pattern, text_lower) for pattern in host_patterns):
-            return speaker_names[0]
+            return speaker_names[0]  # Dr. James (host)
         elif any(re.search(pattern, text_lower) for pattern in expert_patterns):
-            return speaker_names[1]
+            return speaker_names[1]  # Sarah (expert)
+        
+        # Context-based detection - look at conversation flow
+        if prev_context:
+            last_segment = prev_context[-1]
+            
+            # If previous was a question from host, this is likely expert response
+            if last_segment['speaker'] == speaker_names[0] and '?' in last_segment['text']:
+                # This should be the expert responding
+                return speaker_names[1]
+            
+            # If previous was a long explanation from expert, short response is likely host
+            if (last_segment['speaker'] == speaker_names[1] and 
+                len(last_segment['text']) > 50 and len(text) < 30):
+                return speaker_names[0]
         
         return None
+    
+    def _detect_speaker_pattern(self, text: str, current_speaker: str, speaker_names: Tuple[str, str]) -> Optional[str]:
+        """Legacy method - redirect to enhanced version"""
+        return self._detect_speaker_pattern_enhanced(text, current_speaker, speaker_names, [])
     
     def create_clean_conversation(self, segments: List[Dict], video_info: Dict, 
                                 max_speaker_length: int = 800) -> str:
