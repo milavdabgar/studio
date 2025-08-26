@@ -160,7 +160,7 @@ class YouTubeCleanScriptGenerator:
             return int(parts[0]) * 60 + float(parts[1])
     
     def _ultra_clean_text(self, text: str) -> str:
-        """Ultra-aggressive text cleaning"""
+        """Clean text while preserving natural speech patterns"""
         if not text:
             return ""
         
@@ -168,62 +168,59 @@ class YouTubeCleanScriptGenerator:
         text = re.sub(r'<[^>]+>', '', text)
         text = re.sub(r'&[#\w]+;', '', text)
         
-        # Remove speaker markers initially
+        # Remove speaker markers
         text = re.sub(r'^>>\s*', '', text)
         
         # Normalize whitespace
         text = re.sub(r'\s+', ' ', text)
         
-        # Remove immediate repetitions (YouTube auto-caption artifact)
-        # Pattern: "word word" -> "word"
+        # Remove only immediate word repetitions (YouTube artifacts)
+        # "word word" -> "word" but keep natural speech patterns
         text = re.sub(r'\b(\w+)\s+\1\b', r'\1', text)
         
-        # Remove phrase repetitions: "phrase phrase" -> "phrase"
-        words = text.split()
-        if len(words) >= 4:
-            # Check for repeated 2-word phrases
-            for i in range(len(words) - 3):
-                if words[i] == words[i+2] and words[i+1] == words[i+3]:
-                    text = text.replace(f"{words[i]} {words[i+1]} {words[i]} {words[i+1]}", 
-                                      f"{words[i]} {words[i+1]}")
+        # Keep natural speech fillers like "um", "uh", "well" - they make it human!
         
-        # Clean up filler words and artifacts
-        fillers = ['uh', 'um', 'er', 'ah']
-        for filler in fillers:
-            text = re.sub(rf'\b{filler}\b', '', text, flags=re.IGNORECASE)
-        
-        # Normalize punctuation
-        text = re.sub(r'\s+', ' ', text).strip()
-        
-        return text
+        return text.strip()
     
     def _remove_all_duplicates(self, segments: List[Tuple[str, float]]) -> List[Tuple[str, float]]:
-        """Remove all forms of duplicates and overlaps"""
+        """Aggressive duplicate removal for clean conversation"""
         if not segments:
             return []
         
         clean_segments = []
         seen_texts = set()
-        last_text = ""
-        last_time = 0
         
         for text, timestamp in segments:
-            # Skip if too similar to previous
-            if (self._text_similarity(text, last_text) > 0.8 or 
-                text in seen_texts or
-                timestamp < last_time + 0.5):  # Less than 0.5 seconds apart
+            # Skip very short segments
+            if len(text) < 20:
                 continue
             
-            # Skip very short or repetitive content
-            if len(text) < 15 or self._is_low_quality(text):
+            # Check for repetitive content within the text itself
+            words = text.split()
+            if len(words) != len(set(words)):  # Has duplicate words - likely artifact
+                # Only keep if it's natural repetition patterns
+                if not self._is_natural_repetition(text):
+                    continue
+                
+            # Skip exact duplicates
+            text_clean = text.lower().strip()
+            if text_clean in seen_texts:
                 continue
             
             clean_segments.append((text, timestamp))
-            seen_texts.add(text)
-            last_text = text
-            last_time = timestamp
+            seen_texts.add(text_clean)
         
         return clean_segments
+    
+    def _is_natural_repetition(self, text: str) -> bool:
+        """Check if repetition is natural speech pattern"""
+        # Allow natural patterns like "I mean, I mean" or "you know, you know"
+        natural_patterns = [
+            r'\b(i mean|you know|um|uh|well|so|actually|basically)\b.*\b\1\b'
+        ]
+        
+        text_lower = text.lower()
+        return any(re.search(pattern, text_lower) for pattern in natural_patterns)
     
     def _text_similarity(self, text1: str, text2: str) -> float:
         """Calculate text similarity (0-1)"""
@@ -362,8 +359,8 @@ class YouTubeCleanScriptGenerator:
     
     def create_natural_conversation(self, segments: List[Tuple[str, str, float]], 
                                    video_info: Dict) -> str:
-        """Create natural conversational flow"""
-        print("✍️ Creating natural conversation...")
+        """Create simple two-speaker conversational script"""
+        print("✍️ Creating simple conversation...")
         
         conversation = []
         conversation.append("<!--")
@@ -375,8 +372,8 @@ class YouTubeCleanScriptGenerator:
             # If speaker changes, complete previous speech
             if speaker != current_speaker and current_speech:
                 if current_speaker:
-                    # Join the speech parts naturally
-                    full_speech = self._merge_speech_parts(current_speech)
+                    # Join the speech parts simply
+                    full_speech = ' '.join(current_speech).strip()
                     if full_speech:
                         conversation.append(f"{current_speaker}: {full_speech}")
                         conversation.append("")
@@ -388,10 +385,10 @@ class YouTubeCleanScriptGenerator:
             current_speech.append(text)
             current_speaker = speaker
             
-            # Break up very long speeches naturally
+            # Break up very long speeches naturally (at ~300 characters)
             combined_length = sum(len(part) for part in current_speech)
-            if combined_length > 400:  # Break at ~400 characters
-                full_speech = self._merge_speech_parts(current_speech)
+            if combined_length > 300:
+                full_speech = ' '.join(current_speech).strip()
                 if full_speech:
                     conversation.append(f"{current_speaker}: {full_speech}")
                     conversation.append("")
@@ -399,14 +396,14 @@ class YouTubeCleanScriptGenerator:
         
         # Add final speech
         if current_speech and current_speaker:
-            full_speech = self._merge_speech_parts(current_speech)
+            full_speech = ' '.join(current_speech).strip()
             if full_speech:
                 conversation.append(f"{current_speaker}: {full_speech}")
         
         conversation.append("-->")
         
         result = '\n'.join(conversation)
-        print(f"✅ Natural conversation created ({len(result)} characters)")
+        print(f"✅ Simple conversation created ({len(result)} characters)")
         return result
     
     def _merge_speech_parts(self, speech_parts: List[str]) -> str:
