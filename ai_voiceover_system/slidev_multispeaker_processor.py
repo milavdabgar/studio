@@ -286,7 +286,7 @@ class SlidevMultiSpeakerProcessor:
             temp_files = []
             
             for i, turn in enumerate(turns):
-                temp_file = f"temp_turn_{i}_{int(time.time())}.mp3"
+                temp_file = f"temp_turn_{i}_{int(time.time())}.wav"  # Use WAV for LINEAR16
                 temp_files.append(temp_file)
                 
                 # Prepare synthesis input
@@ -301,13 +301,13 @@ class SlidevMultiSpeakerProcessor:
                     name=turn['voice']
                 )
                 
-                # Audio configuration with volume gain
+                # High-quality audio configuration matching Google TTS console
                 audio_config = texttospeech.AudioConfig(
-                    audio_encoding=texttospeech.AudioEncoding.MP3,
-                    effects_profile_id=['headphone-class-device'],
+                    audio_encoding=texttospeech.AudioEncoding.LINEAR16,  # Uncompressed for quality
+                    effects_profile_id=['small-bluetooth-speaker-class-device'],  # Better than headphone
                     speaking_rate=1.0,
-                    pitch=0.0,
-                    volume_gain_db=6.0  # Boost volume by 6dB
+                    pitch=0.0
+                    # No volume_gain_db to avoid distortion
                 )
                 
                 # Generate audio for this turn
@@ -324,13 +324,12 @@ class SlidevMultiSpeakerProcessor:
                 # Load the audio segment
                 if os.path.exists(temp_file) and os.path.getsize(temp_file) > 100:
                     try:
-                        # Using pydub to combine audio segments
+                        # Using pydub to combine audio segments  
                         from pydub import AudioSegment
-                        segment = AudioSegment.from_mp3(temp_file)
+                        segment = AudioSegment.from_wav(temp_file)  # Load WAV (LINEAR16)
                         
-                        # Normalize and boost volume for each segment
-                        segment = segment.normalize()  # Normalize to peak volume
-                        segment = segment + 3  # Add 3dB gain
+                        # Light normalization only - preserve original quality
+                        segment = segment.normalize()  # Just normalize, no aggressive boosting
                         
                         # Add a small pause between speakers
                         if i > 0:
@@ -352,12 +351,11 @@ class SlidevMultiSpeakerProcessor:
                 for segment in audio_segments:
                     combined += segment
                 
-                # Final volume boost and normalization
-                combined = combined.normalize()  # Normalize the combined audio
-                combined = combined + 2  # Add final 2dB gain
+                # Final gentle normalization to maintain quality
+                combined = combined.normalize()  # Just normalize, no additional gain
                 
-                # Export combined audio with higher quality settings
-                combined.export(output_file, format="mp3", bitrate="192k")
+                # Export as high-quality MP3 to maintain original TTS quality
+                combined.export(output_file, format="mp3", bitrate="320k")  # Highest quality MP3
                 
                 # Clean up temp files
                 for temp_file in temp_files:
