@@ -677,24 +677,27 @@ class YouTubeCleanScriptGenerator:
     
     def create_natural_conversation(self, segments: List[Tuple[str, str, float]], 
                                    video_info: Dict) -> str:
-        """Create simple two-speaker conversational script"""
-        print("✍️ Creating simple conversation...")
+        """Create natural two-speaker conversational script with intelligent length management"""
+        print("✍️ Creating natural conversation with smart splitting...")
         
         conversation = []
         conversation.append("<!--")
         
         current_speaker = None
         current_speech = []
+        MAX_SPEAKER_LENGTH = 800  # Characters - reasonable paragraph length
         
         for speaker, text, timestamp in segments:
             # If speaker changes, complete previous speech
             if speaker != current_speaker and current_speech:
                 if current_speaker:
-                    # Join the speech parts simply - keep complete thoughts together
                     full_speech = ' '.join(current_speech).strip()
                     if full_speech:
-                        conversation.append(f"{current_speaker}: {full_speech}")
-                        conversation.append("")
+                        # Check if speech is too long and needs intelligent splitting
+                        split_speeches = self._split_long_speech(full_speech, current_speaker, MAX_SPEAKER_LENGTH)
+                        for speech_part, part_speaker in split_speeches:
+                            conversation.append(f"{part_speaker}: {speech_part}")
+                            conversation.append("")
                 
                 current_speech = []
                 current_speaker = speaker
@@ -702,20 +705,146 @@ class YouTubeCleanScriptGenerator:
             # Add to current speech
             current_speech.append(text)
             current_speaker = speaker
-            
-            # No character limit splitting - keep complete thoughts per speaker
         
         # Add final speech
         if current_speech and current_speaker:
             full_speech = ' '.join(current_speech).strip()
             if full_speech:
-                conversation.append(f"{current_speaker}: {full_speech}")
+                split_speeches = self._split_long_speech(full_speech, current_speaker, MAX_SPEAKER_LENGTH)
+                for speech_part, part_speaker in split_speeches:
+                    conversation.append(f"{part_speaker}: {speech_part}")
         
         conversation.append("-->")
         
         result = '\n'.join(conversation)
-        print(f"✅ Simple conversation created ({len(result)} characters)")
+        print(f"✅ Natural conversation created ({len(result)} characters)")
         return result
+    
+    def _split_long_speech(self, speech: str, speaker: str, max_length: int) -> List[Tuple[str, str]]:
+        """Split overly long speeches while respecting natural conversation boundaries"""
+        if len(speech) <= max_length:
+            return [(speech, speaker)]
+        
+        # Find natural breakpoints in long speeches
+        sentences = self._split_into_sentences(speech)
+        if len(sentences) <= 1:
+            return [(speech, speaker)]  # Can't split further
+        
+        # Group sentences and detect natural speaker changes
+        result = []
+        current_part = []
+        current_length = 0
+        current_speaker = speaker
+        
+        # Determine the other speaker name
+        other_speaker = "Dr. James" if speaker == "Sarah" else "Sarah"
+        
+        for i, sentence in enumerate(sentences):
+            sentence = sentence.strip()
+            if not sentence:
+                continue
+                
+            sentence_length = len(sentence)
+            
+            # Check if adding this sentence would exceed the limit
+            if current_length + sentence_length > max_length and current_part:
+                # Complete current part
+                part_text = ' '.join(current_part).strip()
+                if part_text:
+                    result.append((part_text, current_speaker))
+                
+                # Start new part
+                current_part = [sentence]
+                current_length = sentence_length
+                
+                # Try to detect speaker change for new part
+                detected_speaker = self._detect_speaker_in_sentence(sentence, current_speaker, other_speaker)
+                current_speaker = detected_speaker if detected_speaker else current_speaker
+            else:
+                # Add to current part
+                current_part.append(sentence)
+                current_length += sentence_length + 1  # +1 for space
+                
+                # Check for natural speaker change within the part
+                if len(current_part) > 1:  # Don't change speaker on first sentence of part
+                    detected_speaker = self._detect_speaker_in_sentence(sentence, current_speaker, other_speaker)
+                    if detected_speaker and detected_speaker != current_speaker:
+                        # Split here - previous sentences stay with current speaker
+                        if len(current_part) > 1:
+                            prev_part = ' '.join(current_part[:-1]).strip()
+                            if prev_part:
+                                result.append((prev_part, current_speaker))
+                            # Start new part with current sentence
+                            current_part = [sentence]
+                            current_length = sentence_length
+                            current_speaker = detected_speaker
+        
+        # Add final part
+        if current_part:
+            part_text = ' '.join(current_part).strip()
+            if part_text:
+                result.append((part_text, current_speaker))
+        
+        return result if result else [(speech, speaker)]
+    
+    def _split_into_sentences(self, text: str) -> List[str]:
+        """Split text into sentences based on punctuation"""
+        # Split on sentence-ending punctuation, keeping the punctuation
+        sentences = re.split(r'([.!?;])', text)
+        
+        # Recombine sentence parts with their punctuation
+        result = []
+        for i in range(0, len(sentences) - 1, 2):
+            if i + 1 < len(sentences):
+                sentence = sentences[i] + sentences[i + 1]
+                if sentence.strip():
+                    result.append(sentence.strip())
+        
+        # Handle any remaining text without punctuation
+        if len(sentences) % 2 == 1 and sentences[-1].strip():
+            result.append(sentences[-1].strip())
+        
+        return result
+    
+    def _detect_speaker_in_sentence(self, sentence: str, current_speaker: str, other_speaker: str) -> Optional[str]:
+        """Detect if a sentence suggests a different speaker"""
+        sentence_lower = sentence.lower().strip()
+        
+        # Strong indicators for host (Dr. James)
+        host_indicators = [
+            r'^(okay|so|right|now|well|but|however)\b',
+            r'^(what|how|why|when|where|can|could|would)\b',  # Questions
+            r'\b(let me|tell us|help us|walk us|explain|that\'s interesting|sounds like)\b',
+            r'^(wow|whoa|amazing|fascinating|interesting)\b',  # Reactions
+            r'\b(so to summarize|the key takeaway|what stands out)\b'
+        ]
+        
+        # Strong indicators for expert (Sarah)
+        expert_indicators = [
+            r'^(exactly|absolutely|precisely|yes|well|actually|basically)\b',
+            r'^(the key|fundamentally|essentially|technically|in fact)\b',
+            r'^(it\'s about|think of it|imagine|for example)\b',
+            r'\b(the answer|what happens|you see|the result|the data shows)\b'
+        ]
+        
+        # Check for host patterns
+        if any(re.search(pattern, sentence_lower) for pattern in host_indicators):
+            if current_speaker == "Sarah":
+                return "Dr. James"
+        
+        # Check for expert patterns  
+        if any(re.search(pattern, sentence_lower) for pattern in expert_indicators):
+            if current_speaker == "Dr. James":
+                return "Sarah"
+        
+        # Check for specific pattern matches based on content
+        if current_speaker == "Sarah":
+            # Look for host interruptions/reactions
+            if any(word in sentence_lower for word in ['wow', 'whoa', 'amazing', 'fascinating']):
+                if len(sentence.split()) <= 5:  # Short reactions
+                    return "Dr. James"
+        
+        return None  # Keep current speaker
     
     def _merge_speech_parts(self, speech_parts: List[str]) -> str:
         """Merge speech parts into natural sentences, fixing only broken endings"""
