@@ -195,9 +195,9 @@ class YouTubeAudioScriptGenerator:
                 print("❌ Could not load any pyannote models")
                 return None
             
-            # Apply professional speaker diarization
+            # Apply professional speaker diarization with 2-speaker constraint
             print("🎯 Analyzing audio for speaker changes...")
-            diarization = pipeline(str(audio_file))
+            diarization = pipeline(str(audio_file), num_speakers=2)
             
             # Convert to our format
             speaker_segments = []
@@ -214,6 +214,13 @@ class YouTubeAudioScriptGenerator:
             speakers = set(seg['speaker'] for seg in speaker_segments)
             print(f"🎭 Detected {len(speakers)} speakers: {', '.join(speakers)}")
             
+            # If still more than 2 speakers, merge similar ones
+            if len(speakers) > 2:
+                print("🔧 Consolidating to exactly 2 speakers...")
+                speaker_segments = self._consolidate_to_two_speakers(speaker_segments)
+                speakers = set(seg['speaker'] for seg in speaker_segments)
+                print(f"✅ Consolidated to {len(speakers)} speakers: {', '.join(speakers)}")
+            
             return {'segments': speaker_segments}
             
         except ImportError:
@@ -222,6 +229,40 @@ class YouTubeAudioScriptGenerator:
         except Exception as e:
             print(f"❌ Professional speaker diarization failed: {e}")
             return None
+    
+    def _consolidate_to_two_speakers(self, speaker_segments: List[Dict]) -> List[Dict]:
+        """Consolidate multiple detected speakers into exactly 2 speakers"""
+        from collections import defaultdict
+        
+        # Group segments by speaker
+        speaker_durations = defaultdict(float)
+        for seg in speaker_segments:
+            speaker_durations[seg['speaker']] += seg['end'] - seg['start']
+        
+        # Find the two speakers with most speaking time
+        top_speakers = sorted(speaker_durations.items(), key=lambda x: x[1], reverse=True)[:2]
+        main_speaker, secondary_speaker = top_speakers[0][0], top_speakers[1][0]
+        
+        # Map all speakers to one of the two main speakers
+        speaker_mapping = {}
+        for speaker, duration in speaker_durations.items():
+            if speaker == main_speaker:
+                speaker_mapping[speaker] = main_speaker
+            elif speaker == secondary_speaker:
+                speaker_mapping[speaker] = secondary_speaker
+            else:
+                # Assign minority speakers to the closest main speaker
+                # For simplicity, assign to secondary speaker
+                speaker_mapping[speaker] = secondary_speaker
+        
+        # Apply mapping
+        consolidated_segments = []
+        for seg in speaker_segments:
+            new_seg = seg.copy()
+            new_seg['speaker'] = speaker_mapping[seg['speaker']]
+            consolidated_segments.append(new_seg)
+        
+        return consolidated_segments
     
     def _simple_audio_speaker_detection(self, audio_file: Path) -> Optional[Dict]:
         """Simple speaker detection based on audio energy and pause patterns"""
