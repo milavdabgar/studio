@@ -302,14 +302,10 @@ class YouTubeCleanScriptGenerator:
         for i, (text, timestamp) in enumerate(segments):
             current_group.append((text, timestamp))
             
-            # Check if this segment ends a sentence
+            # Check if this segment ends a sentence - REQUIRE punctuation marks
             text_trimmed = text.strip()
-            if (text_trimmed.endswith(('.', '!', '?')) or 
-                # Natural pause indicators
-                text_trimmed.endswith((',', ';')) or
-                # Look ahead - if next segment starts with capital or starts new thought
-                (i < len(segments) - 1 and 
-                 self._starts_new_sentence(segments[i + 1][0]))):
+            if (text_trimmed.endswith(('.', '!', '?', ';'))):
+                # Only end sentence groups at clear punctuation boundaries
                 
                 # Complete the sentence group
                 if current_group:
@@ -328,83 +324,263 @@ class YouTubeCleanScriptGenerator:
         if not text:
             return False
         
-        # Starts with capital letter
+        text_lower = text.lower()
+        
+        # Starts with capital letter, but not if it's just continuing a list/phrase
         if text[0].isupper():
+            # Don't treat continuations as new sentences
+            continuation_patterns = [
+                r'^and \w+',  # "and 5G", "and IoT"
+                r'^or \w+',   # "or something"  
+                r'^but \w+',  # "but also"
+            ]
+            if any(re.match(pattern, text_lower) for pattern in continuation_patterns):
+                return False
             return True
         
-        # Starts with common sentence starters
-        starters = ['okay', 'so', 'well', 'but', 'and', 'exactly', 'right', 'yes', 'no', 'absolutely']
-        return any(text.lower().startswith(starter + ' ') for starter in starters)
+        # Starts with strong sentence starters (but be more selective)
+        strong_starters = ['okay', 'so', 'well', 'exactly', 'right', 'yes', 'no', 'absolutely']
+        # Remove 'and' and 'but' from automatic sentence starters as they're often continuations
+        
+        return any(text_lower.startswith(starter + ' ') for starter in strong_starters)
     
     def detect_speakers_advanced(self, segments: List[Tuple[str, float]], 
                                 speaker_names: Tuple[str, str]) -> List[Tuple[str, str, float]]:
-        """Speaker detection that respects sentence boundaries"""
+        """Advanced speaker detection with conversation flow analysis"""
         print(f"🎭 Detecting speakers: {speaker_names[0]} & {speaker_names[1]}...")
         
         # First, group segments into complete sentences
         sentence_groups = self._group_segments_by_sentences(segments)
         
         speaker_segments = []
-        current_speaker = speaker_names[0]  # Start with first speaker
+        current_speaker = speaker_names[0]  # Start with first speaker (host)
+        conversation_context = {'questions_asked': 0, 'explanations_given': 0}
         
-        for sentence_group in sentence_groups:
-            # For each sentence group, detect speaker once
+        for i, sentence_group in enumerate(sentence_groups):
+            # Combine text for analysis
             combined_text = ' '.join([text for text, _ in sentence_group])
             first_timestamp = sentence_group[0][1]
             
-            # Force speaker change after questions (podcast Q&A pattern)
-            if combined_text.rstrip().endswith('?'):
-                # Question asked, next group should be the other speaker
-                current_speaker = current_speaker  # Keep current for this question
-                next_speaker = speaker_names[1] if current_speaker == speaker_names[0] else speaker_names[0]
-            else:
-                # Detect speaker change based on the complete sentence/thought
-                detected_speaker = self._detect_speaker_change_simple(
-                    combined_text, current_speaker, speaker_names
-                )
-                
-                if detected_speaker:
-                    current_speaker = detected_speaker
-                next_speaker = current_speaker
+            # Get context from previous groups
+            prev_context = self._get_conversation_context(speaker_segments, i)
             
-            # Assign the same speaker to all segments in this sentence group
+            # Enhanced speaker detection with context
+            detected_speaker = self._detect_speaker_with_context(
+                combined_text, current_speaker, speaker_names, prev_context
+            )
+            
+            if detected_speaker:
+                current_speaker = detected_speaker
+            
+            # Update conversation context
+            if '?' in combined_text:
+                conversation_context['questions_asked'] += 1
+            if len(combined_text) > 100:  # Long explanations
+                conversation_context['explanations_given'] += 1
+            
+            # Assign speaker to all segments in this group
             for text, timestamp in sentence_group:
                 speaker_segments.append((current_speaker, text, timestamp))
-            
-            # Update speaker for next iteration (especially after questions)
-            current_speaker = next_speaker
         
-        # Statistics
+        # Post-process to smooth out erratic transitions
+        speaker_segments = self._smooth_speaker_transitions_enhanced(speaker_segments, speaker_names)
+        
+        # Statistics with role analysis
         stats = {}
+        role_analysis = {'questions': {speaker_names[0]: 0, speaker_names[1]: 0},
+                        'explanations': {speaker_names[0]: 0, speaker_names[1]: 0}}
+        
         for speaker, text, timestamp in speaker_segments:
             if speaker not in stats:
                 stats[speaker] = 0
             stats[speaker] += 1
+            
+            # Analyze roles
+            if '?' in text:
+                role_analysis['questions'][speaker] += 1
+            if len(text) > 80:
+                role_analysis['explanations'][speaker] += 1
         
         for speaker, count in stats.items():
             percentage = (count / len(speaker_segments)) * 100
-            print(f"   {speaker}: {count} segments ({percentage:.1f}%)")
+            q_count = role_analysis['questions'][speaker]
+            e_count = role_analysis['explanations'][speaker]
+            print(f"   {speaker}: {count} segments ({percentage:.1f}%) - {q_count} questions, {e_count} explanations")
         
         return speaker_segments
     
     def _detect_speaker_change_simple(self, text: str, current_speaker: str, speaker_names: Tuple[str, str]) -> Optional[str]:
-        """Simple speaker change detection"""
-        text_lower = text.lower()
+        """Enhanced speaker change detection with conversation role awareness"""
+        text_lower = text.lower().strip()
         
         # Check for explicit speaker markers
         if text.startswith(('&gt;&gt;', '>>')):
             return speaker_names[1] if current_speaker == speaker_names[0] else speaker_names[0]
         
-        # Question patterns (usually from host/interviewer)
-        if (text.endswith('?') or 
-            any(text_lower.startswith(q) for q in ['what', 'how', 'why', 'can', 'could', 'would', 'okay', 'so'])):
+        # Don't switch speakers for short confirmatory words that might be sentence continuations
+        if len(text.split()) <= 2:  # Very short segments (1-2 words)
+            if any(text_lower.startswith(word) for word in ['right', 'yeah', 'yes', 'exactly', 'true']):
+                # Even if it ends with '?', if it's very short it's likely a continuation tag
+                if len(text_lower) <= 6:  # "right?" is 6 characters
+                    return None  # Keep current speaker
+                # Only switch if it's clearly a new thought
+                if not self._is_standalone_response(text, current_speaker):
+                    return None  # Keep current speaker
+        
+        # HOST/INTERVIEWER patterns (typically first speaker)
+        host_patterns = [
+            # Question starters
+            r'^(what|how|why|when|where|who|can|could|would|should|do|does|did|is|are|was|were)\b',
+            # Conversation management
+            r'^(okay|so|right|now|well|let\'?s|tell us|explain|that\'?s interesting|sounds like|and that|but|however)\b',
+            # Transitions and summaries
+            r'^(summing up|so to summarize|let me|if I understand|that brings us|moving on)\b',
+            # Welcome and introduction patterns
+            r'\b(welcome|today we\'re|let\'s start|let\'s dive|let\'s talk about|tell me about)\b',
+            # Clarification requests
+            r'\b(help me understand|walk me through|break that down|what do you mean)\b'
+        ]
+        
+        # EXPERT/RESPONDENT patterns (typically second speaker)
+        expert_patterns = [
+            # Confirmatory responses
+            r'^(exactly|right|absolutely|yes|no|well|actually|basically|precisely|that\'?s correct)\b',
+            # Technical explanations
+            r'^(the key point|fundamentally|essentially|technically|in fact|you see|what happens)\b',
+            # Elaboration patterns
+            r'^(it\'s about|think of it|imagine|for example|let me explain|the thing is)\b',
+            # Agreement and building
+            r'^(and|plus|also|furthermore|moreover|in addition|that\'?s exactly|which means)\b'
+        ]
+        
+        # Check for host patterns
+        if any(re.search(pattern, text_lower) for pattern in host_patterns):
             return speaker_names[0]
         
-        # Answer/explanation patterns (usually from expert)
-        if any(text_lower.startswith(ans) for ans in ['well', 'actually', 'yes', 'exactly', 'right', 'absolutely']):
+        # Check for expert patterns  
+        if any(re.search(pattern, text_lower) for pattern in expert_patterns):
             return speaker_names[1]
         
+        # Question detection (questions usually from host) - but not short continuation tags
+        if text.rstrip().endswith('?') or '?' in text:
+            # Don't treat very short confirmation tags as questions
+            if len(text_lower) <= 6 and text_lower in ['right?', 'yeah?', 'yes?', 'true?']:
+                return None  # Keep current speaker (likely continuation)
+            return speaker_names[0]
+        
+        # Technical terminology suggests expert
+        technical_indicators = [
+            'algorithm', 'detection', 'signal', 'noise', 'frequency', 'spectrum', 'data',
+            'analysis', 'performance', 'system', 'method', 'approach', 'technique',
+            'implementation', 'optimization', 'parameters', 'threshold', 'reliability'
+        ]
+        
+        if any(term in text_lower for term in technical_indicators) and len(text.split()) > 15:
+            return speaker_names[1]
+        
+        # Conversational flow analysis
+        if current_speaker == speaker_names[0]:  # If host was speaking
+            # Look for response patterns that suggest expert takeover
+            response_patterns = [
+                r'\b(that\'?s|it\'s|you\'re|we\'re|this is|these are)\b.*\b(right|correct|exactly|important|key|crucial)\b',
+                r'\b(the answer|the solution|what we see|what happens|the result)\b'
+            ]
+            if any(re.search(pattern, text_lower) for pattern in response_patterns):
+                return speaker_names[1]
+        
         return None  # Keep current speaker
+    
+    def _is_standalone_response(self, text: str, current_speaker: str) -> bool:
+        """Check if short confirmatory text is a standalone response vs continuation"""
+        text_lower = text.lower().strip()
+        
+        # Standalone response patterns - these indicate it's NOT a continuation
+        standalone_patterns = [
+            r'^(right|exactly|yes|absolutely|precisely|correct)\s*[.!]\s*$',  # Ends definitively
+            r'^(right|exactly|yes)\s*[,.]\s*(and|but|so|that\'s|it\'s|now|then)',  # Continues with new thought
+            r'^(right|exactly|yes).*(question|point|idea|exactly)\b',  # Contains substantive content
+            r'^(right|exactly|yes).*[.!]\s+[A-Z]',  # Followed by new sentence
+        ]
+        
+        return any(re.match(pattern, text_lower) for pattern in standalone_patterns)
+    
+    def _get_conversation_context(self, speaker_segments: List[Tuple[str, str, float]], current_index: int) -> Dict:
+        """Get conversation context from recent segments"""
+        context = {
+            'recent_speakers': [],
+            'recent_questions': 0,
+            'recent_explanations': 0,
+            'last_speaker': None
+        }
+        
+        # Look at last 5 segments for context
+        start_idx = max(0, len(speaker_segments) - 5)
+        recent_segments = speaker_segments[start_idx:]
+        
+        for speaker, text, _ in recent_segments:
+            context['recent_speakers'].append(speaker)
+            context['last_speaker'] = speaker
+            
+            if '?' in text:
+                context['recent_questions'] += 1
+            if len(text) > 80:
+                context['recent_explanations'] += 1
+        
+        return context
+    
+    def _detect_speaker_with_context(self, text: str, current_speaker: str, 
+                                   speaker_names: Tuple[str, str], context: Dict) -> Optional[str]:
+        """Enhanced speaker detection with conversation context"""
+        # First try the simple detection
+        detected = self._detect_speaker_change_simple(text, current_speaker, speaker_names)
+        if detected:
+            return detected
+        
+        # Context-based detection
+        text_lower = text.lower().strip()
+        
+        # If last speaker asked a question, this is likely the response
+        if context.get('recent_questions', 0) > 0 and context.get('last_speaker') != current_speaker:
+            # Check if this looks like an answer/response
+            response_patterns = [
+                r'^(well|so|actually|yes|no|right|exactly|absolutely|that\'s)',
+                r'\b(the answer|what happens|you see|it\'s about|essentially)\b'
+            ]
+            if any(re.search(pattern, text_lower) for pattern in response_patterns):
+                return speaker_names[1] if current_speaker == speaker_names[0] else speaker_names[0]
+        
+        # Detect natural conversation flow
+        if len(context.get('recent_speakers', [])) > 2:
+            recent = context['recent_speakers'][-3:]
+            # If same speaker for 3+ segments, consider switching
+            if len(set(recent)) == 1 and len(text) > 60:
+                # But only if text suggests different speaker role
+                if current_speaker == speaker_names[0] and self._sounds_like_expert_response(text):
+                    return speaker_names[1]
+                elif current_speaker == speaker_names[1] and self._sounds_like_host_question(text):
+                    return speaker_names[0]
+        
+        return None
+    
+    def _sounds_like_expert_response(self, text: str) -> bool:
+        """Check if text sounds like expert providing detailed response"""
+        text_lower = text.lower()
+        expert_indicators = [
+            'technical', 'algorithm', 'implementation', 'analysis', 'research',
+            'data shows', 'study found', 'results indicate', 'evidence suggests',
+            'mathematically', 'theoretically', 'in practice', 'empirically'
+        ]
+        return any(indicator in text_lower for indicator in expert_indicators)
+    
+    def _sounds_like_host_question(self, text: str) -> bool:
+        """Check if text sounds like host asking question or managing conversation"""
+        text_lower = text.lower()
+        host_indicators = [
+            'let me ask', 'tell our listeners', 'help us understand', 'break that down',
+            'what about', 'how does', 'can you explain', 'walk us through',
+            'that\'s fascinating', 'interesting point', 'let\'s talk about'
+        ]
+        return any(indicator in text_lower for indicator in host_indicators)
     
     def _detect_speaker_change_advanced(self, text: str, current_speaker: str, 
                                        speaker_names: Tuple[str, str], 
@@ -446,32 +622,58 @@ class YouTubeCleanScriptGenerator:
         
         return None  # Keep current speaker
     
-    def _smooth_speaker_transitions(self, segments: List[Tuple[str, str, float]], 
-                                   speaker_names: Tuple[str, str]) -> List[Tuple[str, str, float]]:
-        """Smooth out erratic speaker transitions"""
+    def _smooth_speaker_transitions_enhanced(self, segments: List[Tuple[str, str, float]], 
+                                           speaker_names: Tuple[str, str]) -> List[Tuple[str, str, float]]:
+        """Enhanced speaker transition smoothing with conversation flow awareness"""
         if len(segments) < 5:
             return segments
         
         smoothed = []
         
         for i, (speaker, text, timestamp) in enumerate(segments):
-            # Look at context (2 before, 2 after)
-            context_start = max(0, i - 2)
-            context_end = min(len(segments), i + 3)
+            current_speaker = speaker
+            
+            # Look at wider context (3 before, 3 after)
+            context_start = max(0, i - 3)
+            context_end = min(len(segments), i + 4)
             context_speakers = [segments[j][0] for j in range(context_start, context_end)]
             
-            # If this segment is isolated (different from neighbors)
-            if (i > 0 and i < len(segments) - 1 and 
-                segments[i-1][0] == segments[i+1][0] and 
-                segments[i-1][0] != speaker and
-                len(text) < 50):  # Short segments more likely to be errors
+            # If this is an isolated different speaker in a sequence
+            if (i > 1 and i < len(segments) - 2):
+                prev_2 = segments[i-2][0]
+                prev_1 = segments[i-1][0]
+                next_1 = segments[i+1][0]
+                next_2 = segments[i+2][0]
                 
-                # Use the surrounding speaker
-                speaker = segments[i-1][0]
+                # Pattern: A-A-B-A-A (B is likely error)
+                if (prev_2 == prev_1 == next_1 == next_2 != speaker and 
+                    len(text) < 40):  # Short segments more likely to be errors
+                    current_speaker = prev_1
+                
+                # Pattern: A-B-A (single B in middle, but check if it makes sense)
+                elif (prev_1 == next_1 != speaker and len(text) < 30):
+                    # Only correct if the text doesn't strongly indicate the assigned speaker
+                    if not (speaker == speaker_names[1] and self._sounds_like_expert_response(text)):
+                        current_speaker = prev_1
             
-            smoothed.append((speaker, text, timestamp))
+            # Ensure questions and immediate answers are properly paired
+            if i > 0 and '?' in segments[i-1][1]:
+                # Previous segment was a question, this should likely be the other speaker
+                prev_speaker = segments[i-1][0]
+                if speaker == prev_speaker and len(text) > 20:
+                    # This looks like an answer but assigned to same speaker as question
+                    answer_patterns = ['well', 'so', 'actually', 'yes', 'the answer', 'what happens']
+                    if any(text.lower().strip().startswith(pattern) for pattern in answer_patterns):
+                        current_speaker = speaker_names[1] if prev_speaker == speaker_names[0] else speaker_names[0]
+            
+            smoothed.append((current_speaker, text, timestamp))
         
         return smoothed
+    
+    def _smooth_speaker_transitions(self, segments: List[Tuple[str, str, float]], 
+                                   speaker_names: Tuple[str, str]) -> List[Tuple[str, str, float]]:
+        """Smooth out erratic speaker transitions (legacy method)"""
+        return self._smooth_speaker_transitions_enhanced(segments, speaker_names)
     
     def create_natural_conversation(self, segments: List[Tuple[str, str, float]], 
                                    video_info: Dict) -> str:
