@@ -291,24 +291,78 @@ class YouTubeCleanScriptGenerator:
         
         return any(re.match(pattern, text.lower()) for pattern in filler_patterns)
     
+    def _group_segments_by_sentences(self, segments: List[Tuple[str, float]]) -> List[List[Tuple[str, float]]]:
+        """Group segments into complete sentences to avoid mid-sentence speaker changes"""
+        if not segments:
+            return []
+        
+        sentence_groups = []
+        current_group = []
+        
+        for i, (text, timestamp) in enumerate(segments):
+            current_group.append((text, timestamp))
+            
+            # Check if this segment ends a sentence
+            text_trimmed = text.strip()
+            if (text_trimmed.endswith(('.', '!', '?')) or 
+                # Natural pause indicators
+                text_trimmed.endswith((',', ';')) or
+                # Look ahead - if next segment starts with capital or starts new thought
+                (i < len(segments) - 1 and 
+                 self._starts_new_sentence(segments[i + 1][0]))):
+                
+                # Complete the sentence group
+                if current_group:
+                    sentence_groups.append(current_group)
+                    current_group = []
+        
+        # Add any remaining segments as final group
+        if current_group:
+            sentence_groups.append(current_group)
+        
+        return sentence_groups
+    
+    def _starts_new_sentence(self, text: str) -> bool:
+        """Check if text starts a new sentence/thought"""
+        text = text.strip()
+        if not text:
+            return False
+        
+        # Starts with capital letter
+        if text[0].isupper():
+            return True
+        
+        # Starts with common sentence starters
+        starters = ['okay', 'so', 'well', 'but', 'and', 'exactly', 'right', 'yes', 'no', 'absolutely']
+        return any(text.lower().startswith(starter + ' ') for starter in starters)
+    
     def detect_speakers_advanced(self, segments: List[Tuple[str, float]], 
                                 speaker_names: Tuple[str, str]) -> List[Tuple[str, str, float]]:
-        """Simple two-speaker detection for clean segments"""
+        """Speaker detection that respects sentence boundaries"""
         print(f"🎭 Detecting speakers: {speaker_names[0]} & {speaker_names[1]}...")
+        
+        # First, group segments into complete sentences
+        sentence_groups = self._group_segments_by_sentences(segments)
         
         speaker_segments = []
         current_speaker = speaker_names[0]  # Start with first speaker
         
-        for i, (text, timestamp) in enumerate(segments):
-            # Detect speaker changes based on content and timing
+        for sentence_group in sentence_groups:
+            # For each sentence group, detect speaker once
+            combined_text = ' '.join([text for text, _ in sentence_group])
+            first_timestamp = sentence_group[0][1]
+            
+            # Detect speaker change based on the complete sentence/thought
             detected_speaker = self._detect_speaker_change_simple(
-                text, current_speaker, speaker_names
+                combined_text, current_speaker, speaker_names
             )
             
             if detected_speaker:
                 current_speaker = detected_speaker
             
-            speaker_segments.append((current_speaker, text, timestamp))
+            # Assign the same speaker to all segments in this sentence group
+            for text, timestamp in sentence_group:
+                speaker_segments.append((current_speaker, text, timestamp))
         
         # Statistics
         stats = {}
