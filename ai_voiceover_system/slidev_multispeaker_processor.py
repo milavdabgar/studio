@@ -217,15 +217,15 @@ class SlidevMultiSpeakerProcessor:
                         turns.append({
                             'text': voice_content.strip(),
                             'speaker': speaker,
-                            'voice': 'en-US-Chirp3-HD-Charon' if speaker == 'R' else 'en-US-Chirp3-HD-Achernar',
+                            'voice': 'en-US-Chirp3-HD-Algieba' if speaker == 'R' else 'en-US-Chirp3-HD-Achernar',
                             'is_ssml': True
                         })
                 
-                return turns if turns else [{'text': narration_text, 'speaker': 'R', 'voice': 'en-US-Chirp3-HD-Charon', 'is_ssml': False}]
+                return turns if turns else [{'text': narration_text, 'speaker': 'R', 'voice': 'en-US-Chirp3-HD-Algieba', 'is_ssml': False}]
             
             except ET.ParseError as e:
                 print(f"   ⚠️ SSML parsing failed: {e}")
-                return [{'text': narration_text, 'speaker': 'R', 'voice': 'en-US-Chirp3-HD-Charon', 'is_ssml': False}]
+                return [{'text': narration_text, 'speaker': 'R', 'voice': 'en-US-Chirp3-HD-Algieba', 'is_ssml': False}]
         
         # Check for simple speaker dialogue format
         lines = narration_text.strip().split('\n')
@@ -244,7 +244,7 @@ class SlidevMultiSpeakerProcessor:
                     turns.append({
                         'text': text,
                         'speaker': 'R',
-                        'voice': 'en-US-Chirp3-HD-Charon',  # Male premium Chirp3-HD voice
+                        'voice': 'en-US-Chirp3-HD-Algieba',  # Male premium Chirp3-HD voice
                         'is_ssml': False
                     })
                 elif 'Sarah' in speaker_name:
@@ -259,11 +259,11 @@ class SlidevMultiSpeakerProcessor:
                 turns.append({
                     'text': line,
                     'speaker': 'R',
-                    'voice': 'en-US-Chirp3-HD-Charon',
+                    'voice': 'en-US-Chirp3-HD-Algieba',
                     'is_ssml': False
                 })
         
-        return turns if turns else [{'text': narration_text, 'speaker': 'R', 'voice': 'en-US-Chirp3-HD-Charon', 'is_ssml': False}]
+        return turns if turns else [{'text': narration_text, 'speaker': 'R', 'voice': 'en-US-Chirp3-HD-Algieba', 'is_ssml': False}]
     
     def generate_multispeaker_audio(self, narration_text, output_file):
         """Generate multi-speaker audio using individual Google Cloud TTS voices"""

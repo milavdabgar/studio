@@ -39,23 +39,23 @@ Gujarat Technological University
 </div>
 
 <!--
-Dr. James: Hello everyone, and welcome to our first lecture on Java Programming! I'm Dr. James, and I'm excited to begin this journey with you today.
+Dr. James: Hello everyone, and, uh, welcome to our first lecture on Java Programming! I'm Dr. James, and I have to say, I'm really excited to, um, to begin this journey with you today.
 
-Sarah: And I'm Sarah, your teaching assistant for this course. We've designed this lecture to be interactive and engaging, so don't hesitate to ask questions as we go along.
-
-[click] 
-
-Dr. James: Today, we'll embark on an exciting journey into the world of Java programming - one of the most popular and versatile programming languages in the industry.
-
-Sarah: That's right, Dr. James! And what makes this even more special is that this lecture is part of our Java Programming course, course code 4343203, designed specifically for Diploma in ICT students in their fourth semester at Gujarat Technological University.
+Sarah: And I'm Sarah, your teaching assistant for this course. You know, we've designed this lecture to be, well, interactive and engaging, so please, don't hesitate to ask questions as we go along, okay?
 
 [click] 
 
-Dr. James: By the end of this lecture, you'll understand what Java is, why it's so popular, and where it's used in real-world applications.
+Dr. James: So today, we'll embark on what I like to call an exciting journey into the world of Java programming. And, um, it's actually one of the most popular and, well, versatile programming languages in the industry right now.
+
+Sarah: That's absolutely right, Dr. James! And what makes this even more special is that, um, this lecture is part of our Java Programming course - that's course code 4343203, by the way - designed specifically for our Diploma in ICT students in their fourth semester here at Gujarat Technological University.
 
 [click] 
 
-Sarah: So let's begin our exploration of Java! Trust me, by the end of this course, you'll see Java everywhere around you.
+Dr. James: Now, by the end of this lecture, you'll understand, well, what Java is, why it's become so popular, and, um, where it's used in all these real-world applications that you probably interact with every day.
+
+[click] 
+
+Sarah: So let's begin our exploration of Java, shall we? And trust me on this - by the end of this course, you're going to see Java everywhere around you. I mean, absolutely everywhere!
 -->
 
 ---
@@ -117,33 +117,33 @@ Ready to master Java fundamentals? ☕✨
 </div>
 
 <!--
-Sarah: Now, let's talk about what you'll achieve by the end of this lecture. We've structured this as a comprehensive learning experience.
+Sarah: Now, let's talk about what you'll, um, what you'll actually achieve by the end of this lecture. You know, we've structured this as a, well, a comprehensive learning experience, and I think you're really going to enjoy it.
 
 [click] 
 
-Dr. James: First, you'll understand Java's rich history and how it evolved from a project for interactive television to become one of the world's most important programming languages.
+Dr. James: So first, you'll understand Java's, uh, its really rich history and how it evolved from - believe it or not - a project for interactive television to become, well, one of the world's most important programming languages. It's quite a story, actually.
 
-Sarah: And that's just the beginning! 
-
-[click] 
-
-Dr. James: Next, you'll be able to identify the key features that make Java special - things like platform independence, security, and object-oriented design.
+Sarah: And that's just the beginning! I mean, we're really just getting started here.
 
 [click] 
 
-Sarah: You'll also recognize the vast variety of applications where Java is used - from mobile apps on your phone to enterprise systems in banks. Pretty amazing, right?
+Dr. James: Next, you'll be able to identify the key features that make Java, um, that make Java so special - things like platform independence, security, and, uh, object-oriented design. These are the things that really set Java apart.
 
 [click] 
 
-Dr. James: You'll appreciate why Java has become the go-to choice for enterprise development and why companies worldwide rely on it for their critical systems.
+Sarah: You'll also recognize the, well, the vast variety of applications where Java is used - I mean, from mobile apps on your phone to enterprise systems in banks. Pretty amazing, right? It's literally everywhere!
 
 [click] 
 
-Sarah: And finally, you'll be prepared for our next steps in setting up a Java development environment.
+Dr. James: And you'll appreciate why Java has become the, um, the go-to choice for enterprise development and why companies worldwide - I'm talking about major corporations - rely on it for their most critical systems.
 
 [click] 
 
-Dr. James: With these foundations in place, you'll be ready to start your exciting journey into Java programming!
+Sarah: And finally, you'll be prepared for our next steps in setting up a Java development environment. That's going to be really exciting!
+
+[click] 
+
+Dr. James: So with these foundations in place, you'll be ready to start your, well, your exciting journey into Java programming! And trust me, it's going to be quite the adventure.
 -->
 
 ---
@@ -206,17 +206,17 @@ layout: two-cols
 </div>
 
 <!--
-Sarah: Let's dive into Java's fascinating history! Dr. James, could you tell us how it all began?
+Sarah: Alright, let's dive into Java's fascinating history! Dr. James, could you, um, could you tell us how it all began? I'm really curious about this.
 
-Dr. James: Absolutely, Sarah! Java's story is quite interesting. It all started back in 1991 with something called Project Green at Sun Microsystems.
+Dr. James: Absolutely, Sarah! You know, Java's story is, well, it's quite interesting actually. It all started back in 1991 with something called Project Green at Sun Microsystems. And, uh, it's not what you might expect!
 
-Sarah: And the key people behind this revolution?
+Sarah: Oh, interesting! And the key people behind this revolution? Who were the masterminds here?
 
-Dr. James: Well, we have to give credit to James Gosling - he's known as the "Father of Java". He worked alongside Mike Sheridan and Patrick Naughton to create what would become one of the world's most important programming languages.
+Dr. James: Well, we have to give credit to James Gosling - he's known as the "Father of Java," you know. He worked alongside, um, Mike Sheridan and Patrick Naughton to create what would become - and this is really amazing - one of the world's most important programming languages.
 
-Sarah: And what were their original goals? What problem were they trying to solve?
+Sarah: That's fascinating! And what were their original goals? I mean, what problem were they actually trying to solve back then?
 
-Dr. James: Great question! They had five main goals: Platform Independence, Network-oriented design, Security, Simplicity, and Object-oriented programming. Little did they know they were creating something that would revolutionize software development!
+Dr. James: Great question, Sarah! They had, uh, they had five main goals, actually: Platform Independence, Network-oriented design, Security, Simplicity, and Object-oriented programming. And here's the thing - little did they know they were creating something that would, well, completely revolutionize software development! It's incredible when you think about it.
 -->
 
 ---
