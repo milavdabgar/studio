@@ -210,9 +210,11 @@ class YouTubeCleanScriptGenerator:
         # Normalize whitespace
         text = re.sub(r'\s+', ' ', text)
         
-        # Remove only immediate word repetitions (YouTube artifacts)
-        # "word word" -> "word" but keep natural speech patterns
-        text = re.sub(r'\b(\w+)\s+\1\b', r'\1', text)
+        # Remove immediate word repetitions (YouTube artifacts)
+        # "word word" -> "word", "word. word." -> "word.", "word, word" -> "word"
+        text = re.sub(r'\b(\w+)\s+\1\b', r'\1', text)  # word word -> word
+        text = re.sub(r'\b(\w+)([.!?])\s+\1\2', r'\1\2', text)  # word. word. -> word.
+        text = re.sub(r'\b(\w+),\s+\1\b', r'\1', text)  # word, word -> word
         
         # Keep natural speech fillers like "um", "uh", "well" - they make it human!
         
