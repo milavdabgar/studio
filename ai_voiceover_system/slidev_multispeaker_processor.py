@@ -41,12 +41,13 @@ except ImportError:
 class SlidevMultiSpeakerProcessor:
     """Enhanced processor with multi-speaker TTS and SSML support"""
     
-    def __init__(self, slidev_file):
+    def __init__(self, slidev_file, with_clicks=False):
         self.slides_dir = "temp_multispeaker_slides"
         self.slidev_md_file = slidev_file
         self.temp_audio_files = []
-        self.processing_mode = None
+        self.processing_mode = 'click' if with_clicks else 'slide'
         self.tts_client = None
+        self.with_clicks = with_clicks
         
         print("🎯 Slidev Multi-Speaker Video Processor")
         print("=" * 50)
@@ -448,12 +449,12 @@ class SlidevMultiSpeakerProcessor:
         print("🎬 Multi-Speaker Video Creation")
         print("=" * 50)
         
-        # Step 1: Detect processing mode
-        mode = self.detect_processing_mode(slidev_file)
-        
-        if mode == 'click':
+        # Use the mode set during initialization
+        if self.processing_mode == 'click':
+            print("🖱️ Click-based processing enabled (--with-clicks)")
             return self._create_click_synchronized_multispeaker_video(slidev_file, max_slides)
         else:
+            print("📄 Slide-based processing (default)")
             return self._create_slide_level_multispeaker_video(slidev_file, max_slides)
     
     def _create_click_synchronized_multispeaker_video(self, slidev_file, max_slides=None):
@@ -779,11 +780,14 @@ Requirements:
 Examples:
   python slidev_multispeaker_processor.py slides-conversational.md
   python slidev_multispeaker_processor.py slides-conversational.md 3
+  python slidev_multispeaker_processor.py slides-conversational.md --with-clicks
+  python slidev_multispeaker_processor.py slides-conversational.md 5 --with-clicks
         """
     )
     
     parser.add_argument('slidev_file', help='Path to Slidev markdown file')
     parser.add_argument('max_slides', nargs='?', type=int, help='Maximum number of slides to process')
+    parser.add_argument('--with-clicks', action='store_true', help='Enable click-based processing (step-by-step reveals)')
     
     args = parser.parse_args()
     
@@ -796,7 +800,7 @@ Examples:
         print(f"⚠️ Warning: File doesn't have .md extension: {args.slidev_file}")
     
     # Create processor
-    processor = SlidevMultiSpeakerProcessor(args.slidev_file)
+    processor = SlidevMultiSpeakerProcessor(args.slidev_file, with_clicks=args.with_clicks)
     
     print(f"\n📁 Input file: {args.slidev_file}")
     if args.max_slides:

@@ -153,9 +153,13 @@ layout: default
 </div>
 
 <!--
-Dr. James: And the material gives this mnemonic, C or VC, to remember the advantages. What's that about?
+Dr. James: And the material gives this mnemonic, C-E-R-V-C, to remember the advantages. What's that about?
 
-Sarah: Ah, yes. C or ER or VC. Okay, so C is for clarity. The instructions need to be totally unambiguous. No confusion for the programmer or the machine. Right. E is efficiency. Good algorithms, they try to use resources, well, time, memory. Think about sorting huge amounts of data. Yeah, you want that fast. Exactly. Efficiency matters. R is reusability. Often, you build an algorithm for one thing, but you can adapt it or reuse parts for similar problems later. Saves a lot of work. V is verification. Clear steps mean it's easier to test and debug, make sure it actually works correctly. Before coding it up.
+[click] Sarah: Let's start with C - for clarity. The instructions need to be totally unambiguous. No confusion for the programmer or the machine.
+
+[click] Sarah: E is efficiency. Good algorithms try to use resources well - time, memory. Think about sorting huge amounts of data. Yeah, you want that fast. Efficiency matters.
+
+[click] Sarah: R is reusability. Often, you build an algorithm for one thing, but you can adapt it or reuse parts for similar problems later. Saves a lot of work.
 -->
 
 ---
@@ -203,11 +207,11 @@ layout: default
 </div>
 
 <!--
-Dr. James: Precisely.
+[click] Sarah: V is verification. Clear steps mean it's easier to test and debug, make sure it actually works correctly. Before coding it up.
 
-Sarah: And the last C is communication. An algorithm is like a blueprint. It helps different people understand the solution, work together on it.
+[click] Sarah: And the last C is communication. An algorithm is like a blueprint. It helps different people understand the solution, work together on it.
 
-Dr. James: So it's really about planning it out first. Okay. Another tool for planning is the flow chart. How do they fit in?
+[click] Dr. James: So it's really about planning it out first. Okay. Another tool for planning is the flow chart. How do they fit in?
 -->
 
 ---
@@ -256,11 +260,11 @@ class: text-center
 </div>
 
 <!--
-Sarah: Flow charts are basically visual algorithms. Instead of just text, you use standard symbols and arrows to show the sequence, the decisions, the flow of logic.
+[click] Sarah: Flow charts are basically visual algorithms. Instead of just text, you use standard symbols and arrows to show the sequence, the decisions, the flow of logic.
 
-Dr. James: More graphical.
+[click] Dr. James: More graphical.
 
-Sarah: Yeah, much more graphical. Sometimes easier to grasp the overall structure quickly, like looking at a map instead of reading directions. Got it.
+[click] Sarah: Yeah, much more graphical. Sometimes easier to grasp the overall structure quickly, like looking at a map instead of reading directions.
 -->
 
 ---
@@ -318,17 +322,13 @@ layout: default
 </div>
 
 <!--
-Dr. James: And like algorithms, there are rules for good flow charts. The source mentions PDRSC.
+Dr. James: And like algorithms, there are rules for good flow charts. The source mentions P-D-R-S-C.
 
-Sarah: PDRSC. P, use the proper symbols. Rectangles for actions, diamonds for decisions, you know, the standard shape so everyone reads it the same way.
+[click] Sarah: P - use the proper symbols. Rectangles for actions, diamonds for decisions, you know, the standard shapes so everyone reads it the same way.
 
-Dr. James: Okay.
+[click] Sarah: D - direction. Generally top to bottom, left to right. Keeps it easy to follow. Standard flow.
 
-Sarah: D, direction. Generally top to bottom, left to right. Keeps it easy to follow. Standard flow.
-
-Dr. James: Right.
-
-Sarah: R, single entry exit. Should have one clear start, one clear end. Keeps it organized. S, clarity. Keep the text inside the symbols concise, easy to understand steps. And C, consistency. Use the same level of detail and symbols throughout.
+[click] Sarah: R - single entry exit. Should have one clear start, one clear end. Keeps it organized.
 -->
 
 ---
@@ -376,7 +376,11 @@ layout: default
 </div>
 
 <!--
-Dr. James: Makes sense. The guide even gives an example. Calculating simple interest, how would that look as a flow chart? Okay.
+[click] Sarah: S - clarity. Keep the text inside the symbols concise, easy to understand steps.
+
+[click] Sarah: And C - consistency. Use the same level of detail and symbols throughout.
+
+[click] Dr. James: Makes sense. The guide even gives an example. Calculating simple interest, how would that look as a flow chart?
 -->
 
 ---
@@ -435,21 +439,17 @@ class: text-center
 </div>
 
 <!--
-Sarah: So you'd start with a start oval, then an arrow to a parallelogram, input PRT, principal rate time.
+[click] Sarah: So you'd start with a start oval.
 
-Dr. James: The inputs. Right.
+[click] Sarah: Then an arrow to a parallelogram for input - P, R, T - principal, rate, time.
 
-Sarah: Then an arrow to a rectangle for the calculation. SI equals PRT 100. That's the process.
+[click] Sarah: Then an arrow to a rectangle for the calculation. SI equals P times R times T divided by 100. That's the process.
 
-Dr. James: The formula.
+[click] Sarah: Arrow again to another parallelogram for output - display SI, show the result.
 
-Sarah: Yep.
+[click] Sarah: And finally, an arrow to an end oval.
 
-Dr. James: Arrow again to another parallelogram, output SI, show the result. And finally, an arrow to an end oval.
-
-Sarah: So if I wanted to figure out interest on, say, a quick loan.
-
-Dr. James: Exactly. It maps out those exact steps, get the numbers, do the math, show the answer. Very clear.
+[click] Dr. James: Exactly. It maps out those exact steps - get the numbers, do the math, show the answer. Very clear path.
 -->
 
 ---
@@ -506,7 +506,11 @@ layout: default
 <!--
 Sarah: Okay. Solid foundation for problem solving. Let's shift into Python itself. Assignment operators. What are these?
 
-Dr. James: Assignment operators are how you give values to variables in Python. The basic one is just the equal sign. Simple enough. But Python has these shorthand operators too. Like instead of XX plus 5, you can just write X plus up to 5. Combines the math and the assignment. Ah, shortcuts. Yeah. They make code shorter, often a bit easier to read, especially if you're updating the same variable a lot.
+[click] Dr. James: Assignment operators are how you give values to variables in Python. The basic one is just the equal sign. Simple enough.
+
+[click] Dr. James: But Python has these shorthand operators too. They combine math and assignment.
+
+[click] Dr. James: Like instead of writing x equals x plus 5, you can just write x plus equals 5. Shortcuts that make code shorter and often easier to read.
 -->
 
 ---
@@ -559,13 +563,13 @@ Each operator **pairs an operation** with assignment
 </div>
 
 <!--
-Sarah: And the guide lists a whole bunch, plus any errors, even things like NMN.
+[click] Sarah: And the guide lists a whole bunch - addition, subtraction, multiplication, division, integer division, modulus, even exponentiation.
 
-Dr. James: It's quite a set. Each one pairs an operation like multiplication or maybe integer division with assignment. The mnemonic they use is value.
+[click] Dr. James: It's quite a set. Each one pairs an operation with assignment.
 
-Sarah: Variable assignment is like updating existing values. Sort of captures the idea that you're usually modifying what's already in the variable. It's concise and sometimes it can even be slightly more efficient.
+[click] Sarah: Variable assignment is like updating existing values. You're usually modifying what's already in the variable. It's concise and sometimes more efficient.
 
-Dr. James: Right. Efficiency and cleaner code. Always good. Next up, Python data types. This feels really fundamental. Oh, absolutely.
+[click] Dr. James: Right. Efficiency and cleaner code. Always good. Next up, Python data types. This feels really fundamental.
 -->
 
 ---
@@ -595,7 +599,13 @@ class: text-center
 </div>
 
 <!--
-Sarah: Data types just classify what kind of value a variable can hold. Is it a whole number? Text? A true false thing. The computer handles different types differently.
+[click] Sarah: Data types classify what kind of value a variable can hold. Is it a whole number? Text? True or false?
+
+[click] Sarah: The computer handles different types differently.
+
+[click] Dr. James: This feels really fundamental.
+
+Sarah: Oh, absolutely!
 -->
 
 ---
@@ -643,9 +653,11 @@ layout: default
 </div>
 
 <!--
-Dr. James: And Python figures this out mostly on its own, right? Dynamically typed.
+[click] Dr. James: And Python figures this out mostly on its own, right? Dynamically typed.
 
-Sarah: It is dynamically typed, yes. You often don't have to declare the type explicitly. But understanding the types is still crucial for writing code that works correctly and, again, efficiently.
+[click] Sarah: It is dynamically typed, yes. You often don't have to declare the type explicitly.
+
+[click] Sarah: But understanding the types is still crucial for writing code that works correctly and efficiently.
 -->
 
 ---
@@ -714,11 +726,15 @@ layout: default
 </div>
 
 <!--
-Dr. James: And there are quite a few types listed. Int, float, stripe, bool, list, tuple, set, dict.
+[click] Dr. James: And there are quite a few types. Starting with numeric types - int for whole numbers, float for decimals, complex for complex numbers.
 
-Sarah: Even complex and untyped.
+[click] Sarah: Then text and boolean - string for text, bool for True or False.
 
-Dr. James: It's a good range. You've got int,
+[click] Dr. James: And collections - list for ordered mutable data, tuple for ordered immutable.
+
+[click] Sarah: Set for unordered unique items, dict for key-value pairs.
+
+Dr. James: It's a good range. You've got everything you need.
 -->
 
 ---
@@ -773,5 +789,21 @@ class: text-center
 </div>
 
 <!--
-Dr. James: It's a good range. You've got int, and we've covered the fundamentals - algorithms as step-by-step procedures, flow charts for visual problem solving, assignment operators for efficient coding, and data types as the foundation of variables. These concepts give you solid foundations for Python programming!
+[click] Dr. James: So let's wrap up what we've covered today. Algorithms as step-by-step procedures.
+
+[click] Sarah: Flow charts for visual problem solving.
+
+[click] Dr. James: Assignment operators for efficient coding.
+
+[click] Sarah: And data types as the foundation of variables.
+
+[click] Dr. James: Planning first is crucial.
+
+[click] Sarah: Visual thinking helps understanding.
+
+[click] Dr. James: Efficiency matters in code.
+
+[click] Sarah: And types are fundamental, even when dynamic.
+
+Dr. James: These concepts give you solid foundations for Python programming! You're ready for the next steps.
 -->
