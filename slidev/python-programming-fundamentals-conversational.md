@@ -685,13 +685,13 @@ layout: default
 
 ## 🔢 **Numeric Types**
 
-<v-clicks>
+<v-click at="1">
 
 - **`int`** - Integers (whole numbers)
 - **`float`** - Decimal numbers
 - **`complex`** - Complex numbers
 
-</v-clicks>
+</v-click>
 
 </div>
 
@@ -699,12 +699,12 @@ layout: default
 
 ## 📝 **Text & Boolean**
 
-<v-clicks>
+<v-click at="2">
 
 - **`str`** - String (text)
 - **`bool`** - Boolean (True/False)
 
-</v-clicks>
+</v-click>
 
 </div>
 
@@ -716,14 +716,14 @@ layout: default
 
 <div class="grid grid-cols-2 gap-6">
 
-<div v-click="6">
+<div v-click="3">
 
 - **`list`** - Ordered, mutable
 - **`tuple`** - Ordered, immutable
 
 </div>
 
-<div v-click="7">
+<div v-click="4">
 
 - **`set`** - Unordered, unique items
 - **`dict`** - Key-value pairs
@@ -734,9 +734,7 @@ layout: default
 
 </div>
 
-<div v-click="8" class="mt-8 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
-<strong>🎯 Range:</strong> "It's a good range. You've got int..." - and so much more!
-</div>
+<!-- This final comment doesn't have a [click] marker, so no v-click needed -->
 
 <!--
 [click] Dr. James: And there are quite a few types. Starting with numeric types - int for whole numbers, float for decimals, complex for complex numbers.
@@ -783,7 +781,8 @@ class: text-center
 
 </div>
 
-<div v-click="9" class="mt-12">
+<!-- Final statement doesn't have [click] marker, so no v-click needed -->
+<div class="mt-12">
 
 ## 🚀 **Ready for Next Steps**
 
