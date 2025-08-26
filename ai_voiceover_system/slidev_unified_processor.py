@@ -14,7 +14,8 @@ Usage:
     python slidev_unified_processor.py <slidev_file.md> [max_slides] [--tts=provider]
     
 TTS Providers:
-    - gtts (default): Google TTS UK English
+    - gtts (default): Google TTS UK English (free)
+    - gcloud: Google Cloud TTS (premium, HD voices)
     - elevenlabs: ElevenLabs with voice cloning
     - coqui: Coqui TTS neural models
     - auto: Automatic fallback hierarchy
@@ -28,6 +29,8 @@ import subprocess
 import argparse
 from pathlib import Path
 import requests
+import json
+import base64
 
 # Set TTS environment
 os.environ['COQUI_TOS_AGREED'] = '1'
@@ -52,11 +55,28 @@ try:
 except ImportError:
     COQUI_TTS_AVAILABLE = False
 
+# Google Cloud TTS availability check
+try:
+    # Check if gcloud CLI is available and authenticated
+    result = subprocess.run(['gcloud', 'auth', 'list', '--filter=status:ACTIVE', '--format=value(account)'], 
+                          capture_output=True, text=True, timeout=5)
+    GCLOUD_AVAILABLE = bool(result.returncode == 0 and result.stdout.strip())
+except (FileNotFoundError, subprocess.TimeoutExpired):
+    GCLOUD_AVAILABLE = False
+
 # ElevenLabs configuration
 ELEVENLABS_API_KEY = os.getenv('ELEVENLABS_API_KEY')
 ELEVENLABS_VOICE_ID = "Milav English"
 ELEVENLABS_API_URL = "https://api.elevenlabs.io/v1"
 ELEVENLABS_AVAILABLE = bool(ELEVENLABS_API_KEY)
+
+# Google Cloud TTS configuration
+GCLOUD_TTS_API_URL = "https://texttospeech.googleapis.com/v1/text:synthesize"
+GCLOUD_DEFAULT_VOICE = "en-US-Chirp3-HD-Achernar"  # Latest HD Chirp voice
+GCLOUD_HD_VOICES = [
+    "en-US-Chirp3-HD-Achernar", "en-US-Studio-M", "en-US-Studio-O",
+    "en-GB-Studio-B", "en-GB-Studio-C", "en-AU-Standard-B"
+]
 
 class SlidevUnifiedProcessor:
     """Unified processor combining all Slidev video generation capabilities"""
@@ -72,6 +92,9 @@ class SlidevUnifiedProcessor:
         self.elevenlabs_voice_id = None
         self.coqui_vits_model = None
         self.coqui_tacotron2_model = None
+        self.gcloud_access_token = None
+        self.gcloud_project_id = None
+        self.gcloud_voice_name = GCLOUD_DEFAULT_VOICE
         
         print("🎯 Slidev Unified Video Processor")
         print("=" * 50)
@@ -82,7 +105,8 @@ class SlidevUnifiedProcessor:
         """Display available capabilities and TTS providers"""
         print(f"📦 Available Components:")
         print(f"   ✅ MoviePy: {MOVIEPY_AVAILABLE}")
-        print(f"   {'✅' if GTTS_AVAILABLE else '❌'} Google TTS: {GTTS_AVAILABLE}")
+        print(f"   {'✅' if GTTS_AVAILABLE else '❌'} Google TTS (Free): {GTTS_AVAILABLE}")
+        print(f"   {'✅' if GCLOUD_AVAILABLE else '❌'} Google Cloud TTS: {GCLOUD_AVAILABLE}")
         print(f"   {'✅' if ELEVENLABS_AVAILABLE else '❌'} ElevenLabs: {ELEVENLABS_AVAILABLE}")
         print(f"   {'✅' if COQUI_TTS_AVAILABLE else '❌'} Coqui TTS: {COQUI_TTS_AVAILABLE}")
         
@@ -91,6 +115,8 @@ class SlidevUnifiedProcessor:
         available_providers = []
         if GTTS_AVAILABLE:
             available_providers.append("gtts")
+        if GCLOUD_AVAILABLE:
+            available_providers.append("gcloud")
         if ELEVENLABS_AVAILABLE:
             available_providers.append("elevenlabs")
         if COQUI_TTS_AVAILABLE:
@@ -104,8 +130,13 @@ class SlidevUnifiedProcessor:
             self._initialize_elevenlabs()
         elif self.tts_provider == 'coqui' and COQUI_TTS_AVAILABLE:
             self._initialize_coqui()
+        elif self.tts_provider == 'gcloud' and GCLOUD_AVAILABLE:
+            self._initialize_gcloud()
         elif self.tts_provider == 'gtts' and not GTTS_AVAILABLE:
-            print("⚠️ Google TTS not available, switching to auto fallback")
+            print("⚠️ Google TTS (free) not available, switching to auto fallback")
+            self.tts_provider = 'auto'
+        elif self.tts_provider == 'gcloud' and not GCLOUD_AVAILABLE:
+            print("⚠️ Google Cloud TTS not available, switching to auto fallback")
             self.tts_provider = 'auto'
     
     def _initialize_elevenlabs(self):
@@ -143,6 +174,38 @@ class SlidevUnifiedProcessor:
             print("   ✅ Coqui TTS ready (models load on demand)")
         except Exception as e:
             print(f"   ❌ Coqui TTS initialization error: {str(e)}")
+            self.tts_provider = 'auto'  # Fallback
+    
+    def _initialize_gcloud(self):
+        """Initialize Google Cloud TTS authentication and project"""
+        try:
+            print("☁️ Initializing Google Cloud TTS...")
+            
+            # Get access token
+            token_result = subprocess.run(['gcloud', 'auth', 'print-access-token'], 
+                                        capture_output=True, text=True, timeout=10)
+            if token_result.returncode != 0:
+                raise Exception("Failed to get access token")
+            
+            self.gcloud_access_token = token_result.stdout.strip()
+            
+            # Get project ID
+            project_result = subprocess.run(['gcloud', 'config', 'list', '--format=value(core.project)'], 
+                                          capture_output=True, text=True, timeout=10)
+            if project_result.returncode != 0:
+                raise Exception("Failed to get project ID")
+            
+            self.gcloud_project_id = project_result.stdout.strip()
+            
+            if not self.gcloud_project_id:
+                raise Exception("No active Google Cloud project found")
+            
+            print(f"   ✅ Google Cloud TTS ready")
+            print(f"   🏢 Project: {self.gcloud_project_id}")
+            print(f"   🎤 Voice: {self.gcloud_voice_name}")
+            
+        except Exception as e:
+            print(f"   ❌ Google Cloud TTS initialization error: {str(e)}")
             self.tts_provider = 'auto'  # Fallback
     
     def detect_processing_mode(self, slidev_file):
@@ -431,6 +494,8 @@ class SlidevUnifiedProcessor:
             return self._generate_audio_elevenlabs(script, output_file)
         elif self.tts_provider == 'coqui':
             return self._generate_audio_coqui(script, output_file)
+        elif self.tts_provider == 'gcloud':
+            return self._generate_audio_gcloud(script, output_file)
         elif self.tts_provider == 'auto':
             return self._generate_audio_auto_fallback(script, output_file)
         else:
@@ -528,16 +593,107 @@ class SlidevUnifiedProcessor:
             print(f"   ❌ Coqui TTS failed: {str(e)[:50]}...")
             return False
     
+    def _generate_audio_gcloud(self, script, output_file):
+        """Generate audio using Google Cloud TTS API"""
+        if not GCLOUD_AVAILABLE or not self.gcloud_access_token:
+            return False
+        
+        try:
+            print(f"   ☁️ Generating audio with Google Cloud TTS ({self.gcloud_voice_name})")
+            
+            headers = {
+                "Content-Type": "application/json",
+                "X-Goog-User-Project": self.gcloud_project_id,
+                "Authorization": f"Bearer {self.gcloud_access_token}"
+            }
+            
+            # Prepare request payload (using exact format from curl example)
+            payload = {
+                "input": {
+                    "markup": script  # Use markup instead of text for better control
+                },
+                "voice": {
+                    "languageCode": "en-US",
+                    "name": self.gcloud_voice_name,
+                    "voiceClone": {}  # Include empty voiceClone as in example
+                },
+                "audioConfig": {
+                    "audioEncoding": "LINEAR16"  # Keep it simple like the curl example
+                }
+            }
+            
+            response = requests.post(
+                GCLOUD_TTS_API_URL,
+                headers=headers,
+                json=payload,
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                audio_content = result.get('audioContent')
+                
+                if audio_content:
+                    # Decode base64 audio content
+                    audio_data = base64.b64decode(audio_content)
+                    
+                    # Save as WAV first, then convert to MP3 if needed
+                    wav_file = output_file.replace('.mp3', '.wav')
+                    with open(wav_file, 'wb') as f:
+                        f.write(audio_data)
+                    
+                    # Convert WAV to MP3 using ffmpeg if available
+                    if output_file.endswith('.mp3'):
+                        try:
+                            subprocess.run([
+                                'ffmpeg', '-i', wav_file, '-acodec', 'libmp3lame', 
+                                '-ab', '128k', '-y', output_file
+                            ], capture_output=True, check=True, timeout=30)
+                            
+                            # Remove temporary WAV file
+                            if os.path.exists(wav_file):
+                                os.remove(wav_file)
+                        except (subprocess.CalledProcessError, FileNotFoundError):
+                            # Fallback: rename WAV to MP3 (will work but not optimal)
+                            if os.path.exists(wav_file):
+                                os.rename(wav_file, output_file)
+                    
+                    if os.path.exists(output_file) and os.path.getsize(output_file) > 1000:
+                        print(f"   ✅ Audio generated successfully")
+                        return True
+                    else:
+                        print(f"   ❌ Audio file too small or not created")
+                        return False
+                else:
+                    print(f"   ❌ No audio content in response")
+                    return False
+            else:
+                print(f"   ❌ Google Cloud TTS API error: {response.status_code}")
+                if response.status_code == 401:
+                    print(f"   ⚠️ Authentication failed. Run: gcloud auth login")
+                elif response.status_code == 403:
+                    print(f"   ⚠️ Access denied. Enable Cloud TTS API for project {self.gcloud_project_id}")
+                return False
+                
+        except Exception as e:
+            print(f"   ❌ Google Cloud TTS failed: {str(e)[:50]}...")
+            return False
+    
     def _generate_audio_auto_fallback(self, script, output_file):
         """Generate audio using automatic fallback hierarchy"""
-        # Try Google TTS UK first (default preference)
-        if GTTS_AVAILABLE:
-            if self._generate_audio_gtts(script, output_file):
+        # Try Google Cloud TTS first (highest quality)
+        if GCLOUD_AVAILABLE and self.gcloud_access_token:
+            if self._generate_audio_gcloud(script, output_file):
                 return True
         
-        # Try ElevenLabs if available
+        # Try ElevenLabs if available (voice cloning)
         if ELEVENLABS_AVAILABLE and self.elevenlabs_voice_id:
             if self._generate_audio_elevenlabs(script, output_file):
+                return True
+        
+        # Try free Google TTS UK (reliable fallback)
+        if GTTS_AVAILABLE:
+            if self._generate_audio_gtts(script, output_file):
                 return True
         
         # Try Coqui TTS as last resort
@@ -869,7 +1025,8 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 TTS Providers:
-  gtts        Google TTS UK English (default)
+  gtts        Google TTS UK English (free, default)
+  gcloud      Google Cloud TTS (premium HD voices, requires gcloud CLI)
   elevenlabs  ElevenLabs with voice cloning (requires ELEVENLABS_API_KEY)
   coqui       Coqui TTS neural models
   auto        Automatic fallback hierarchy
@@ -880,14 +1037,21 @@ Processing Modes:
 
 Examples:
   python slidev_unified_processor.py slides.md
-  python slidev_unified_processor.py slides.md 5 --tts=elevenlabs
+  python slidev_unified_processor.py slides.md 5 --tts=gcloud
+  python slidev_unified_processor.py slides.md --tts=elevenlabs
   python slidev_unified_processor.py slides.md --tts=auto
+
+Google Cloud Setup:
+  1. Install gcloud CLI: https://cloud.google.com/sdk/docs/install
+  2. Login: gcloud auth login
+  3. Set project: gcloud config set project YOUR_PROJECT_ID
+  4. Enable API: gcloud services enable texttospeech.googleapis.com
         """
     )
     
     parser.add_argument('slidev_file', help='Path to Slidev markdown file')
     parser.add_argument('max_slides', nargs='?', type=int, help='Maximum number of slides to process')
-    parser.add_argument('--tts', choices=['gtts', 'elevenlabs', 'coqui', 'auto'], 
+    parser.add_argument('--tts', choices=['gtts', 'gcloud', 'elevenlabs', 'coqui', 'auto'], 
                        default='gtts', help='TTS provider to use (default: gtts)')
     
     args = parser.parse_args()
