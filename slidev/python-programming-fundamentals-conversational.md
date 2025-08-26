@@ -61,27 +61,20 @@ layout: default
 
 - **Step-by-step procedure**
 - Solves problems in **finite sequence**
-- Like a **recipe** for computers
-- Set of **instructions** → **specific result**
 
 </v-click>
 
 </div>
 
-<div>
+<div v-click at="2">
 
-## 💡 **Key Insight**
-
-<v-click at="2">
+## 💡 **Recipe Analogy**
 
 **"Like a recipe. Exactly like a recipe!"**
 
 - Clear, unambiguous steps
 - Finite and well-defined
-- Produces consistent results
-- Foundation of **all software**
-
-</v-click>
+- Set of **instructions** → **specific result**
 
 </div>
 
