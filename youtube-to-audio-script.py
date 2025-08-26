@@ -348,6 +348,10 @@ class YouTubeAudioScriptGenerator:
             # Fallback: Use our existing pattern-based detection
             return self._fallback_speaker_detection(transcription, speaker_names)
         
+        # FIRST: Determine correct gender mapping based on content analysis
+        speaker_segments = diarization['segments']
+        self._speaker_gender_mapping = self._determine_gender_mapping(speaker_segments, transcription, speaker_names)
+        
         # Get all words with timestamps from Whisper
         all_words = []
         for segment in transcription.get('segments', []):
@@ -358,8 +362,7 @@ class YouTubeAudioScriptGenerator:
                     'end': word_info['end']
                 })
         
-        # Align diarization with words
-        speaker_segments = diarization['segments']
+        # Align diarization with words (now using correct gender mapping)
         current_segment = {'speaker': None, 'words': [], 'start': None, 'end': None}
         
         for word_info in all_words:
@@ -544,14 +547,177 @@ class YouTubeAudioScriptGenerator:
         primary_speaker = max(speaker_votes.items(), key=lambda x: x[1])[0]
         return primary_speaker
     
-    def _map_speaker_id_to_name(self, speaker_id: str, speaker_names: Tuple[str, str]) -> str:
-        """Map pyannote speaker ID to human-readable name with correct gender mapping"""
-        # Fixed gender mapping: SPEAKER_00 is typically the female voice, SPEAKER_01 is male
-        # Swapped the assignments to fix the gender reversal issue
-        if speaker_id.endswith('0') or speaker_id == 'SPEAKER_00':
-            return speaker_names[1]  # Second speaker (Female)
+    def _determine_gender_mapping(self, speaker_segments: List[Dict], transcription: Dict, 
+                                 speaker_names: Tuple[str, str]) -> Dict[str, str]:
+        """Determine which speaker ID corresponds to which gender by analyzing conversation content"""
+        print("🔍 Analyzing conversation content to determine speaker genders...")
+        
+        # Get all speaker IDs from diarization
+        speaker_ids = list(set(seg['speaker'] for seg in speaker_segments))
+        if len(speaker_ids) != 2:
+            print(f"⚠️  Expected 2 speakers, found {len(speaker_ids)}. Using default mapping.")
+            return {speaker_ids[0]: speaker_names[0], speaker_ids[1] if len(speaker_ids) > 1 else speaker_ids[0]: speaker_names[1]}
+        
+        # Get text samples for each speaker ID from transcription
+        speaker_texts = {speaker_id: [] for speaker_id in speaker_ids}
+        
+        # Collect text samples by analyzing which segments belong to which speaker
+        for segment in transcription.get('segments', []):
+            for word_info in segment.get('words', []):
+                word_start = word_info['start']
+                
+                # Find which speaker segment this word belongs to
+                for speaker_seg in speaker_segments:
+                    if (speaker_seg['start'] <= word_start <= speaker_seg['end']):
+                        speaker_id = speaker_seg['speaker']
+                        speaker_texts[speaker_id].append(word_info['text'])
+                        break
+        
+        # Analyze content patterns to determine gender roles
+        speaker_analysis = {}
+        for speaker_id, words in speaker_texts.items():
+            text_sample = ' '.join(words[:100])  # First 100 words for analysis
+            analysis = self._analyze_speaker_patterns(text_sample)
+            speaker_analysis[speaker_id] = analysis
+            print(f"   {speaker_id}: {analysis['role']} (confidence: {analysis['confidence']:.2f})")
+        
+        # Determine mapping based on analysis
+        gender_mapping = {}
+        
+        # Sort speakers by host-like confidence (higher = more host-like)
+        sorted_speakers = sorted(speaker_analysis.items(), 
+                               key=lambda x: x[1]['host_score'], reverse=True)
+        
+        # Map based on typical podcast/interview structure
+        # Typically: Male is often the host/interviewer, Female is often the expert/guest
+        # But we analyze content to be sure
+        host_speaker_id = sorted_speakers[0][0]  # Most host-like
+        guest_speaker_id = sorted_speakers[1][0]  # Most guest-like
+        
+        # Analyze first few segments to see who starts the conversation
+        first_speaker = None
+        if speaker_segments:
+            first_speaker = speaker_segments[0]['speaker']
+        
+        # Decision logic based on content analysis
+        host_analysis = speaker_analysis[host_speaker_id]
+        guest_analysis = speaker_analysis[guest_speaker_id]
+        
+        # If one speaker is clearly more host-like (welcomes, asks questions, manages conversation)
+        if host_analysis['host_score'] > guest_analysis['host_score'] + 0.3:  # Clear host pattern
+            # Host is often male in typical podcast format
+            if "Male" in speaker_names[0] or "Dr." in speaker_names[0]:
+                gender_mapping[host_speaker_id] = speaker_names[0]  # Male host
+                gender_mapping[guest_speaker_id] = speaker_names[1]  # Female guest
+            else:
+                # Analyze actual content for gender cues
+                gender_mapping = self._analyze_gender_from_content(speaker_analysis, speaker_names)
         else:
-            return speaker_names[0]  # First speaker (Male)
+            # Similar host scores, use content-based gender analysis
+            gender_mapping = self._analyze_gender_from_content(speaker_analysis, speaker_names)
+        
+        print(f"✅ Gender mapping determined: {gender_mapping}")
+        return gender_mapping
+    
+    def _analyze_speaker_patterns(self, text_sample: str) -> Dict:
+        """Analyze text patterns to determine speaker role and characteristics"""
+        text_lower = text_sample.lower()
+        
+        # Host/interviewer patterns
+        host_patterns = [
+            r'\b(welcome|today|let\'s|tell us|explain|help us understand)\b',
+            r'\b(what|how|why|when|where)\b.*\?',  # Questions
+            r'\b(that\'s interesting|sounds like|fascinating|amazing)\b',  # Reactions
+            r'\b(so|now|next|moving on|let\'s talk about)\b',  # Transitions
+        ]
+        
+        # Expert/guest patterns  
+        expert_patterns = [
+            r'\b(actually|basically|essentially|fundamentally|technically)\b',
+            r'\b(the key|the important thing|what happens|you see|think of it)\b',
+            r'\b(for example|specifically|in practice|the data shows)\b',
+            r'\b(algorithm|function|variable|data|code|implementation)\b',  # Technical terms
+        ]
+        
+        # Gender-neutral patterns (confidence/authority indicators)
+        authority_patterns = [
+            r'\b(obviously|clearly|definitely|absolutely|precisely)\b',
+            r'\b(research shows|studies indicate|we found that)\b',
+        ]
+        
+        # Count pattern matches
+        host_score = sum(len(re.findall(pattern, text_lower)) for pattern in host_patterns)
+        expert_score = sum(len(re.findall(pattern, text_lower)) for pattern in expert_patterns)
+        authority_score = sum(len(re.findall(pattern, text_lower)) for pattern in authority_patterns)
+        
+        # Normalize by text length
+        text_length = len(text_sample.split())
+        if text_length > 0:
+            host_score = host_score / text_length * 100
+            expert_score = expert_score / text_length * 100
+            authority_score = authority_score / text_length * 100
+        
+        # Determine role
+        if host_score > expert_score:
+            role = "host/interviewer"
+            confidence = host_score / (host_score + expert_score + 0.01)
+        else:
+            role = "expert/guest" 
+            confidence = expert_score / (host_score + expert_score + 0.01)
+        
+        return {
+            'role': role,
+            'host_score': host_score,
+            'expert_score': expert_score,
+            'authority_score': authority_score,
+            'confidence': confidence
+        }
+    
+    def _analyze_gender_from_content(self, speaker_analysis: Dict, speaker_names: Tuple[str, str]) -> Dict[str, str]:
+        """Analyze gender based on content patterns and speaker names"""
+        # This is a fallback - in a real implementation, you might use voice analysis
+        # For now, we'll use the speaker who starts the conversation and content patterns
+        
+        speaker_ids = list(speaker_analysis.keys())
+        
+        # Simple heuristic: if one speaker is much more host-like, assign based on typical roles
+        scores = [(sid, analysis['host_score']) for sid, analysis in speaker_analysis.items()]
+        scores.sort(key=lambda x: x[1], reverse=True)
+        
+        host_speaker = scores[0][0]
+        guest_speaker = scores[1][0]
+        
+        # Default assignment based on common podcast patterns
+        # But this should be improved with actual voice analysis in the future
+        gender_mapping = {}
+        
+        # Check speaker names to understand expected genders
+        if "Male" in speaker_names and "Female" in speaker_names:
+            male_name = next(name for name in speaker_names if "Male" in name)
+            female_name = next(name for name in speaker_names if "Female" in name)
+            
+            # Assign based on first speaker (who usually welcomes/introduces)
+            # This is a heuristic that may need adjustment based on your specific content
+            gender_mapping[host_speaker] = male_name
+            gender_mapping[guest_speaker] = female_name
+        else:
+            # Custom names - assign based on order
+            gender_mapping[host_speaker] = speaker_names[0]
+            gender_mapping[guest_speaker] = speaker_names[1]
+        
+        return gender_mapping
+    
+    def _map_speaker_id_to_name(self, speaker_id: str, speaker_names: Tuple[str, str]) -> str:
+        """Map pyannote speaker ID to human-readable name - uses content-based mapping set by _determine_gender_mapping()"""
+        # Use the gender mapping determined by content analysis
+        if hasattr(self, '_speaker_gender_mapping') and self._speaker_gender_mapping:
+            return self._speaker_gender_mapping.get(speaker_id, speaker_names[0])
+        else:
+            # Fallback to default mapping if content analysis hasn't run yet
+            if speaker_id.endswith('0') or speaker_id == 'SPEAKER_00':
+                return speaker_names[0]  # First speaker (default)
+            else:
+                return speaker_names[1]  # Second speaker (default)
     
     def _fallback_speaker_detection(self, transcription: Dict, speaker_names: Tuple[str, str]) -> List[Dict]:
         """Enhanced fallback speaker detection with conversation flow analysis"""
