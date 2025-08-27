@@ -136,8 +136,8 @@ class YouTubeTimestampedScriptGenerator:
                 if '-->' in line:
                     timestamp_line = line
                 elif line and not line.startswith(('WEBVTT', 'Kind:', 'Language:', 'NOTE', 'align:', 'position:')):
-                    # Skip lines with HTML timing tags
-                    if not re.search(r'<\d+:\d+:\d+\.\d+>', line):
+                    # Skip lines with HTML timing tags inside text
+                    if not re.search(r'<\d+:\d+:\d+\.\d+>', line) and line.strip():
                         text_lines.append(line)
             
             if not timestamp_line or not text_lines:
@@ -159,6 +159,10 @@ class YouTubeTimestampedScriptGenerator:
                 start_time = self._parse_timestamp(start_str)
                 end_time = self._parse_timestamp(end_str)
                 
+                # Skip very short segments (likely duplicates) - less than 0.1 seconds
+                if (end_time - start_time) < 0.1:
+                    continue
+                
                 # Skip if times are invalid
                 if start_time >= end_time:
                     continue
@@ -176,8 +180,8 @@ class YouTubeTimestampedScriptGenerator:
         # Sort by time
         segments = sorted(segments, key=lambda x: x[1])
         
-        # Remove duplicate segments (same text with overlapping times)
-        deduplicated_segments = self._remove_duplicate_segments(segments)
+        # Remove duplicate segments and merge overlapping ones
+        deduplicated_segments = self._merge_overlapping_segments(segments)
         
         print(f"✅ {len(deduplicated_segments)} timed segments extracted (removed {len(segments) - len(deduplicated_segments)} duplicates)")
         return deduplicated_segments
@@ -226,43 +230,64 @@ class YouTubeTimestampedScriptGenerator:
         
         return text.strip()
     
-    def _remove_duplicate_segments(self, segments: List[Tuple[str, float, float]]) -> List[Tuple[str, float, float]]:
-        """Remove duplicate segments with same text and overlapping times"""
+    def _merge_overlapping_segments(self, segments: List[Tuple[str, float, float]]) -> List[Tuple[str, float, float]]:
+        """Remove only micro-duplicate segments, keep all legitimate content"""
         if not segments:
             return []
         
-        unique_segments = []
-        seen_texts = {}  # text -> (start_time, end_time)
+        # Sort segments by start time
+        segments = sorted(segments, key=lambda x: x[1])
         
-        for text, start_time, end_time in segments:
-            text_key = text.strip().lower()
+        merged_segments = []
+        
+        for i, (text, start_time, end_time) in enumerate(segments):
+            text_clean = text.strip().lower()
+            duration = end_time - start_time
             
-            if text_key in seen_texts:
-                # Check if this is a better version (longer duration or better timing)
-                prev_start, prev_end = seen_texts[text_key]
+            # Check if this is a micro-duplicate of the previous segment
+            is_duplicate = False
+            
+            if merged_segments:
+                prev_text, prev_start, prev_end = merged_segments[-1]
+                prev_text_clean = prev_text.strip().lower()
                 prev_duration = prev_end - prev_start
-                current_duration = end_time - start_time
                 
-                # Keep the version with longer duration (more complete timing)
-                if current_duration > prev_duration:
-                    # Replace the previous entry
-                    for i, (prev_text, prev_s, prev_e) in enumerate(unique_segments):
-                        if prev_text.strip().lower() == text_key:
-                            unique_segments[i] = (text, start_time, end_time)
-                            seen_texts[text_key] = (start_time, end_time)
-                            break
-                # If current duration is much shorter, skip it
-                elif current_duration < prev_duration * 0.3:  # Less than 30% of previous duration
-                    continue
-                # If similar durations, keep the first one
-                else:
-                    continue
-            else:
-                # New text, add it
-                unique_segments.append((text, start_time, end_time))
-                seen_texts[text_key] = (start_time, end_time)
+                # Check for exact text match and overlapping/adjacent timing
+                text_similarity = self._calculate_text_similarity(text_clean, prev_text_clean)
+                
+                # This is a duplicate if:
+                # 1. Very high text similarity (>95%) AND
+                # 2. Much shorter duration than previous segment AND  
+                # 3. Starts very close to where previous segment ended
+                if (text_similarity > 0.95 and 
+                    duration < prev_duration * 0.3 and  # Less than 30% of previous duration
+                    abs(start_time - prev_end) < 0.1):   # Starts within 0.1s of previous end
+                    is_duplicate = True
+            
+            # Only add if it's not a micro-duplicate
+            if not is_duplicate:
+                merged_segments.append((text, start_time, end_time))
         
-        return unique_segments
+        return merged_segments
+    
+    def _calculate_text_similarity(self, text1: str, text2: str) -> float:
+        """Calculate similarity between two text segments"""
+        if not text1 or not text2:
+            return 0.0
+        
+        # Simple word-based similarity
+        words1 = set(text1.split())
+        words2 = set(text2.split())
+        
+        if not words1 and not words2:
+            return 1.0
+        if not words1 or not words2:
+            return 0.0
+        
+        intersection = len(words1.intersection(words2))
+        union = len(words1.union(words2))
+        
+        return intersection / union if union > 0 else 0.0
     
     def detect_speakers_simple(self, segments: List[Tuple[str, float, float]], 
                               speaker_names: Tuple[str, str]) -> List[Dict]:
@@ -284,7 +309,7 @@ class YouTubeTimestampedScriptGenerator:
                 'text': text,
                 'start': start_time,
                 'end': end_time,
-                'duration': end_time - start_time
+                'duration': round(end_time - start_time, 3)
             })
         
         # Simple smoothing - fix isolated single segments
@@ -399,9 +424,9 @@ class YouTubeTimestampedScriptGenerator:
             segment_data = {
                 'speaker': segment['speaker'],
                 'text': segment['text'],
-                'start': segment['start'],
-                'end': segment['end'],
-                'duration': segment['duration']
+                'start': round(segment['start'], 3),
+                'end': round(segment['end'], 3),
+                'duration': round(segment['duration'], 3)
             }
             timestamped_data['segments'].append(segment_data)
         
