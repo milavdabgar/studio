@@ -1,675 +1,808 @@
 {
   "metadata": {
     "title": "ટ્રાન્ઝિસ્ટર  નાનો ઘટક, મોટી ક્રાંતિ   ડિજિટલ યુગનો પાયો",
-    "duration": 0,
-    "generated_at": "2025-08-27T18:38:15.900281",
+    "duration": 348,
+    "generated_at": "2025-08-27T19:27:10.083554",
     "format": "word_level_timestamps"
   },
   "segments": [
     {
       "speaker": "Dr. James",
-      "text": "Namaskar, welcome to the show.",
-      "start": 0.26,
-      "end": 2.44,
-      "duration": 2.1799999999999997
+      "text": "નમસ્કાર આપનું સ્વાગત છે આજે આપણે એક",
+      "start": 3.84,
+      "end": 7.909,
+      "duration": 4.069
     },
     {
       "speaker": "Dr. James",
-      "text": "Today we are going to talk about a small but powerful incident.",
-      "start": 2.44,
-      "end": 7.3,
-      "duration": 4.859999999999999
+      "text": "નાનકડા પણ ખૂબ જ શક્તિશાળી ઘટક વિશે વાત",
+      "start": 7.919,
+      "end": 11.669,
+      "duration": 3.750000000000001
     },
     {
       "speaker": "Dr. James",
-      "text": "Transistor.",
-      "start": 9.04,
-      "end": 9.96,
-      "duration": 0.9200000000000017
+      "text": "કરવાના છીએ ટ્રાન્ઝિસ્ટર એણે આધુનિક",
+      "start": 11.679,
+      "end": 14.87,
+      "duration": 3.190999999999999
     },
     {
       "speaker": "Dr. James",
-      "text": "It has changed modern technology.",
-      "start": 10.52,
-      "end": 12.2,
-      "duration": 1.6799999999999997
+      "text": "ટેકનોલોજીને ખરેખર બદલી નાખી છે આપણી પાસે",
+      "start": 14.88,
+      "end": 18.31,
+      "duration": 3.429999999999998
     },
     {
       "speaker": "Dr. James",
-      "text": "We have a good source which will explain how it was discovered, how it works and why it is so important.",
-      "start": 14.2,
-      "end": 23.9,
-      "duration": 9.7
+      "text": "એક સારો એવો સ્ત્રોત છે જે આપણને સમજાવશે",
+      "start": 18.32,
+      "end": 21.429,
+      "duration": 3.108999999999998
     },
     {
       "speaker": "Dr. James",
-      "text": "Our aim is to understand how this small thing is used in 20th century research.",
-      "start": 24.7,
-      "end": 30.7,
-      "duration": 6.0
+      "text": "કે એની શોધ કઈ રીતે થઈ એ કામ કેવી રીતે",
+      "start": 21.439,
+      "end": 24.87,
+      "duration": 3.431000000000001
     },
     {
       "speaker": "Dr. James",
-      "text": "So let's get into it.",
-      "start": 32.2,
-      "end": 33.68,
-      "duration": 1.4799999999999969
+      "text": "કરે છે અને એનું આટલું બધું મહત્વ કેમ છે",
+      "start": 24.88,
+      "end": 28.23,
+      "duration": 3.3500000000000014
     },
     {
       "speaker": "Dr. James",
-      "text": "Let's start with the basics.",
-      "start": 34.2,
-      "end": 36.34,
-      "duration": 2.1400000000000006
+      "text": "આપણો ઉદ્દેશ્ય એ સમજવાનો છે કે આ નાની",
+      "start": 28.24,
+      "end": 31.349,
+      "duration": 3.1090000000000018
     },
     {
       "speaker": "Dr. James",
-      "text": "What is a transistor?",
-      "start": 37.28,
-      "end": 38.26,
-      "duration": 0.9799999999999969
+      "text": "વસ્તુ 20મી સદી નદીની મોટી શોધોમાં કેમ",
+      "start": 31.359,
+      "end": 34.87,
+      "duration": 3.5109999999999957
     },
     {
       "speaker": "Dr. James",
-      "text": "The source says that it is a semiconductor device.",
-      "start": 39.42,
-      "end": 44.86,
-      "duration": 5.439999999999998
+      "text": "ગણાય છે તો ચાલો ઊંડાણમાં ઉતરીએ શરૂઆત",
+      "start": 34.88,
+      "end": 38.79,
+      "duration": 3.9099999999999966
     },
     {
       "speaker": "Dr. James",
-      "text": "It has three terminals.",
-      "start": 45.42,
-      "end": 47.6,
-      "duration": 2.1799999999999997
+      "text": "કરીએ એકદમ બેઝિક સવારથી આ ટ્રાન્ઝિસ્ટર છે",
+      "start": 38.8,
+      "end": 43.03,
+      "duration": 4.230000000000004
     },
     {
       "speaker": "Dr. James",
-      "text": "It is used to amplify or shut down the signal.",
-      "start": 49.02,
-      "end": 55.74,
-      "duration": 6.719999999999999
+      "text": "શું મતલબ સ્ત્રોત કહે છે કે એ એક અર્ધવાહક",
+      "start": 43.04,
+      "end": 46.15,
+      "duration": 3.1099999999999994
     },
     {
       "speaker": "Dr. James",
-      "text": "Like a switch.",
-      "start": 55.8,
-      "end": 56.38,
-      "duration": 0.5800000000000054
-    },
-    {
-      "speaker": "Sarah",
-      "text": "Yes, you are right.",
-      "start": 57.32,
-      "end": 58.0,
-      "duration": 0.6799999999999997
-    },
-    {
-      "speaker": "Sarah",
-      "text": "It has a small door for electricity.",
-      "start": 58.84,
-      "end": 60.88,
-      "duration": 2.039999999999999
-    },
-    {
-      "speaker": "Sarah",
-      "text": "But it is very powerful.",
-      "start": 61.76,
-      "end": 62.62,
-      "duration": 0.8599999999999994
-    },
-    {
-      "speaker": "Sarah",
-      "text": "It is the main part of all electronics.",
-      "start": 63.2,
-      "end": 66.1,
-      "duration": 2.8999999999999915
-    },
-    {
-      "speaker": "Sarah",
-      "text": "It has a small input signal.",
-      "start": 67.06,
-      "end": 68.7,
-      "duration": 1.6400000000000006
-    },
-    {
-      "speaker": "Sarah",
-      "text": "It can control many output signals.",
-      "start": 69.2,
-      "end": 71.96,
-      "duration": 2.759999999999991
-    },
-    {
-      "speaker": "Sarah",
-      "text": "It is very easy to switch it on and off.",
-      "start": 73.7,
-      "end": 77.06,
-      "duration": 3.3599999999999994
+      "text": "એટલે કે સેમીકન્ડક્ટર ડિવાઇસ છે સામાન્ય",
+      "start": 46.16,
+      "end": 49.19,
+      "duration": 3.030000000000001
     },
     {
       "speaker": "Dr. James",
-      "text": "How interesting is the story of its discovery?",
-      "start": 79.24,
-      "end": 81.42,
-      "duration": 2.180000000000007
+      "text": "રીતે એને ત્રણ જોડાણ હોય ત્રણ ટર્મિનલ અને",
+      "start": 49.2,
+      "end": 52.549,
+      "duration": 3.3489999999999966
     },
     {
       "speaker": "Dr. James",
-      "text": "Bell Labs, Ognis and Suratalis, Bardin, Brayton and Shockley.",
-      "start": 82.84,
-      "end": 87.86,
-      "duration": 5.019999999999996
+      "text": "એનું કામ વીજળીના સિગ્નલને મોટો કરવો એટલે",
+      "start": 52.559,
+      "end": 55.99,
+      "duration": 3.4310000000000045
     },
     {
       "speaker": "Dr. James",
-      "text": "The source says that they were trying to make a field effect transistor, FET.",
-      "start": 88.4,
-      "end": 94.44,
-      "duration": 6.039999999999992
+      "text": "કે એમ્પ્લીફાય કરવો અથવા તો ચાલુ બંધ કરવો",
+      "start": 56.0,
+      "end": 57.27,
+      "duration": 1.2700000000000031
     },
     {
       "speaker": "Dr. James",
-      "text": "But by mistake, or by accident, they found a point contact transistor.",
-      "start": 97.08,
-      "end": 101.64,
-      "duration": 4.560000000000002
-    },
-    {
-      "speaker": "Sarah",
-      "text": "Yes, it is a miracle.",
-      "start": 102.7,
-      "end": 103.7,
-      "duration": 1.0
+      "text": "સ્વીચની જેમ",
+      "start": 57.28,
+      "end": 60.389,
+      "duration": 3.1090000000000018
     },
     {
       "speaker": "Dr. James",
-      "text": "And they got a Nobel Prize for it.",
-      "start": 104.54,
-      "end": 106.5,
-      "duration": 1.9599999999999937
-    },
-    {
-      "speaker": "Sarah",
-      "text": "Yes, in physics.",
-      "start": 106.94,
-      "end": 108.38,
-      "duration": 1.4399999999999977
-    },
-    {
-      "speaker": "Sarah",
-      "text": "At that time, it was difficult to make FET.",
-      "start": 109.18,
-      "end": 112.02,
-      "duration": 2.839999999999989
-    },
-    {
-      "speaker": "Sarah",
-      "text": "But they found the real success when they understood how a semiconductor works.",
-      "start": 113.96,
-      "end": 118.22,
-      "duration": 4.260000000000005
-    },
-    {
-      "speaker": "Sarah",
-      "text": "And that's how the first working transistor was made.",
-      "start": 119.78,
-      "end": 122.0,
-      "duration": 2.219999999999999
-    },
-    {
-      "speaker": "Sarah",
-      "text": "And interestingly, a scientist named Lilienfeld patented the idea of FET.",
-      "start": 122.48,
-      "end": 128.08,
-      "duration": 5.6000000000000085
-    },
-    {
-      "speaker": "Sarah",
-      "text": "But it was not made.",
-      "start": 128.24,
-      "end": 129.66,
-      "duration": 1.4199999999999875
-    },
-    {
-      "speaker": "Sarah",
-      "text": "And at the same time, in Europe, Matare and Velker worked independently in this direction.",
-      "start": 130.7,
-      "end": 135.56,
-      "duration": 4.860000000000014
+      "text": "હા બરાબર કહ્યું વીજળી માટેનો એક નાનો",
+      "start": 60.399,
+      "end": 64.07,
+      "duration": 3.6709999999999923
     },
     {
       "speaker": "Dr. James",
-      "text": "So, the idea was there, but the real work was done in Bell Labs.",
-      "start": 137.22,
-      "end": 141.84,
-      "duration": 4.6200000000000045
+      "text": "દરવાજો કહી શકાય પણ બહુ અગત્યનો એ જ મુખ્ય",
+      "start": 64.08,
+      "end": 66.95,
+      "duration": 2.8700000000000045
     },
     {
       "speaker": "Dr. James",
-      "text": "And then at the end of the 50s, MOSFET came.",
-      "start": 142.5,
-      "end": 146.26,
-      "duration": 3.759999999999991
+      "text": "સક્રિય ભાગ છે લગભગ બધા ઇલેક્ટ્રોનિક્સમાં",
+      "start": 66.96,
+      "end": 70.71000000000001,
+      "duration": 3.750000000000014
     },
     {
       "speaker": "Dr. James",
-      "text": "That too from Bell Labs.",
-      "start": 146.54,
-      "end": 147.5,
-      "duration": 0.960000000000008
+      "text": "એક નાનકડો ઇનપુટ સિગ્નલ ખબર છે એનાથી ઘણા",
+      "start": 70.72,
+      "end": 73.67,
+      "duration": 2.950000000000003
     },
     {
       "speaker": "Dr. James",
-      "text": "The source says that today this is the most used transistor.",
-      "start": 148.2,
-      "end": 152.34,
-      "duration": 4.140000000000015
+      "text": "મોટા આઉટપુટ સિગ્નલને કંટ્રોલ કરી શકે છે",
+      "start": 73.68,
+      "end": 76.39,
+      "duration": 2.7099999999999937
     },
     {
       "speaker": "Dr. James",
-      "text": "Why?",
-      "start": 152.84,
-      "end": 153.12,
-      "duration": 0.28000000000000114
+      "text": "આ જે ક્ષમતા છે ને એમ્પ્લીફાય કરવાની અને",
+      "start": 76.4,
+      "end": 79.19,
+      "duration": 2.789999999999992
     },
     {
       "speaker": "Dr. James",
-      "text": "What is so special about it?",
-      "start": 153.6,
-      "end": 154.76,
-      "duration": 1.1599999999999966
-    },
-    {
-      "speaker": "Sarah",
-      "text": "Its main thing is scalability.",
-      "start": 157.0,
-      "end": 159.38,
-      "duration": 2.3799999999999955
-    },
-    {
-      "speaker": "Sarah",
-      "text": "It can be made at a very small scale.",
-      "start": 160.48,
-      "end": 162.92,
-      "duration": 2.4399999999999977
-    },
-    {
-      "speaker": "Sarah",
-      "text": "And at the same time, it uses less electricity.",
-      "start": 164.44,
-      "end": 167.22,
-      "duration": 2.780000000000001
-    },
-    {
-      "speaker": "Sarah",
-      "text": "And the second transistor, the bipolar junction transistor, can fit more in a small space.",
-      "start": 168.88,
-      "end": 177.2,
-      "duration": 8.319999999999993
-    },
-    {
-      "speaker": "Sarah",
-      "text": "It is called a higher density.",
-      "start": 178.88,
-      "end": 179.6,
-      "duration": 0.7199999999999989
-    },
-    {
-      "speaker": "Sarah",
-      "text": "This is how integrated circuits were made.",
-      "start": 180.92,
-      "end": 183.22,
-      "duration": 2.3000000000000114
+      "text": "સ્વીચ કરવાની એ જ પાયાની વાત છે",
+      "start": 79.2,
+      "end": 82.789,
+      "duration": 3.5889999999999986
     },
     {
       "speaker": "Dr. James",
-      "text": "That means ICs, chips, right?",
-      "start": 183.82,
-      "end": 185.96,
-      "duration": 2.140000000000015
-    },
-    {
-      "speaker": "Sarah",
-      "text": "Yes, right.",
-      "start": 186.3,
-      "end": 187.08,
-      "duration": 0.7800000000000011
-    },
-    {
-      "speaker": "Sarah",
-      "text": "Chips were made possible.",
-      "start": 187.6,
-      "end": 188.52,
-      "duration": 0.9200000000000159
-    },
-    {
-      "speaker": "Sarah",
-      "text": "Today, there are millions, billions, and billions of transistors on a small chip.",
-      "start": 189.34,
-      "end": 193.76,
-      "duration": 4.4199999999999875
-    },
-    {
-      "speaker": "Sarah",
-      "text": "Today's computers, smartphones, everything is thanks to this MOSFET.",
-      "start": 194.36,
-      "end": 198.14,
-      "duration": 3.7799999999999727
-    },
-    {
-      "speaker": "Sarah",
-      "text": "It is the foundation of the digital revolution.",
-      "start": 199.24,
-      "end": 200.82,
-      "duration": 1.579999999999984
-    },
-    {
-      "speaker": "Sarah",
-      "text": "There is a number in the source.",
-      "start": 201.82,
-      "end": 203.08,
-      "duration": 1.2600000000000193
-    },
-    {
-      "speaker": "Sarah",
-      "text": "By 2018, approximately 13 sextillion MOSFETs had been made.",
-      "start": 203.2,
-      "end": 208.66,
-      "duration": 5.460000000000008
+      "text": "અને એની શોધની વાર્તા પણ કેવી રસપ્રદ છે",
+      "start": 82.799,
+      "end": 85.59,
+      "duration": 2.790999999999997
     },
     {
       "speaker": "Dr. James",
-      "text": "13 sextillion!",
-      "start": 209.54,
-      "end": 210.76,
-      "duration": 1.2199999999999989
+      "text": "બેલેબસ 1947",
+      "start": 85.6,
+      "end": 89.749,
+      "duration": 4.149000000000001
     },
     {
       "speaker": "Dr. James",
-      "text": "Oh my God!",
-      "start": 211.12,
-      "end": 211.74,
-      "duration": 0.6200000000000045
+      "text": "બાર્ડેન બ્રેટન અને શોકલી સ્્રોત કહે છે",
+      "start": 89.759,
+      "end": 92.71000000000001,
+      "duration": 2.9510000000000076
     },
     {
       "speaker": "Dr. James",
-      "text": "After 13, 21 are zero.",
-      "start": 212.34,
-      "end": 214.06,
-      "duration": 1.7199999999999989
+      "text": "કે એ લોકો તો ખરેખર ફિલ્ડ ઇફેક્ટ",
+      "start": 92.72,
+      "end": 95.429,
+      "duration": 2.709000000000003
     },
     {
       "speaker": "Dr. James",
-      "text": "Zero!",
-      "start": 214.06,
-      "end": 214.12,
-      "duration": 0.060000000000002274
+      "text": "ટ્રાન્ઝિસ્ટર એટલે કે એફઈટી બનાવવા",
+      "start": 95.439,
+      "end": 98.55,
+      "duration": 3.111000000000004
     },
     {
       "speaker": "Dr. James",
-      "text": "This is beyond imagination.",
-      "start": 214.66,
-      "end": 216.02,
-      "duration": 1.3600000000000136
+      "text": "પ્રયત્ન કરી રહ્યા હતા પણ ભૂલથી કે પછી",
+      "start": 98.56,
+      "end": 101.10900000000001,
+      "duration": 2.5490000000000066
     },
     {
       "speaker": "Dr. James",
-      "text": "So how does this large number of MOSFETs work?",
-      "start": 217.38,
-      "end": 221.08,
-      "duration": 3.700000000000017
+      "text": "કહો કે અનાયાસે પોઈન્ટ કોન્ટેક્ટ",
+      "start": 101.119,
+      "end": 102.63,
+      "duration": 1.5109999999999957
     },
     {
       "speaker": "Dr. James",
-      "text": "In simple language.",
-      "start": 222.32,
-      "end": 223.26,
-      "duration": 0.9399999999999977
+      "text": "ટ્રાન્ઝિસ્ટર શોધી કાઢ્યો",
+      "start": 102.64,
+      "end": 104.55,
+      "duration": 1.9099999999999966
     },
     {
       "speaker": "Dr. James",
-      "text": "Source says two main things.",
-      "start": 223.94,
-      "end": 225.7,
-      "duration": 1.759999999999991
+      "text": "હા હા આકસ્મિક જ કહેવાય",
+      "start": 104.56,
+      "end": 107.10900000000001,
+      "duration": 2.5490000000000066
     },
     {
       "speaker": "Dr. James",
-      "text": "Switching and amplifying.",
-      "start": 226.46,
-      "end": 228.48,
-      "duration": 2.019999999999982
+      "text": "અને એના માટે નોબેલ પ્રાઇઝ પણ મળ્યું એમને",
+      "start": 107.119,
+      "end": 110.63,
+      "duration": 3.5109999999999957
     },
     {
       "speaker": "Dr. James",
-      "text": "Absolutely.",
-      "start": 228.86,
-      "end": 229.24,
-      "duration": 0.37999999999999545
+      "text": "બિલકુલ ફિઝિક્સમાં એ સમયે એમને એફઈટી",
+      "start": 110.64,
+      "end": 112.789,
+      "duration": 2.149000000000001
     },
     {
-      "speaker": "Sarah",
-      "text": "Switch is the basis of digital logic.",
+      "speaker": "Dr. James",
+      "text": "બનાવવામાં થોડી મુશ્કેલીઓ હતી મટીરિયલ",
+      "start": 112.799,
+      "end": 115.91,
+      "duration": 3.11099999999999
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "સાયન્સના લીધે ખરી સફળતા તો ત્યારે મળી",
+      "start": 115.92,
+      "end": 118.55,
+      "duration": 2.6299999999999955
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "જ્યારે સેમીકન્ડક્ટર કેવી રીતે વર્તે છે એ",
+      "start": 118.56,
+      "end": 121.27,
+      "duration": 2.7099999999999937
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "બરાબર સમજાયું એનાથી જ પહેલો કામ કરતો",
+      "start": 121.28,
+      "end": 123.749,
+      "duration": 2.468999999999994
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "ટ્રાન્ઝિસ્ટર બન્યો અને રસપ્રદ વાત એ છે",
+      "start": 123.759,
+      "end": 126.63,
+      "duration": 2.870999999999995
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "કે લિયન ફેલ્ડ નામના વૈજ્ઞાનિકે તો ડાયકાઓ",
+      "start": 126.64,
+      "end": 129.35,
+      "duration": 2.7099999999999937
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "પહેલા એફઈટીનો આઈડિયા પેટન્ટ કરાવેલો પણ એ",
+      "start": 129.36,
+      "end": 132.07,
+      "duration": 2.7099999999999795
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "બનાવી નહોતા શક્યા અને લગભગ એ જ સમયે",
+      "start": 132.08,
+      "end": 134.79,
+      "duration": 2.7099999999999795
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "યુરોપમાં પણ મટારિયા અને વેલ્કરે સ્વતંત્ર",
+      "start": 134.8,
+      "end": 137.67000000000002,
+      "duration": 2.8700000000000045
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "રીતે આ દિશામાં કામ કર્યું હતું એટલે કે",
+      "start": 137.68,
+      "end": 140.71,
+      "duration": 3.030000000000001
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "વિચાર તો હતો જ પણ એને હકીકત બનાવવાનું",
+      "start": 140.72,
+      "end": 143.91,
+      "duration": 3.1899999999999977
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "કામ બેલેબ્સમાં થયું અને પછી 50 ના",
+      "start": 143.92000000000002,
+      "end": 147.19,
+      "duration": 3.269999999999982
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "દાયકાના અંતમાં આવ્યો મોસ્ફેટ એ પણ બેલ",
+      "start": 147.2,
+      "end": 150.309,
+      "duration": 3.109000000000009
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "લેબ્સમાંથી સ્ત્રોતો કહે છે કે આજે આ",
+      "start": 150.319,
+      "end": 153.91,
+      "duration": 3.591000000000008
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "સૌથી વધુ વપરાતો ટ્રાન્ઝિસ્ટર છે કેમ એમાં",
+      "start": 153.92000000000002,
+      "end": 155.27,
+      "duration": 1.3499999999999943
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "એવું શું ખાસ છે",
+      "start": 155.27,
+      "end": 155.28,
+      "duration": 0.009999999999990905
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "એવું શું ખાસ છે હ",
+      "start": 155.28,
+      "end": 156.869,
+      "duration": 1.5889999999999986
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "એની મુખ્ય વાત છે સ્કેલેબીિલિટી હ મતલબ કે",
+      "start": 161.12,
+      "end": 164.79,
+      "duration": 3.6699999999999875
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "એને બહુ જ નાના કદમાં બનાવી શકાય છે અને",
+      "start": 164.8,
+      "end": 166.47,
+      "duration": 1.6699999999999875
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "સાથે સાથે",
+      "start": 166.48,
+      "end": 170.07,
+      "duration": 3.5900000000000034
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "એ વીજળી પણ ઓછી વાપરે છે અને પહેલાના જે",
+      "start": 170.07999999999998,
+      "end": 172.63,
+      "duration": 2.5500000000000114
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "બીજેટી આવતા હતા બાયપોલર જંકશન",
+      "start": 172.64,
+      "end": 175.75,
+      "duration": 3.1100000000000136
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "ટ્રાન્ઝિસ્ટર એના કરતાં ઘણી વધારે",
+      "start": 175.76,
+      "end": 178.55,
+      "duration": 2.7900000000000205
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "સંખ્યામાં એક નાની જગ્યામાં ફિટ કરી શકાય",
+      "start": 178.56,
+      "end": 182.149,
+      "duration": 3.5889999999999986
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "છે ઊંચી ઘનતા કહેવાય એને આના લીધે જ",
+      "start": 182.159,
+      "end": 183.83,
+      "duration": 1.6710000000000207
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "ઇન્ટિગ્રેટેડ સર્કિટસ",
+      "start": 183.84,
+      "end": 186.39,
+      "duration": 2.549999999999983
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "એટલે કે આઈસીસ ચિપ્સ બરાબર",
+      "start": 186.4,
+      "end": 190.47,
+      "duration": 4.069999999999993
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "હા બરાબર ચિપ્સ શક્ય બની એક નાની ચિપ પર",
+      "start": 190.48,
+      "end": 193.91,
+      "duration": 3.430000000000007
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "આજે લાખો કરોડો અરે અબજો ટ્રાન્ઝિસ્ટર હોય",
+      "start": 193.92,
+      "end": 197.50900000000001,
+      "duration": 3.589000000000027
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "છે આજના કોમ્પ્યુટર સ્માર્ટફોન બધું આ",
+      "start": 197.519,
+      "end": 200.949,
+      "duration": 3.430000000000007
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "મોસ્ફેટને આભારી છે ડિજિટલ ક્રાંતિનો પાયો",
+      "start": 200.959,
+      "end": 205.11,
+      "duration": 4.1510000000000105
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "જે છે સ્ત્રોતમાં એક આંકડો છે ખબર છે 2018",
+      "start": 205.12,
+      "end": 208.63,
+      "duration": 3.509999999999991
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "સુધીમાં લગભગ 13 સેક્સટીલિયન મોસ્ફેટ બની",
+      "start": 208.64,
+      "end": 209.589,
+      "duration": 0.9490000000000123
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "ચૂક્યા હતા.",
+      "start": 209.599,
+      "end": 215.03,
+      "duration": 5.431000000000012
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "13 સેક્સટીલિયન બાપ રે 13 પછી 210 આ તો",
+      "start": 215.04,
+      "end": 218.55,
+      "duration": 3.5100000000000193
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "કલ્પના બહારનો આંકડો છે. તો આટલી મોટી",
+      "start": 218.56,
+      "end": 221.99,
+      "duration": 3.430000000000007
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "સંખ્યામાં વપરાતું આ સાધન કામ કઈ રીતે કરે",
+      "start": 222.0,
+      "end": 226.07,
+      "duration": 4.069999999999993
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "છે? સરળ ભાષામાં સ્ત્રોત બે મુખ્ય કામ કહે",
+      "start": 226.07999999999998,
+      "end": 229.75,
+      "duration": 3.670000000000016
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "છે સ્વીચિંગ અને એમ્પ્લીફાઈંગ. બિલકુલ",
       "start": 229.76,
-      "end": 232.32,
-      "duration": 2.5600000000000023
-    },
-    {
-      "speaker": "Sarah",
-      "text": "Either it is switched on, so it lets the current flow.",
-      "start": 233.78,
-      "end": 236.46,
-      "duration": 2.680000000000007
-    },
-    {
-      "speaker": "Sarah",
-      "text": "Like a switched off switch.",
-      "start": 236.92,
-      "end": 237.68,
-      "duration": 0.7600000000000193
-    },
-    {
-      "speaker": "Sarah",
-      "text": "Or it is switched off, so it stops the current.",
-      "start": 238.34,
-      "end": 240.38,
-      "duration": 2.039999999999992
-    },
-    {
-      "speaker": "Sarah",
-      "text": "Like an open switch.",
-      "start": 241.34,
-      "end": 242.06,
-      "duration": 0.7199999999999989
-    },
-    {
-      "speaker": "Sarah",
-      "text": "This is the one and zero of a computer.",
-      "start": 242.84,
-      "end": 244.9,
-      "duration": 2.0600000000000023
-    },
-    {
-      "speaker": "Sarah",
-      "text": "And like an amplifier, as we discussed earlier, a small, thin input signal controls a large output signal.",
-      "start": 245.52,
-      "end": 253.12,
-      "duration": 7.599999999999994
-    },
-    {
-      "speaker": "Sarah",
-      "text": "This is very important in radio and audio.",
-      "start": 254.28,
-      "end": 255.48,
-      "duration": 1.1999999999999886
-    },
-    {
-      "speaker": "Sarah",
-      "text": "Source also says that BJTs are controlled by current, while FETs by voltage.",
-      "start": 257.78,
-      "end": 263.42,
-      "duration": 5.640000000000043
-    },
-    {
-      "speaker": "Sarah",
-      "text": "This is a technical difference, which is why they are used in different places.",
-      "start": 263.84,
-      "end": 268.0,
-      "duration": 4.160000000000025
+      "end": 233.82999999999998,
+      "duration": 4.069999999999993
     },
     {
       "speaker": "Dr. James",
-      "text": "Yes, I understand.",
-      "start": 268.78,
-      "end": 269.66,
-      "duration": 0.8800000000000523
+      "text": "સ્વીચ તરીકે એ ડિજિટલ લોજીક નો આધાર છે",
+      "start": 233.84,
+      "end": 237.35,
+      "duration": 3.509999999999991
     },
     {
       "speaker": "Dr. James",
-      "text": "But what was the first thing that transistors came with?",
-      "start": 270.24,
-      "end": 272.92,
-      "duration": 2.680000000000007
+      "text": "કાં તો ઓન હોય એટલે પ્રવાહને જવા દે બંધ",
+      "start": 237.36,
+      "end": 240.55,
+      "duration": 3.1899999999999977
     },
     {
       "speaker": "Dr. James",
-      "text": "Source mentions a vacuum tube.",
-      "start": 273.82,
-      "end": 275.14,
-      "duration": 1.3199999999999932
+      "text": "સ્વીચ ની જેમ અથવા ઓફ હોય એટલે પ્રવાહને",
+      "start": 240.56,
+      "end": 243.35,
+      "duration": 2.789999999999992
     },
     {
-      "speaker": "Sarah",
-      "text": "Yes, vacuum tube.",
-      "start": 276.76,
-      "end": 278.38,
-      "duration": 1.6200000000000045
+      "speaker": "Dr. James",
+      "text": "રોકી દે ખુલ્લી સ્વીચની જેમ આ છે",
+      "start": 243.36,
+      "end": 246.55,
+      "duration": 3.1899999999999977
     },
     {
-      "speaker": "Sarah",
-      "text": "It was of that era.",
-      "start": 278.72,
-      "end": 279.56,
-      "duration": 0.839999999999975
+      "speaker": "Dr. James",
+      "text": "કમ્પ્યુટરના વન અને ઝીરો અને એમ્પ્લીફાયર",
+      "start": 246.56,
+      "end": 249.83,
+      "duration": 3.2700000000000102
     },
     {
-      "speaker": "Sarah",
-      "text": "But it was big, made of glass, so it was thin.",
-      "start": 280.36,
-      "end": 283.26,
-      "duration": 2.8999999999999773
+      "speaker": "Dr. James",
+      "text": "તરીકે જેમ આપણે પહેલાં વાત કરી એક નાનો",
+      "start": 249.84,
+      "end": 253.27,
+      "duration": 3.430000000000007
     },
     {
-      "speaker": "Sarah",
-      "text": "And it used a lot of electricity.",
-      "start": 284.12,
-      "end": 285.3,
-      "duration": 1.1800000000000068
+      "speaker": "Dr. James",
+      "text": "નબળો ઇનપુટ સિગ્નલ મોટા આઉટપુટ સિગ્નલને",
+      "start": 253.28,
+      "end": 256.31,
+      "duration": 3.030000000000001
     },
     {
-      "speaker": "Sarah",
-      "text": "It was also very hot.",
-      "start": 285.7,
-      "end": 286.44,
-      "duration": 0.7400000000000091
+      "speaker": "Dr. James",
+      "text": "કંટ્રોલ કરે રેડિયોમાં ઓડિયો સાધનોમાં આ",
+      "start": 256.32,
+      "end": 259.189,
+      "duration": 2.869000000000028
     },
     {
-      "speaker": "Sarah",
-      "text": "Transistors solved all these problems.",
-      "start": 287.34,
-      "end": 289.0,
-      "duration": 1.660000000000025
+      "speaker": "Dr. James",
+      "text": "બહુ જ જરૂરી છે સ્ત્રોત એ પણ કહે છે",
+      "start": 259.199,
+      "end": 261.99,
+      "duration": 2.790999999999997
     },
     {
-      "speaker": "Sarah",
-      "text": "Small, strong, reliable, and it needed less power.",
-      "start": 290.28,
-      "end": 293.52,
-      "duration": 3.240000000000009
+      "speaker": "Dr. James",
+      "text": "કેબીજેટીસ કરંટથી કંટ્રોલ થાય છે જ્યારે",
+      "start": 262.0,
+      "end": 266.07,
+      "duration": 4.069999999999993
     },
     {
-      "speaker": "Sarah",
-      "text": "This is how pocket radio was made.",
-      "start": 294.96,
-      "end": 296.6,
-      "duration": 1.6400000000000432
+      "speaker": "Dr. James",
+      "text": "fસ વોલ્ટેજથી આ એક ટેકનિકલ તફાવત છે જેના",
+      "start": 266.08,
+      "end": 268.79,
+      "duration": 2.7100000000000364
     },
     {
-      "speaker": "Sarah",
-      "text": "Small computer was made.",
+      "speaker": "Dr. James",
+      "text": "કારણે એમના ઉપયોગ અલગ જગ્યાએ થાય છે",
+      "start": 268.8,
+      "end": 272.469,
+      "duration": 3.6689999999999827
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "હા સમજાયું પણ આ ટ્રાન્ઝિસ્ટરસ આવ્યા એ",
+      "start": 272.479,
+      "end": 275.43,
+      "duration": 2.951000000000022
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "પહેલા શું હતું સ્ત્રોત વેક્યુમ ટ્યુબનો",
+      "start": 275.44,
+      "end": 276.79,
+      "duration": 1.3500000000000227
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "ઉલ્લેખ કરે છે",
+      "start": 276.8,
+      "end": 280.71,
+      "duration": 3.909999999999968
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "હા વેક્યુમ ટ્યુબ એ જમાનો હતો એમનો પણ એ",
+      "start": 280.72,
+      "end": 284.07,
+      "duration": 3.349999999999966
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "મોટા હતા કાચના બનેલા એટલે નાજુક પણ ખરા",
+      "start": 284.08,
+      "end": 287.35,
+      "duration": 3.2700000000000387
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "અને વીજળી બહુ વાપરતા ગરમ પણ બહુ થતા",
+      "start": 287.36,
+      "end": 290.39,
+      "duration": 3.0299999999999727
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "ટ્રાન્ઝિસ્ટ આ બધી મુશ્કેલીઓ દૂર કરી દીધી",
+      "start": 290.4,
+      "end": 294.07,
+      "duration": 3.670000000000016
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "નાના મજબૂત ભરોસાપાત્ર અને પાવર પણ સાવ",
+      "start": 294.08,
+      "end": 296.95,
+      "duration": 2.8700000000000045
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "ઓછો જોઈએ આના લીધે જ પોકેટ રેડિયો બન્યા",
       "start": 296.96,
-      "end": 298.0,
-      "duration": 1.0400000000000205
-    },
-    {
-      "speaker": "Sarah",
-      "text": "And all the technology we have today, became possible.",
-      "start": 298.46,
-      "end": 301.66,
-      "duration": 3.2000000000000455
-    },
-    {
-      "speaker": "Sarah",
-      "text": "Although, it is true that for some special work, like high power or high frequency, vacuum tubes are still used.",
-      "start": 302.54,
-      "end": 310.68,
-      "duration": 8.139999999999986
+      "end": 299.59000000000003,
+      "duration": 2.6300000000000523
     },
     {
       "speaker": "Dr. James",
-      "text": "So, the whole story ends with a small incident, which was a bit of a miracle, which changed the world of electronics and our lives.",
-      "start": 311.12,
-      "end": 320.36,
-      "duration": 9.240000000000009
-    },
-    {
-      "speaker": "Sarah",
-      "text": "Yes, it changed it radically.",
-      "start": 321.48,
-      "end": 322.98,
-      "duration": 1.5
-    },
-    {
-      "speaker": "Sarah",
-      "text": "The ability to make a small switch and amplifier in such a cheap way, and in such a large number, is the basis of the modern era.",
-      "start": 324.0,
-      "end": 331.12,
-      "duration": 7.1200000000000045
+      "text": "નાના કોમ્પ્યુટર બન્યા અને આજે આપણી પાસે",
+      "start": 299.6,
+      "end": 303.35,
+      "duration": 3.75
     },
     {
       "speaker": "Dr. James",
-      "text": "Research is going on.",
-      "start": 331.88,
-      "end": 333.02,
-      "duration": 1.1399999999999864
+      "text": "જે બધી ટેકનોલોજી છે એ શક્ય બની જો કે એ",
+      "start": 303.36,
+      "end": 306.39,
+      "duration": 3.0299999999999727
     },
     {
       "speaker": "Dr. James",
-      "text": "Graphene, carbon nanotube.",
-      "start": 333.6,
-      "end": 335.68,
-      "duration": 2.079999999999984
+      "text": "વાત પણ સાચી કે અમુક ખાસ કામાટે જેમ કે",
+      "start": 306.4,
+      "end": 308.79,
+      "duration": 2.390000000000043
     },
     {
       "speaker": "Dr. James",
-      "text": "If today's transistor made such a big change, then how will the new revolutionary event of the future be?",
-      "start": 336.18,
-      "end": 342.58,
-      "duration": 6.399999999999977
+      "text": "બહુ જ હાઈ પાવર કે હાઈ ફ્રિક્વન્સી માટે",
+      "start": 308.8,
+      "end": 310.79,
+      "duration": 1.990000000000009
     },
     {
       "speaker": "Dr. James",
-      "text": "And how will it change our world?",
-      "start": 343.04,
-      "end": 344.2,
-      "duration": 1.1599999999999682
+      "text": "આજે પણ ક્યાંક્યાંક વેક્યુમ ટ્યુબ વપરાય",
+      "start": 310.79,
+      "end": 310.8,
+      "duration": 0.009999999999990905
     },
     {
       "speaker": "Dr. James",
-      "text": "It is worth thinking about.",
-      "start": 346.1,
-      "end": 346.96,
-      "duration": 0.8599999999999568
+      "text": "આજે પણ ક્યાંક્યાંક વેક્યુમ ટ્યુબ વપરાય છે",
+      "start": 310.8,
+      "end": 311.11,
+      "duration": 0.3100000000000023
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "તો આખી વાતનો સાર એમ નીકળે કે એક નાનકડો",
+      "start": 314.56,
+      "end": 318.15,
+      "duration": 3.589999999999975
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "ઘટક જેની શોધ પણ થોડી આકસ્મિક હતી એણે આખી",
+      "start": 318.16,
+      "end": 320.39,
+      "duration": 2.2299999999999613
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "ઇલેક્ટ્રોનિક્સની દુનિયા અને આપણી જિંદગી",
+      "start": 320.4,
+      "end": 321.51,
+      "duration": 1.1100000000000136
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "બદલી નાખી",
+      "start": 321.52,
+      "end": 325.029,
+      "duration": 3.5090000000000146
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "ખરેખર ધરમૂળથી બદલી નાખી આ નાની સ્વીચ અને",
+      "start": 325.039,
+      "end": 327.99,
+      "duration": 2.951000000000022
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "એમ્પ્લીફાયરને આટલી સસ્તી રીતે અને આટલી",
+      "start": 328.0,
+      "end": 330.23,
+      "duration": 2.230000000000018
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "મોટી સંખ્યામાં બનાવવાની ક્ષમતા એ જ",
+      "start": 330.24,
+      "end": 331.83,
+      "duration": 1.589999999999975
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "આધુનિક યુગનો આધાર છે",
+      "start": 331.84,
+      "end": 335.11,
+      "duration": 3.2700000000000387
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "સંશોધન ચાલી રહ્યું છે ગ્રાફીન કાર્બન",
+      "start": 335.12,
+      "end": 338.15,
+      "duration": 3.0299999999999727
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "નેનો ટ્યુબ જો આજના ટ્રાન્ઝિસ્ટરે આટલો",
+      "start": 338.15999999999997,
+      "end": 340.95,
+      "duration": 2.7900000000000205
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "મોટો ફેરફાર કર્યો તો ભવિષ્યનો નવો",
+      "start": 340.96,
+      "end": 343.83,
+      "duration": 2.8700000000000045
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "ક્રાંતિકારી ઘટક કેવો હશે અને એ આપણી",
+      "start": 343.84000000000003,
+      "end": 346.71,
+      "duration": 2.8699999999999477
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "દુનિયાને ફરી કેવી રીતે બદલશે એ વિચારવા",
+      "start": 346.72,
+      "end": 349.44,
+      "duration": 2.7199999999999704
     }
   ]
 }
