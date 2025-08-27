@@ -617,13 +617,13 @@ class: text-center
 </div>
 
 <!--
+Dr. James: Oh, absolutely.
+
 [click] Sarah: Data types just classify what kind of value a variable can hold. Is it a whole number? Text? A true false thing.
 
 [click] Sarah: The computer handles different types differently.
 
 [click] Dr. James: This feels really fundamental.
-
-Sarah: Oh, absolutely!
 -->
 
 ---
