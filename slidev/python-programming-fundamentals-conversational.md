@@ -270,47 +270,35 @@ layout: default
 
 <div class="grid grid-cols-3 gap-4">
 
-<div class="bg-blue-50 p-4 rounded-lg">
+<div v-click="1" class="bg-blue-50 p-4 rounded-lg">
 
 ## 📐 **P - Proper Symbols**
-
-<v-clicks>
 
 - **Rectangles** for actions
 - **Diamonds** for decisions  
 - **Standard shapes**
 - Everyone reads it the same way
 
-</v-clicks>
-
 </div>
 
-<div class="bg-green-50 p-4 rounded-lg">
+<div v-click="2" class="bg-green-50 p-4 rounded-lg">
 
 ## ➡️ **D - Direction**
-
-<v-clicks>
 
 - **Top to bottom**
 - **Left to right**
 - Easy to follow
 - **Standard flow**
 
-</v-clicks>
-
 </div>
 
-<div class="bg-purple-50 p-4 rounded-lg">
+<div v-click="3" class="bg-purple-50 p-4 rounded-lg">
 
 ## 🚪 **R - Single Entry/Exit**
-
-<v-clicks>
 
 - **One clear start**
 - **One clear end**
 - Keeps it **organized**
-
-</v-clicks>
 
 </div>
 
