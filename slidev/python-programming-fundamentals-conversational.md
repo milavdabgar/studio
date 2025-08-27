@@ -148,7 +148,7 @@ Sarah: Okay, so C is for clarity.
 
 [click] Sarah: Let's start with C - for clarity. The instructions need to be totally unambiguous. No confusion for the programmer or the machine.
 
-[click] Sarah: E is efficiency. Good algorithms, they try to use resources, well, time, memory. Think about sorting huge amounts of data. Yeah, you want that fast. Exactly. Efficiency matters.
+[click] Sarah: Right. E is efficiency. Good algorithms, they try to use resources, well, time, memory. Think about sorting huge amounts of data. Yeah, you want that fast. Exactly. Efficiency matters.
 
 [click] Sarah: R is reusability. Often, you build an algorithm for one thing, but you can adapt it or reuse parts for similar problems later. Saves a lot of work.
 -->
