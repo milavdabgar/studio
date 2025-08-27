@@ -138,7 +138,13 @@ layout: default
 </div>
 
 <!--
-Dr. James: And the material gives this mnemonic, C-E-R-V-C, to remember the advantages. What's that about?
+Dr. James: And the material gives this mnemonic, C or VC, to remember the advantages. What's that about?
+
+Sarah: Ah, yes.
+
+Sarah: C or ER or VC.
+
+Sarah: Okay, so C is for clarity.
 
 [click] Sarah: Let's start with C - for clarity. The instructions need to be totally unambiguous. No confusion for the programmer or the machine.
 
