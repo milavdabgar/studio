@@ -856,7 +856,7 @@ Generated from NotebookLM podcast • Enhanced with Claude Code • No separate 
             # Map audio to slides using intelligent content matching
             slide_timings = self.map_audio_to_slides(slides_data, transcript_data)
             
-            # Export slides with click animations
+            # Export slides with click animations  
             slide_images = self.export_slides_with_smart_timing(slides_path, slide_timings)
             if not slide_images:
                 return None
@@ -881,17 +881,62 @@ Generated from NotebookLM podcast • Enhanced with Claude Code • No separate 
         
         return None
     
+    def _create_optimized_slides_file(self, original_slides: Path, output_slides: Path, useful_slides: List[Dict]) -> None:
+        """Create optimized slides file with only the slides we need"""
+        print(f"   📝 Creating optimized slides file with {len(useful_slides)} slides")
+        
+        with open(original_slides, 'r', encoding='utf-8') as f:
+            original_content = f.read()
+        
+        # Parse the original slides to extract individual slides
+        slides_content = original_content.split('---\n')
+        header = slides_content[0] if slides_content else ""
+        slide_sections = slides_content[1:] if len(slides_content) > 1 else []
+        
+        # Get slide numbers we want to keep
+        wanted_slide_numbers = set(slide['slide_number'] for slide in useful_slides)
+        
+        # Build optimized content
+        optimized_content = header + "---\n"
+        
+        for i, slide_section in enumerate(slide_sections):
+            slide_number = i + 1  # Slides are 1-indexed
+            if slide_number in wanted_slide_numbers:
+                optimized_content += slide_section
+                if not slide_section.endswith('\n'):
+                    optimized_content += '\n'
+                optimized_content += '---\n'
+        
+        # Write optimized slides file
+        with open(output_slides, 'w', encoding='utf-8') as f:
+            f.write(optimized_content)
+        
+        print(f"   ✅ Optimized slides file created: {len(wanted_slide_numbers)} slides selected")
+    
     def export_slides_with_smart_timing(self, slides_file: Path, slide_timings: List[Dict]) -> List[Path]:
         """Export slides using intelligent timing information"""
         print("📤 Exporting slides with smart timing...")
         
-        # Copy slides to working directory
+        # Filter out slides that won't be used (fallback slides and those with very short duration)
+        useful_slides = []
+        for timing in slide_timings:
+            # Only include slides that are properly synced or have reasonable duration
+            if (timing.get('topic_match', False) or 
+                timing.get('section') == 'intro' or
+                timing.get('duration', 0) >= 8.0):  # At least 8 seconds
+                useful_slides.append(timing)
+        
+        print(f"   📊 Optimizing: Using {len(useful_slides)} slides (filtered from {len(slide_timings)} total)")
+        
+        # Update slide_timings to only include useful slides
+        slide_timings[:] = useful_slides
+        
+        # Create optimized slides file with only the slides we need
         working_dir = self.root_dir / "ai_voiceover_system" / "podcasts" / "slidev"
         working_dir.mkdir(parents=True, exist_ok=True)
         
         working_slides = working_dir / "smart_sync_slides.md"
-        import shutil
-        shutil.copy2(slides_file, working_slides)
+        self._create_optimized_slides_file(slides_file, working_slides, useful_slides)
         
         try:
             export_cmd = [
