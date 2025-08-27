@@ -112,22 +112,25 @@ def find_segment_with_position_tracking(segment_text: str, slides: List[Dict],
         else:
             search_start_pos = 0
         
-        # Search in this slide's notes
-        notes = slide['notes'][search_start_pos:] if search_start_pos < len(slide['notes']) else ""
+        # Search in this slide's notes (use full notes for click detection)
+        notes_subset = slide['notes'][search_start_pos:] if search_start_pos < len(slide['notes']) else ""
         
         # Skip if no content to search
-        if not notes.strip():
+        if not notes_subset.strip():
+            continue
+        
+        # Only search if the text is actually in the subset, but use full notes for click detection
+        if search_text not in notes_subset.lower():
             continue
             
-            
-        match_result = find_in_slide_notes_with_clicks(search_text, notes, slide['number'])
+        match_result = find_in_slide_notes_with_clicks(search_text, slide['notes'], slide['number'])
         
         if match_result:
             slide_num, click_num, is_slide_start = match_result
             
-            # Calculate new global position
-            match_pos = notes.lower().find(search_text)
-            new_global_pos = slide['global_start_pos'] + search_start_pos + match_pos
+            # Calculate new global position (using full notes now)
+            match_pos = slide['notes'].lower().find(search_text)
+            new_global_pos = slide['global_start_pos'] + match_pos
             
             
             # Validate progression - allow same slide/click if position moves forward OR higher slide/click
@@ -158,11 +161,15 @@ def find_segment_with_position_tracking(segment_text: str, slides: List[Dict],
 def find_in_slide_notes_with_clicks(search_text: str, notes: str, slide_number: int) -> Optional[Tuple[int, int, bool]]:
     """
     Find text in slide notes and determine click number.
+    
+    IMPORTANT: This function receives notes that might be a SUBSTRING of the full slide notes
+    due to positional tracking. We need to find which click the text belongs to based on
+    the ORIGINAL full slide notes, not the truncated search substring.
+    
     Returns: (slide_number, click_number, is_slide_start) or None
     """
     
     notes_lower = notes.lower()
-    
     
     # Split by [click] markers
     parts = notes.split('[click]')
@@ -175,7 +182,7 @@ def find_in_slide_notes_with_clicks(search_text: str, notes: str, slide_number: 
     for i, part in enumerate(parts[1:], 2):  # Start from click 2
         if part and search_text in part.lower():
             return (slide_number, i, False)  # This is a click within the slide
-    
+        
     return None
 
 def process_transcript_with_position_tracking(segments: List[Dict], slides: List[Dict]) -> List[Dict]:
