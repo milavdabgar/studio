@@ -114,8 +114,8 @@ class YouTubeTimestampedScriptGenerator:
         return None
     
     def parse_vtt_to_segments(self, vtt_file: Path) -> List[Tuple[str, float, float]]:
-        """Parse VTT to segments with start/end times"""
-        print("📝 Parsing VTT to extract timed segments...")
+        """Parse VTT to segments with word-level timing extraction"""
+        print("📝 Parsing VTT with word-level timing extraction...")
         
         with open(vtt_file, 'r', encoding='utf-8') as f:
             content = f.read()
@@ -123,68 +123,76 @@ class YouTubeTimestampedScriptGenerator:
         segments = []
         blocks = re.split(r'\n\s*\n', content)
         
+        # VTT structure: timing blocks followed by text blocks
+        # We need to pair them up correctly
+        current_block_timing = None
+        
         for block in blocks:
             lines = [line.strip() for line in block.strip().split('\n')]
-            if len(lines) < 2:
+            if not lines or not lines[0]:
+                continue
+                
+            # Skip header blocks
+            if lines[0].startswith(('WEBVTT', 'Kind:', 'Language:', 'NOTE')):
                 continue
             
-            # Find timestamp and text
-            timestamp_line = None
-            text_lines = []
+            # Check if this block contains timing information
+            timing_line = None
+            word_timed_lines = []
             
             for line in lines:
                 if '-->' in line:
-                    timestamp_line = line
-                elif line and not line.startswith(('WEBVTT', 'Kind:', 'Language:', 'NOTE', 'align:', 'position:')):
-                    # Skip lines with HTML timing tags inside text
-                    if not re.search(r'<\d+:\d+:\d+\.\d+>', line) and line.strip():
-                        text_lines.append(line)
+                    timing_line = line
+                    try:
+                        time_parts = line.split('-->')
+                        start_str = re.split(r'\s', time_parts[0].strip())[0]
+                        end_str = re.split(r'\s', time_parts[1].strip())[0]
+                        block_start_time = self._parse_timestamp(start_str)
+                        block_end_time = self._parse_timestamp(end_str)
+                        current_block_timing = (block_start_time, block_end_time)
+                    except:
+                        pass
+                elif line and re.search(r'<\d+:\d+:\d+\.\d+>', line):
+                    # This line has word-level timing tags
+                    word_timed_lines.append(line)
             
-            if not timestamp_line or not text_lines:
-                continue
-            
-            # Parse start and end times
-            try:
-                time_parts = timestamp_line.split('-->')
-                if len(time_parts) != 2:
-                    continue
-                    
-                start_str = time_parts[0].strip()
-                end_str = time_parts[1].strip()
-                
-                # Remove any additional info after timestamp (e.g., positioning)
-                start_str = re.split(r'\s', start_str)[0]
-                end_str = re.split(r'\s', end_str)[0]
-                
-                start_time = self._parse_timestamp(start_str)
-                end_time = self._parse_timestamp(end_str)
-                
-                # Skip very short segments (likely duplicates) - less than 0.1 seconds
-                if (end_time - start_time) < 0.1:
-                    continue
-                
-                # Skip if times are invalid
-                if start_time >= end_time:
-                    continue
-                    
-            except Exception as e:
-                continue
-            
-            # Get text
-            text = ' '.join(text_lines)
-            text = self._clean_text(text)
-            
-            if text and len(text) > 5:  # Only meaningful text
-                segments.append((text, start_time, end_time))
+            # If we found word-timed lines and have current timing, process them
+            if word_timed_lines and current_block_timing is not None:
+                for line in word_timed_lines:
+                    segments_from_line = self._extract_word_level_segments(line, current_block_timing)
+                    segments.extend(segments_from_line)
         
-        # Sort by time
+        # Sort by time and remove duplicates
         segments = sorted(segments, key=lambda x: x[1])
-        
-        # Remove duplicate segments and merge overlapping ones
         deduplicated_segments = self._merge_overlapping_segments(segments)
         
-        print(f"✅ {len(deduplicated_segments)} timed segments extracted (removed {len(segments) - len(deduplicated_segments)} duplicates)")
+        print(f"✅ {len(deduplicated_segments)} phrase-level timed segments extracted")
         return deduplicated_segments
+    
+    def _extract_word_level_segments(self, line: str, block_timing: tuple = None) -> List[Tuple[str, float, float]]:
+        """Extract complete text from VTT line with correct block timing"""
+        if not block_timing:
+            return []
+            
+        block_start_time, block_end_time = block_timing
+        
+        # Extract the complete text by removing all timing tags and cleaning
+        # Example: 'નમસ્કાર<00:00:01.280><c> આપનું</c><00:00:01.839><c> સ્વાગત</c>...'
+        # Should become: 'નમસ્કાર આપનું સ્વાગત છે આજે આપણે એક'
+        
+        # Remove all timing tags <HH:MM:SS.mmm>
+        clean_line = re.sub(r'<\d+:\d+:\d+\.\d+>', '', line)
+        
+        # Remove all color/formatting tags <c>, </c>, <c.colorE5E5E5>, etc.
+        clean_line = re.sub(r'</?c[^>]*>', '', clean_line)
+        
+        # Clean up extra whitespace
+        clean_line = re.sub(r'\s+', ' ', clean_line.strip())
+        
+        if clean_line and len(clean_line) > 5:  # Only meaningful text
+            return [(clean_line, block_start_time, block_end_time)]
+        
+        return []
     
     def _parse_timestamp(self, timestamp: str) -> float:
         """Convert timestamp to seconds"""

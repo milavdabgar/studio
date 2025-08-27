@@ -1,0 +1,917 @@
+{
+  "video_url": "https://www.youtube.com/watch?v=nJSRa4DtI_0",
+  "title": "ટ્રાન્ઝિસ્ટર - નાનો ઘટક, મોટી ક્રાંતિ - ડિજિટલ યુગનો પાયો",
+  "language": "gu",
+  "total_segments": 113,
+  "total_duration": 349.44,
+  "speakers": [
+    "Dr. James",
+    "Sarah"
+  ],
+  "segments": [
+    {
+      "id": 1,
+      "start_time": 0.24,
+      "end_time": 3.83,
+      "duration": 3.59,
+      "text": "નમસ્કાર આપનું સ્વાગત છે આજે આપણે એક",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 2,
+      "start_time": 3.84,
+      "end_time": 7.909,
+      "duration": 4.069,
+      "text": "નાનકડા પણ ખૂબ જ શક્તિશાળી ઘટક વિશે વાત",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 3,
+      "start_time": 7.919,
+      "end_time": 11.669,
+      "duration": 3.75,
+      "text": "કરવાના છીએ ટ્રાન્ઝિસ્ટર એણે આધુનિક",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 4,
+      "start_time": 11.679,
+      "end_time": 14.87,
+      "duration": 3.191,
+      "text": "ટેકનોલોજીને ખરેખર બદલી નાખી છે આપણી પાસે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 5,
+      "start_time": 14.88,
+      "end_time": 18.31,
+      "duration": 3.43,
+      "text": "એક સારો એવો સ્ત્રોત છે જે આપણને સમજાવશે",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 6,
+      "start_time": 18.32,
+      "end_time": 21.429,
+      "duration": 3.109,
+      "text": "કે એની શોધ કઈ રીતે થઈ એ કામ કેવી રીતે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 7,
+      "start_time": 21.439,
+      "end_time": 24.87,
+      "duration": 3.431,
+      "text": "કરે છે અને એનું આટલું બધું મહત્વ કેમ છે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 8,
+      "start_time": 24.88,
+      "end_time": 28.23,
+      "duration": 3.35,
+      "text": "આપણો ઉદ્દેશ્ય એ સમજવાનો છે કે આ નાની",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 9,
+      "start_time": 28.24,
+      "end_time": 31.349,
+      "duration": 3.109,
+      "text": "વસ્તુ 20મી સદી નદીની મોટી શોધોમાં કેમ",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 10,
+      "start_time": 31.359,
+      "end_time": 34.87,
+      "duration": 3.511,
+      "text": "ગણાય છે તો ચાલો ઊંડાણમાં ઉતરીએ શરૂઆત",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 11,
+      "start_time": 34.88,
+      "end_time": 38.79,
+      "duration": 3.91,
+      "text": "કરીએ એકદમ બેઝિક સવારથી આ ટ્રાન્ઝિસ્ટર છે",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 12,
+      "start_time": 38.8,
+      "end_time": 43.03,
+      "duration": 4.23,
+      "text": "શું મતલબ સ્ત્રોત કહે છે કે એ એક અર્ધવાહક",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 13,
+      "start_time": 43.04,
+      "end_time": 46.15,
+      "duration": 3.11,
+      "text": "એટલે કે સેમીકન્ડક્ટર ડિવાઇસ છે સામાન્ય",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 14,
+      "start_time": 46.16,
+      "end_time": 49.19,
+      "duration": 3.03,
+      "text": "રીતે એને ત્રણ જોડાણ હોય ત્રણ ટર્મિનલ અને",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 15,
+      "start_time": 49.2,
+      "end_time": 52.549,
+      "duration": 3.349,
+      "text": "એનું કામ વીજળીના સિગ્નલને મોટો કરવો એટલે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 16,
+      "start_time": 52.559,
+      "end_time": 55.99,
+      "duration": 3.431,
+      "text": "કે એમ્પ્લીફાય કરવો અથવા તો ચાલુ બંધ કરવો",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 17,
+      "start_time": 56.0,
+      "end_time": 57.27,
+      "duration": 1.27,
+      "text": "સ્વીચની જેમ",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 18,
+      "start_time": 57.28,
+      "end_time": 60.389,
+      "duration": 3.109,
+      "text": "&gt;&gt; હા બરાબર કહ્યું વીજળી માટેનો એક નાનો",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 19,
+      "start_time": 60.399,
+      "end_time": 64.07,
+      "duration": 3.671,
+      "text": "દરવાજો કહી શકાય પણ બહુ અગત્યનો એ જ મુખ્ય",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 20,
+      "start_time": 64.08,
+      "end_time": 66.95,
+      "duration": 2.87,
+      "text": "સક્રિય ભાગ છે લગભગ બધા ઇલેક્ટ્રોનિક્સમાં",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 21,
+      "start_time": 66.96,
+      "end_time": 70.71,
+      "duration": 3.75,
+      "text": "એક નાનકડો ઇનપુટ સિગ્નલ ખબર છે એનાથી ઘણા",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 22,
+      "start_time": 70.72,
+      "end_time": 73.67,
+      "duration": 2.95,
+      "text": "મોટા આઉટપુટ સિગ્નલને કંટ્રોલ કરી શકે છે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 23,
+      "start_time": 73.68,
+      "end_time": 76.39,
+      "duration": 2.71,
+      "text": "આ જે ક્ષમતા છે ને એમ્પ્લીફાય કરવાની અને",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 24,
+      "start_time": 76.4,
+      "end_time": 79.19,
+      "duration": 2.79,
+      "text": "સ્વીચ કરવાની એ જ પાયાની વાત છે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 25,
+      "start_time": 79.2,
+      "end_time": 82.789,
+      "duration": 3.589,
+      "text": "&gt;&gt; અને એની શોધની વાર્તા પણ કેવી રસપ્રદ છે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 26,
+      "start_time": 82.799,
+      "end_time": 85.59,
+      "duration": 2.791,
+      "text": "બેલ લેબસ 1947",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 27,
+      "start_time": 85.6,
+      "end_time": 89.749,
+      "duration": 4.149,
+      "text": "બાર્ડેન બ્રેટન અને શોકલી સ્્રોત કહે છે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 28,
+      "start_time": 89.759,
+      "end_time": 92.71,
+      "duration": 2.951,
+      "text": "કે એ લોકો તો ખરેખર ફિલ્ડ ઇફેક્ટ",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 29,
+      "start_time": 92.72,
+      "end_time": 95.429,
+      "duration": 2.709,
+      "text": "ટ્રાન્ઝિસ્ટર એટલે કે એફઈટી બનાવવા",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 30,
+      "start_time": 95.439,
+      "end_time": 98.55,
+      "duration": 3.111,
+      "text": "પ્રયત્ન કરી રહ્યા હતા પણ ભૂલથી કે પછી",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 31,
+      "start_time": 98.56,
+      "end_time": 101.109,
+      "duration": 2.549,
+      "text": "કહો કે અનાયાસે પોઈન્ટ કોન્ટેક્ટ",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 32,
+      "start_time": 101.119,
+      "end_time": 102.63,
+      "duration": 1.511,
+      "text": "ટ્રાન્ઝિસ્ટર શોધી કાઢ્યો",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 33,
+      "start_time": 102.64,
+      "end_time": 104.55,
+      "duration": 1.91,
+      "text": "&gt;&gt; હા હા આકસ્મિક જ કહેવાય",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 34,
+      "start_time": 104.56,
+      "end_time": 107.109,
+      "duration": 2.549,
+      "text": "&gt;&gt; અને એના માટે નોબેલ પ્રાઇઝ પણ મળ્યું એમને",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 35,
+      "start_time": 107.119,
+      "end_time": 110.63,
+      "duration": 3.511,
+      "text": "&gt;&gt; બિલકુલ ફિઝિક્સમાં એ સમયે એમને એફઈટી",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 36,
+      "start_time": 110.64,
+      "end_time": 112.789,
+      "duration": 2.149,
+      "text": "બનાવવામાં થોડી મુશ્કેલીઓ હતી મટીરિયલ",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 37,
+      "start_time": 112.799,
+      "end_time": 115.91,
+      "duration": 3.111,
+      "text": "સાયન્સના લીધે ખરી સફળતા તો ત્યારે મળી",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 38,
+      "start_time": 115.92,
+      "end_time": 118.55,
+      "duration": 2.63,
+      "text": "જ્યારે સેમીકન્ડક્ટર કેવી રીતે વર્તે છે એ",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 39,
+      "start_time": 118.56,
+      "end_time": 121.27,
+      "duration": 2.71,
+      "text": "બરાબર સમજાયું એનાથી જ પહેલો કામ કરતો",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 40,
+      "start_time": 121.28,
+      "end_time": 123.749,
+      "duration": 2.469,
+      "text": "ટ્રાન્ઝિસ્ટર બન્યો અને રસપ્રદ વાત એ છે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 41,
+      "start_time": 123.759,
+      "end_time": 126.63,
+      "duration": 2.871,
+      "text": "કે લિયન ફેલ્ડ નામના વૈજ્ઞાનિકે તો ડાયકાઓ",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 42,
+      "start_time": 126.64,
+      "end_time": 129.35,
+      "duration": 2.71,
+      "text": "પહેલા એફઈટીનો આઈડિયા પેટન્ટ કરાવેલો પણ એ",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 43,
+      "start_time": 129.36,
+      "end_time": 132.07,
+      "duration": 2.71,
+      "text": "બનાવી નહોતા શક્યા અને લગભગ એ જ સમયે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 44,
+      "start_time": 132.08,
+      "end_time": 134.79,
+      "duration": 2.71,
+      "text": "યુરોપમાં પણ મટારિયા અને વેલ્કરે સ્વતંત્ર",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 45,
+      "start_time": 134.8,
+      "end_time": 137.67,
+      "duration": 2.87,
+      "text": "રીતે આ દિશામાં કામ કર્યું હતું એટલે કે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 46,
+      "start_time": 137.68,
+      "end_time": 140.71,
+      "duration": 3.03,
+      "text": "વિચાર તો હતો જ પણ એને હકીકત બનાવવાનું",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 47,
+      "start_time": 140.72,
+      "end_time": 143.91,
+      "duration": 3.19,
+      "text": "કામ બેલ લેબ્સમાં થયું અને પછી 50 ના",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 48,
+      "start_time": 143.92,
+      "end_time": 147.19,
+      "duration": 3.27,
+      "text": "દાયકાના અંતમાં આવ્યો મોસ્ફેટ એ પણ બેલ",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 49,
+      "start_time": 147.2,
+      "end_time": 150.309,
+      "duration": 3.109,
+      "text": "લેબ્સમાંથી સ્ત્રોત તો કહે છે કે આજે આ",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 50,
+      "start_time": 150.319,
+      "end_time": 153.91,
+      "duration": 3.591,
+      "text": "સૌથી વધુ વપરાતો ટ્રાન્ઝિસ્ટર છે કેમ એમાં",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 51,
+      "start_time": 153.92,
+      "end_time": 155.27,
+      "duration": 1.35,
+      "text": "એવું શું ખાસ છે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 52,
+      "start_time": 156.879,
+      "end_time": 161.11,
+      "duration": 4.231,
+      "text": "એની મુખ્ય વાત છે સ્કેલેબીિલિટી હ મતલબ કે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 53,
+      "start_time": 161.12,
+      "end_time": 164.79,
+      "duration": 3.67,
+      "text": "એને બહુ જ નાના કદમાં બનાવી શકાય છે અને",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 54,
+      "start_time": 164.8,
+      "end_time": 166.47,
+      "duration": 1.67,
+      "text": "સાથે સાથે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 55,
+      "start_time": 166.48,
+      "end_time": 170.07,
+      "duration": 3.59,
+      "text": "એ વીજળી પણ ઓછી વાપરે છે અને પહેલાના જે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 56,
+      "start_time": 170.08,
+      "end_time": 172.63,
+      "duration": 2.55,
+      "text": "બીજેટી આવતા હતા બાયપોલર જંકશન",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 57,
+      "start_time": 172.64,
+      "end_time": 175.75,
+      "duration": 3.11,
+      "text": "ટ્રાન્ઝિસ્ટર એના કરતાં ઘણી વધારે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 58,
+      "start_time": 175.76,
+      "end_time": 178.55,
+      "duration": 2.79,
+      "text": "સંખ્યામાં એક નાની જગ્યામાં ફિટ કરી શકાય",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 59,
+      "start_time": 178.56,
+      "end_time": 182.149,
+      "duration": 3.589,
+      "text": "છે ઊંચી ઘનતા કહેવાય એને આના લીધે જ",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 60,
+      "start_time": 182.159,
+      "end_time": 183.83,
+      "duration": 1.671,
+      "text": "ઇન્ટિગ્રેટેડ સર્કિટસ",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 61,
+      "start_time": 183.84,
+      "end_time": 186.39,
+      "duration": 2.55,
+      "text": "&gt;&gt; એટલે કે આઈસીસ ચિપ્સ બરાબર",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 62,
+      "start_time": 186.4,
+      "end_time": 190.47,
+      "duration": 4.07,
+      "text": "&gt;&gt; હા બરાબર ચિપ્સ શક્ય બની એક નાની ચિપ પર",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 63,
+      "start_time": 190.48,
+      "end_time": 193.91,
+      "duration": 3.43,
+      "text": "આજે લાખો કરોડો અરે અબજો ટ્રાન્ઝિસ્ટર હોય",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 64,
+      "start_time": 193.92,
+      "end_time": 197.509,
+      "duration": 3.589,
+      "text": "છે આજના કોમ્પ્યુટર સ્માર્ટફોન બધું આ",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 65,
+      "start_time": 197.519,
+      "end_time": 200.949,
+      "duration": 3.43,
+      "text": "મોસ્ફેટને આભારી છે ડિજિટલ ક્રાંતિનો પાયો",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 66,
+      "start_time": 200.959,
+      "end_time": 205.11,
+      "duration": 4.151,
+      "text": "જે છે સ્ત્રોતમાં એક આંકડો છે ખબર છે 2018",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 67,
+      "start_time": 205.12,
+      "end_time": 208.63,
+      "duration": 3.51,
+      "text": "સુધીમાં લગભગ 13 સેક્સટીલિયન મોસ્ફેટ બની",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 68,
+      "start_time": 208.64,
+      "end_time": 209.589,
+      "duration": 0.949,
+      "text": "ચૂક્યા હતા.",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 69,
+      "start_time": 209.599,
+      "end_time": 215.03,
+      "duration": 5.431,
+      "text": "&gt;&gt; 13 સેક્સટીલિયન બાપ રે 13 પછી 210 આ તો",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 70,
+      "start_time": 215.04,
+      "end_time": 218.55,
+      "duration": 3.51,
+      "text": "કલ્પના બહારનો આંકડો છે. તો આટલી મોટી",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 71,
+      "start_time": 218.56,
+      "end_time": 221.99,
+      "duration": 3.43,
+      "text": "સંખ્યામાં વપરાતું આ સાધન કામ કઈ રીતે કરે",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 72,
+      "start_time": 222.0,
+      "end_time": 226.07,
+      "duration": 4.07,
+      "text": "છે? સરળ ભાષામાં સ્ત્રોત બે મુખ્ય કામ કહે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 73,
+      "start_time": 226.08,
+      "end_time": 229.75,
+      "duration": 3.67,
+      "text": "છે સ્વીચિંગ અને એમ્પ્લીફાઈંગ. બિલકુલ",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 74,
+      "start_time": 229.76,
+      "end_time": 233.83,
+      "duration": 4.07,
+      "text": "સ્વીચ તરીકે એ ડિજિટલ લોજીક નો આધાર છે",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 75,
+      "start_time": 233.84,
+      "end_time": 237.35,
+      "duration": 3.51,
+      "text": "કાં તો ઓન હોય એટલે પ્રવાહને જવા દે બંધ",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 76,
+      "start_time": 237.36,
+      "end_time": 240.55,
+      "duration": 3.19,
+      "text": "સ્વીચ ની જેમ અથવા ઓફ હોય એટલે પ્રવાહને",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 77,
+      "start_time": 240.56,
+      "end_time": 243.35,
+      "duration": 2.79,
+      "text": "રોકી દે ખુલ્લી સ્વીચની જેમ આ છે",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 78,
+      "start_time": 243.36,
+      "end_time": 246.55,
+      "duration": 3.19,
+      "text": "કમ્પ્યુટરના વન અને ઝીરો અને એમ્પ્લીફાયર",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 79,
+      "start_time": 246.56,
+      "end_time": 249.83,
+      "duration": 3.27,
+      "text": "તરીકે જેમ આપણે પહેલાં વાત કરી એક નાનો",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 80,
+      "start_time": 249.84,
+      "end_time": 253.27,
+      "duration": 3.43,
+      "text": "નબળો ઇનપુટ સિગ્નલ મોટા આઉટપુટ સિગ્નલને",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 81,
+      "start_time": 253.28,
+      "end_time": 256.31,
+      "duration": 3.03,
+      "text": "કંટ્રોલ કરે રેડિયોમાં ઓડિયો સાધનોમાં આ",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 82,
+      "start_time": 256.32,
+      "end_time": 259.189,
+      "duration": 2.869,
+      "text": "બહુ જ જરૂરી છે સ્ત્રોત એ પણ કહે છે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 83,
+      "start_time": 259.199,
+      "end_time": 261.99,
+      "duration": 2.791,
+      "text": "કેબીજેટીસ કરંટથી કંટ્રોલ થાય છે જ્યારે",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 84,
+      "start_time": 262.0,
+      "end_time": 266.07,
+      "duration": 4.07,
+      "text": "fસ વોલ્ટેજથી આ એક ટેકનિકલ તફાવત છે જેના",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 85,
+      "start_time": 266.08,
+      "end_time": 268.79,
+      "duration": 2.71,
+      "text": "કારણે એમના ઉપયોગ અલગ અલગ જગ્યાએ થાય છે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 86,
+      "start_time": 268.8,
+      "end_time": 272.469,
+      "duration": 3.669,
+      "text": "&gt;&gt; હા સમજાયું પણ આ ટ્રાન્ઝિસ્ટરસ આવ્યા એ",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 87,
+      "start_time": 272.479,
+      "end_time": 275.43,
+      "duration": 2.951,
+      "text": "પહેલા શું હતું સ્ત્રોત વેક્યુમ ટ્યુબનો",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 88,
+      "start_time": 275.44,
+      "end_time": 276.79,
+      "duration": 1.35,
+      "text": "ઉલ્લેખ કરે છે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 89,
+      "start_time": 276.8,
+      "end_time": 280.71,
+      "duration": 3.91,
+      "text": "&gt;&gt; હા વેક્યુમ ટ્યુબ એ જમાનો હતો એમનો પણ એ",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 90,
+      "start_time": 280.72,
+      "end_time": 284.07,
+      "duration": 3.35,
+      "text": "મોટા હતા કાચના બનેલા એટલે નાજુક પણ ખરા",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 91,
+      "start_time": 284.08,
+      "end_time": 287.35,
+      "duration": 3.27,
+      "text": "અને વીજળી બહુ વાપરતા ગરમ પણ બહુ થતા",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 92,
+      "start_time": 287.36,
+      "end_time": 290.39,
+      "duration": 3.03,
+      "text": "ટ્રાન્ઝિસ્ટ આ બધી મુશ્કેલીઓ દૂર કરી દીધી",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 93,
+      "start_time": 290.4,
+      "end_time": 294.07,
+      "duration": 3.67,
+      "text": "નાના મજબૂત ભરોસાપાત્ર અને પાવર પણ સાવ",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 94,
+      "start_time": 294.08,
+      "end_time": 296.95,
+      "duration": 2.87,
+      "text": "ઓછો જોઈએ આના લીધે જ પોકેટ રેડિયો બન્યા",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 95,
+      "start_time": 296.96,
+      "end_time": 299.59,
+      "duration": 2.63,
+      "text": "નાના કોમ્પ્યુટર બન્યા અને આજે આપણી પાસે",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 96,
+      "start_time": 299.6,
+      "end_time": 303.35,
+      "duration": 3.75,
+      "text": "જે બધી ટેકનોલોજી છે એ શક્ય બની જો કે એ",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 97,
+      "start_time": 303.36,
+      "end_time": 306.39,
+      "duration": 3.03,
+      "text": "વાત પણ સાચી કે અમુક ખાસ કામ માટે જેમ કે",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 98,
+      "start_time": 306.4,
+      "end_time": 308.79,
+      "duration": 2.39,
+      "text": "બહુ જ હાઈ પાવર કે હાઈ ફ્રિક્વન્સી માટે",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 99,
+      "start_time": 308.8,
+      "end_time": 310.79,
+      "duration": 1.99,
+      "text": "આજે પણ ક્યાંક ક્યાંક વેક્યુમ ટ્યુબ વપરાય",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 100,
+      "start_time": 311.12,
+      "end_time": 314.55,
+      "duration": 3.43,
+      "text": "&gt;&gt; તો આખી વાતનો સાર એમ નીકળે કે એક નાનકડો",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 101,
+      "start_time": 314.56,
+      "end_time": 318.15,
+      "duration": 3.59,
+      "text": "ઘટક જેની શોધ પણ થોડી આકસ્મિક હતી એણે આખી",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 102,
+      "start_time": 318.16,
+      "end_time": 320.39,
+      "duration": 2.23,
+      "text": "ઇલેક્ટ્રોનિક્સની દુનિયા અને આપણી જિંદગી",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 103,
+      "start_time": 320.4,
+      "end_time": 321.51,
+      "duration": 1.11,
+      "text": "બદલી નાખી",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 104,
+      "start_time": 321.52,
+      "end_time": 325.029,
+      "duration": 3.509,
+      "text": "&gt;&gt; ખરેખર ધરમૂળથી બદલી નાખી આ નાની સ્વીચ અને",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 105,
+      "start_time": 325.039,
+      "end_time": 327.99,
+      "duration": 2.951,
+      "text": "એમ્પ્લીફાયરને આટલી સસ્તી રીતે અને આટલી",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 106,
+      "start_time": 328.0,
+      "end_time": 330.23,
+      "duration": 2.23,
+      "text": "મોટી સંખ્યામાં બનાવવાની ક્ષમતા એ જ",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 107,
+      "start_time": 330.24,
+      "end_time": 331.83,
+      "duration": 1.59,
+      "text": "આધુનિક યુગનો આધાર છે",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 108,
+      "start_time": 331.84,
+      "end_time": 335.11,
+      "duration": 3.27,
+      "text": "&gt;&gt; સંશોધન ચાલી રહ્યું છે ગ્રાફીન કાર્બન",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 109,
+      "start_time": 335.12,
+      "end_time": 338.15,
+      "duration": 3.03,
+      "text": "નેનો ટ્યુબ જો આજના ટ્રાન્ઝિસ્ટરે આટલો",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 110,
+      "start_time": 338.16,
+      "end_time": 340.95,
+      "duration": 2.79,
+      "text": "મોટો ફેરફાર કર્યો તો ભવિષ્યનો નવો",
+      "speaker": "Sarah"
+    },
+    {
+      "id": 111,
+      "start_time": 340.96,
+      "end_time": 343.83,
+      "duration": 2.87,
+      "text": "ક્રાંતિકારી ઘટક કેવો હશે અને એ આપણી",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 112,
+      "start_time": 343.84,
+      "end_time": 346.71,
+      "duration": 2.87,
+      "text": "દુનિયાને ફરી કેવી રીતે બદલશે એ વિચારવા",
+      "speaker": "Dr. James"
+    },
+    {
+      "id": 113,
+      "start_time": 346.72,
+      "end_time": 349.44,
+      "duration": 2.72,
+      "text": "જેવું ખરું.",
+      "speaker": "Sarah"
+    }
+  ]
+}
