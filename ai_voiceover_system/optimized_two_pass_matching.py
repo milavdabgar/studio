@@ -61,21 +61,24 @@ def process_optimized_two_pass(segments: List[Dict], slides: List[Dict]) -> List
             last_position = position
             debug_print(f"📍 {segment['start']:.1f}s: {slide_num}-{click_num}")
     
-    # PASS 2: Multi-match segments by neighbor context
+    # PASS 2: Multi-match segments by neighbor context - PROCESS IN ORDER
+    # Sort multi-match segments by their original index to maintain chronological processing
+    multi_match_segments.sort(key=lambda x: x[0])
+    
+    # Track the global progression position across all assigned segments
+    global_position = last_position
+    
     for orig_idx, segment, matches in multi_match_segments:
         prev_match, next_match = find_neighbors(orig_idx, timeline, segments)
         
-        # Get current position for this segment (latest from timeline)
-        current_position = 0
-        for timeline_idx in sorted([i for i in timeline.keys() if i < orig_idx], reverse=True):
-            current_position = timeline[timeline_idx]['position']
-            break
-        
-        assigned = assign_by_context(segment, matches, prev_match, next_match, current_position)
+        # Use the global progression position that includes all assignments so far
+        assigned = assign_by_context(segment, matches, prev_match, next_match, global_position)
         
         if assigned:
             slide_num, click_num, position = assigned
             timeline[orig_idx] = create_timeline_entry(segment, slide_num, click_num, position, orig_idx)
+            # Update global position to maintain forward progression
+            global_position = max(global_position, position)
             debug_print(f"📍 {segment['start']:.1f}s: {slide_num}-{click_num} [multi-match]")
     
     # Convert to chronological list
@@ -112,8 +115,8 @@ def find_neighbors(orig_idx, timeline, segments):
     
     return prev_match, next_match
 
-def assign_by_context(segment, matches, prev_match, next_match, last_position):
-    """Assign segment based on neighbor context - prioritize slide continuity over forward progression"""
+def assign_by_context(segment, matches, prev_match, next_match, global_position):
+    """Assign segment based on neighbor context with smart progression logic"""
     if not matches:
         # No matches - inherit from closest neighbor
         if prev_match and next_match:
@@ -122,67 +125,95 @@ def assign_by_context(segment, matches, prev_match, next_match, last_position):
             return (prev_match['slide'], prev_match['click'], prev_match['position']) if time_to_prev <= time_to_next else (next_match['slide'], next_match['click'], next_match['position'])
         return (prev_match['slide'], prev_match['click'], prev_match['position']) if prev_match else (next_match['slide'], next_match['click'], next_match['position']) if next_match else (1, 1, 0)
     
+    # Filter for forward progression matches first
+    forward_matches = [m for m in matches if m[2] >= global_position]
+    
     if prev_match and next_match:
-        # Between neighbors - PRIORITY: same slide continuity
+        # Between neighbors - PRIORITY: same slide continuity with forward progression
         if prev_match['slide'] == next_match['slide']:
-            # Both neighbors on same slide - strongly prefer that slide (even if backward)
+            # Both neighbors on same slide - prefer matches on that slide
             same_slide_matches = [m for m in matches if m[0] == prev_match['slide']]
             if same_slide_matches:
-                debug_print(f"SAME SLIDE CONTINUITY: {prev_match['slide']}")
-                return same_slide_matches[0]
+                # Try forward matches on same slide first
+                same_slide_forward = [m for m in same_slide_matches if m[2] >= global_position]
+                if same_slide_forward:
+                    debug_print(f"SAME SLIDE FORWARD: {prev_match['slide']}")
+                    return same_slide_forward[0]
+                else:
+                    debug_print(f"SAME SLIDE CONTINUITY: {prev_match['slide']}")
+                    return same_slide_matches[0]
         
-        # Different slides - prefer forward progression when possible
-        forward_matches = [m for m in matches if m[2] >= last_position]
+        # Different slides - prefer forward progression on neighbor slides
         if forward_matches:
             # Filter forward matches to neighbor slides first
-            prev_slide_forwards = [m for m in forward_matches if m[0] == prev_match['slide']]
-            next_slide_forwards = [m for m in forward_matches if m[0] == next_match['slide']]
+            neighbor_slides = {prev_match['slide'], next_match['slide']}
+            neighbor_forward = [m for m in forward_matches if m[0] in neighbor_slides]
             
-            if prev_slide_forwards and next_slide_forwards:
-                # Both neighbors have forward matches - use temporal proximity
+            if neighbor_forward:
+                # Choose based on temporal proximity
                 time_to_prev = segment['start'] - prev_match['end']
                 time_to_next = next_match['start'] - segment['end']
-                return prev_slide_forwards[0] if time_to_prev <= time_to_next else next_slide_forwards[0]
-            elif prev_slide_forwards:
-                return prev_slide_forwards[0]
-            elif next_slide_forwards:
-                return next_slide_forwards[0]
-            else:
-                # No neighbor matches in forward - choose closest slide number
-                return min(forward_matches, key=lambda m: min(abs(m[0] - prev_match['slide']), abs(m[0] - next_match['slide'])))
-        else:
-            # No forward matches - use temporal proximity to neighbors
-            time_to_prev = segment['start'] - prev_match['end']
-            time_to_next = next_match['start'] - segment['end']
-            debug_print(f"NO FORWARD - temporal: prev={time_to_prev:.1f}s, next={time_to_next:.1f}s")
-            return (prev_match['slide'], prev_match['click'], prev_match['position']) if time_to_prev <= time_to_next else (next_match['slide'], next_match['click'], next_match['position'])
+                
+                prev_slide_forwards = [m for m in neighbor_forward if m[0] == prev_match['slide']]
+                next_slide_forwards = [m for m in neighbor_forward if m[0] == next_match['slide']]
+                
+                if prev_slide_forwards and time_to_prev <= time_to_next:
+                    return prev_slide_forwards[0]
+                elif next_slide_forwards:
+                    return next_slide_forwards[0]
+                elif prev_slide_forwards:
+                    return prev_slide_forwards[0]
+            
+            # No neighbor matches - choose closest slide in forward direction
+            return min(forward_matches, key=lambda m: min(abs(m[0] - prev_match['slide']), abs(m[0] - next_match['slide'])))
+        
+        # No forward matches - inherit from temporally closer neighbor
+        time_to_prev = segment['start'] - prev_match['end']
+        time_to_next = next_match['start'] - segment['end']
+        debug_print(f"NO FORWARD - inheriting from closer neighbor")
+        return (prev_match['slide'], prev_match['click'], prev_match['position']) if time_to_prev <= time_to_next else (next_match['slide'], next_match['click'], next_match['position'])
     
     elif prev_match:
-        # Only previous - prefer same slide, then forward progression
+        # Only previous - prefer same slide with forward progression
         same_slide = [m for m in matches if m[0] == prev_match['slide']]
         if same_slide:
-            return same_slide[0]
+            # Try forward on same slide first
+            same_slide_forward = [m for m in same_slide if m[2] >= global_position]
+            if same_slide_forward:
+                return same_slide_forward[0]
+            else:
+                return same_slide[0]
         
-        forward_matches = [m for m in matches if m[2] >= last_position]
+        # Try forward progression on closest slides
         if forward_matches:
             return min(forward_matches, key=lambda m: abs(m[0] - prev_match['slide']))
         else:
+            # No forward matches - inherit from previous
             return (prev_match['slide'], prev_match['click'], prev_match['position'])
     
     elif next_match:
-        # Only next - prefer same slide, then forward progression
+        # Only next - prefer same slide with forward progression
         same_slide = [m for m in matches if m[0] == next_match['slide']]
         if same_slide:
-            return same_slide[0]
+            # Try forward on same slide first
+            same_slide_forward = [m for m in same_slide if m[2] >= global_position]
+            if same_slide_forward:
+                return same_slide_forward[0]
+            else:
+                return same_slide[0]
         
-        forward_matches = [m for m in matches if m[2] >= last_position]
+        # Try forward progression on closest slides
         if forward_matches:
             return min(forward_matches, key=lambda m: abs(m[0] - next_match['slide']))
         else:
+            # No forward matches - inherit from next
             return (next_match['slide'], next_match['click'], next_match['position'])
     
-    # No neighbors - use first match
-    return matches[0]
+    # No neighbors - prefer forward progression
+    if forward_matches:
+        return forward_matches[0]
+    else:
+        return matches[0]
 
 def debug_print(message):
     """Print debug message if debug mode is enabled"""
