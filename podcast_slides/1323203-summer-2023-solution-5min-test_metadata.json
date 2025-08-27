@@ -1,0 +1,41 @@
+{
+  "source_audio": "/Users/milav/Code/studio/ai_voiceover_system/podcasts/1323203-summer-2023-solution-5min-test.m4a",
+  "transcript_method": "whisper",
+  "transcript_length": 5117,
+  "slides_count": 3,
+  "audio_duration": 300.002,
+  "processing_date": "2025-08-26T18:02:04.164165+00:00",
+  "slides_data": {
+    "title": "Educational Discussion",
+    "slides": [
+      {
+        "title": "Introduction",
+        "content": [
+          "Welcome to this educational discussion",
+          "Key topics: like, that, right, python, this",
+          "Let's explore these concepts together"
+        ],
+        "layout": "intro"
+      },
+      {
+        "title": "Topic 1",
+        "content": [
+          "Welcome to the deep dive",
+          "We're here to pull out the key info you need from different sources",
+          "That's right",
+          "And today, we're looking at a summer 2023 exam solution guide"
+        ],
+        "layout": "default"
+      },
+      {
+        "title": "Summary",
+        "content": [
+          "We've covered important concepts",
+          "Key takeaways from our discussion",
+          "Thank you for your attention"
+        ],
+        "layout": "conclusion"
+      }
+    ]
+  }
+}

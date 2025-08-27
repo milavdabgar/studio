@@ -1,0 +1,934 @@
+{
+  "metadata": {
+    "title": "1323203 Summer 2023 Solution 5Min Test",
+    "duration": 0,
+    "generated_at": "2025-08-27T07:20:31.501965",
+    "format": "word_level_timestamps"
+  },
+  "segments": [
+    {
+      "speaker": "Dr. James",
+      "text": "Welcome to the Deep Dive.",
+      "start": 0.0,
+      "end": 1.34,
+      "duration": 1.34
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "We're here to pull out the key info you need from different sources.",
+      "start": 1.44,
+      "end": 4.9,
+      "duration": 3.4600000000000004
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "That's right.",
+      "start": 5.02,
+      "end": 5.5,
+      "duration": 0.4800000000000004
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "And today we're looking at a summer 2023 exam solution guide.",
+      "start": 5.9,
+      "end": 10.82,
+      "duration": 4.92
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "It's all about the basics of Python programming.",
+      "start": 10.94,
+      "end": 14.1,
+      "duration": 3.16
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Yep, the fundamentals.",
+      "start": 14.12,
+      "end": 15.18,
+      "duration": 1.0600000000000005
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "So whether this is maybe your first time seeing this stuff or you need a refresher, or maybe you just want things clear before you actually start coding, our aim is to, you know, make these technical ideas understandable, maybe even interesting.",
+      "start": 15.58,
+      "end": 28.56,
+      "duration": 12.979999999999999
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Hopefully.",
+      "start": 28.82,
+      "end": 29.3,
+      "duration": 0.4800000000000004
+    },
+    {
+      "speaker": "Sarah",
+      "text": "And this guide, it hits definitions, rules, code examples, pretty comprehensive for fundamentals.",
+      "start": 29.54,
+      "end": 35.4,
+      "duration": 5.859999999999999
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Okay, let's dive in.",
+      "start": 35.54,
+      "end": 36.6,
+      "duration": 1.0600000000000023
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "First concept, algorithms.",
+      "start": 36.7,
+      "end": 38.62,
+      "duration": 1.9199999999999946
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Sounds maybe a bit formal, but what is an algorithm really?",
+      "start": 39.26,
+      "end": 42.0,
+      "duration": 2.740000000000002
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Well, at its heart, it's just a step-by-step procedure.",
+      "start": 42.1,
+      "end": 44.44,
+      "duration": 2.3399999999999963
+    },
+    {
+      "speaker": "Sarah",
+      "text": "It's a way to solve a problem in a specific finite sequence of steps.",
+      "start": 44.62,
+      "end": 48.04,
+      "duration": 3.4200000000000017
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Like a recipe.",
+      "start": 48.22,
+      "end": 48.82,
+      "duration": 0.6000000000000014
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Exactly like a recipe.",
+      "start": 49.04,
+      "end": 50.02,
+      "duration": 0.980000000000004
+    },
+    {
+      "speaker": "Sarah",
+      "text": "That's a great analogy.",
+      "start": 50.12,
+      "end": 50.88,
+      "duration": 0.7600000000000051
+    },
+    {
+      "speaker": "Sarah",
+      "text": "For computers, it's the set of instructions to get a certain result.",
+      "start": 51.02,
+      "end": 54.0,
+      "duration": 2.979999999999997
+    },
+    {
+      "speaker": "Sarah",
+      "text": "And honestly, algorithms are the logic behind pretty much all software.",
+      "start": 54.4,
+      "end": 58.62,
+      "duration": 4.219999999999999
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Makes sense.",
+      "start": 59.06,
+      "end": 59.58,
+      "duration": 0.519999999999996
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "And the material gives this mnemonic, C or VC, to remember the advantages.",
+      "start": 59.82,
+      "end": 65.78,
+      "duration": 5.960000000000001
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "What's that about?",
+      "start": 66.48,
+      "end": 67.24,
+      "duration": 0.7599999999999909
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Ah, yes.",
+      "start": 67.66,
+      "end": 68.16,
+      "duration": 0.5
+    },
+    {
+      "speaker": "Sarah",
+      "text": "C or ER or VC.",
+      "start": 68.26,
+      "end": 69.26,
+      "duration": 1.0
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Okay, so C is for clarity.",
+      "start": 69.46,
+      "end": 70.58,
+      "duration": 1.1200000000000045
+    },
+    {
+      "speaker": "Sarah",
+      "text": "The instructions need to be totally unambiguous.",
+      "start": 71.28,
+      "end": 73.56,
+      "duration": 2.280000000000001
+    },
+    {
+      "speaker": "Sarah",
+      "text": "No confusion for the programmer or the machine.",
+      "start": 74.08,
+      "end": 76.4,
+      "duration": 2.3200000000000074
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Right.",
+      "start": 76.62,
+      "end": 76.86,
+      "duration": 0.23999999999999488
+    },
+    {
+      "speaker": "Sarah",
+      "text": "E is efficiency.",
+      "start": 77.28,
+      "end": 78.58,
+      "duration": 1.2999999999999972
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Good algorithms, they try to use resources, well, time, memory.",
+      "start": 79.16,
+      "end": 83.46,
+      "duration": 4.299999999999997
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Think about sorting huge amounts of data.",
+      "start": 83.68,
+      "end": 85.92,
+      "duration": 2.239999999999995
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Yeah, you want that fast.",
+      "start": 85.94,
+      "end": 86.78,
+      "duration": 0.8400000000000034
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Exactly.",
+      "start": 86.8,
+      "end": 87.24,
+      "duration": 0.4399999999999977
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Efficiency matters.",
+      "start": 87.42,
+      "end": 88.26,
+      "duration": 0.8400000000000034
+    },
+    {
+      "speaker": "Sarah",
+      "text": "R is reusability.",
+      "start": 89.08,
+      "end": 90.1,
+      "duration": 1.019999999999996
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Often, you build an algorithm for one thing, but you can adapt it or reuse parts for similar problems later.",
+      "start": 90.26,
+      "end": 95.38,
+      "duration": 5.11999999999999
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Saves a lot of work.",
+      "start": 95.7,
+      "end": 96.42,
+      "duration": 0.7199999999999989
+    },
+    {
+      "speaker": "Sarah",
+      "text": "V is verification.",
+      "start": 97.08,
+      "end": 98.46,
+      "duration": 1.3799999999999955
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Clear steps mean it's easier to test and debug, make sure it actually works correctly.",
+      "start": 99.38,
+      "end": 103.62,
+      "duration": 4.240000000000009
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Before coding it up.",
+      "start": 103.84,
+      "end": 104.66,
+      "duration": 0.8199999999999932
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Precisely.",
+      "start": 104.78,
+      "end": 105.3,
+      "duration": 0.519999999999996
+    },
+    {
+      "speaker": "Sarah",
+      "text": "And the last C is communication.",
+      "start": 105.74,
+      "end": 108.2,
+      "duration": 2.460000000000008
+    },
+    {
+      "speaker": "Sarah",
+      "text": "An algorithm is like a blueprint.",
+      "start": 108.7,
+      "end": 110.1,
+      "duration": 1.3999999999999915
+    },
+    {
+      "speaker": "Sarah",
+      "text": "It helps different people understand the solution, work together on it.",
+      "start": 110.52,
+      "end": 113.38,
+      "duration": 2.8599999999999994
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "So it's really about planning it out first.",
+      "start": 113.76,
+      "end": 115.28,
+      "duration": 1.519999999999996
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Okay.",
+      "start": 115.38,
+      "end": 115.5,
+      "duration": 0.12000000000000455
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Another tool for planning is the flow chart.",
+      "start": 115.66,
+      "end": 117.68,
+      "duration": 2.0200000000000102
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "How do they fit in?",
+      "start": 117.9,
+      "end": 118.74,
+      "duration": 0.8399999999999892
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Flow charts are basically visual algorithms.",
+      "start": 118.9,
+      "end": 120.98,
+      "duration": 2.0799999999999983
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Instead of just text, you use standard symbols and arrows to show the sequence, the decisions, the flow of logic.",
+      "start": 121.18,
+      "end": 126.42,
+      "duration": 5.239999999999995
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "More graphical.",
+      "start": 126.56,
+      "end": 127.14,
+      "duration": 0.5799999999999983
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Yeah, much more graphical.",
+      "start": 127.48,
+      "end": 128.58,
+      "duration": 1.1000000000000085
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Sometimes easier to grasp the overall structure quickly, like looking at a map instead of reading directions.",
+      "start": 128.86,
+      "end": 134.36,
+      "duration": 5.5
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Got it.",
+      "start": 134.46,
+      "end": 134.8,
+      "duration": 0.3400000000000034
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "And like algorithms, there are rules for good flow charts.",
+      "start": 135.08,
+      "end": 137.62,
+      "duration": 2.539999999999992
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "The source mentions PDRSC.",
+      "start": 137.9,
+      "end": 139.44,
+      "duration": 1.539999999999992
+    },
+    {
+      "speaker": "Sarah",
+      "text": "PDRSC.",
+      "start": 139.84,
+      "end": 140.64,
+      "duration": 0.799999999999983
+    },
+    {
+      "speaker": "Sarah",
+      "text": "P, use the proper symbols.",
+      "start": 141.1,
+      "end": 142.96,
+      "duration": 1.8600000000000136
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Rectangles for actions, diamonds for decisions, you know, the standard shape so everyone reads it the same way.",
+      "start": 143.46,
+      "end": 148.46,
+      "duration": 5.0
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Okay.",
+      "start": 148.6,
+      "end": 148.9,
+      "duration": 0.30000000000001137
+    },
+    {
+      "speaker": "Sarah",
+      "text": "D, direction.",
+      "start": 149.26,
+      "end": 149.86,
+      "duration": 0.6000000000000227
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Generally top to bottom, left to right.",
+      "start": 150.4,
+      "end": 151.9,
+      "duration": 1.5
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Keeps it easy to follow.",
+      "start": 152.08,
+      "end": 152.98,
+      "duration": 0.8999999999999773
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Standard flow.",
+      "start": 153.02,
+      "end": 153.54,
+      "duration": 0.5199999999999818
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Right.",
+      "start": 153.64,
+      "end": 153.96,
+      "duration": 0.3200000000000216
+    },
+    {
+      "speaker": "Sarah",
+      "text": "R, single entry exit.",
+      "start": 154.46,
+      "end": 156.42,
+      "duration": 1.9599999999999795
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Should have one clear start, one clear end.",
+      "start": 156.9,
+      "end": 158.96,
+      "duration": 2.0600000000000023
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Keeps it organized.",
+      "start": 159.1,
+      "end": 159.7,
+      "duration": 0.5999999999999943
+    },
+    {
+      "speaker": "Sarah",
+      "text": "S, clarity.",
+      "start": 160.56,
+      "end": 161.38,
+      "duration": 0.8199999999999932
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Keep the text inside the symbols concise, easy to understand steps.",
+      "start": 161.82,
+      "end": 165.56,
+      "duration": 3.740000000000009
+    },
+    {
+      "speaker": "Sarah",
+      "text": "And C, consistency.",
+      "start": 165.8,
+      "end": 167.34,
+      "duration": 1.539999999999992
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Use the same level of detail and symbols throughout.",
+      "start": 167.98,
+      "end": 170.08,
+      "duration": 2.1000000000000227
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Makes sense.",
+      "start": 170.36,
+      "end": 170.88,
+      "duration": 0.5199999999999818
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "The guide even gives an example.",
+      "start": 171.16,
+      "end": 172.54,
+      "duration": 1.3799999999999955
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Calculating simple interest, how would that look as a flow chart?",
+      "start": 172.72,
+      "end": 175.08,
+      "duration": 2.3600000000000136
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Okay.",
+      "start": 175.16,
+      "end": 175.38,
+      "duration": 0.21999999999999886
+    },
+    {
+      "speaker": "Sarah",
+      "text": "So you'd start with a start oval, then an arrow to a parallelogram, input PRT, principal rate time.",
+      "start": 175.46,
+      "end": 182.0,
+      "duration": 6.539999999999992
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "The inputs.",
+      "start": 182.38,
+      "end": 182.92,
+      "duration": 0.539999999999992
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Right.",
+      "start": 183.02,
+      "end": 183.28,
+      "duration": 0.2599999999999909
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Then an arrow to a rectangle for the calculation.",
+      "start": 183.4,
+      "end": 185.58,
+      "duration": 2.180000000000007
+    },
+    {
+      "speaker": "Sarah",
+      "text": "SI equals PRT 100.",
+      "start": 185.76,
+      "end": 187.28,
+      "duration": 1.5200000000000102
+    },
+    {
+      "speaker": "Sarah",
+      "text": "That's the process.",
+      "start": 187.52,
+      "end": 188.12,
+      "duration": 0.5999999999999943
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "The formula.",
+      "start": 188.12,
+      "end": 188.5,
+      "duration": 0.37999999999999545
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Yep.",
+      "start": 188.5,
+      "end": 188.8,
+      "duration": 0.30000000000001137
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Arrow again to another parallelogram, output SI, show the result.",
+      "start": 189.2,
+      "end": 193.88,
+      "duration": 4.680000000000007
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "And finally, an arrow to an end oval.",
+      "start": 194.2,
+      "end": 197.0,
+      "duration": 2.8000000000000114
+    },
+    {
+      "speaker": "Sarah",
+      "text": "So if I wanted to figure out interest on, say, a quick loan.",
+      "start": 197.42,
+      "end": 200.96,
+      "duration": 3.5400000000000205
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Exactly.",
+      "start": 201.22,
+      "end": 201.72,
+      "duration": 0.5
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "It maps out those exact steps, get the numbers, do the math, show the answer.",
+      "start": 201.84,
+      "end": 206.56,
+      "duration": 4.719999999999999
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Very clear.",
+      "start": 206.8,
+      "end": 207.46,
+      "duration": 0.6599999999999966
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Okay.",
+      "start": 207.6,
+      "end": 207.82,
+      "duration": 0.21999999999999886
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Solid foundation for problem solving.",
+      "start": 208.02,
+      "end": 209.78,
+      "duration": 1.759999999999991
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Let's shift into Python itself.",
+      "start": 210.12,
+      "end": 211.82,
+      "duration": 1.6999999999999886
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Assignment operators.",
+      "start": 212.08,
+      "end": 212.88,
+      "duration": 0.799999999999983
+    },
+    {
+      "speaker": "Sarah",
+      "text": "What are these?",
+      "start": 213.1,
+      "end": 213.58,
+      "duration": 0.4800000000000182
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Assignment operators are how you give values to variables in Python.",
+      "start": 213.8,
+      "end": 217.06,
+      "duration": 3.259999999999991
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "The basic one is just the equal sign.",
+      "start": 217.18,
+      "end": 218.82,
+      "duration": 1.6399999999999864
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Simple enough.",
+      "start": 219.0,
+      "end": 219.72,
+      "duration": 0.7199999999999989
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "But Python has these shorthand operators too.",
+      "start": 219.94,
+      "end": 222.04,
+      "duration": 2.0999999999999943
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Like instead of XX plus 5, you can just write X plus up to 5.",
+      "start": 222.18,
+      "end": 224.92,
+      "duration": 2.7399999999999807
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Combines the math and the assignment.",
+      "start": 225.12,
+      "end": 226.96,
+      "duration": 1.8400000000000034
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Ah, shortcuts.",
+      "start": 227.12,
+      "end": 228.02,
+      "duration": 0.9000000000000057
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Yeah.",
+      "start": 228.34,
+      "end": 228.52,
+      "duration": 0.18000000000000682
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "They make code shorter, often a bit easier to read, especially if you're updating the same variable a lot.",
+      "start": 228.62,
+      "end": 232.5,
+      "duration": 3.8799999999999955
+    },
+    {
+      "speaker": "Sarah",
+      "text": "And the guide lists a whole bunch, plus any errors, even things like NMN.",
+      "start": 232.62,
+      "end": 237.62,
+      "duration": 5.0
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "It's quite a set.",
+      "start": 237.88,
+      "end": 238.94,
+      "duration": 1.0600000000000023
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Each one pairs an operation like multiplication or maybe integer division with assignment.",
+      "start": 239.32,
+      "end": 243.68,
+      "duration": 4.360000000000014
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "The mnemonic they use is value.",
+      "start": 244.12,
+      "end": 245.82,
+      "duration": 1.6999999999999886
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Variable assignment is like updating existing values.",
+      "start": 246.16,
+      "end": 248.92,
+      "duration": 2.759999999999991
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Sort of captures the idea that you're usually modifying what's already in the variable.",
+      "start": 249.48,
+      "end": 252.9,
+      "duration": 3.420000000000016
+    },
+    {
+      "speaker": "Sarah",
+      "text": "It's concise and sometimes it can even be slightly more efficient.",
+      "start": 253.06,
+      "end": 256.74,
+      "duration": 3.680000000000007
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Right.",
+      "start": 257.04,
+      "end": 257.28,
+      "duration": 0.23999999999995225
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Efficiency and cleaner code.",
+      "start": 257.4,
+      "end": 258.5,
+      "duration": 1.1000000000000227
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Always good.",
+      "start": 258.76,
+      "end": 259.14,
+      "duration": 0.37999999999999545
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Next up, Python data types.",
+      "start": 261.08,
+      "end": 262.94,
+      "duration": 1.8600000000000136
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "This feels really fundamental.",
+      "start": 263.38,
+      "end": 264.72,
+      "duration": 1.3400000000000318
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Oh, absolutely.",
+      "start": 264.72,
+      "end": 265.66,
+      "duration": 0.9399999999999977
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Data types just classify what kind of value a variable can hold.",
+      "start": 266.14,
+      "end": 270.04,
+      "duration": 3.900000000000034
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Is it a whole number?",
+      "start": 270.12,
+      "end": 270.82,
+      "duration": 0.6999999999999886
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Text?",
+      "start": 271.44,
+      "end": 271.76,
+      "duration": 0.3199999999999932
+    },
+    {
+      "speaker": "Sarah",
+      "text": "A true false thing.",
+      "start": 272.22,
+      "end": 273.42,
+      "duration": 1.1999999999999886
+    },
+    {
+      "speaker": "Sarah",
+      "text": "The computer handles different types differently.",
+      "start": 273.76,
+      "end": 275.6,
+      "duration": 1.8400000000000318
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "And Python figures this out mostly on its own, right?",
+      "start": 275.92,
+      "end": 278.74,
+      "duration": 2.819999999999993
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Dynamically typed.",
+      "start": 278.92,
+      "end": 279.84,
+      "duration": 0.9199999999999591
+    },
+    {
+      "speaker": "Sarah",
+      "text": "It is dynamically typed, yes.",
+      "start": 279.84,
+      "end": 281.14,
+      "duration": 1.3000000000000114
+    },
+    {
+      "speaker": "Sarah",
+      "text": "You often don't have to declare the type explicitly.",
+      "start": 281.34,
+      "end": 283.6,
+      "duration": 2.2600000000000477
+    },
+    {
+      "speaker": "Sarah",
+      "text": "But understanding the types is still crucial for writing code that works correctly and, again, efficiently.",
+      "start": 284.04,
+      "end": 289.44,
+      "duration": 5.399999999999977
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "And there are quite a few types listed.",
+      "start": 289.84,
+      "end": 291.9,
+      "duration": 2.0600000000000023
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Int, float, stripe, bool, list, tuple, set, dict.",
+      "start": 292.26,
+      "end": 296.24,
+      "duration": 3.980000000000018
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Even complex and untyped.",
+      "start": 297.04,
+      "end": 298.26,
+      "duration": 1.2199999999999704
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "It's a good range.",
+      "start": 298.56,
+      "end": 299.24,
+      "duration": 0.6800000000000068
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "You've got int,",
+      "start": 299.6,
+      "end": 300.12,
+      "duration": 0.5199999999999818
+    }
+  ]
+}

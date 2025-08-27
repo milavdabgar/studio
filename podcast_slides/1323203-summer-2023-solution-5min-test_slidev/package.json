@@ -1,0 +1,9 @@
+{
+  "name": "1323203-summer-2023-solution-5min-test-slides",
+  "private": true,
+  "scripts": {
+    "build": "slidev build",
+    "dev": "slidev",
+    "export": "slidev export"
+  }
+}
