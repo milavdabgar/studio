@@ -480,9 +480,9 @@ def main():
     print("🎯 Positional Matching Sync - Perfect Progressive Matching!")
     print("Objective: 100% segment coverage with ascending positions")
     
-    # File paths
+    # File paths - using original slides with manual fixes
     audio_file = Path("../ai_voiceover_system/podcasts/1323203-summer-2023-solution-5min-test.m4a")
-    slides_file = Path("../slidev/python-programming-fundamentals-conversational.md")
+    slides_file = Path("../slidev/python-programming-fundamentals-conversational.md")  # Original slides
     transcript_file = Path("../audio_scripts/1323203-summer-2023-solution-5min-test-timestamped.json")
     image_dir = Path("../enhanced_podcast_output")
     
