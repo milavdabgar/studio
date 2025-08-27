@@ -84,16 +84,15 @@ def find_segment_with_position_tracking(segment_text: str, slides: List[Dict],
     # Clean the segment text for searching
     search_text = segment_text.lower().strip(' .,!?')
     
-    # Skip very short segments that are likely to cause false matches
-    if len(search_text) <= 3:
-        print(f"   ⏭️ Skipping short segment: \"{search_text}\"")
+    # For 100% coverage goal, be very permissive with short segments
+    # Only skip extremely problematic phrases that are guaranteed to cause issues
+    highly_problematic_phrases = ["uh", "um", "ah", "er"]
+    if search_text in highly_problematic_phrases:
+        print(f"   ⏭️ Skipping filler word: \"{search_text}\"")
         return None
-    
-    # For 100% coverage goal, be more permissive with short phrases
-    # Only skip extremely common and short phrases that are guaranteed to cause issues
-    highly_problematic_phrases = ["right", "yes", "no", "okay"]
-    if search_text in highly_problematic_phrases and len(search_text) <= 5:
-        print(f"   ⏭️ Skipping highly problematic phrase: \"{search_text}\"")
+        
+    # Skip empty or whitespace-only segments
+    if len(search_text.strip()) == 0:
         return None
     
     print(f"   🔍 Searching: \"{search_text}\" (from pos {last_position})")
@@ -219,51 +218,18 @@ def normalize_text_for_matching(text: str) -> str:
     return normalized
 
 def fuzzy_match_in_text(search_text: str, target_text: str, threshold: float = 0.8) -> bool:
-    """Check if search_text fuzzy matches target_text with punctuation tolerance"""
+    """Simple fuzzy matching - exact match or normalized punctuation match only"""
     
     # First try exact match
     if search_text.lower() in target_text.lower():
         return True
     
-    # Try normalized match for punctuation differences
+    # Try normalized match for punctuation differences only
     search_norm = normalize_text_for_matching(search_text)
     target_norm = normalize_text_for_matching(target_text)
     
     if search_norm in target_norm:
         return True
-    
-    # Special handling for acronym/abbreviation differences like "C or VC" vs "C-E-R-V-C"
-    # Check if most words match even if some are different
-    search_words = search_norm.split()
-    target_words = target_norm.split()
-    
-    if len(search_words) >= 5:  # Only for longer phrases
-        # Count matching words (in order)
-        matching_positions = 0
-        search_idx = 0
-        target_idx = 0
-        
-        while search_idx < len(search_words) and target_idx < len(target_words):
-            if search_words[search_idx] == target_words[target_idx]:
-                matching_positions += 1
-                search_idx += 1
-                target_idx += 1
-            else:
-                # Try to skip ahead in target to find next match
-                target_idx += 1
-        
-        # If most of the search words were found in order, consider it a match
-        match_ratio = matching_positions / len(search_words)
-        if match_ratio >= 0.5:  # 50% of words must match in order (for long phrases with variations)
-            return True
-    
-    # For very short texts, try word-by-word similarity
-    elif len(search_text.split()) <= 3:
-        search_words_set = set(search_norm.split())
-        target_words_set = set(target_norm.split())
-        
-        if search_words_set and len(search_words_set.intersection(target_words_set)) / len(search_words_set) >= threshold:
-            return True
     
     return False
 
@@ -481,10 +447,10 @@ def main():
     print("Objective: 100% segment coverage with ascending positions")
     
     # File paths - using original slides with manual fixes
-    audio_file = Path("../ai_voiceover_system/podcasts/1323203-summer-2023-solution-5min-test.m4a")
-    slides_file = Path("../slidev/python-programming-fundamentals-conversational.md")  # Original slides
-    transcript_file = Path("../audio_scripts/1323203-summer-2023-solution-5min-test-timestamped.json")
-    image_dir = Path("../enhanced_podcast_output")
+    audio_file = Path("ai_voiceover_system/podcasts/1323203-summer-2023-solution-5min-test.m4a")
+    slides_file = Path("slidev/python-programming-fundamentals-conversational.md")  # Original slides
+    transcript_file = Path("audio_scripts/1323203-summer-2023-solution-5min-test-timestamped.json")
+    image_dir = Path("enhanced_podcast_output")
     
     # Load data
     segments = load_transcript(transcript_file)
