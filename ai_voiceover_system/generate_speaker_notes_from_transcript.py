@@ -9,14 +9,17 @@ This script:
 1. Loads existing slides structure (titles, content, layout)
 2. Loads timestamped transcript with precise timing
 3. Maps transcript segments to slides based on timing and content
-4. Generates new speaker notes for each slide using exact transcript text
-5. Creates a new .md file with original content + generated speaker notes
+4. Generates clean speaker notes for each slide using exact transcript text
+5. Merges consecutive segments from same speaker into single speaker notes
+6. Creates a new .md file with original content + generated speaker notes
 
 Usage:
     python generate_speaker_notes_from_transcript.py
 
-This ensures perfect slide-audio synchronization since speaker notes
-will contain the exact text from the timestamped transcript.
+Features:
+- No automatic [click] markers (let humans/AI add meaningful ones)
+- Merges consecutive same-speaker segments for natural flow
+- Perfect slide-audio synchronization using exact transcript text
 """
 
 import json
@@ -167,35 +170,35 @@ def generate_speaker_notes_for_slide(slide: SlideInfo, segments: List[Transcript
     if not segments:
         return "<!-- No audio content mapped to this slide -->"
     
-    # Group segments by speaker and create natural flow
+    # Group consecutive segments by speaker and merge their text
     speaker_groups = []
     current_speaker = None
-    current_group = []
+    current_text_parts = []
     
     for segment in segments:
         if segment.speaker != current_speaker:
-            if current_group:
-                speaker_groups.append((current_speaker, current_group))
+            # Save previous speaker's combined text
+            if current_speaker and current_text_parts:
+                combined_text = ' '.join(current_text_parts).strip()
+                speaker_groups.append((current_speaker, combined_text))
+            
+            # Start new speaker group
             current_speaker = segment.speaker
-            current_group = [segment]
+            current_text_parts = [segment.text.strip()]
         else:
-            current_group.append(segment)
+            # Same speaker - merge the text
+            current_text_parts.append(segment.text.strip())
     
-    if current_group:
-        speaker_groups.append((current_speaker, current_group))
+    # Don't forget the last speaker group
+    if current_speaker and current_text_parts:
+        combined_text = ' '.join(current_text_parts).strip()
+        speaker_groups.append((current_speaker, combined_text))
     
-    # Build speaker notes with [click] markers for natural pacing
+    # Build speaker notes WITHOUT automatic [click] markers
     notes_lines = []
     
-    for i, (speaker, group) in enumerate(speaker_groups):
-        # Combine segments from same speaker
-        combined_text = ' '.join(seg.text.strip() for seg in group)
-        
-        # Add [click] marker before each speaker change (except first)
-        if i > 0:
-            notes_lines.append("[click]")
-        
-        # Add speaker line
+    for speaker, combined_text in speaker_groups:
+        # Add speaker line (no automatic click markers)
         notes_lines.append(f"{speaker}: {combined_text}")
     
     # Wrap in HTML comment
@@ -242,9 +245,9 @@ def main():
     print("This ensures 100% matching between audio and slide notes")
     
     # File paths (configurable for any project)
-    slides_file = Path("../slidev/python-programming-fundamentals-conversational.md")
-    transcript_file = Path("../audio_scripts/1323203-summer-2023-solution-5min-test-timestamped.json")
-    audio_file = Path("../ai_voiceover_system/podcasts/1323203-summer-2023-solution-5min-test.m4a")
+    slides_file = Path("slidev/gujarati-transistor-fundamentals-conversational.md")
+    transcript_file = Path("audio_scripts/ટરનઝસટર-નન-ઘટક-મટ-કરત-ડજટલ-યગન-પય-timestamped-COMPATIBLE.json")
+    audio_file = None  # We don't have the audio file, will use transcript duration
     
     # Output file
     output_file = slides_file.parent / f"{slides_file.stem}-with-transcript-notes.md"
@@ -260,10 +263,13 @@ def main():
     
     # Get audio duration
     try:
-        from moviepy.editor import AudioFileClip
-        audio = AudioFileClip(str(audio_file))
-        audio_duration = audio.duration
-        audio.close()
+        if audio_file:
+            from moviepy.editor import AudioFileClip
+            audio = AudioFileClip(str(audio_file))
+            audio_duration = audio.duration
+            audio.close()
+        else:
+            audio_duration = transcript[-1].end if transcript else 300  # Use transcript duration
     except:
         audio_duration = transcript[-1].end if transcript else 300  # Fallback
     
