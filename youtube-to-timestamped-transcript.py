@@ -68,6 +68,28 @@ class YouTubeAudioScriptGenerator:
         self.whisper_model = whisper.load_model("large-v2")
         print("✅ Whisper model loaded")
     
+    def detect_language_from_filename(self, filename: str) -> str:
+        """Detect language from filename based on script/characters used"""
+        filename_lower = filename.lower()
+        
+        # Detect Gujarati characters
+        gujarati_chars = set(['ટ', 'ર', 'ા', 'ન', 'ઝ', 'િ', 'સ', 'ં', 'ધ', 'ક', 'ો', 'મ', 'બ', 'ુ', 'ે', 'ય', 'ુ', 'ગ', 'ુ', 'પ', 'વ', 'જ', 'ળ', 'ફ', 'ઈ', 'છ', 'ય'])
+        
+        # Check if filename contains Gujarati characters
+        if any(char in filename for char in gujarati_chars):
+            print("🔤 Gujarati characters detected in filename")
+            return "gu"
+        
+        # Check for language indicators in filename
+        if any(indicator in filename_lower for indicator in ['gujarati', 'gu', 'guj']):
+            return "gu"
+        
+        if any(indicator in filename_lower for indicator in ['hindi', 'hi', 'hin']):
+            return "hi"
+            
+        # Default to English
+        return "en"
+    
     def extract_video_info(self, url: str) -> Optional[Dict]:
         """Extract video metadata"""
         print(f"📺 Extracting video info...")
@@ -129,16 +151,16 @@ class YouTubeAudioScriptGenerator:
             print(f"❌ Audio download failed: {e}")
             return None
     
-    def transcribe_with_whisper(self, audio_file: Path) -> Optional[Dict]:
+    def transcribe_with_whisper(self, audio_file: Path, language: str = "en") -> Optional[Dict]:
         """Transcribe audio using Whisper with word-level timestamps"""
-        print(f"🎙️ Transcribing with Whisper (this may take several minutes)...")
+        print(f"🎙️ Transcribing with Whisper (language: {language}) (this may take several minutes)...")
         
         try:
             # Use whisper-timestamped for word-level timestamps
             result = whisper.transcribe(
                 self.whisper_model, 
                 str(audio_file),
-                language="en",
+                language=language,
                 verbose=False
             )
             
@@ -1073,13 +1095,21 @@ class YouTubeAudioScriptGenerator:
             print(f"❌ Audio preparation failed: {e}")
             return None
     
-    def generate_audio_script(self, input_source: str, speaker_names: Tuple[str, str] = ("Dr. James", "Sarah")) -> Optional[Path]:
+    def generate_audio_script(self, input_source: str, speaker_names: Tuple[str, str] = ("Dr. James", "Sarah"), language: str = None) -> Optional[Path]:
         """Main pipeline for audio-based script generation from URL or file"""
         is_file = self.is_audio_file(input_source)
+        
+        # Auto-detect language if not provided
+        if language is None:
+            if is_file:
+                language = self.detect_language_from_filename(input_source)
+            else:
+                language = "en"  # Default for YouTube URLs
         
         print(f"🚀 Generating AUDIO-BASED clean two-speaker script")
         print(f"   Source: {'Audio File' if is_file else 'YouTube URL'}")
         print(f"   Input: {input_source}")
+        print(f"   Language: {language}")
         print(f"   Speakers: {speaker_names[0]} & {speaker_names[1]}")
         print(f"   Method: Whisper + Speaker Diarization")
         print("=" * 60)
@@ -1113,7 +1143,7 @@ class YouTubeAudioScriptGenerator:
                     return None
             
             # Transcribe with Whisper (word-level timestamps)
-            transcription = self.transcribe_with_whisper(audio_file)
+            transcription = self.transcribe_with_whisper(audio_file, language)
             if not transcription:
                 return None
             
@@ -1155,6 +1185,7 @@ def main():
     
     parser.add_argument('input', help='YouTube video URL or audio file path (.m4a, .mp3, .wav, etc.)')
     parser.add_argument('--speakers', help='Speaker names (comma-separated, default: "Dr. James,Sarah")')
+    parser.add_argument('--language', help='Language code for transcription (e.g., en, gu, hi). Auto-detected if not specified.')
     parser.add_argument('--output-dir', default='audio_scripts', help='Output directory')
     
     args = parser.parse_args()
@@ -1170,7 +1201,7 @@ def main():
     
     # Generate
     generator = YouTubeAudioScriptGenerator(args.output_dir)
-    result = generator.generate_audio_script(args.input, speaker_names)
+    result = generator.generate_audio_script(args.input, speaker_names, args.language)
     
     if result:
         print(f"\n✨ Perfect! Audio-based script provides superior accuracy!")

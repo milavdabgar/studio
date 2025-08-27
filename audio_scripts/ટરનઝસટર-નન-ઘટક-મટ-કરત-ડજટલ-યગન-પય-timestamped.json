@@ -1,0 +1,675 @@
+{
+  "metadata": {
+    "title": "ટ્રાન્ઝિસ્ટર  નાનો ઘટક, મોટી ક્રાંતિ   ડિજિટલ યુગનો પાયો",
+    "duration": 0,
+    "generated_at": "2025-08-27T18:38:15.900281",
+    "format": "word_level_timestamps"
+  },
+  "segments": [
+    {
+      "speaker": "Dr. James",
+      "text": "Namaskar, welcome to the show.",
+      "start": 0.26,
+      "end": 2.44,
+      "duration": 2.1799999999999997
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Today we are going to talk about a small but powerful incident.",
+      "start": 2.44,
+      "end": 7.3,
+      "duration": 4.859999999999999
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Transistor.",
+      "start": 9.04,
+      "end": 9.96,
+      "duration": 0.9200000000000017
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "It has changed modern technology.",
+      "start": 10.52,
+      "end": 12.2,
+      "duration": 1.6799999999999997
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "We have a good source which will explain how it was discovered, how it works and why it is so important.",
+      "start": 14.2,
+      "end": 23.9,
+      "duration": 9.7
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Our aim is to understand how this small thing is used in 20th century research.",
+      "start": 24.7,
+      "end": 30.7,
+      "duration": 6.0
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "So let's get into it.",
+      "start": 32.2,
+      "end": 33.68,
+      "duration": 1.4799999999999969
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Let's start with the basics.",
+      "start": 34.2,
+      "end": 36.34,
+      "duration": 2.1400000000000006
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "What is a transistor?",
+      "start": 37.28,
+      "end": 38.26,
+      "duration": 0.9799999999999969
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "The source says that it is a semiconductor device.",
+      "start": 39.42,
+      "end": 44.86,
+      "duration": 5.439999999999998
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "It has three terminals.",
+      "start": 45.42,
+      "end": 47.6,
+      "duration": 2.1799999999999997
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "It is used to amplify or shut down the signal.",
+      "start": 49.02,
+      "end": 55.74,
+      "duration": 6.719999999999999
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Like a switch.",
+      "start": 55.8,
+      "end": 56.38,
+      "duration": 0.5800000000000054
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Yes, you are right.",
+      "start": 57.32,
+      "end": 58.0,
+      "duration": 0.6799999999999997
+    },
+    {
+      "speaker": "Sarah",
+      "text": "It has a small door for electricity.",
+      "start": 58.84,
+      "end": 60.88,
+      "duration": 2.039999999999999
+    },
+    {
+      "speaker": "Sarah",
+      "text": "But it is very powerful.",
+      "start": 61.76,
+      "end": 62.62,
+      "duration": 0.8599999999999994
+    },
+    {
+      "speaker": "Sarah",
+      "text": "It is the main part of all electronics.",
+      "start": 63.2,
+      "end": 66.1,
+      "duration": 2.8999999999999915
+    },
+    {
+      "speaker": "Sarah",
+      "text": "It has a small input signal.",
+      "start": 67.06,
+      "end": 68.7,
+      "duration": 1.6400000000000006
+    },
+    {
+      "speaker": "Sarah",
+      "text": "It can control many output signals.",
+      "start": 69.2,
+      "end": 71.96,
+      "duration": 2.759999999999991
+    },
+    {
+      "speaker": "Sarah",
+      "text": "It is very easy to switch it on and off.",
+      "start": 73.7,
+      "end": 77.06,
+      "duration": 3.3599999999999994
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "How interesting is the story of its discovery?",
+      "start": 79.24,
+      "end": 81.42,
+      "duration": 2.180000000000007
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Bell Labs, Ognis and Suratalis, Bardin, Brayton and Shockley.",
+      "start": 82.84,
+      "end": 87.86,
+      "duration": 5.019999999999996
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "The source says that they were trying to make a field effect transistor, FET.",
+      "start": 88.4,
+      "end": 94.44,
+      "duration": 6.039999999999992
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "But by mistake, or by accident, they found a point contact transistor.",
+      "start": 97.08,
+      "end": 101.64,
+      "duration": 4.560000000000002
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Yes, it is a miracle.",
+      "start": 102.7,
+      "end": 103.7,
+      "duration": 1.0
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "And they got a Nobel Prize for it.",
+      "start": 104.54,
+      "end": 106.5,
+      "duration": 1.9599999999999937
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Yes, in physics.",
+      "start": 106.94,
+      "end": 108.38,
+      "duration": 1.4399999999999977
+    },
+    {
+      "speaker": "Sarah",
+      "text": "At that time, it was difficult to make FET.",
+      "start": 109.18,
+      "end": 112.02,
+      "duration": 2.839999999999989
+    },
+    {
+      "speaker": "Sarah",
+      "text": "But they found the real success when they understood how a semiconductor works.",
+      "start": 113.96,
+      "end": 118.22,
+      "duration": 4.260000000000005
+    },
+    {
+      "speaker": "Sarah",
+      "text": "And that's how the first working transistor was made.",
+      "start": 119.78,
+      "end": 122.0,
+      "duration": 2.219999999999999
+    },
+    {
+      "speaker": "Sarah",
+      "text": "And interestingly, a scientist named Lilienfeld patented the idea of FET.",
+      "start": 122.48,
+      "end": 128.08,
+      "duration": 5.6000000000000085
+    },
+    {
+      "speaker": "Sarah",
+      "text": "But it was not made.",
+      "start": 128.24,
+      "end": 129.66,
+      "duration": 1.4199999999999875
+    },
+    {
+      "speaker": "Sarah",
+      "text": "And at the same time, in Europe, Matare and Velker worked independently in this direction.",
+      "start": 130.7,
+      "end": 135.56,
+      "duration": 4.860000000000014
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "So, the idea was there, but the real work was done in Bell Labs.",
+      "start": 137.22,
+      "end": 141.84,
+      "duration": 4.6200000000000045
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "And then at the end of the 50s, MOSFET came.",
+      "start": 142.5,
+      "end": 146.26,
+      "duration": 3.759999999999991
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "That too from Bell Labs.",
+      "start": 146.54,
+      "end": 147.5,
+      "duration": 0.960000000000008
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "The source says that today this is the most used transistor.",
+      "start": 148.2,
+      "end": 152.34,
+      "duration": 4.140000000000015
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Why?",
+      "start": 152.84,
+      "end": 153.12,
+      "duration": 0.28000000000000114
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "What is so special about it?",
+      "start": 153.6,
+      "end": 154.76,
+      "duration": 1.1599999999999966
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Its main thing is scalability.",
+      "start": 157.0,
+      "end": 159.38,
+      "duration": 2.3799999999999955
+    },
+    {
+      "speaker": "Sarah",
+      "text": "It can be made at a very small scale.",
+      "start": 160.48,
+      "end": 162.92,
+      "duration": 2.4399999999999977
+    },
+    {
+      "speaker": "Sarah",
+      "text": "And at the same time, it uses less electricity.",
+      "start": 164.44,
+      "end": 167.22,
+      "duration": 2.780000000000001
+    },
+    {
+      "speaker": "Sarah",
+      "text": "And the second transistor, the bipolar junction transistor, can fit more in a small space.",
+      "start": 168.88,
+      "end": 177.2,
+      "duration": 8.319999999999993
+    },
+    {
+      "speaker": "Sarah",
+      "text": "It is called a higher density.",
+      "start": 178.88,
+      "end": 179.6,
+      "duration": 0.7199999999999989
+    },
+    {
+      "speaker": "Sarah",
+      "text": "This is how integrated circuits were made.",
+      "start": 180.92,
+      "end": 183.22,
+      "duration": 2.3000000000000114
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "That means ICs, chips, right?",
+      "start": 183.82,
+      "end": 185.96,
+      "duration": 2.140000000000015
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Yes, right.",
+      "start": 186.3,
+      "end": 187.08,
+      "duration": 0.7800000000000011
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Chips were made possible.",
+      "start": 187.6,
+      "end": 188.52,
+      "duration": 0.9200000000000159
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Today, there are millions, billions, and billions of transistors on a small chip.",
+      "start": 189.34,
+      "end": 193.76,
+      "duration": 4.4199999999999875
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Today's computers, smartphones, everything is thanks to this MOSFET.",
+      "start": 194.36,
+      "end": 198.14,
+      "duration": 3.7799999999999727
+    },
+    {
+      "speaker": "Sarah",
+      "text": "It is the foundation of the digital revolution.",
+      "start": 199.24,
+      "end": 200.82,
+      "duration": 1.579999999999984
+    },
+    {
+      "speaker": "Sarah",
+      "text": "There is a number in the source.",
+      "start": 201.82,
+      "end": 203.08,
+      "duration": 1.2600000000000193
+    },
+    {
+      "speaker": "Sarah",
+      "text": "By 2018, approximately 13 sextillion MOSFETs had been made.",
+      "start": 203.2,
+      "end": 208.66,
+      "duration": 5.460000000000008
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "13 sextillion!",
+      "start": 209.54,
+      "end": 210.76,
+      "duration": 1.2199999999999989
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Oh my God!",
+      "start": 211.12,
+      "end": 211.74,
+      "duration": 0.6200000000000045
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "After 13, 21 are zero.",
+      "start": 212.34,
+      "end": 214.06,
+      "duration": 1.7199999999999989
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Zero!",
+      "start": 214.06,
+      "end": 214.12,
+      "duration": 0.060000000000002274
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "This is beyond imagination.",
+      "start": 214.66,
+      "end": 216.02,
+      "duration": 1.3600000000000136
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "So how does this large number of MOSFETs work?",
+      "start": 217.38,
+      "end": 221.08,
+      "duration": 3.700000000000017
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "In simple language.",
+      "start": 222.32,
+      "end": 223.26,
+      "duration": 0.9399999999999977
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Source says two main things.",
+      "start": 223.94,
+      "end": 225.7,
+      "duration": 1.759999999999991
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Switching and amplifying.",
+      "start": 226.46,
+      "end": 228.48,
+      "duration": 2.019999999999982
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Absolutely.",
+      "start": 228.86,
+      "end": 229.24,
+      "duration": 0.37999999999999545
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Switch is the basis of digital logic.",
+      "start": 229.76,
+      "end": 232.32,
+      "duration": 2.5600000000000023
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Either it is switched on, so it lets the current flow.",
+      "start": 233.78,
+      "end": 236.46,
+      "duration": 2.680000000000007
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Like a switched off switch.",
+      "start": 236.92,
+      "end": 237.68,
+      "duration": 0.7600000000000193
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Or it is switched off, so it stops the current.",
+      "start": 238.34,
+      "end": 240.38,
+      "duration": 2.039999999999992
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Like an open switch.",
+      "start": 241.34,
+      "end": 242.06,
+      "duration": 0.7199999999999989
+    },
+    {
+      "speaker": "Sarah",
+      "text": "This is the one and zero of a computer.",
+      "start": 242.84,
+      "end": 244.9,
+      "duration": 2.0600000000000023
+    },
+    {
+      "speaker": "Sarah",
+      "text": "And like an amplifier, as we discussed earlier, a small, thin input signal controls a large output signal.",
+      "start": 245.52,
+      "end": 253.12,
+      "duration": 7.599999999999994
+    },
+    {
+      "speaker": "Sarah",
+      "text": "This is very important in radio and audio.",
+      "start": 254.28,
+      "end": 255.48,
+      "duration": 1.1999999999999886
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Source also says that BJTs are controlled by current, while FETs by voltage.",
+      "start": 257.78,
+      "end": 263.42,
+      "duration": 5.640000000000043
+    },
+    {
+      "speaker": "Sarah",
+      "text": "This is a technical difference, which is why they are used in different places.",
+      "start": 263.84,
+      "end": 268.0,
+      "duration": 4.160000000000025
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Yes, I understand.",
+      "start": 268.78,
+      "end": 269.66,
+      "duration": 0.8800000000000523
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "But what was the first thing that transistors came with?",
+      "start": 270.24,
+      "end": 272.92,
+      "duration": 2.680000000000007
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Source mentions a vacuum tube.",
+      "start": 273.82,
+      "end": 275.14,
+      "duration": 1.3199999999999932
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Yes, vacuum tube.",
+      "start": 276.76,
+      "end": 278.38,
+      "duration": 1.6200000000000045
+    },
+    {
+      "speaker": "Sarah",
+      "text": "It was of that era.",
+      "start": 278.72,
+      "end": 279.56,
+      "duration": 0.839999999999975
+    },
+    {
+      "speaker": "Sarah",
+      "text": "But it was big, made of glass, so it was thin.",
+      "start": 280.36,
+      "end": 283.26,
+      "duration": 2.8999999999999773
+    },
+    {
+      "speaker": "Sarah",
+      "text": "And it used a lot of electricity.",
+      "start": 284.12,
+      "end": 285.3,
+      "duration": 1.1800000000000068
+    },
+    {
+      "speaker": "Sarah",
+      "text": "It was also very hot.",
+      "start": 285.7,
+      "end": 286.44,
+      "duration": 0.7400000000000091
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Transistors solved all these problems.",
+      "start": 287.34,
+      "end": 289.0,
+      "duration": 1.660000000000025
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Small, strong, reliable, and it needed less power.",
+      "start": 290.28,
+      "end": 293.52,
+      "duration": 3.240000000000009
+    },
+    {
+      "speaker": "Sarah",
+      "text": "This is how pocket radio was made.",
+      "start": 294.96,
+      "end": 296.6,
+      "duration": 1.6400000000000432
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Small computer was made.",
+      "start": 296.96,
+      "end": 298.0,
+      "duration": 1.0400000000000205
+    },
+    {
+      "speaker": "Sarah",
+      "text": "And all the technology we have today, became possible.",
+      "start": 298.46,
+      "end": 301.66,
+      "duration": 3.2000000000000455
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Although, it is true that for some special work, like high power or high frequency, vacuum tubes are still used.",
+      "start": 302.54,
+      "end": 310.68,
+      "duration": 8.139999999999986
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "So, the whole story ends with a small incident, which was a bit of a miracle, which changed the world of electronics and our lives.",
+      "start": 311.12,
+      "end": 320.36,
+      "duration": 9.240000000000009
+    },
+    {
+      "speaker": "Sarah",
+      "text": "Yes, it changed it radically.",
+      "start": 321.48,
+      "end": 322.98,
+      "duration": 1.5
+    },
+    {
+      "speaker": "Sarah",
+      "text": "The ability to make a small switch and amplifier in such a cheap way, and in such a large number, is the basis of the modern era.",
+      "start": 324.0,
+      "end": 331.12,
+      "duration": 7.1200000000000045
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Research is going on.",
+      "start": 331.88,
+      "end": 333.02,
+      "duration": 1.1399999999999864
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "Graphene, carbon nanotube.",
+      "start": 333.6,
+      "end": 335.68,
+      "duration": 2.079999999999984
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "If today's transistor made such a big change, then how will the new revolutionary event of the future be?",
+      "start": 336.18,
+      "end": 342.58,
+      "duration": 6.399999999999977
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "And how will it change our world?",
+      "start": 343.04,
+      "end": 344.2,
+      "duration": 1.1599999999999682
+    },
+    {
+      "speaker": "Dr. James",
+      "text": "It is worth thinking about.",
+      "start": 346.1,
+      "end": 346.96,
+      "duration": 0.8599999999999568
+    }
+  ]
+}

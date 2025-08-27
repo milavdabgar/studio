@@ -1,0 +1,36 @@
+<!--
+Dr. James: Namaskar, welcome to the show. Today we are going to talk about a small but powerful incident. Transistor. It has changed modern technology. We have a good source which will explain how it was discovered, how it works and why it is so important. Our aim is to understand how this small thing is used in 20th century research. So let's get into it. Let's start with the basics. What is a transistor? The source says that it is a semiconductor device. It has three terminals. It is used to amplify or shut down the signal. Like a switch.
+
+Sarah: Yes, you are right. It has a small door for electricity. But it is very powerful. It is the main part of all electronics. It has a small input signal. It can control many output signals. It is very easy to switch it on and off.
+
+Dr. James: How interesting is the story of its discovery? Bell Labs, Ognis and Suratalis, Bardin, Brayton and Shockley. The source says that they were trying to make a field effect transistor, FET. But by mistake, or by accident, they found a point contact transistor.
+
+Sarah: Yes, it is a miracle.
+
+Dr. James: And they got a Nobel Prize for it.
+
+Sarah: Yes, in physics. At that time, it was difficult to make FET. But they found the real success when they understood how a semiconductor works. And that's how the first working transistor was made. And interestingly, a scientist named Lilienfeld patented the idea of FET. But it was not made. And at the same time, in Europe, Matare and Velker worked independently in this direction.
+
+Dr. James: So, the idea was there, but the real work was done in Bell Labs. And then at the end of the 50s, MOSFET came. That too from Bell Labs. The source says that today this is the most used transistor. Why? What is so special about it?
+
+Sarah: Its main thing is scalability. It can be made at a very small scale. And at the same time, it uses less electricity. And the second transistor, the bipolar junction transistor, can fit more in a small space. It is called a higher density. This is how integrated circuits were made.
+
+Dr. James: That means ICs, chips, right?
+
+Sarah: Yes, right. Chips were made possible. Today, there are millions, billions, and billions of transistors on a small chip. Today's computers, smartphones, everything is thanks to this MOSFET. It is the foundation of the digital revolution. There is a number in the source. By 2018, approximately 13 sextillion MOSFETs had been made.
+
+Dr. James: 13 sextillion! Oh my God! After 13, 21 are zero. Zero! This is beyond imagination. So how does this large number of MOSFETs work? In simple language. Source says two main things. Switching and amplifying. Absolutely.
+
+Sarah: Switch is the basis of digital logic. Either it is switched on, so it lets the current flow. Like a switched off switch. Or it is switched off, so it stops the current. Like an open switch. This is the one and zero of a computer. And like an amplifier, as we discussed earlier, a small, thin input signal controls a large output signal. This is very important in radio and audio. Source also says that BJTs are controlled by current, while FETs by voltage. This is a technical difference, which is why they are used in different places.
+
+Dr. James: Yes, I understand. But what was the first thing that transistors came with? Source mentions a vacuum tube.
+
+Sarah: Yes, vacuum tube. It was of that era. But it was big, made of glass, so it was thin. And it used a lot of electricity. It was also very hot. Transistors solved all these problems. Small, strong, reliable, and it needed less power. This is how pocket radio was made. Small computer was made. And all the technology we have today, became possible. Although, it is true that for some special work, like high power or high frequency, vacuum tubes are still used.
+
+Dr. James: So, the whole story ends with a small incident, which was a bit of a miracle, which changed the world of electronics and our lives.
+
+Sarah: Yes, it changed it radically. The ability to make a small switch and amplifier in such a cheap way, and in such a large number, is the basis of the modern era.
+
+Dr. James: Research is going on. Graphene, carbon nanotube. If today's transistor made such a big change, then how will the new revolutionary event of the future be? And how will it change our world? It is worth thinking about.
+
+-->
