@@ -126,6 +126,7 @@ def find_segment_with_position_tracking(segment_text: str, slides: List[Dict],
             for part in slide['notes'].split('[click]')
         )
         
+        
         if not has_exact_match and not has_fuzzy_match:
             continue
             
@@ -282,9 +283,34 @@ def process_transcript_with_position_tracking(segments: List[Dict], slides: List
             })
             
             # Update tracking variables
-            last_slide_num = slide_num
-            last_click_num = click_num
-            last_position = new_position
+            if slide_num > last_slide_num or (slide_num == last_slide_num and click_num > last_click_num):
+                # New slide or new click - set position to start of this click section
+                # This allows multiple segments within the same click to be found
+                
+                # Find the matched slide
+                matched_slide = next((s for s in slides if s['number'] == slide_num), None)
+                if matched_slide:
+                    # Find the start of this click section in the slide notes
+                    parts = matched_slide['notes'].split('[click]')
+                    if click_num == 1:
+                        # Click 1 is the initial part
+                        click_section_start = 0
+                    else:
+                        # For click 2+, sum up lengths of previous sections
+                        click_section_start = len(parts[0])
+                        for i in range(1, click_num - 1):
+                            click_section_start += len('[click]') + len(parts[i])
+                    
+                    new_click_position = matched_slide['global_start_pos'] + click_section_start
+                    last_position = new_click_position
+                
+                last_slide_num = slide_num
+                last_click_num = click_num
+            else:
+                # Same slide and click - don't advance position
+                last_slide_num = slide_num
+                last_click_num = click_num
+                # Keep last_position unchanged to allow finding other segments in same click
             
             action = "NEW SLIDE" if is_slide_start else f"CLICK {click_num}"
             print(f"   ✅ {action}: {slide_num}-{click_num}")
@@ -364,10 +390,10 @@ def main():
     print("Tracks position in speaker notes to maintain forward progression")
     
     # File paths
-    audio_file = Path("ai_voiceover_system/podcasts/1323203-summer-2023-solution-5min-test.m4a")
-    slides_file = Path("slidev/python-programming-fundamentals-conversational.md")
-    transcript_file = Path("audio_scripts/1323203-summer-2023-solution-5min-test-timestamped.json")
-    image_dir = Path("enhanced_podcast_output")
+    audio_file = Path("../ai_voiceover_system/podcasts/1323203-summer-2023-solution-5min-test.m4a")
+    slides_file = Path("../slidev/python-programming-fundamentals-conversational.md")
+    transcript_file = Path("../audio_scripts/1323203-summer-2023-solution-5min-test-timestamped.json")
+    image_dir = Path("../enhanced_podcast_output")
     
     # Load data
     segments = load_transcript(transcript_file)
