@@ -89,10 +89,11 @@ def find_segment_with_position_tracking(segment_text: str, slides: List[Dict],
         print(f"   ⏭️ Skipping short segment: \"{search_text}\"")
         return None
     
-    # Skip common short phrases that cause huge jumps
-    common_short_phrases = ["makes sense", "that's right", "exactly", "okay", "right", "yes", "no"]
-    if search_text in common_short_phrases and len(search_text) <= 11:
-        print(f"   ⏭️ Skipping common phrase that causes jumps: \"{search_text}\"")
+    # For 100% coverage goal, be more permissive with short phrases
+    # Only skip extremely common and short phrases that are guaranteed to cause issues
+    highly_problematic_phrases = ["right", "yes", "no", "okay"]
+    if search_text in highly_problematic_phrases and len(search_text) <= 5:
+        print(f"   ⏭️ Skipping highly problematic phrase: \"{search_text}\"")
         return None
     
     print(f"   🔍 Searching: \"{search_text}\" (from pos {last_position})")
@@ -102,30 +103,13 @@ def find_segment_with_position_tracking(segment_text: str, slides: List[Dict],
     
     # Search slides starting from current position
     for slide in slides:
-        # Skip slides that are before our current progression
-        if slide['number'] < last_slide_num:
-            continue
-        
-        # For the current slide, start from last position
-        if slide['number'] == last_slide_num:
-            search_start_pos = max(0, last_position - slide['global_start_pos'])
-        else:
-            search_start_pos = 0
-        
-        # Search in this slide's notes (use full notes for click detection)
-        notes_subset = slide['notes'][search_start_pos:] if search_start_pos < len(slide['notes']) else ""
-        
-        # Skip if no content to search
-        if not notes_subset.strip():
-            continue
-        
-        # Check if text might be in this slide (either exact match or fuzzy match)
-        has_exact_match = search_text in notes_subset.lower()
+        # Simplified approach: search ALL slides for each segment
+        # Check if text is in this slide (either exact match or fuzzy match)
+        has_exact_match = search_text in slide['notes'].lower()
         has_fuzzy_match = not has_exact_match and any(
             fuzzy_match_in_text(search_text, part) 
             for part in slide['notes'].split('[click]')
         )
-        
         
         if not has_exact_match and not has_fuzzy_match:
             continue
@@ -158,28 +142,68 @@ def find_segment_with_position_tracking(segment_text: str, slides: List[Dict],
             new_global_pos = slide['global_start_pos'] + match_pos
             
             
-            # Validate progression - allow same slide/click if position moves forward OR higher slide/click
-            position_moves_forward = new_global_pos > last_position
-            slide_progression = slide_num > last_slide_num or (slide_num == last_slide_num and click_num >= last_click_num)
+            # For 100% coverage: be very permissive but prefer forward progression
+            raw_distance = new_global_pos - last_position
             
-            if position_moves_forward and slide_progression:
-                # Calculate distance from current position
-                distance = new_global_pos - last_position
-                valid_matches.append((slide_num, click_num, is_slide_start, new_global_pos, distance))
-                print(f"   🔍 Found match: Slide {slide_num} Click {click_num} (pos {new_global_pos}, distance {distance})")
+            # Always add matches but use smart prioritization
+            if slide_num > last_slide_num:
+                # New slide - always prefer this
+                priority = 1000 + raw_distance if raw_distance >= 0 else 1000 - raw_distance
+            elif slide_num == last_slide_num and click_num > last_click_num:
+                # New click in same slide - high priority 
+                priority = 2000 + raw_distance if raw_distance >= 0 else 2000 - raw_distance
+            elif slide_num == last_slide_num and click_num == last_click_num:
+                # Same slide/click - medium priority, prefer forward position
+                priority = 3000 + abs(raw_distance)
+            else:
+                # Backwards slide/click - lowest priority but still possible
+                priority = 10000 + abs(raw_distance)
+            
+            valid_matches.append((slide_num, click_num, is_slide_start, new_global_pos, priority))
+            print(f"   🔍 Match: Slide {slide_num} Click {click_num} (pos {new_global_pos}, priority {priority})")
     
     if not valid_matches:
-        print(f"   ⚪ No valid forward match")
+        # Fallback: try to find matches that maintain forward progression
+        print(f"   🔄 No forward match found, trying fallback search with progression...")
+        
+        fallback_matches = []
+        for slide in slides:
+            # Only consider slides at or after current position
+            if slide['global_start_pos'] >= last_position:
+                if fuzzy_match_in_text(search_text, slide['notes']) or search_text in slide['notes'].lower():
+                    match_result = find_in_slide_notes_with_clicks(search_text, slide['notes'], slide['number'])
+                    if match_result:
+                        slide_num, click_num, is_slide_start = match_result
+                        match_pos = slide['notes'].lower().find(search_text)
+                        if match_pos == -1:
+                            match_pos = len(slide['notes']) // 2  # Fallback position
+                        
+                        new_global_pos = slide['global_start_pos'] + match_pos
+                        
+                        # Only add if it maintains forward progression
+                        if new_global_pos >= last_position:
+                            distance = new_global_pos - last_position
+                            fallback_matches.append((slide_num, click_num, is_slide_start, new_global_pos, distance))
+        
+        if fallback_matches:
+            # Choose closest forward match
+            fallback_matches.sort(key=lambda x: x[4])
+            best_fallback = fallback_matches[0]
+            slide_num, click_num, is_slide_start, new_global_pos, distance = best_fallback
+            print(f"   🔄 Fallback match: Slide {slide_num} Click {click_num} (pos {new_global_pos}, distance {distance})")
+            return (slide_num, click_num, is_slide_start, new_global_pos)
+        
+        print(f"   ⚪ No forward match found even with fallback")
         return None
     
-    # Choose the CLOSEST match (smallest distance from current position)
-    valid_matches.sort(key=lambda x: x[4])  # Sort by distance
+    # Choose the BEST match (lowest priority score)
+    valid_matches.sort(key=lambda x: x[4])  # Sort by priority
     best_match = valid_matches[0]
-    slide_num, click_num, is_slide_start, new_global_pos, distance = best_match
+    slide_num, click_num, is_slide_start, new_global_pos, priority = best_match
     
-    print(f"   ✅ Closest match: Slide {slide_num} Click {click_num} (pos {new_global_pos}, distance {distance})")
+    print(f"   ✅ Best match: Slide {slide_num} Click {click_num} (pos {new_global_pos}, priority {priority})")
     if len(valid_matches) > 1:
-        print(f"   📊 Skipped {len(valid_matches)-1} farther matches to prevent huge jumps")
+        print(f"   📊 Considered {len(valid_matches)} total matches")
     
     return (slide_num, click_num, is_slide_start, new_global_pos)
 
@@ -208,12 +232,37 @@ def fuzzy_match_in_text(search_text: str, target_text: str, threshold: float = 0
     if search_norm in target_norm:
         return True
     
-    # For very short texts, try word-by-word similarity
-    if len(search_text.split()) <= 3:
-        search_words = set(search_norm.split())
-        target_words = set(target_norm.split())
+    # Special handling for acronym/abbreviation differences like "C or VC" vs "C-E-R-V-C"
+    # Check if most words match even if some are different
+    search_words = search_norm.split()
+    target_words = target_norm.split()
+    
+    if len(search_words) >= 5:  # Only for longer phrases
+        # Count matching words (in order)
+        matching_positions = 0
+        search_idx = 0
+        target_idx = 0
         
-        if search_words and len(search_words.intersection(target_words)) / len(search_words) >= threshold:
+        while search_idx < len(search_words) and target_idx < len(target_words):
+            if search_words[search_idx] == target_words[target_idx]:
+                matching_positions += 1
+                search_idx += 1
+                target_idx += 1
+            else:
+                # Try to skip ahead in target to find next match
+                target_idx += 1
+        
+        # If most of the search words were found in order, consider it a match
+        match_ratio = matching_positions / len(search_words)
+        if match_ratio >= 0.5:  # 50% of words must match in order (for long phrases with variations)
+            return True
+    
+    # For very short texts, try word-by-word similarity
+    elif len(search_text.split()) <= 3:
+        search_words_set = set(search_norm.split())
+        target_words_set = set(target_norm.split())
+        
+        if search_words_set and len(search_words_set.intersection(target_words_set)) / len(search_words_set) >= threshold:
             return True
     
     return False
@@ -385,9 +434,51 @@ def create_positional_video(timeline: List[Dict], audio_file: Path, image_dir: P
     
     return output_file
 
+def analyze_matching_coverage(segments: List[Dict], timeline: List[Dict]):
+    """Analyze matching coverage and position progression"""
+    print(f"\n📊 MATCHING ANALYSIS:")
+    print(f"Total segments: {len(segments)}")
+    print(f"Total matches: {len(timeline)}")
+    print(f"Coverage: {len(timeline)/len(segments)*100:.1f}%")
+    print(f"Unmatched: {len(segments) - len(timeline)} segments")
+    
+    # Check position progression
+    print(f"\n📈 POSITION PROGRESSION CHECK:")
+    last_pos = -1
+    progression_errors = 0
+    for i, entry in enumerate(timeline):
+        start_time = entry['start_time']
+        # For position, we need to estimate based on slide/click
+        # This is a simplified check
+        current_pos = entry['slide_number'] * 1000 + entry['click_number']
+        if current_pos < last_pos:
+            progression_errors += 1
+            if progression_errors <= 5:  # Show first 5 errors
+                print(f"❌ Position regression at {start_time:.2f}s: slide {entry['slide_number']}-{entry['click_number']}")
+        last_pos = current_pos
+    
+    if progression_errors == 0:
+        print("✅ Perfect position progression!")
+    else:
+        print(f"❌ {progression_errors} position regressions found")
+    
+    # Show unmatched segments
+    matched_times = {entry['start_time'] for entry in timeline}
+    unmatched_segments = []
+    for segment in segments:
+        if segment['start'] not in matched_times:
+            unmatched_segments.append(segment)
+    
+    if unmatched_segments:
+        print(f"\n❌ UNMATCHED SEGMENTS ({len(unmatched_segments)}):")
+        for i, seg in enumerate(unmatched_segments[:10]):  # Show first 10
+            print(f"  {seg['start']:6.2f}s - {seg['speaker']}: \"{seg['text'][:50]}...\"")
+        if len(unmatched_segments) > 10:
+            print(f"  ... and {len(unmatched_segments) - 10} more")
+
 def main():
-    print("🎯 Positional Matching Sync - No Backwards Jumps!")
-    print("Tracks position in speaker notes to maintain forward progression")
+    print("🎯 Positional Matching Sync - Perfect Progressive Matching!")
+    print("Objective: 100% segment coverage with ascending positions")
     
     # File paths
     audio_file = Path("../ai_voiceover_system/podcasts/1323203-summer-2023-solution-5min-test.m4a")
@@ -413,6 +504,9 @@ def main():
         print("❌ No matches found")
         return
     
+    # Analyze coverage and progression
+    analyze_matching_coverage(segments, timeline)
+    
     # Calculate durations
     timeline = calculate_durations(timeline, audio_duration)
     
@@ -423,9 +517,10 @@ def main():
     
     if video_file:
         print(f"\n🎉 Positional video: {video_file}")
-        print("✅ No random backwards jumps!")
-        print("✅ Forward progression maintained!")
-        print("✅ Short segments like 'Right.' handled correctly!")
+        if len(timeline) == len(segments):
+            print("🎯 PERFECT: 100% segment matching achieved!")
+        else:
+            print(f"🎯 GOAL: Need {len(segments) - len(timeline)} more matches for 100% coverage")
     else:
         print("❌ Failed")
 
