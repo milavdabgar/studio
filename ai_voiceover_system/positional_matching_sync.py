@@ -119,9 +119,16 @@ def find_segment_with_position_tracking(segment_text: str, slides: List[Dict],
         if not notes_subset.strip():
             continue
         
-        # Only search if the text is actually in the subset, but use full notes for click detection
-        if search_text not in notes_subset.lower():
+        # Check if text might be in this slide (either exact match or fuzzy match)
+        has_exact_match = search_text in notes_subset.lower()
+        has_fuzzy_match = not has_exact_match and any(
+            fuzzy_match_in_text(search_text, part) 
+            for part in slide['notes'].split('[click]')
+        )
+        
+        if not has_exact_match and not has_fuzzy_match:
             continue
+            
             
         match_result = find_in_slide_notes_with_clicks(search_text, slide['notes'], slide['number'])
         
@@ -130,6 +137,23 @@ def find_segment_with_position_tracking(segment_text: str, slides: List[Dict],
             
             # Calculate new global position (using full notes now)
             match_pos = slide['notes'].lower().find(search_text)
+            
+            # For fuzzy matches, find the actual position of the matched text
+            if match_pos == -1:  # Fuzzy match case
+                # Find which click section contains the fuzzy match
+                parts = slide['notes'].split('[click]')
+                cumulative_pos = 0
+                
+                for i, part in enumerate(parts):
+                    if fuzzy_match_in_text(search_text, part):
+                        # Find approximate position within this part
+                        match_pos = cumulative_pos + len(part) // 2  # Use middle of the part
+                        break
+                    cumulative_pos += len(part) + len('[click]') if i > 0 else len(part)
+                
+                if match_pos == -1:
+                    match_pos = 0  # Fallback
+            
             new_global_pos = slide['global_start_pos'] + match_pos
             
             
@@ -158,13 +182,46 @@ def find_segment_with_position_tracking(segment_text: str, slides: List[Dict],
     
     return (slide_num, click_num, is_slide_start, new_global_pos)
 
+def normalize_text_for_matching(text: str) -> str:
+    """Normalize text for fuzzy matching by handling common punctuation variations"""
+    # Replace common punctuation variations
+    normalized = text.lower()
+    # Replace various punctuation with spaces, then clean up
+    for punct in [',', '-', ':', ';', '!', '?', '.']:
+        normalized = normalized.replace(punct, ' ')
+    # Clean up extra spaces
+    normalized = ' '.join(normalized.split())
+    return normalized
+
+def fuzzy_match_in_text(search_text: str, target_text: str, threshold: float = 0.8) -> bool:
+    """Check if search_text fuzzy matches target_text with punctuation tolerance"""
+    
+    # First try exact match
+    if search_text.lower() in target_text.lower():
+        return True
+    
+    # Try normalized match for punctuation differences
+    search_norm = normalize_text_for_matching(search_text)
+    target_norm = normalize_text_for_matching(target_text)
+    
+    if search_norm in target_norm:
+        return True
+    
+    # For very short texts, try word-by-word similarity
+    if len(search_text.split()) <= 3:
+        search_words = set(search_norm.split())
+        target_words = set(target_norm.split())
+        
+        if search_words and len(search_words.intersection(target_words)) / len(search_words) >= threshold:
+            return True
+    
+    return False
+
 def find_in_slide_notes_with_clicks(search_text: str, notes: str, slide_number: int) -> Optional[Tuple[int, int, bool]]:
     """
-    Find text in slide notes and determine click number.
+    Find text in slide notes and determine click number with fuzzy matching.
     
-    IMPORTANT: This function receives notes that might be a SUBSTRING of the full slide notes
-    due to positional tracking. We need to find which click the text belongs to based on
-    the ORIGINAL full slide notes, not the truncated search substring.
+    Handles punctuation differences like "D, direction." vs "D - direction."
     
     Returns: (slide_number, click_number, is_slide_start) or None
     """
@@ -175,12 +232,15 @@ def find_in_slide_notes_with_clicks(search_text: str, notes: str, slide_number: 
     parts = notes.split('[click]')
     
     # Check if text is in the initial part (before any [click])
-    if parts[0] and search_text in parts[0].lower():
+    if parts[0] and fuzzy_match_in_text(search_text, parts[0]):
         return (slide_number, 1, True)  # This starts a new slide
     
     # Check each [click] section
     for i, part in enumerate(parts[1:], 2):  # Start from click 2
-        if part and search_text in part.lower():
+        if part and fuzzy_match_in_text(search_text, part):
+            # Debug for punctuation mismatches
+            if search_text.lower() not in part.lower():
+                print(f"       🔧 Fuzzy match: '{search_text}' → Slide {slide_number} Click {i}")
             return (slide_number, i, False)  # This is a click within the slide
         
     return None
