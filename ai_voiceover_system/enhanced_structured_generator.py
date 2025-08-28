@@ -80,10 +80,24 @@ class SmartBreakpoint:
         return f"Breakpoint at {self.time:.1f}s (score: {self.quality_score:.1f})"
 
 class SmartSegmentGenerator:
-    """Smart transcript segmentation with multi-constraint optimization"""
+    """Smart transcript segmentation with multi-constraint optimization and content intelligence"""
     
     def __init__(self, config: Optional[ConstraintConfig] = None):
         self.config = config or ConstraintConfig()
+        
+        # Educational pattern detection
+        self.mnemonic_patterns = [
+            r'mnemonic.*?([A-Z])\s+(?:or\s+)?([A-Z]+)',  # "mnemonic C or VC"
+            r'([A-Z])\s+(?:or\s+)?([A-Z]+).*?remember',   # "CERVC to remember"
+            r'([A-Z]{2,})[.,]\s*([A-Z])\s+is\s+for',     # "PDRSC. P is for"
+        ]
+        
+        self.definition_markers = [
+            r'what is (.*?)\?',
+            r'(.*?) is (?:just |basically )?(?:a |an )?(.*?)(?:\.|,)',
+            r'at its heart.*?it\'s (.*?)(?:\.|,)',
+            r'(.*?) are (?:basically |just )?(.*?)(?:\.|,)'
+        ]
     
     def load_transcript(self, file_path: Path) -> List[TranscriptSegment]:
         """Load transcript from JSON file"""
@@ -372,11 +386,70 @@ def select_slide_structure(slide_number: int, total_slides: int) -> str:
         structures = ["two_section", "three_section", "comparison"]
         return structures[(slide_number - 2) % len(structures)]
 
+def detect_educational_patterns(segments: List[TranscriptSegment]) -> Dict[str, List[int]]:
+    """Detect educational content patterns and suggest natural [click] positions"""
+    
+    if not segments:
+        return {}
+    
+    combined_text = ' '.join(seg.text for seg in segments)
+    pattern_suggestions = {}
+    
+    # Detect mnemonic patterns (CERVC, PDRSC)
+    mnemonic_patterns = [
+        r'mnemonic.*?([A-Z])\s+(?:or\s+)?([A-Z]+)',
+        r'([A-Z])\s+(?:or\s+)?([A-Z]+).*?remember', 
+        r'([A-Z]{2,})[.,]\s*([A-Z])\s+is\s+for',
+    ]
+    
+    for pattern in mnemonic_patterns:
+        match = re.search(pattern, combined_text, re.IGNORECASE)
+        if match:
+            mnemonic_letters = ''.join(match.groups()).replace(' ', '')
+            # Suggest breaks for each letter explanation
+            letter_positions = []
+            segment_idx = 0
+            for seg in segments:
+                for i, letter in enumerate(mnemonic_letters):
+                    if re.search(rf'{letter}\s+is\s+(?:for\s+)?', seg.text, re.IGNORECASE):
+                        letter_positions.append(segment_idx + 1)
+                        break
+                segment_idx += 1
+            
+            if len(letter_positions) >= 2:
+                pattern_suggestions['mnemonic'] = letter_positions[:template_v_clicks]
+    
+    # Detect definition-example patterns
+    definition_markers = [
+        r'what is.*?\?',
+        r'algorithm.*?is.*?(?:step-by-step|procedure)',
+        r'flow\s*chart.*?(?:are|is).*?visual'
+    ]
+    
+    for i, seg in enumerate(segments):
+        for marker in definition_markers:
+            if re.search(marker, seg.text, re.IGNORECASE):
+                # Next speaker turn likely contains elaboration
+                if i + 1 < len(segments) and segments[i+1].speaker != seg.speaker:
+                    pattern_suggestions.setdefault('definition_example', []).append(i + 1)
+    
+    # Detect question-answer flows
+    for i, seg in enumerate(segments):
+        if seg.text.strip().endswith('?') and i + 1 < len(segments):
+            next_seg = segments[i + 1]
+            if next_seg.speaker != seg.speaker:
+                pattern_suggestions.setdefault('question_answer', []).append(i + 1)
+    
+    return pattern_suggestions
+
 def generate_exact_speaker_notes(segments: List[TranscriptSegment], template_v_clicks: int) -> str:
-    """Generate speaker notes with EXACT transcript text + proper [click] markers"""
+    """Generate speaker notes with EXACT transcript text + intelligent [click] markers"""
     
     if not segments:
         return "<!--\n<!-- No transcript segments for this slide -->\n-->"
+    
+    # Detect educational patterns for intelligent [click] placement
+    educational_patterns = detect_educational_patterns(segments)
     
     # Group consecutive segments by speaker
     speaker_groups = []
@@ -416,31 +489,50 @@ def generate_exact_speaker_notes(segments: List[TranscriptSegment], template_v_c
         notes_lines.append(f"{speaker}: {text}")
         notes_lines.append("")
     else:
-        # Multiple speaker groups - distribute [click] markers
-        # RULE: First statement NEVER gets [click], then we need exactly template_v_clicks markers
+        # Multiple speaker groups - use intelligent [click] placement
         
-        # Calculate how many [click] markers we can place
-        available_positions = len(speaker_groups) - 1  # Exclude first position
+        # Available positions (excluding first - RULE: First statement NEVER gets [click])
+        available_positions = len(speaker_groups) - 1
         markers_to_place = min(template_v_clicks, available_positions)
         
-        # Distribute markers evenly across available positions
+        # Intelligent click positioning using detected patterns
         click_positions = set()
-        if markers_to_place > 0:
-            if markers_to_place == 1:
-                # Single marker - place at position 2
-                click_positions.add(2)
-            elif markers_to_place == available_positions:
-                # Place marker at every position except first
-                click_positions = set(range(2, len(speaker_groups) + 1))
-            else:
-                # Distribute evenly
-                step = available_positions / markers_to_place
-                for i in range(markers_to_place):
-                    position = 2 + int(i * step)
-                    position = min(position, len(speaker_groups))
-                    click_positions.add(position)
         
-        # Generate notes with [click] markers
+        if educational_patterns and markers_to_place > 0:
+            # Use pattern-based positioning (prioritize mnemonic > definition_example > question_answer)
+            pattern_priority = ['mnemonic', 'definition_example', 'question_answer']
+            
+            for pattern_type in pattern_priority:
+                if pattern_type in educational_patterns and len(click_positions) < markers_to_place:
+                    suggested_positions = educational_patterns[pattern_type]
+                    
+                    for pos in suggested_positions:
+                        if pos > 1 and pos <= len(speaker_groups) and len(click_positions) < markers_to_place:
+                            click_positions.add(pos)
+                    
+                    # If we have enough positions from this pattern, use them
+                    if len(click_positions) >= markers_to_place:
+                        break
+        
+        # Fill remaining positions with even distribution if needed
+        if len(click_positions) < markers_to_place and markers_to_place > 0:
+            remaining_needed = markers_to_place - len(click_positions)
+            
+            # Find positions not already used
+            available_slots = []
+            for i in range(2, len(speaker_groups) + 1):  # Skip position 1
+                if i not in click_positions:
+                    available_slots.append(i)
+            
+            # Distribute evenly among remaining slots
+            if available_slots and remaining_needed > 0:
+                step = len(available_slots) / remaining_needed
+                for i in range(remaining_needed):
+                    idx = int(i * step)
+                    if idx < len(available_slots):
+                        click_positions.add(available_slots[idx])
+        
+        # Generate notes with intelligent [click] markers
         for i, (speaker, text) in enumerate(speaker_groups, 1):
             if i == 1:
                 # FIRST statement NEVER has [click] marker
@@ -451,9 +543,16 @@ def generate_exact_speaker_notes(segments: List[TranscriptSegment], template_v_c
                 notes_lines.append(f"{speaker}: {text}")
             notes_lines.append("")
     
-    # Wrap in HTML comment
+    # Wrap in HTML comment with pattern detection info
     notes_content = '\n'.join(notes_lines).rstrip()
-    return f"<!--\n{notes_content}\n-->"
+    
+    # Add pattern detection summary as comment if patterns were found
+    pattern_info = ""
+    if educational_patterns:
+        detected_patterns = list(educational_patterns.keys())
+        pattern_info = f"\n<!-- Educational patterns detected: {', '.join(detected_patterns)} -->"
+    
+    return f"<!--{pattern_info}\n{notes_content}\n-->"
 
 def create_enhanced_slidev_presentation(transcript: List[TranscriptSegment], 
                                       num_slides: int, 

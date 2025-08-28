@@ -55,15 +55,15 @@ mdc: true
 </div>
 
 <!--
-[click] Dr. James: Welcome to the Deep Dive. We're here to pull out the key info you need from different sources. That's right. And today we're looking at a summer 2023 exam solution guide. It's all about the basics of Python programming.
+Dr. James: Welcome to the Deep Dive. We're here to pull out the key info you need from different sources. That's right. And today we're looking at a summer 2023 exam solution guide. It's all about the basics of Python programming.
 
-[click] Sarah: Yep, the fundamentals.
+Sarah: Yep, the fundamentals.
 
-[click] Dr. James: So whether this is maybe your first time seeing this stuff or you need a refresher, or maybe you just want things clear before you actually start coding, our aim is to, you know, make these technical ideas understandable, maybe even interesting. Hopefully.
+Dr. James: So whether this is maybe your first time seeing this stuff or you need a refresher, or maybe you just want things clear before you actually start coding, our aim is to, you know, make these technical ideas understandable, maybe even interesting. Hopefully.
 
-[click] Sarah: And this guide, it hits definitions, rules, code examples, pretty comprehensive for fundamentals.
+Sarah: And this guide, it hits definitions, rules, code examples, pretty comprehensive for fundamentals.
 
-[click] Dr. James: Okay, let's dive in.
+Dr. James: Okay, let's dive in.
 -->
 
 ---
@@ -76,49 +76,43 @@ layout: default
 
 <div>
 
-## <v-click at="1">Definition</v-click>
+## 🧠 **Core Definition**
 
 <v-click at="1">
 
-A **step-by-step procedure** to solve a problem in a finite sequence of steps
-
-</v-click>
-
-<v-click at="2">
-
-### Think of it like a recipe 🍳
-- Clear instructions
-- Specific order
-- Predictable result
+- **Step-by-step procedure**
+- Solves problems in **finite sequence**
 
 </v-click>
 
 </div>
 
-<div>
+<div v-click at="2">
 
-<v-click at="3">
+## 💡 **Recipe Analogy**
 
-## For Computers
+**"Like a recipe. Exactly like a recipe!"**
 
-Set of instructions to achieve a certain result
-
-**Algorithms are the logic behind all software**
-
-</v-click>
+- Clear, unambiguous steps
+- Finite and well-defined
+- Set of **instructions** → **specific result**
 
 </div>
 
+<div v-click="3" class="mt-8 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+<strong>🎯 Remember:</strong> Algorithms are the logic behind pretty much all software!
 </div>
 
 <!--
-[click] Dr. James: First concept, algorithms. Sounds maybe a bit formal, but what is an algorithm really?
+Dr. James: First concept, algorithms. Sounds maybe a bit formal, but what is an algorithm really?
 
-[click] Sarah: Well, at its heart, it's just a step-by-step procedure. It's a way to solve a problem in a specific finite sequence of steps. Like a recipe. Exactly like a recipe. That's a great analogy. For computers, it's the set of instructions to get a certain result. And honestly, algorithms are the logic behind pretty much all software.
+[click] Sarah: Well, at its heart, it's just a step-by-step procedure. It's a way to solve a problem in a specific finite sequence of steps.
 
-[click] Dr. James: Makes sense. And the material gives this mnemonic, C or VC, to remember the advantages. What's that about?
+[click] Sarah: Like a recipe. Exactly like a recipe. That's a great analogy. For computers, it's the set of instructions to get a certain result.
 
-[click] Sarah: Ah, yes. C or ER or VC. Okay, so C is for clarity. The instructions need to be totally unambiguous.
+[click] Sarah: And honestly, algorithms are the logic behind pretty much all software.
+
+Dr. James: Makes sense. And the material gives this mnemonic, C or VC, to remember the advantages. What's that about?
 -->
 
 ---
