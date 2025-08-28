@@ -492,8 +492,8 @@ student = {"name": "John"} # dict
 
 [click] Dr. James: And there are quite a few types listed. Int, float, stripe, bool, list, tuple, set, dict. Even complex and untyped. 
 
-[click] Sarah: It's a good range. You've got everything you need for programming.
+Sarah: It's a good range. You've got everything you need for programming.
 
-[click] Dr. James: These concepts give you solid foundations. Perfect for building Python skills. Ready for the next level!
+Dr. James: These concepts give you solid foundations. Perfect for building Python skills. Ready for the next level!
 -->
 
