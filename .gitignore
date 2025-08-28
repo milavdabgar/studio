@@ -95,6 +95,9 @@ slidev-builds/
 # Slidev generated files in source directories
 */slidev/index.html
 content/**/slidev/index.html
+slidev/*/node_modules/
+slidev/dist/
+slidev/**/package-lock.json
 
 # Development and testing files
 test-*.js
