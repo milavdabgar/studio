@@ -64,7 +64,7 @@ def load_timestamped_transcript(file_path: Path) -> List[TranscriptSegment]:
     return segments
 
 def parse_slidev_slides(file_path: Path) -> Tuple[List[SlideInfo], List[str]]:
-    """Parse Slidev markdown file and extract slide structure"""
+    """Parse Slidev markdown file and extract slide structure matching Python presentation pattern"""
     with open(file_path, 'r') as f:
         lines = f.readlines()
     
@@ -76,62 +76,93 @@ def parse_slidev_slides(file_path: Path) -> Tuple[List[SlideInfo], List[str]]:
         if line.strip() == '---':
             slide_boundaries.append(i)
     
-    # Process each slide section
+    # The first boundary ends the YAML frontmatter
+    # The actual slides start after the frontmatter
+    if len(slide_boundaries) < 2:
+        print("⚠️ Warning: No proper slide structure found")
+        return slides, lines
+    
+    # Process slides starting from after the frontmatter
     slide_number = 0
-    for i in range(len(slide_boundaries) - 1):
+    
+    # Handle the title slide (between first and second ---)
+    title_slide_start = slide_boundaries[0]
+    title_slide_end = slide_boundaries[1] if len(slide_boundaries) > 1 else len(lines)
+    title_slide_content = lines[title_slide_start + 1:title_slide_end]
+    title_slide_text = ''.join(title_slide_content)
+    
+    # Check if title slide has actual content (not just layout info)
+    has_title_content = any(
+        line.strip() and line.strip().startswith('#') 
+        for line in title_slide_content
+    )
+    
+    if has_title_content:
+        slide_number += 1
+        title = "Title Slide"
+        for line in title_slide_content:
+            if line.strip().startswith('# ') and not line.strip().startswith('## '):
+                title = line.strip()[2:].strip()
+                break
+        
+        slides.append(SlideInfo(
+            number=slide_number,
+            title=title,
+            content=title_slide_text,
+            layout="title",
+            original_notes="",
+            start_line=title_slide_start,
+            end_line=title_slide_end
+        ))
+    
+    # Process remaining content slides
+    for i in range(1, len(slide_boundaries) - 1):
         start_line = slide_boundaries[i]
         end_line = slide_boundaries[i + 1]
         slide_content_lines = lines[start_line + 1:end_line]
         slide_content = ''.join(slide_content_lines)
         
-        # Skip empty or metadata-only slides
-        if not slide_content.strip() or len(slide_content.strip()) < 20:
+        # Skip layout-only sections
+        if not slide_content.strip():
             continue
             
-        # Check if this is a real content slide (not just YAML)
-        has_content = any(
-            line.strip() and not line.strip().startswith('#') and 
-            not line.strip().startswith('layout:') and
-            not line.strip().startswith('title:') and
-            not line.strip().startswith('---') and
-            not ':' in line.strip()
-            for line in slide_content_lines[:10]  # Check first 10 lines
-        )
+        # Check if this section only contains layout information
+        non_layout_lines = [
+            line for line in slide_content_lines 
+            if line.strip() and not line.strip().startswith('layout:') 
+            and not line.strip().startswith('class:')
+            and line.strip() != '---'
+        ]
         
-        if has_content:
-            slide_number += 1
+        if not non_layout_lines:
+            continue
             
-            # Extract title
-            title = "Untitled"
-            for line in slide_content_lines:
-                if line.strip().startswith('# ') and not line.strip().startswith('## '):
-                    title = line.strip()[2:].strip()
-                    break
-            
-            # Extract layout
-            layout = "default"
-            for line in slide_content_lines:
-                if line.strip().startswith('layout:'):
-                    layout = line.split(':', 1)[1].strip()
-                    break
-            
-            # Extract existing speaker notes
-            original_notes = ""
-            if '<!--' in slide_content:
-                start_comment = slide_content.find('<!--')
-                end_comment = slide_content.find('-->') + 3
-                original_notes = slide_content[start_comment:end_comment]
-                original_notes = original_notes.replace('<!--', '').replace('-->', '').strip()
-            
-            slides.append(SlideInfo(
-                number=slide_number,
-                title=title,
-                content=slide_content,
-                layout=layout,
-                original_notes=original_notes,
-                start_line=start_line,
-                end_line=end_line
-            ))
+        # This is a real content slide
+        slide_number += 1
+        
+        # Extract title
+        title = f"Slide {slide_number}"
+        for line in slide_content_lines:
+            if line.strip().startswith('# ') and not line.strip().startswith('## '):
+                title = line.strip()[2:].strip()
+                break
+        
+        # Extract layout
+        layout = "default"
+        for line in slide_content_lines:
+            if line.strip().startswith('layout:'):
+                layout = line.split(':', 1)[1].strip()
+                break
+        
+        slides.append(SlideInfo(
+            number=slide_number,
+            title=title,
+            content=slide_content,
+            layout=layout,
+            original_notes="",
+            start_line=start_line,
+            end_line=end_line
+        ))
     
     return slides, lines
 
@@ -165,10 +196,10 @@ def map_transcript_to_slides(transcript: List[TranscriptSegment], slides: List[S
     return slide_mapping
 
 def generate_speaker_notes_for_slide(slide: SlideInfo, segments: List[TranscriptSegment]) -> str:
-    """Generate speaker notes for a slide from its transcript segments"""
+    """Generate speaker notes for a slide from its transcript segments matching Python presentation style"""
     
     if not segments:
-        return "<!-- No audio content mapped to this slide -->"
+        return "<!--\n<!-- AI AGENT: Add slide content above this comment. Do not modify this speaker notes section -->\n-->"
     
     # Group consecutive segments by speaker and merge their text
     speaker_groups = []
@@ -194,113 +225,202 @@ def generate_speaker_notes_for_slide(slide: SlideInfo, segments: List[Transcript
         combined_text = ' '.join(current_text_parts).strip()
         speaker_groups.append((current_speaker, combined_text))
     
-    # Build speaker notes WITHOUT automatic [click] markers
+    # Build speaker notes with exact transcript text and default [click] markers
     notes_lines = []
     
-    for speaker, combined_text in speaker_groups:
-        # Add speaker line (no automatic click markers)
-        notes_lines.append(f"{speaker}: {combined_text}")
+    # Add default [click] markers at positions 3, 5, and 7 (if segments exist)
+    click_positions = {3, 5, 7}  # 1-indexed positions for [click] markers
+    
+    for i, (speaker, combined_text) in enumerate(speaker_groups, 1):
+        # Add [click] marker if this is a target position
+        if i in click_positions:
+            notes_lines.append(f"[click] {speaker}: {combined_text}")
+        else:
+            notes_lines.append(f"{speaker}: {combined_text}")
+        notes_lines.append("")
     
     # Wrap in HTML comment
     notes_content = '\n'.join(notes_lines)
-    return f"<!--\n{notes_content}\n-->"
+    return f"<!--\n{notes_content}-->"
+
+def create_slide_template_from_transcript(transcript: List[TranscriptSegment], 
+                                        slide_mapping: Dict[int, List[TranscriptSegment]], 
+                                        num_slides: int, presentation_title: str) -> List[str]:
+    """Generate a complete Slidev presentation template with speaker notes from transcript"""
+    
+    lines = []
+    
+    # Add YAML frontmatter matching Python presentation style
+    lines.extend([
+        "---\n",
+        "theme: default\n", 
+        f"title: {presentation_title}\n",
+        "info: |\n",
+        f"  ## {presentation_title}\n",
+        "  \n",
+        "  Generated from timestamped transcript with exact speaker notes\n",
+        "  for automated video generation and synchronization.\n",
+        "class: text-center\n",
+        "highlighter: shiki\n",
+        "drawings:\n",
+        "  persist: false\n", 
+        "transition: slide-left\n",
+        "mdc: true\n",
+        "---\n",
+        "\n"
+    ])
+    
+    # Add AI Agent instructions at the top of the presentation
+    lines.extend([
+        "<!-- \n",
+        "🤖 AI AGENT INSTRUCTIONS FOR SLIDE CONTENT GENERATION:\n",
+        "\n",
+        "✅ ALLOWED MODIFICATIONS:\n",
+        "- Replace slide titles with meaningful content-based titles\n",
+        "- Add slide content (headings, bullet points, visuals, layouts)\n",
+        "- Add v-click animations using <v-click at=\"1\">, <v-click at=\"2\">, etc.\n",
+        "- Add/remove/adjust [click] markers in speaker notes to match v-click animations\n",
+        "- Add subtitle, description, and navigation elements to title slide\n",
+        "\n",
+        "❌ FORBIDDEN MODIFICATIONS:\n",
+        "- DO NOT modify the speaker transcript text in comments\n",
+        "- DO NOT change the speaker names (Dr. James, Sarah, etc.)\n",
+        "- DO NOT alter the exact wording of transcript for video synchronization\n",
+        "- DO NOT remove or change the structure of speaker notes comments\n",
+        "\n",
+        "🎯 GOAL: Create engaging slide content while preserving exact transcript text for video generation\n",
+        "-->\n",
+        "\n"
+    ])
+    
+    # Generate slides
+    for slide_num in range(1, num_slides + 1):
+        segments = slide_mapping.get(slide_num, [])
+        
+        if slide_num == 1:
+            # Title slide
+            lines.extend([
+                f"# {presentation_title}\n",
+                "\n",
+                "<!-- Add subtitle, description, and navigation elements above -->\n",
+                "\n"
+            ])
+        else:
+            # Content slides
+            lines.extend([
+                "---\n",
+                "layout: default\n", 
+                "---\n",
+                "\n",
+                f"# Slide {slide_num} Title\n",
+                "\n",
+                "<!-- Replace title above and add slide content here -->\n",
+                "\n"
+            ])
+        
+        # Add speaker notes for this slide
+        speaker_notes = generate_speaker_notes_for_slide(
+            SlideInfo(slide_num, f"Slide {slide_num}", "", "default", "", 0, 0), 
+            segments
+        )
+        lines.append(f"{speaker_notes}\n")
+        lines.append("\n")
+    
+    return lines
 
 def create_slides_with_generated_notes(original_lines: List[str], slides: List[SlideInfo], 
                                      slide_mapping: Dict[int, List[TranscriptSegment]]) -> List[str]:
     """Create new slide content with generated speaker notes"""
+    # This function is now replaced by create_slide_template_from_transcript
+    # but kept for backward compatibility
     
-    new_lines = original_lines.copy()
+    # Determine number of slides needed based on transcript mapping
+    max_slide_num = max(slide_mapping.keys()) if slide_mapping else len(slides)
     
-    # Process slides in reverse order to preserve line numbers
-    for slide in reversed(slides):
-        # Generate new speaker notes
-        segments = slide_mapping.get(slide.number, [])
-        new_notes = generate_speaker_notes_for_slide(slide, segments)
-        
-        # Find where to insert/replace speaker notes
-        slide_lines = new_lines[slide.start_line + 1:slide.end_line]
-        
-        # Remove existing speaker notes if any
-        content_without_notes = []
-        skip_comment = False
-        for line in slide_lines:
-            if line.strip().startswith('<!--'):
-                skip_comment = True
-            elif line.strip().endswith('-->'):
-                skip_comment = False
-                continue
-            elif not skip_comment:
-                content_without_notes.append(line)
-        
-        # Add new speaker notes at the end of slide content
-        content_with_notes = content_without_notes + [f"\n{new_notes}\n"]
-        
-        # Replace the slide content in the main lines array
-        new_lines[slide.start_line + 1:slide.end_line] = content_with_notes
-    
-    return new_lines
+    # Generate fresh template with proper structure
+    return create_slide_template_from_transcript(
+        transcript=[],  # Will be filled by segments in slide_mapping
+        slide_mapping=slide_mapping,
+        num_slides=max_slide_num,
+        presentation_title="Generated Presentation"
+    )
 
 def main():
-    print("🎯 Generating Speaker Notes from Timestamped Transcript")
-    print("This ensures 100% matching between audio and slide notes")
+    print("🎯 Generating Slidev Template with Speaker Notes from Timestamped Transcript")
+    print("This creates a fresh presentation structure with exact transcript text for 100% video matching")
     
     # File paths (configurable for any project)
-    slides_file = Path("slidev/gujarati-transistor-fundamentals-conversational.md")
     transcript_file = Path("audio_scripts/ટરનઝસટર-નન-ઘટક-મટ-કરત-ડજટલ-યગન-પય-timestamped-COMPATIBLE.json")
-    audio_file = None  # We don't have the audio file, will use transcript duration
     
-    # Output file
-    output_file = slides_file.parent / f"{slides_file.stem}-with-transcript-notes.md"
+    # Output file - generate new template with correct structure
+    output_file = Path("slidev/gujarati-transistor-fundamentals-transcript-template.md")
     
-    print(f"📂 Input slides: {slides_file}")
     print(f"📂 Input transcript: {transcript_file}")
-    print(f"📂 Output: {output_file}")
+    print(f"📂 Output template: {output_file}")
     
-    # Load data
-    print("\n📊 Loading data...")
+    # Load transcript data
+    print("\n📊 Loading transcript data...")
     transcript = load_timestamped_transcript(transcript_file)
-    slides, original_lines = parse_slidev_slides(slides_file)
     
     # Get audio duration
-    try:
-        if audio_file:
-            from moviepy.editor import AudioFileClip
-            audio = AudioFileClip(str(audio_file))
-            audio_duration = audio.duration
-            audio.close()
-        else:
-            audio_duration = transcript[-1].end if transcript else 300  # Use transcript duration
-    except:
-        audio_duration = transcript[-1].end if transcript else 300  # Fallback
+    audio_duration = transcript[-1].end if transcript else 300
     
     print(f"✅ Loaded {len(transcript)} transcript segments")
-    print(f"✅ Loaded {len(slides)} slides")
     print(f"✅ Audio duration: {audio_duration:.1f}s")
     
-    # Map transcript to slides
-    print("\n🗺️ Mapping transcript to slides...")
-    slide_mapping = map_transcript_to_slides(transcript, slides, audio_duration)
+    # Calculate optimal number of slides (aim for 30-45 seconds per slide)
+    target_slide_duration = 35  # seconds
+    num_slides = max(5, min(15, int(audio_duration / target_slide_duration)))
     
-    # Generate new slides with speaker notes
-    print("\n📝 Generating speaker notes...")
-    new_lines = create_slides_with_generated_notes(original_lines, slides, slide_mapping)
+    print(f"📊 Calculating optimal slide count: {num_slides} slides (avg {audio_duration/num_slides:.1f}s per slide)")
+    
+    # Create fake slides info for mapping (will be replaced by template)
+    fake_slides = [
+        SlideInfo(i, f"Slide {i}", "", "default", "", 0, 0) 
+        for i in range(1, num_slides + 1)
+    ]
+    
+    # Map transcript to slides
+    print("\n🗺️ Mapping transcript segments to slides...")
+    slide_mapping = map_transcript_to_slides(transcript, fake_slides, audio_duration)
+    
+    # Generate presentation title from transcript
+    presentation_title = "ટ્રાન્ઝિસ્ટર: એક નાનકડો ઘટક, મહાન ક્રાંતિ"
+    
+    # Generate new slide template with speaker notes
+    print(f"\n📝 Generating slide template with {num_slides} slides...")
+    new_lines = create_slide_template_from_transcript(
+        transcript=transcript,
+        slide_mapping=slide_mapping, 
+        num_slides=num_slides,
+        presentation_title=presentation_title
+    )
     
     # Write output file
     with open(output_file, 'w') as f:
         f.writelines(new_lines)
     
-    print(f"\n🎉 Created slides with generated speaker notes: {output_file}")
-    print("✅ Speaker notes now contain exact transcript text for 100% matching!")
+    print(f"\n🎉 Created Slidev template with speaker notes: {output_file}")
+    print("✅ Speaker notes contain exact transcript text for 100% video matching!")
+    print("✅ AI agents can now add slide content without modifying speaker notes")
     
-    # Show summary
+    # Show mapping summary
     total_segments_mapped = sum(len(segments) for segments in slide_mapping.values())
-    print(f"\n📊 Summary:")
+    print(f"\n📊 Mapping Summary:")
     print(f"   Total segments mapped: {total_segments_mapped}/{len(transcript)}")
     print(f"   Coverage: {total_segments_mapped/len(transcript)*100:.1f}%")
+    print(f"   Slides generated: {num_slides}")
     
     for slide_num, segments in slide_mapping.items():
-        slide_info = next(s for s in slides if s.number == slide_num)
-        print(f"   Slide {slide_num} ({slide_info.title[:30]}...): {len(segments)} segments")
+        if segments:
+            duration = sum(s.duration for s in segments)
+            print(f"   Slide {slide_num}: {len(segments)} segments ({duration:.1f}s)")
+    
+    print(f"\n🚀 Next Steps:")
+    print(f"   1. Review generated template: {output_file}")
+    print(f"   2. Use AI agent to add slide content (following the AI AGENT instructions)")
+    print(f"   3. AI agent should add [click] markers to match v-click animations")
+    print(f"   4. Speaker notes text must remain unchanged for video sync")
 
 if __name__ == "__main__":
     main()
