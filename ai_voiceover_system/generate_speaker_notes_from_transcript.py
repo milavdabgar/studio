@@ -14,16 +14,20 @@ This script:
 6. Creates a new .md file with original content + generated speaker notes
 
 Usage:
-    python generate_speaker_notes_from_transcript.py
+    python generate_speaker_notes_from_transcript.py <transcript_file> [output_file]
+    python generate_speaker_notes_from_transcript.py --help
 
 Features:
 - No automatic [click] markers (let humans/AI add meaningful ones)
 - Merges consecutive same-speaker segments for natural flow
 - Perfect slide-audio synchronization using exact transcript text
+- Generic template suitable for any presentation topic
 """
 
 import json
 import re
+import argparse
+import sys
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
@@ -196,7 +200,7 @@ def map_transcript_to_slides(transcript: List[TranscriptSegment], slides: List[S
     return slide_mapping
 
 def generate_speaker_notes_for_slide(slide: SlideInfo, segments: List[TranscriptSegment]) -> str:
-    """Generate speaker notes for a slide from its transcript segments matching Python presentation style"""
+    """Generate speaker notes for a slide from its transcript segments"""
     
     if not segments:
         return "<!--\n<!-- AI AGENT: Add slide content above this comment. Do not modify this speaker notes section -->\n-->"
@@ -328,6 +332,23 @@ def create_slide_template_from_transcript(transcript: List[TranscriptSegment],
     
     return lines
 
+def extract_title_from_transcript(transcript: List[TranscriptSegment]) -> str:
+    """Extract a meaningful presentation title from the transcript content"""
+    if not transcript:
+        return "Generated Presentation"
+    
+    # Combine the first few segments to analyze for key topics
+    first_segments_text = " ".join([seg.text for seg in transcript[:5]])
+    
+    # Simple heuristic: look for key phrases or just use a generic title
+    # In a real implementation, you might use NLP to extract key topics
+    words = first_segments_text.split()
+    if len(words) > 3:
+        # Take first meaningful words and create a title
+        return f"Presentation: {' '.join(words[:6])}..."
+    else:
+        return "Generated Presentation"
+
 def create_slides_with_generated_notes(original_lines: List[str], slides: List[SlideInfo], 
                                      slide_mapping: Dict[int, List[TranscriptSegment]]) -> List[str]:
     """Create new slide content with generated speaker notes"""
@@ -345,22 +366,86 @@ def create_slides_with_generated_notes(original_lines: List[str], slides: List[S
         presentation_title="Generated Presentation"
     )
 
+def parse_arguments():
+    """Parse command line arguments"""
+    parser = argparse.ArgumentParser(
+        description="Generate Slidev template with speaker notes from timestamped transcript",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""Examples:
+  python generate_speaker_notes_from_transcript.py transcript.json
+  python generate_speaker_notes_from_transcript.py transcript.json output.md
+  python generate_speaker_notes_from_transcript.py transcript.json --title="My Presentation"
+        """
+    )
+    
+    parser.add_argument(
+        "transcript_file",
+        help="Path to the timestamped transcript JSON file"
+    )
+    
+    parser.add_argument(
+        "output_file",
+        nargs="?",
+        help="Output Slidev markdown file (default: auto-generated from input name)"
+    )
+    
+    parser.add_argument(
+        "--title",
+        help="Presentation title (default: extracted from transcript)"
+    )
+    
+    parser.add_argument(
+        "--target-duration",
+        type=int,
+        default=35,
+        help="Target duration per slide in seconds (default: 35)"
+    )
+    
+    parser.add_argument(
+        "--min-slides",
+        type=int,
+        default=5,
+        help="Minimum number of slides (default: 5)"
+    )
+    
+    parser.add_argument(
+        "--max-slides",
+        type=int,
+        default=15,
+        help="Maximum number of slides (default: 15)"
+    )
+    
+    return parser.parse_args()
+
 def main():
+    args = parse_arguments()
+    
     print("🎯 Generating Slidev Template with Speaker Notes from Timestamped Transcript")
     print("This creates a fresh presentation structure with exact transcript text for 100% video matching")
     
-    # File paths (configurable for any project)
-    transcript_file = Path("audio_scripts/ટરનઝસટર-નન-ઘટક-મટ-કરત-ડજટલ-યગન-પય-timestamped-COMPATIBLE.json")
+    # File paths
+    transcript_file = Path(args.transcript_file)
     
-    # Output file - generate new template with correct structure
-    output_file = Path("slidev/gujarati-transistor-fundamentals-transcript-template.md")
+    if not transcript_file.exists():
+        print(f"❌ Error: Transcript file not found: {transcript_file}")
+        sys.exit(1)
+    
+    # Generate output filename if not provided
+    if args.output_file:
+        output_file = Path(args.output_file)
+    else:
+        output_file = transcript_file.parent / f"{transcript_file.stem}-template.md"
     
     print(f"📂 Input transcript: {transcript_file}")
     print(f"📂 Output template: {output_file}")
     
     # Load transcript data
     print("\n📊 Loading transcript data...")
-    transcript = load_timestamped_transcript(transcript_file)
+    try:
+        transcript = load_timestamped_transcript(transcript_file)
+    except Exception as e:
+        print(f"❌ Error loading transcript: {e}")
+        sys.exit(1)
     
     # Get audio duration
     audio_duration = transcript[-1].end if transcript else 300
@@ -368,9 +453,8 @@ def main():
     print(f"✅ Loaded {len(transcript)} transcript segments")
     print(f"✅ Audio duration: {audio_duration:.1f}s")
     
-    # Calculate optimal number of slides (aim for 30-45 seconds per slide)
-    target_slide_duration = 35  # seconds
-    num_slides = max(5, min(15, int(audio_duration / target_slide_duration)))
+    # Calculate optimal number of slides
+    num_slides = max(args.min_slides, min(args.max_slides, int(audio_duration / args.target_duration)))
     
     print(f"📊 Calculating optimal slide count: {num_slides} slides (avg {audio_duration/num_slides:.1f}s per slide)")
     
@@ -384,8 +468,13 @@ def main():
     print("\n🗺️ Mapping transcript segments to slides...")
     slide_mapping = map_transcript_to_slides(transcript, fake_slides, audio_duration)
     
-    # Generate presentation title from transcript
-    presentation_title = "ટ્રાન્ઝિસ્ટર: એક નાનકડો ઘટક, મહાન ક્રાંતિ"
+    # Generate presentation title
+    if args.title:
+        presentation_title = args.title
+    else:
+        presentation_title = extract_title_from_transcript(transcript)
+    
+    print(f"🎯 Presentation title: {presentation_title}")
     
     # Generate new slide template with speaker notes
     print(f"\n📝 Generating slide template with {num_slides} slides...")
@@ -397,8 +486,13 @@ def main():
     )
     
     # Write output file
-    with open(output_file, 'w') as f:
-        f.writelines(new_lines)
+    try:
+        output_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(output_file, 'w', encoding='utf-8') as f:
+            f.writelines(new_lines)
+    except Exception as e:
+        print(f"❌ Error writing output file: {e}")
+        sys.exit(1)
     
     print(f"\n🎉 Created Slidev template with speaker notes: {output_file}")
     print("✅ Speaker notes contain exact transcript text for 100% video matching!")
