@@ -123,6 +123,7 @@
     "@radix-ui/react-toast": "^1.2.6",
     "@radix-ui/react-tooltip": "^1.1.8",
     "@slidev/theme-apple-basic": "^0.25.1",
+    "@slidev/theme-seriph": "^0.25.0",
     "@sparticuz/chromium-min": "^123.0.1",
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack-query-firebase/react": "^1.0.6",
