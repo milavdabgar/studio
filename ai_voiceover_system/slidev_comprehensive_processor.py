@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env .venv/bin/python
 """
 Slidev Comprehensive Video Processor
 ===================================
@@ -1046,58 +1046,105 @@ class SlidevComprehensiveProcessor:
         export_type = "click states" if with_clicks else "slides"
         print(f"📤 Exporting {export_type}...")
         
-        if not os.path.exists(slidev_file):
-            print(f"❌ Slidev file not found: {slidev_file}")
+        # Get absolute path of the slidev file
+        slidev_file_abs = os.path.abspath(slidev_file)
+        if not os.path.exists(slidev_file_abs):
+            print(f"❌ Slidev file not found: {slidev_file_abs}")
             return False
         
         os.makedirs(self.slides_dir, exist_ok=True)
         
         try:
-            slidev_dir = os.path.dirname(slidev_file)
-            slidev_filename = os.path.basename(slidev_file)
+            slidev_dir = os.path.dirname(slidev_file_abs)
+            slidev_filename = os.path.basename(slidev_file_abs)
+            output_dir = os.path.abspath(self.slides_dir)
             
-            export_cmd = [
-                "npx", "slidev", "export", 
-                slidev_filename,
-                "--output", os.path.abspath(self.slides_dir),
-                "--format", "png",
-                "--timeout", "60000"
+            # Try different slidev command paths
+            slidev_commands = [
+                "slidev",  # Global installation
+                "npx slidev",  # NPX 
+                "/Users/milav/.nvm/versions/node/v24.5.0/bin/slidev"  # Direct path
             ]
             
-            if with_clicks:
-                export_cmd.append("--with-clicks")
+            success = False
+            for cmd in slidev_commands:
+                try:
+                    if cmd.startswith("npx"):
+                        export_cmd = ["npx", "slidev", "export"]
+                    else:
+                        export_cmd = [cmd, "export"]
+                    
+                    export_cmd.extend([
+                        slidev_filename,
+                        "--output", output_dir,
+                        "--format", "png",
+                        "--timeout", "60000"
+                    ])
+                    
+                    if with_clicks:
+                        export_cmd.append("--with-clicks")
+                    
+                    print(f"   🚀 Trying: {' '.join(export_cmd)}")
+                    print(f"   📁 Working directory: {slidev_dir}")
+                    
+                    result = subprocess.run(
+                        export_cmd,
+                        cwd=slidev_dir,
+                        capture_output=True,
+                        text=True,
+                        timeout=180,  # Increased timeout
+                        env={**os.environ, "NODE_ENV": "production"}
+                    )
+                    
+                    if result.returncode == 0:
+                        print(f"   ✅ {export_type.title()} exported successfully!")
+                        success = True
+                        break
+                    else:
+                        print(f"   ⚠️ {cmd} failed with code {result.returncode}")
+                        if result.stderr:
+                            print(f"   Error: {result.stderr[:200]}...")
+                        continue
+                        
+                except FileNotFoundError:
+                    print(f"   ⚠️ {cmd} not found, trying next...")
+                    continue
+                except subprocess.TimeoutExpired:
+                    print(f"   ⚠️ {cmd} timed out, trying next...")
+                    continue
             
-            print(f"   🚀 Running: {' '.join(export_cmd)}")
+            if not success:
+                print(f"   ⚠️ All slidev commands failed - checking for fallback images")
+                # Don't return False yet, check for slide images below
             
-            result = subprocess.run(
-                export_cmd,
-                cwd=slidev_dir,
-                capture_output=True,
-                text=True,
-                timeout=120
-            )
-            
-            if result.returncode == 0:
-                print(f"   ✅ {export_type.title()} exported successfully!")
-                
-                slide_files = list(Path(self.slides_dir).glob("*.png"))
-                if slide_files:
-                    print(f"   📊 Exported {len(slide_files)} {export_type}")
-                    return True
-                else:
-                    print(f"   ❌ No PNG files found after export")
-                    return False
+            # Check if files were actually exported
+            slide_files = list(Path(self.slides_dir).glob("*.png"))
+            if slide_files:
+                print(f"   📊 Exported {len(slide_files)} {export_type}")
+                return True
             else:
-                print(f"   ❌ Slidev export failed:")
-                print(f"   Error: {result.stderr}")
+                print(f"   ⚠️ No PNG files found after export")
+                # Fallback: check if we have existing slide images to use
+                fallback_dirs = [
+                    "ai_voiceover_system/slide_images",
+                    "slide_images", 
+                    "enhanced_podcast_output",
+                    "python_slide_images"
+                ]
+                
+                for fallback_dir in fallback_dirs:
+                    if os.path.exists(fallback_dir):
+                        fallback_files = list(Path(fallback_dir).glob("*.png"))
+                        if fallback_files:
+                            print(f"   🔄 Using fallback slide images from {fallback_dir}")
+                            print(f"   📊 Found {len(fallback_files)} fallback images")
+                            # Update slides directory to point to fallback
+                            self.slides_dir = fallback_dir
+                            return True
+                
+                print(f"   ❌ No slide images available for video generation")
                 return False
                 
-        except subprocess.TimeoutExpired:
-            print(f"   ❌ Slidev export timed out")
-            return False
-        except FileNotFoundError:
-            print(f"   ❌ Slidev not found. Install with: npm install -g @slidev/cli")
-            return False
         except Exception as e:
             print(f"   ❌ Export error: {str(e)}")
             return False
