@@ -36,14 +36,15 @@ def check_docling_available():
 
 def run_docling_conversion(pdf_path: Path) -> Path:
     """Convert PDF to markdown using docling."""
-    # Docling creates output with the same name as PDF but .md extension
-    docling_output = pdf_path.with_suffix('.md')
+    # Docling creates output in current working directory with the same name as PDF but .md extension
+    docling_output_cwd = Path.cwd() / (pdf_path.stem + '.md')
     
-    # Create temporary output path for raw conversion
+    # Target output paths in the same directory as the PDF
+    docling_output = pdf_path.with_suffix('.md')
     temp_raw_output = pdf_path.with_stem(pdf_path.stem + '.raw').with_suffix('.md')
     
     # Remove existing outputs if they exist
-    for file_path in [docling_output, temp_raw_output]:
+    for file_path in [docling_output, temp_raw_output, docling_output_cwd]:
         if file_path.exists():
             file_path.unlink()
             _log.info(f"Removed existing output: {file_path}")
@@ -71,12 +72,13 @@ def run_docling_conversion(pdf_path: Path) -> Path:
         _log.info("Docling conversion completed successfully")
         _log.info(f"Output: {result.stdout}")
         
-        if not docling_output.exists():
-            raise RuntimeError(f"Expected output file not found: {docling_output}")
+        # Check if output was created in current working directory
+        if not docling_output_cwd.exists():
+            raise RuntimeError(f"Expected output file not found: {docling_output_cwd}")
         
-        # Rename docling output to temporary name to avoid conflicts
-        docling_output.rename(temp_raw_output)
-        _log.info(f"Renamed raw output to: {temp_raw_output}")
+        # Move the output file to the same directory as the PDF and rename to temp name
+        docling_output_cwd.rename(temp_raw_output)
+        _log.info(f"Moved and renamed raw output to: {temp_raw_output}")
         
         return temp_raw_output
         
