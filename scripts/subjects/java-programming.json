@@ -1,0 +1,184 @@
+{
+  "department": "E.C. ENGINEERING DEPARTMENT",
+  "institution": "GOVT. POLYTECHNIC, PALANPUR",
+  "facultyName": "M J Dabgar",
+  "designation": "Lecturer, EC",
+  "semester": "ICT – Sem-3",
+  "subject": "Java Programming",
+  "courseCode": "DI03032021",
+  "termStartDate": "30/06/2025",
+  "termEndDate": "24/11/2025",
+  "lectureSchedule": "Monday, Tuesday, Wednesday",
+  "totalLecturesPerWeek": 3,
+  "courseOutcomes": [
+    {
+      "co": "CO 1",
+      "code": "DI03032021.1",
+      "statement": "Write simple java programs for a given problem statement."
+    },
+    {
+      "co": "CO 2",
+      "code": "DI03032021.2", 
+      "statement": "Use object oriented programming concepts to solve real world problems."
+    },
+    {
+      "co": "CO 3",
+      "code": "DI03032021.3",
+      "statement": "Develop an object-oriented program using inheritance and package concepts for a given problem."
+    },
+    {
+      "co": "CO 4",
+      "code": "DI03032021.4",
+      "statement": "Develop an object oriented program using multithreading and exception handling for a given problem."
+    },
+    {
+      "co": "CO 5",
+      "code": "DI03032021.5",
+      "statement": "Develop an object-oriented program by using the files and collection framework."
+    }
+  ],
+  "units": [
+    {
+      "unitName": "Unit –1: Introduction to Java Programming Language",
+      "topics": [
+        "Introduction to Java and its history",
+        "Features of Java",
+        "JVM, JRE, and JDK",
+        "Setting up Java environment",
+        "Basic syntax of Java",
+        "Data types and variables",
+        "Operators in Java",
+        "Control flow statements",
+        "Revision & Unit Test"
+      ],
+      "coMapping": ["CO1", "CO1", "CO1", "CO1", "CO1", "CO1", "CO1", "CO1", "CO1"]
+    },
+    {
+      "unitName": "Unit– 2: Object Oriented Programming Concepts", 
+      "topics": [
+        "Introduction to OOPs concepts",
+        "Classes and Objects",
+        "Constructors and Destructors",
+        "Inheritance in detail",
+        "Polymorphism",
+        "Abstraction",
+        "Encapsulation",
+        "Interfaces",
+        "Packages",
+        "Static and Final",
+        "Access Modifiers",
+        "Revision & Unit Test"
+      ],
+      "coMapping": ["CO2", "CO2", "CO2", "CO2", "CO2", "CO2", "CO2", "CO2", "CO2", "CO2", "CO2", "CO2"]
+    },
+    {
+      "unitName": "Unit– 3: Inheritance, Packages & Interfaces",
+      "topics": [
+        "Inheritance types and usage",
+        "Using packages for modular code",
+        "Interfaces and their importance", 
+        "Abstract classes vs Interfaces",
+        "Nested and Inner classes",
+        "Overriding and Overloading",
+        "Object class methods",
+        "Generics",
+        "Enumerations",
+        "Annotations",
+        "Reflection",
+        "Revision & Unit Test"
+      ],
+      "coMapping": ["CO3", "CO3", "CO3", "CO3", "CO3", "CO3", "CO3", "CO3", "CO3", "CO3", "CO3", "CO3"]
+    },
+    {
+      "unitName": "Unit–4: Exception Handling & Multithreading",
+      "topics": [
+        "Introduction to exceptions",
+        "Exception handling mechanism",
+        "Try-catch-finally blocks",
+        "Creating custom exceptions",
+        "Introduction to multithreading",
+        "Thread class and Runnable interface",
+        "Thread synchronization",
+        "Inter-thread communication",
+        "Revision & Unit Test"
+      ],
+      "coMapping": ["CO4", "CO4", "CO4", "CO4", "CO4", "CO4", "CO4", "CO4", "CO4"]
+    },
+    {
+      "unitName": "Unit–5: File Handling and Collections Framework",
+      "topics": [
+        "File handling in Java",
+        "Input and Output streams",
+        "Reading from and writing to files",
+        "Introduction to Collections framework",
+        "List, Set, Map interfaces",
+        "Commonly used Collections classes",
+        "Iterators and Comparators",
+        "Revision & Unit Test"
+      ],
+      "coMapping": ["CO5", "CO5", "CO5", "CO5", "CO5", "CO5", "CO5", "CO5"]
+    }
+  ],
+  "termDates": [
+    "2025-06-30",
+    "2025-07-01",
+    "2025-07-02",
+    "2025-07-07",
+    "2025-07-08",
+    "2025-07-09",
+    "2025-07-14",
+    "2025-07-15",
+    "2025-07-16",
+    "2025-07-21",
+    "2025-07-22",
+    "2025-07-23",
+    "2025-07-28",
+    "2025-07-29",
+    "2025-07-30",
+    "2025-08-04",
+    "2025-08-05",
+    "2025-08-06",
+    "2025-08-11",
+    "2025-08-12",
+    "2025-08-13",
+    "2025-08-18",
+    "2025-08-19",
+    "2025-08-20",
+    "2025-08-25",
+    "2025-08-26",
+    "2025-09-01",
+    "2025-09-02",
+    "2025-09-03",
+    "2025-09-08",
+    "2025-09-09",
+    "2025-09-10",
+    "2025-09-15",
+    "2025-09-16",
+    "2025-09-17",
+    "2025-09-22",
+    "2025-09-23",
+    "2025-09-24",
+    "2025-09-29",
+    "2025-09-30",
+    "2025-10-01",
+    "2025-10-06",
+    "2025-10-07",
+    "2025-10-08",
+    "2025-10-13",
+    "2025-10-14",
+    "2025-10-15",
+    "2025-10-21",
+    "2025-10-27",
+    "2025-10-28",
+    "2025-10-29",
+    "2025-11-03",
+    "2025-11-04",
+    "2025-11-10",
+    "2025-11-11",
+    "2025-11-12",
+    "2025-11-17",
+    "2025-11-18",
+    "2025-11-19",
+    "2025-11-24"
+  ]
+}

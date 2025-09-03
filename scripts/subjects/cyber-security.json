@@ -1,0 +1,223 @@
+{
+  "department": "E.C. ENGINEERING DEPARTMENT",
+  "institution": "GOVT. POLYTECHNIC, PALANPUR",
+  "facultyName": "M J Dabgar",
+  "designation": "Lecturer, EC",
+  "semester": "ICT – Sem-5",
+  "subject": "Cyber Security",
+  "courseCode": "4353204",
+  "termStartDate": "30/06/2025",
+  "termEndDate": "17/10/2025",
+  "lectureSchedule": "Monday, Thursday, Friday",
+  "totalLecturesPerWeek": 3,
+  "courseOutcomes": [
+    {
+      "co": "CO 1",
+      "code": "4353204.1",
+      "statement": "Understand fundamental concepts of cyber security and information security."
+    },
+    {
+      "co": "CO 2",
+      "code": "4353204.2",
+      "statement": "Analyze various types of cyber threats and attack vectors."
+    },
+    {
+      "co": "CO 3",
+      "code": "4353204.3",
+      "statement": "Apply security mechanisms and controls to protect digital assets."
+    },
+    {
+      "co": "CO 4",
+      "code": "4353204.4",
+      "statement": "Implement network security protocols and encryption techniques."
+    },
+    {
+      "co": "CO 5",
+      "code": "4353204.5",
+      "statement": "Develop incident response strategies and security policies."
+    }
+  ],
+  "units": [
+    {
+      "unitName": "Unit –1: Introduction to Cyber Security",
+      "topics": [
+        "Introduction to Information Security",
+        "CIA Triad - Confidentiality, Integrity, Availability",
+        "Types of Security Threats",
+        "Security Vulnerabilities and Risks",
+        "Security Policies and Procedures",
+        "Legal and Ethical Issues",
+        "Security Frameworks and Standards",
+        "Risk Assessment and Management",
+        "Revision & Unit Test"
+      ],
+      "coMapping": [
+        "CO1",
+        "CO1",
+        "CO1",
+        "CO1",
+        "CO1",
+        "CO1",
+        "CO1",
+        "CO1",
+        "CO1"
+      ]
+    },
+    {
+      "unitName": "Unit– 2: Cyber Threats and Attack Vectors",
+      "topics": [
+        "Types of Cyber Attacks",
+        "Malware - Viruses, Worms, Trojans",
+        "Social Engineering Attacks",
+        "Phishing and Spear Phishing",
+        "SQL Injection and XSS Attacks",
+        "Denial of Service (DoS) Attacks",
+        "Man-in-the-Middle Attacks",
+        "Advanced Persistent Threats (APT)",
+        "Insider Threats",
+        "Mobile Security Threats",
+        "Revision & Unit Test"
+      ],
+      "coMapping": [
+        "CO2",
+        "CO2",
+        "CO2",
+        "CO2",
+        "CO2",
+        "CO2",
+        "CO2",
+        "CO2",
+        "CO2",
+        "CO2",
+        "CO2"
+      ]
+    },
+    {
+      "unitName": "Unit– 3: Security Mechanisms and Controls",
+      "topics": [
+        "Access Control Mechanisms",
+        "Authentication and Authorization",
+        "Biometric Security Systems",
+        "Firewalls and Intrusion Detection",
+        "Antivirus and Anti-malware Solutions",
+        "Security Auditing and Monitoring",
+        "Backup and Recovery Strategies",
+        "Physical Security Controls",
+        "Endpoint Security",
+        "Revision & Unit Test"
+      ],
+      "coMapping": [
+        "CO3",
+        "CO3",
+        "CO3",
+        "CO3",
+        "CO3",
+        "CO3",
+        "CO3",
+        "CO3",
+        "CO3",
+        "CO3"
+      ]
+    },
+    {
+      "unitName": "Unit–4: Network Security and Cryptography",
+      "topics": [
+        "Network Security Fundamentals",
+        "Encryption and Decryption",
+        "Symmetric and Asymmetric Cryptography",
+        "Digital Signatures and PKI",
+        "SSL/TLS Protocols",
+        "VPN and Secure Tunneling",
+        "Wireless Network Security",
+        "Network Monitoring Tools",
+        "Revision & Unit Test"
+      ],
+      "coMapping": [
+        "CO4",
+        "CO4",
+        "CO4",
+        "CO4",
+        "CO4",
+        "CO4",
+        "CO4",
+        "CO4",
+        "CO4"
+      ]
+    },
+    {
+      "unitName": "Unit–5: Incident Response and Security Management",
+      "topics": [
+        "Incident Response Planning",
+        "Digital Forensics Fundamentals",
+        "Security Information and Event Management",
+        "Business Continuity Planning",
+        "Disaster Recovery Procedures",
+        "Security Awareness Training",
+        "Compliance and Regulations",
+        "Revision & Unit Test"
+      ],
+      "coMapping": [
+        "CO5",
+        "CO5",
+        "CO5",
+        "CO5",
+        "CO5",
+        "CO5",
+        "CO5",
+        "CO5"
+      ]
+    }
+  ],
+  "termDates": [
+    "2025-06-30",
+    "2025-10-17",
+    "2025-06-30",
+    "2025-07-03",
+    "2025-07-04",
+    "2025-07-07",
+    "2025-07-10",
+    "2025-07-11",
+    "2025-07-14",
+    "2025-07-17",
+    "2025-07-18",
+    "2025-07-21",
+    "2025-07-24",
+    "2025-07-25",
+    "2025-07-28",
+    "2025-07-31",
+    "2025-08-01",
+    "2025-08-04",
+    "2025-08-07",
+    "2025-08-08",
+    "2025-08-11",
+    "2025-08-14",
+    "2025-08-18",
+    "2025-08-21",
+    "2025-08-22",
+    "2025-08-25",
+    "2025-08-28",
+    "2025-08-29",
+    "2025-09-01",
+    "2025-09-04",
+    "2025-09-08",
+    "2025-09-11",
+    "2025-09-12",
+    "2025-09-15",
+    "2025-09-18",
+    "2025-09-19",
+    "2025-09-22",
+    "2025-09-25",
+    "2025-09-26",
+    "2025-09-29",
+    "2025-10-03",
+    "2025-10-06",
+    "2025-10-09",
+    "2025-10-10",
+    "2025-10-13",
+    "2025-10-16",
+    "2025-10-17",
+    "2025-08-15",
+    "2025-09-05",
+    "2025-10-02"
+  ]
+}
