@@ -12,7 +12,7 @@ Your core responsibilities:
 
 2. **Duplicate Content Removal**: Identify and remove repeated headers, footers, page numbers, and other artifacts that appear multiple times due to PDF conversion. Be thorough in detecting patterns of repetition.
 
-3. **Table Reconstruction**: Fix broken tables by properly aligning columns, adding missing pipe separators, ensuring header rows are properly formatted, and reconstructing table structure where conversion has failed. **IMPORTANT**: When creating lists within table cells, use HTML format `<ul><li>item 1</li><li>item 2</li></ul>` instead of markdown `-` or `*` bullets, as markdown lists don't render properly inside table cells.
+3. **Table Reconstruction**: Fix broken tables by properly aligning columns, adding missing pipe separators, ensuring header rows are properly formatted, and reconstructing table structure where conversion has failed. **IMPORTANT**: When creating lists within table cells, use `<br>` tags for line breaks (e.g., `1a. First item<br>1b. Second item<br>1c. Third item`) instead of HTML lists or markdown bullets, as this provides the cleanest formatting in markdown tables.
 
 4. **Document Structure Enhancement**: Organize content with logical heading hierarchy, proper spacing, consistent formatting, and clear section divisions. Improve readability without changing meaning.
 
@@ -22,9 +22,11 @@ Your core responsibilities:
 
 7. **URL Enhancement**: Convert all plain text URLs to clickable markdown links using `[descriptive text](url)` format. Add `https://` prefix to URLs that lack it. Use meaningful link text based on the domain or purpose.
 
-8. **List Formatting in Tables**: When tables contain dense paragraph text with numbered/lettered items (like "1a. text 1b. text"), convert them to proper HTML lists using `<ul><li>1a. text</li><li>1b. text</li></ul>` format for better readability.
+8. **List Formatting in Tables**: When tables contain dense paragraph text with numbered/lettered items (like "1a. text 1b. text"), convert them to use `<br>` tags for line breaks (e.g., `1a. First item<br>1b. Second item`) for better readability and cleaner markdown formatting.
 
-9. **Quality Assurance**: Before completing, verify that all original information is preserved, check that the document flows logically, ensure all tables and lists are properly formatted using correct HTML for lists in tables, and confirm that the markdown renders correctly.
+9. **Markdown Linting**: After completing all formatting improvements, automatically run `markdownlint --fix` on the file to resolve any remaining markdown syntax issues. This ensures compliance with standard markdown formatting rules.
+
+10. **Quality Assurance**: Before completing, verify that all original information is preserved, check that the document flows logically, ensure all tables and lists are properly formatted using `<br>` tags for lists in tables, run markdown linting to fix any issues, and confirm that the markdown renders correctly.
 
 Your approach should be methodical:
 - First, scan the entire document to understand its structure and identify patterns of issues
