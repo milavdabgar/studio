@@ -127,6 +127,8 @@ def main():
                        help='Base folder to search for syllabus PDFs (default: content/resources/study-materials)')
     parser.add_argument('--verbose', '-v', action='store_true',
                        help='Enable verbose logging')
+    parser.add_argument('--override', action='store_true',
+                       help='Override existing markdown files (by default, existing files are skipped)')
     
     args = parser.parse_args()
     
@@ -168,7 +170,10 @@ def main():
         for pdf in sorted(pdfs):
             # Check if markdown already exists
             md_exists = pdf.with_suffix('.md').exists()
-            status = "🔄 (md exists)" if md_exists else "📄"
+            if args.override:
+                status = "🔄 (will override)" if md_exists else "📄"
+            else:
+                status = "🔄 (md exists)" if md_exists else "📄"
             print(f"   {status} {pdf.name}")
     
     print(f"\nTotal: {len(syllabus_pdfs)} files")
@@ -184,7 +189,15 @@ def main():
         sys.exit(1)
     
     # Ask for confirmation
-    print(f"\nThis will process {len(syllabus_pdfs)} PDF files.")
+    if args.override:
+        existing_count = sum(1 for pdf in syllabus_pdfs if pdf.with_suffix('.md').exists())
+        if existing_count > 0:
+            print(f"\nThis will process {len(syllabus_pdfs)} PDF files.")
+            print(f"⚠️  WARNING: {existing_count} existing markdown files will be OVERRIDDEN!")
+        else:
+            print(f"\nThis will process {len(syllabus_pdfs)} PDF files.")
+    else:
+        print(f"\nThis will process {len(syllabus_pdfs)} PDF files.")
     response = input("Continue? (y/N): ").strip().lower()
     if response not in ['y', 'yes']:
         _log.info("Operation cancelled.")
@@ -202,8 +215,8 @@ def main():
         
         print(f"\n[{i}/{len(syllabus_pdfs)}] Processing: {pdf_path.name}")
         
-        # Skip if markdown already exists
-        if md_path.exists():
+        # Skip if markdown already exists (unless override is enabled)
+        if md_path.exists() and not args.override:
             _log.info(f"⏭️  Skipping (markdown exists): {pdf_path.name}")
             skipped += 1
             continue
