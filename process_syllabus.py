@@ -35,17 +35,22 @@ def check_docling_available():
         return False
 
 def run_docling_conversion(pdf_path: Path) -> Path:
-    """Run docling conversion on the PDF file"""
-    # Docling outputs to current directory with the same base name
-    output_md = Path(pdf_path.stem + '.md')
+    """Convert PDF to markdown using docling."""
+    # Docling creates output with the same name as PDF but .md extension
+    docling_output = pdf_path.with_suffix('.md')
     
-    # Remove existing output if it exists
-    if output_md.exists():
-        output_md.unlink()
-        _log.info(f"Removed existing output: {output_md}")
+    # Create temporary output path for raw conversion
+    temp_raw_output = pdf_path.with_stem(pdf_path.stem + '.raw').with_suffix('.md')
     
+    # Remove existing outputs if they exist
+    for file_path in [docling_output, temp_raw_output]:
+        if file_path.exists():
+            file_path.unlink()
+            _log.info(f"Removed existing output: {file_path}")
+    
+    # Build docling command
     cmd = [
-        'docling', 
+        'docling',
         str(pdf_path),
         '--image-export-mode', 'placeholder',
         '--table-mode', 'accurate',
@@ -66,13 +71,18 @@ def run_docling_conversion(pdf_path: Path) -> Path:
         _log.info("Docling conversion completed successfully")
         _log.info(f"Output: {result.stdout}")
         
-        if not output_md.exists():
-            raise RuntimeError(f"Expected output file not found: {output_md}")
+        if not docling_output.exists():
+            raise RuntimeError(f"Expected output file not found: {docling_output}")
         
-        return output_md
+        # Rename docling output to temporary name to avoid conflicts
+        docling_output.rename(temp_raw_output)
+        _log.info(f"Renamed raw output to: {temp_raw_output}")
+        
+        return temp_raw_output
         
     except subprocess.TimeoutExpired:
-        raise RuntimeError("Docling conversion timed out after 5 minutes")
+        _log.error("Docling conversion timed out after 5 minutes")
+        raise RuntimeError("Docling conversion timed out")
 
 def remove_page_footers(content: str) -> str:
     """Remove page footers like 'P a g e X of Y'."""
@@ -96,12 +106,12 @@ def remove_page_footers(content: str) -> str:
     _log.info(f"Removed {removed_count} page footers")
     return '\n'.join(cleaned_lines)
 
-def process_markdown_file(raw_md_path: Path) -> Path:
+def process_markdown_file(raw_md_path: Path, original_pdf_path: Path) -> Path:
     """Process the raw markdown file to fix issues."""
     _log.info(f"Processing markdown file: {raw_md_path}")
     
-    # Create output path
-    output_path = raw_md_path.with_stem(raw_md_path.stem + '.final')
+    # Create output path in the same directory as the original PDF with .md extension
+    output_path = original_pdf_path.with_suffix('.md')
     
     # Read content
     with open(raw_md_path, 'r', encoding='utf-8') as f:
@@ -339,13 +349,17 @@ def main():
         
         # Step 2: Process the markdown to fix issues
         _log.info("Phase 2: Processing markdown to fix issues...")
-        fixed_md_file = process_markdown_file(md_file)
+        fixed_md_file = process_markdown_file(md_file, pdf_file)
+        
+        # Clean up temporary raw file
+        if md_file.exists() and md_file != fixed_md_file:
+            md_file.unlink()
+            _log.info(f"Cleaned up temporary file: {md_file}")
         
         _log.info("="*60)
         _log.info("PROCESSING COMPLETE!")
         _log.info(f"Original PDF: {pdf_file}")
-        _log.info(f"Raw markdown: {md_file}")
-        _log.info(f"Fixed markdown: {fixed_md_file}")
+        _log.info(f"Clean markdown: {fixed_md_file}")
         _log.info("="*60)
         
         # Display some content preview
