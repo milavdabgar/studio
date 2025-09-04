@@ -986,7 +986,7 @@ S² = P² + Q²
 ```mermaid
 graph TD
     subgraph "MCB Construction"
-    		direction LR
+      direction LR
         C[Contacts] --> A[Arc Chamber]
         A --> B[Bimetallic Strip]
         B --> M[Magnetic Coil]

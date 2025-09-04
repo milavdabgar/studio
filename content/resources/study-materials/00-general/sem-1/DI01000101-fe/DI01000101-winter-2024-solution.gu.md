@@ -986,7 +986,7 @@ S² = P² + Q²
 ```mermaid
 graph LR
     subgraph "MCB રચના"
-    		direction LR
+      direction LR
         C[કોન્ટેક્ટ્સ] --> A[આર્ક ચેમ્બર]
         A --> B[બાઇમેટાલિક સ્ટ્રિપ]
         B --> M[મેગ્નેટિક કોઇલ]
