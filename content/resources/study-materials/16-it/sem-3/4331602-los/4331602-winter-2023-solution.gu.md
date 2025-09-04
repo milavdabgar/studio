@@ -115,7 +115,7 @@ graph LR
 
 ```mermaid
 stateDiagram-v2
-		direction LR
+  direction LR
     [*] --> New
     New --> Ready : Admitted
     Ready --> Running : Scheduler_dispatch
@@ -339,7 +339,7 @@ stateDiagram-v2
 **ફાઇલ ફાળવણી પદ્ધતિઓ:**
 
 - **Contiguous Allocation**
-- **Linked Allocation** 
+- **Linked Allocation**
 - **Indexed Allocation**
 
 **સંલગ્ન ફાળવણી:**

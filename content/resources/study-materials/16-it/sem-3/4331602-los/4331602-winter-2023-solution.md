@@ -115,7 +115,7 @@ Same table as above.
 
 ```mermaid
 stateDiagram-v2
-		direction LR
+  direction LR
     [*] --> New
     New --> Ready : Admitted
     Ready --> Running : Scheduler_dispatch
@@ -339,7 +339,7 @@ stateDiagram-v2
 **File Allocation Methods:**
 
 - **Contiguous Allocation**
-- **Linked Allocation** 
+- **Linked Allocation**
 - **Indexed Allocation**
 
 **Contiguous Allocation:**

@@ -396,6 +396,7 @@ graph LR
 | **HttpSession** | સર્વર-સાઇડ સેશન ઓબ્જેક્ટ |
 
 **HttpSession અમલીકરણ:**
+
 ```java
 HttpSession session = request.getSession();
 session.setAttribute("user", username);
@@ -457,6 +458,7 @@ graph LR
 | **ડિક્લેરેશન** | `<%! declaration %>` | વેરિયેબલ/મેથડ |
 
 **ઉદાહરણો:**
+
 ```jsp
 <%! int count = 0; %>               <!-- ડિક્લેરેશન -->
 <% count++; %>                      <!-- સ્ક્રિપ્ટલેટ -->
@@ -555,6 +557,7 @@ graph LR
 | **કાઢવું** | `cookie.setMaxAge(0);` |
 
 **કુકી વાંચવાનું ઉદાહરણ:**
+
 ```jsp
 <%
 Cookie[] cookies = request.getCookies();
@@ -569,6 +572,7 @@ if (cookies != null) {
 ```
 
 **કુકી કાઢવાનું ઉદાહરણ:**
+
 ```jsp
 <%
 Cookie cookie = new Cookie("username", "");

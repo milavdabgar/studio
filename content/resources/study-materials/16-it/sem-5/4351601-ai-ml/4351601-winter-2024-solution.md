@@ -328,7 +328,7 @@ graph LR
 
 | Component | Function | Formula |
 |-----------|----------|---------|
-| **Hidden State** | Memory of previous inputs | h_t = f(W_h * h_t-1 + W_x * x_t) |
+| **Hidden State** | Memory of previous inputs | h_t = f(W_h *h_t-1 + W_x* x_t) |
 | **Input Layer** | Current time step input | x_t |
 | **Output Layer** | Prediction at time t | y_t = W_y * h_t |
 
@@ -619,7 +619,7 @@ graph TD
 | **Word Embeddings** | Dense vector representations of words that capture semantic relationships | Convert text to numerical form for ML |
 | **Machine Translation** | Automated conversion of text from one language to another | Enable cross-language communication |
 
-**Key Features**: 
+**Key Features**:
 
 - **Word embeddings** preserve word relationships in vector space
 - **Machine translation** maintains meaning across languages
@@ -643,7 +643,7 @@ graph TD
 | **CBOW (Continuous Bag of Words)** | Predicts target word from context | Context → Target |
 | **Skip-gram** | Predicts context words from target | Target → Context |
 
-**Process**: 
+**Process**:
 
 1. **Training**: Neural network learns word relationships
 2. **Vector Creation**: Each word gets unique vector representation

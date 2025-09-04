@@ -182,7 +182,7 @@ P0|P1|P2|P3|P0|P1|P2|P1|P0|P1|
 
 ```mermaid
 stateDiagram-v2
-		direction LR
+  direction LR
     [*] --> New : પ્રોસેસ ક્રિએટ
     New --> Ready : એડમિટેડ
     Ready --> Running : શેડ્યુલર ડિસ્પેચ

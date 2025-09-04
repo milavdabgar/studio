@@ -904,7 +904,7 @@ graph TD
 ```mermaid
 graph TD
     subgraph "Library Management System"
-    		direction LR
+      direction LR
         UC1((Search Books))
         UC2((Borrow Book))
         UC3((Return Book))

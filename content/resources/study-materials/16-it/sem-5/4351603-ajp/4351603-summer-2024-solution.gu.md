@@ -688,7 +688,7 @@ public class CounterServlet extends HttpServlet {
 
 ```mermaid
 stateDiagram-v2
-		direction LR
+  direction LR
     [*] --> Loading
     Loading --> init()
     init() --> service()
@@ -889,7 +889,7 @@ INSERT INTO subjects VALUES
 
 ```mermaid
 stateDiagram-v2
-		direction LR
+  direction LR
     [*] --> Translation
     Translation --> Compilation
     Compilation --> Loading

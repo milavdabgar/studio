@@ -1,4 +1,5 @@
 # Data Structure with Python
+
 **Course Code:** 4331601
 
 ---
@@ -31,9 +32,11 @@ to various application systems; hence this course is very important for IT diplo
 
 The purpose of this course is to help the student to attain the following industry identified
 competency through various teaching learning experiences:
+
 - Implement various types of data structures algorithms using python.
 
 ## 3. Course Outcomes
+
 The practical exercises, the underpinning knowledge and the relevant soft skills associated
 with the identified competency are to be developed in the student for theachievement of
 the following COs:
@@ -98,6 +101,7 @@ will be used respectively. Where getInfo() will be a private
 method.
 Design a class Complex for adding the two complex numbers          II         02
 6.       4
+
 and also show the use of constructor.
 Design a class for single level inheritance using public and       II         02
 private type derivation.
@@ -171,6 +175,7 @@ of this course required which are embedded in the COs and ultimately the compete
 ```
 
 6. MAJOR EQUIPMENT/ INSTRUMENTS REQUIRED
+
 ## Practical Outcomes
 
 ```
@@ -198,6 +203,7 @@ GTU - COGC-2021 Curriculum
 ## 7. Affective Domain Outcomes
 
 The following sample Affective Domain Outcomes (ADOs) are embedded in many of the
+
 ## Practical Outcomes
 
 ```
@@ -221,6 +227,7 @@ The major underpinning theory is given below based on the higher level UOs of Re
 Bloom’s taxonomy that are formulated for development of the COs and competency. If
 required, more such UOs could be included by the course teacher to focus on attainment of
 COs and competency.
+
 ### Teaching and Examination Scheme
 
 ```
@@ -275,6 +282,7 @@ Programming 2c. Use a constructor to initialize an
 
 inheritance
 2.8 Abstraction - abstract class
+
 ### Teaching and Examination Scheme
 
 ```
@@ -431,6 +439,7 @@ are group-based (group of 3 to 5). However, in the fifth and sixth semesters, th
 students in the group should not exceed three.
 The micro-project could be industry application based, internet-based, workshop-based,
 laboratory-based or field-based. Each micro-project should encompass two or more COs
+
 ## Practical Outcomes
 
 ```
@@ -488,7 +497,7 @@ Benjamin Baka
 - Data Structures and Algorithms with Python by Kent D. Lee and Steve Hubbard
 - Problem Solving with Algorithms and Data Structures Using Python by Bradley N
 Miller and David L. Ranum
-- https://nptel.ac.in/courses/106106145
+- <https://nptel.ac.in/courses/106106145>
 
 15. PO-COMPETENCY-CO MAPPING
 Semester III       Data Structures Using Python(Course Code: 4331601)
@@ -527,12 +536,11 @@ Legend: ‘3’ for high, ‘2’ for medium, ‘1’ for low and ‘-’ for no
 GTU Resource Persons
 
 S. No. Name and Designation                  Institute                       Email
-1   Prof. Nandu A. Fatak                  HOD-I.T.             nandu_fatak@yahoo.com
+1   Prof. Nandu A. Fatak                  HOD-I.T.             <nandu_fatak@yahoo.com>
 LEC Poly Morbi
-2       Ms. Ayesha S. Shaikh            RCTI,Sola,            shaikh.ayesha0014@gmail.com
+2       Ms. Ayesha S. Shaikh            RCTI,Sola,            <shaikh.ayesha0014@gmail.com>
 Ahmedabad
-3       Mr. Hardik Mandora              RCTI,Sola,            hmandora@gmail.com
+3       Mr. Hardik Mandora              RCTI,Sola,            <hmandora@gmail.com>
 Ahmedabad
-4       Mr. Pradipsinh K.                 LECP Morbi          pradipchavda.it@gmail.com
+4       Mr. Pradipsinh K.                 LECP Morbi          <pradipchavda.it@gmail.com>
 Chavda
-

@@ -820,7 +820,7 @@ Non-Prime Attributes: Grade, Semester
 
 ```mermaid
 stateDiagram-v2
-		direction LR
+  direction LR
     [*] --> Active
     Active --> Partially_Committed : commit
     Active --> Failed : abort/error
@@ -1040,7 +1040,7 @@ WHERE deptid = 10;
 **Lost Update સમસ્યા:**
 
 - **સ્થિતિ**: બે ટ્રાન્ઝેક્શન same data વાંચે છે, modify કરે છે, અને પાછું લખે છે
-- **ઉદાહરણ**: 
+- **ઉદાહરણ**:
   - T1 account balance વાંચે છે: $1000
   - T2 account balance વાંચે છે: $1000  
   - T1 $100 ઉમેરે છે, $1100 લખે છે

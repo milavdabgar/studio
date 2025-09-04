@@ -328,7 +328,7 @@ graph LR
 
 | ઘટક | કાર્ય | સૂત્ર |
 |-----|-----|------|
-| **Hidden State** | અગાઉના inputs ની યાદદાશ્ત | h_t = f(W_h * h_t-1 + W_x * x_t) |
+| **Hidden State** | અગાઉના inputs ની યાદદાશ્ત | h_t = f(W_h *h_t-1 + W_x* x_t) |
 | **Input Layer** | વર્તમાન time step input | x_t |
 | **Output Layer** | સમય t પર આગાહી | y_t = W_y * h_t |
 
@@ -537,7 +537,7 @@ graph TD
 
 | ગેરફાયદો | વર્ણન |
 |----------|-------|
-| **Context Limitations** | વ્યંગ, હાસ્ય, સાંસ્કૃતિક સંદર્ભો સાથે મુશ્કેલી | 
+| **Context Limitations** | વ્યંગ, હાસ્ય, સાંસ્કૃતિક સંદર્ભો સાથે મુશ્કેલી |
 | **Language Complexity** | વાક્યપ્રયોગો, સ્લેંગ, પ્રાદેશિક બોલીઓ સાથે મુશ્કેલી |
 | **Data Requirements** | મોટા પ્રમાણમાં training data જરૂરી |
 | **Computational Cost** | નોંધપાત્ર processing power અને memory જરૂરી |
@@ -619,7 +619,7 @@ graph TD
 | **Word Embeddings** | શબ્દોના ઘન વેક્ટર પ્રતિનિધિત્વ જે semantic સંબંધો capture કરે છે | ટેક્સ્ટને ML માટે સંખ્યાત્મક સ્વરૂપમાં convert કરવું |
 | **Machine Translation** | એક ભાષામાંથી બીજી ભાષામાં ટેક્સ્ટનું આપોઆપ રૂપાંતરણ | ભાષાઓ વચ્ચે સંવાદ સક્ષમ બનાવવું |
 
-**મુખ્ય લક્ષણો**: 
+**મુખ્ય લક્ષણો**:
 
 - **Word embeddings** વેક્ટર સ્પેસમાં શબ્દ સંબંધો જાળવે છે
 - **Machine translation** ભાષાઓ વચ્ચે અર્થ જાળવે છે
@@ -643,7 +643,7 @@ graph TD
 | **CBOW (Continuous Bag of Words)** | સંદર્ભમાંથી target શબ્દની આગાહી કરે છે | સંદર્ભ → લક્ષ્ય |
 | **Skip-gram** | Target શબ્દમાંથી સંદર્ભ શબ્દોની આગાહી કરે છે | લક્ષ્ય → સંદર્ભ |
 
-**પ્રક્રિયા**: 
+**પ્રક્રિયા**:
 
 1. **Training**: Neural network શબ્દ સંબંધો શીખે છે
 2. **Vector Creation**: દરેક શબ્દને અનન્ય વેક્ટર પ્રતિનિધિત્વ મળે છે

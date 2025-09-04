@@ -820,7 +820,7 @@ Non-Prime Attributes: Grade, Semester
 
 ```mermaid
 stateDiagram-v2
-		direction LR
+  direction LR
     [*] --> Active
     Active --> Partially_Committed : commit
     Active --> Failed : abort/error
@@ -1040,7 +1040,7 @@ WHERE deptid = 10;
 **Lost Update Problem:**
 
 - **Scenario**: Two transactions read same data, modify it, and write back
-- **Example**: 
+- **Example**:
   - T1 reads account balance: $1000
   - T2 reads account balance: $1000  
   - T1 adds $100, writes $1100

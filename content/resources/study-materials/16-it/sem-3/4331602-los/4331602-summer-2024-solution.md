@@ -163,7 +163,7 @@ graph TD
 
 ```mermaid
 stateDiagram-v2
-		direction LR
+  direction LR
     [*] --> New
     New --> Ready
     Ready --> Running

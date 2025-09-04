@@ -159,7 +159,7 @@ tags: ["અભ્યાસ-સામગ્રી", "સોલ્યુશન", "
 
 ```mermaid
 stateDiagram-v2
-		direction LR
+  direction LR
     [*] --> New: પ્રોગ્રામ લોડ
     New --> Ready: તૈયાર ક્યુમાં દાખલ
     Ready --> Running: CPU ફાળવણી

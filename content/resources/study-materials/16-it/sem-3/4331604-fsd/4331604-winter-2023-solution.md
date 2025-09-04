@@ -492,7 +492,7 @@ Both charts are project management tools but serve different purposes and have d
 ```mermaid
 graph TD
     subgraph "PERT Chart"
-    		direction LR
+      direction LR
         A[Task A] --> C[Task C]
         B[Task B] --> C
         C --> D[Task D]

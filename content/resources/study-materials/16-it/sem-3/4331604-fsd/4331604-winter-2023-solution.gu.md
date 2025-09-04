@@ -492,7 +492,7 @@ graph TD
 ```mermaid
 graph TD
     subgraph "PERT Chart"
-    		direction LR
+      direction LR
         A[Task A] --> C[Task C]
         B[Task B] --> C
         C --> D[Task D]
