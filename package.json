@@ -11,6 +11,7 @@
     "lint": "next lint",
     "typecheck": "node --max-old-space-size=4096 ./node_modules/.bin/tsc --noEmit",
     "typecheck:prod": "node --max-old-space-size=8192 ./node_modules/.bin/tsc --noEmit --skipLibCheck",
+    "typecheck:minimal": "node --max-old-space-size=2048 ./node_modules/.bin/tsc --noEmit --skipLibCheck --incremental false",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:integration": "jest --testNamePattern='Integration' --runInBand --detectOpenHandles",
