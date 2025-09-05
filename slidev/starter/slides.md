@@ -143,9 +143,9 @@ Sarah: For going backwards, you use the left arrow key or shift plus spacebar to
 
 Dr. James: The up and down arrows provide additional navigation - up takes you to the previous slide, while down moves you to the next slide.
 
-[click] Sarah: And here's a great visual cue! 
+[click] Sarah: And here's a great visual cue!
 
-[click] Dr. James: This arrow points to exactly where you'll find the navigation controls during your presentation.
+Dr. James: This arrow points to exactly where you'll find the navigation controls during your presentation.
 -->
 
 ---
@@ -227,7 +227,7 @@ Sarah: What you're seeing here is syntax highlighting powered by Shiki, which pr
 
 Dr. James: But it gets even better. Notice how we can highlight specific lines and create step-by-step code explanations. Let me walk you through this TypeScript example.
 
-[click] Sarah: First, we see the complete code block. This gives your audience the full context of what we're working with.
+Sarah: First, we see the complete code block. This gives your audience the full context of what we're working with.
 
 [click] Dr. James: Now we're highlighting line 4, where we import the computed function from Vue. This selective highlighting helps focus attention on specific parts of your code.
 
@@ -235,11 +235,11 @@ Dr. James: But it gets even better. Notice how we can highlight specific lines a
 
 [click] Dr. James: Now we're looking at lines 6 and 7 together, showing both the ref declaration and the computed property. This demonstrates how related lines can be grouped together.
 
-[click] Sarah: Here we highlight line 9, which attempts to assign to a computed property - this is actually an error case, perfect for teaching scenarios.
+[click] Sarah: Here we highlight line 9, which attempts to assign to a computed property - this is actually an error case, perfect for teaching scenarios. 
 
-[click] Dr. James: And here's a fantastic feature - we can add interactive arrows that appear at specific click points to point out important details in the code.
+Dr. James: And here's a fantastic feature - we can add interactive arrows that appear at specific click points to point out important details in the code.
 
-Sarah: This level of interactivity transforms static code examples into engaging, educational experiences.
+[click] Sarah: This level of interactivity transforms static code examples into engaging, educational experiences.
 -->
 
 ---
