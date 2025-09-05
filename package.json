@@ -164,7 +164,6 @@
     "next": "^15.3.3",
     "next-themes": "^0.4.6",
     "papaparse": "^5.4.1",
-    "patch-package": "^8.0.0",
     "pg": "^8.16.2",
     "puppeteer": "^24.10.2",
     "puppeteer-core": "^22.13.0",
