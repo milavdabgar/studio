@@ -150,7 +150,7 @@
     "googleapis": "^156.0.0",
     "gray-matter": "^4.0.3",
     "ioredis": "^5.6.1",
-    "ioredis-mock": "^8.9.0",
+    "ioredis-mock": "^4.7.0",
     "jsdom": "^26.1.0",
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
@@ -272,6 +272,9 @@
     "recharts": {
       "react": "$react",
       "react-dom": "$react-dom"
+    },
+    "tmp": {
+      "tmp": "^0.2.4"
     }
   },
   "resolutions": {
@@ -283,7 +286,8 @@
     "inflight": "latest",
     "lodash.get": "latest",
     "lodash.isequal": "latest",
-    "fstream": "latest"
+    "fstream": "latest",
+    "tmp": "^0.2.4"
   },
   "description": "A comprehensive Next.js application for Government Polytechnic Palanpur, featuring a modern blog system, educational resources, and multilingual support.",
   "main": "babel.config.jest.js",
