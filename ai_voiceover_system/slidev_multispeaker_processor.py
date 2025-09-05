@@ -79,6 +79,64 @@ class SlidevMultiSpeakerProcessor:
             print(f"   ❌ Google Cloud TTS Client initialization error: {str(e)}")
             return False
     
+    def _split_slides_correctly(self, content):
+        """Split slides correctly by finding real slide separators, not markdown table syntax"""
+        lines = content.split('\n')
+        sections = []
+        current_section = []
+        
+        i = 0
+        while i < len(lines):
+            line = lines[i].strip()
+            
+            # Check if this is a slide separator: '---' on its own line
+            if line == '---':
+                # Check context - is this a real slide separator?
+                prev_line = lines[i-1].strip() if i > 0 else ""
+                next_line = lines[i+1].strip() if i < len(lines)-1 else ""
+                
+                # Real slide separator patterns:
+                # 1. At very start of file (i==0)
+                # 2. After HTML comment, before empty line or YAML  
+                # 3. After empty line, before YAML or content
+                # 4. At end of file
+                is_slide_separator = (
+                    # Pattern 1: Very first line of file
+                    i == 0 or
+                    # Pattern 2: After content/comment, before YAML or empty line
+                    (prev_line == "" or prev_line.startswith("<!--") or prev_line.endswith("-->")) and 
+                    (next_line == "" or ':' in next_line or next_line.startswith('#')) or
+                    # Pattern 3: At end of file
+                    i == len(lines)-1
+                )
+                
+                # Additional check: if we're in a markdown table, don't split
+                in_table = False
+                for j in range(max(0, i-5), min(len(lines), i+5)):
+                    if '|' in lines[j] and ('---' in lines[j] or 'kbd>' in lines[j]):
+                        in_table = True
+                        break
+                
+                if is_slide_separator and not in_table:
+                    # This is a real slide separator
+                    if current_section:
+                        sections.append('\n'.join(current_section))
+                        current_section = []
+                    # Don't include the separator line itself
+                else:
+                    # This is just content (like table separator)
+                    current_section.append(lines[i])
+            else:
+                current_section.append(lines[i])
+            
+            i += 1
+        
+        # Add the last section
+        if current_section:
+            sections.append('\n'.join(current_section))
+        
+        return sections
+    
     def detect_processing_mode(self, slidev_file):
         """Detect whether to use click-based or slide-based processing"""
         if not os.path.exists(slidev_file):
@@ -101,44 +159,64 @@ class SlidevMultiSpeakerProcessor:
             return 'slide'
     
     def parse_click_notes(self, slidev_file):
-        """Parse slidev markdown for [click] markers in presenter notes"""
+        """Parse slidev markdown for [click] markers in presenter notes - FIXED FOR MARKDOWN TABLES"""
         if not os.path.exists(slidev_file):
             print(f"❌ Slidev file not found: {slidev_file}")
             return []
-        
+
         with open(slidev_file, 'r', encoding='utf-8') as f:
             content = f.read()
-        
-        sections = content.split('---')
+
         slide_data_list = []
-        
         slide_counter = 1
-        # Skip first section (initial YAML frontmatter)
-        # Then process in pairs: YAML + slide content, or just slide content
-        i = 1
+        
+        # Use the improved splitting that handles markdown tables correctly
+        sections = self._split_slides_correctly(content)
+        
+        i = 0
         while i < len(sections):
-            current_section = sections[i].strip()
+            section = sections[i].strip()
             
-            # Check if this section is YAML (contains key:value pairs, no markdown content)
-            if self._is_yaml_section(current_section):
-                # This is YAML, so the next section should be the slide content
-                if i + 1 < len(sections):
-                    slide_content = sections[i + 1].strip()
-                    slide_data = self._parse_slide_clicks(slide_content, slide_counter)
+            if not section:
+                i += 1
+                continue
+                
+            # Handle Section 0 (global YAML + first slide)
+            if i == 0:
+                # Extract first slide content from Section 0 (same as slide-based parsing)
+                first_slide_content = self._extract_first_slide_from_section_0(section)
+                if first_slide_content:
+                    slide_data = self._parse_slide_clicks(first_slide_content, slide_counter)
                     if slide_data:
                         slide_data_list.append(slide_data)
                         slide_counter += 1
-                    i += 2  # Skip both YAML and content sections
-                else:
-                    i += 1  # Only YAML left, skip it
-            else:
-                # This section is slide content (not YAML)
-                slide_data = self._parse_slide_clicks(current_section, slide_counter)
+                i += 1
+                continue
+                
+            # Check if this section is slide YAML followed by content
+            if self._is_slide_yaml_section(section):
+                # This is slide YAML, next section should be content
+                if i + 1 < len(sections):
+                    slide_content = sections[i + 1].strip()
+                    if slide_content:
+                        # Combine YAML and content
+                        full_slide = section + '\n---\n' + slide_content
+                        slide_data = self._parse_slide_clicks(full_slide, slide_counter)
+                        if slide_data:
+                            slide_data_list.append(slide_data)
+                            slide_counter += 1
+                        i += 2  # Skip both YAML and content sections
+                        continue
+                        
+            # This section contains slide content directly
+            if '# ' in section or '<!--' in section:
+                slide_data = self._parse_slide_clicks(section, slide_counter)
                 if slide_data:
                     slide_data_list.append(slide_data)
                     slide_counter += 1
-                i += 1
-        
+                    
+            i += 1
+
         print(f"✅ Parsed {len(slide_data_list)} slides with click notes")
         return slide_data_list
     
@@ -509,44 +587,57 @@ class SlidevMultiSpeakerProcessor:
         return self._process_slide_multispeaker_video(slide_data_list, slidev_file)
     
     def parse_slide_content(self, slidev_file):
-        """Parse slidev markdown for slide-level content with multi-speaker notes"""
+        """Parse slidev markdown for slide-level content with multi-speaker notes - SIMPLE APPROACH"""
         if not os.path.exists(slidev_file):
             print(f"❌ Slidev file not found: {slidev_file}")
             return []
-        
+
         with open(slidev_file, 'r', encoding='utf-8') as f:
             content = f.read()
-        
-        sections = content.split('---')
+
         slide_data_list = []
-        
         slide_counter = 1
-        # Skip first section (initial YAML frontmatter)
-        # Then process in pairs: YAML + slide content, or just slide content
-        i = 1
-        while i < len(sections):
-            current_section = sections[i].strip()
+        
+        # Simple approach: Split on '---' and process each part
+        parts = content.split('---')
+        
+        i = 0
+        while i < len(parts):
+            part = parts[i].strip()
             
-            # Check if this section is YAML (contains key:value pairs, no markdown content)
-            if self._is_yaml_section(current_section):
-                # This is YAML, so the next section should be the slide content
-                if i + 1 < len(sections):
-                    slide_content = sections[i + 1].strip()
-                    slide_data = self._parse_slide_section(slide_content, slide_counter)
+            if not part:
+                i += 1
+                continue
+                
+            # Skip global YAML frontmatter (contains theme, background, etc.)
+            if ('theme:' in part and 'background:' in part) or ('title: Welcome to Slidev' in part):
+                i += 1
+                continue
+                
+            # If this part has YAML indicators but no content, it might be slide YAML
+            # Check if next part has slide content
+            if i + 1 < len(parts) and ('layout:' in part or 'transition:' in part or 'level:' in part):
+                # This is slide YAML, next part should be content
+                slide_content = parts[i + 1].strip()
+                if slide_content and ('# ' in slide_content or '<!--' in slide_content):
+                    # Combine YAML and content
+                    full_slide = part + '\n---\n' + slide_content
+                    slide_data = self._parse_slide_section(full_slide, slide_counter)
                     if slide_data:
                         slide_data_list.append(slide_data)
                         slide_counter += 1
-                    i += 2  # Skip both YAML and content sections
-                else:
-                    i += 1  # Only YAML left, skip it
-            else:
-                # This section is slide content (not YAML)
-                slide_data = self._parse_slide_section(current_section, slide_counter)
+                    i += 2  # Skip both YAML and content parts
+                    continue
+                    
+            # This part contains slide content directly
+            if '# ' in part or '<!--' in part:
+                slide_data = self._parse_slide_section(part, slide_counter)
                 if slide_data:
                     slide_data_list.append(slide_data)
                     slide_counter += 1
-                i += 1
-        
+                    
+            i += 1
+
         print(f"✅ Parsed {len(slide_data_list)} slides with content")
         return slide_data_list
     
@@ -577,6 +668,54 @@ class SlidevMultiSpeakerProcessor:
         
         # It's YAML if it has YAML indicators and mostly YAML lines, with minimal markdown
         return has_yaml and yaml_lines > 0 and markdown_lines == 0
+    
+    def _is_slide_yaml_section(self, section):
+        """Check if a section contains slide-specific YAML (not global frontmatter)"""
+        if not section:
+            return False
+        
+        # Global YAML contains theme, fonts, drawings, etc.
+        # Slide YAML contains layout, level, background, transition, etc.
+        global_yaml_indicators = ['theme:', 'fonts:', 'drawings:', 'htmlAttrs:', 'info:', 'author:', 'keywords:']
+        slide_yaml_indicators = ['layout:', 'level:', 'background:', 'transition:', 'class:', 'clicks:', 'hide:', 'disabled:']
+        
+        # Check if this looks like YAML first
+        if not self._is_yaml_section(section):
+            return False
+        
+        # If it has global YAML indicators, it's probably global frontmatter
+        has_global_indicators = any(indicator in section for indicator in global_yaml_indicators)
+        if has_global_indicators:
+            return False
+        
+        # If it has slide-specific indicators, it's slide YAML
+        has_slide_indicators = any(indicator in section for indicator in slide_yaml_indicators)
+        if has_slide_indicators:
+            return True
+        
+        # If it's YAML but we can't determine type, assume it's slide YAML if it's short
+        # (global frontmatter is typically longer)
+        return len(section.split('\n')) < 10
+    
+    def _extract_first_slide_from_section_0(self, section_0):
+        """Extract first slide content from Section 0 (which contains global YAML + first slide)"""
+        lines = section_0.split('\n')
+        
+        # Find the end of YAML frontmatter (look for '---' that closes the YAML)
+        yaml_end_index = -1
+        for i, line in enumerate(lines):
+            if line.strip() == '---' and i > 0:  # Skip the opening --- at line 0
+                yaml_end_index = i
+                break
+        
+        if yaml_end_index == -1:
+            return None  # No YAML closing found
+        
+        # Everything after the closing --- is the first slide content
+        first_slide_lines = lines[yaml_end_index + 1:]
+        first_slide_content = '\n'.join(first_slide_lines).strip()
+        
+        return first_slide_content if first_slide_content else None
     
     def _parse_slide_section(self, section, slide_number):
         """Parse individual slide section for content and speaker notes"""
