@@ -12,7 +12,7 @@ RUN npm ci --omit=dev --legacy-peer-deps --no-fund --quiet --no-audit
 FROM node:24-alpine AS builder
 WORKDIR /app
 
-# Install build dependencies for native modules (like canvas) and TeXLive for document generation
+# Install build dependencies for native modules (like canvas)
 RUN apk add --no-cache \
     python3 \
     make \
@@ -26,16 +26,7 @@ RUN apk add --no-cache \
     pangomm-dev \
     libjpeg-turbo-dev \
     freetype-dev \
-    # TeXLive for document processing (installed once in builder stage)
-    texlive-full \
     && rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
-
-# Verify LaTeX installation works during build
-RUN echo '\documentclass{article}\usepackage{xcolor}\usepackage{amsmath}\begin{document}\textcolor{blue}{LaTeX Works!} $E=mc^2$\end{document}' > /tmp/test.tex && \
-    xelatex -output-directory=/tmp /tmp/test.tex && \
-    pdflatex -output-directory=/tmp /tmp/test.tex && \
-    lualatex -output-directory=/tmp /tmp/test.tex && \
-    rm -rf /tmp/*
 
 COPY package.json package-lock.json* ./
 # Install all dependencies including dev dependencies for build
@@ -58,8 +49,7 @@ ENV NODE_ENV=production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Install runtime dependencies (Chromium for Puppeteer, pandoc for document conversion)
-# TeXLive moved to builder stage to avoid duplicate 2.5GB installation
+# Install runtime dependencies (Chromium, pandoc, and TeXLive for document processing)
 RUN apk add --no-cache \
     chromium \
     nss \
@@ -68,11 +58,19 @@ RUN apk add --no-cache \
     ca-certificates \
     ttf-freefont \
     pandoc \
+    texlive-full \
     # Essential fonts for better typography  
     ttf-liberation \
     ttf-dejavu \
     font-noto \
     && rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
+
+# Verify LaTeX installation works at runtime
+RUN echo '\documentclass{article}\usepackage{xcolor}\usepackage{amsmath}\begin{document}\textcolor{blue}{LaTeX Works!} $E=mc^2$\end{document}' > /tmp/test.tex && \
+    xelatex -output-directory=/tmp /tmp/test.tex && \
+    pdflatex -output-directory=/tmp /tmp/test.tex && \
+    lualatex -output-directory=/tmp /tmp/test.tex && \
+    rm -rf /tmp/*
 
 # Set Puppeteer to use the installed Chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
