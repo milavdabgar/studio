@@ -155,8 +155,13 @@ if command -v node >/dev/null 2>&1; then
     # TypeScript check with intelligent fallback strategy
     log_info "TypeScript type checking..."
     
-    # Try production typecheck first (8GB memory)
-    if npm run typecheck:prod 2>/dev/null; then
+    # Try production typecheck first (8GB memory) - disable exit on error for this check
+    set +e
+    npm run typecheck:prod 2>/dev/null
+    typecheck_exit_code=$?
+    set -e
+    
+    if [ $typecheck_exit_code -eq 0 ]; then
         log_success "TypeScript check passed (production mode)"
     else
         log_warning "Production typecheck failed due to memory constraints"
