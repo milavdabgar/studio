@@ -79,7 +79,7 @@ jobs:
           FORCE_REBUILD: ${{ github.event.inputs.force_rebuild || 'false' }}
           SKIP_SLIDEV: ${{ github.event.inputs.skip_slidev || 'false' }}
         run: |
-          ssh $REMOTE_HOST '
+          ssh $REMOTE_HOST << 'EOF'
             # Ensure studio directory exists and is a git repo
             if [ ! -d ~/studio/.git ]; then
               echo "🚀 Initial clone of studio repository..."
@@ -309,4 +309,4 @@ jobs:
             echo "Slidev builds: $([ "$SKIP_SLIDEV" = "true" ] && echo "Skipped" || echo "Completed")"
             echo "Docker cache: $([ "$FORCE_REBUILD" = "true" ] && echo "Cleared" || echo "Used")"
             echo "=============================================="
-          '
+          EOF
