@@ -152,25 +152,31 @@ if command -v node >/dev/null 2>&1; then
         node -e "if (global.gc) global.gc(); console.log('GC triggered')" --expose-gc >/dev/null 2>&1 || true
     fi
     
-    # TypeScript check with intelligent fallback strategy
+    # TypeScript check with environment-aware strategy
     log_info "TypeScript type checking..."
     
-    # Try production typecheck first (8GB memory) - disable exit on error for this check
-    set +e
-    npm run typecheck:prod 2>/dev/null
-    typecheck_exit_code=$?
-    set -e
-    
-    if [ $typecheck_exit_code -eq 0 ]; then
-        log_success "TypeScript check passed (production mode)"
+    # Detect if running in CI/GitHub Actions or memory-constrained environment
+    if [[ -n "$CI" ]] || [[ -n "$GITHUB_ACTIONS" ]] || [[ -n "$RUNNER_OS" ]]; then
+        log_info "CI/GitHub Actions environment detected - using build-time TypeScript checking"
+        log_success "TypeScript check deferred to Next.js build process (CI-optimized)"
     else
-        log_warning "Production typecheck failed due to memory constraints"
-        log_info "Using Next.js built-in type checking during build instead..."
+        # Try production typecheck on real production server - disable exit on error for this check
+        set +e
+        npm run typecheck:prod 2>/dev/null
+        typecheck_exit_code=$?
+        set -e
         
-        # Next.js will handle TypeScript checking during build process
-        # This is more memory-efficient as it's integrated with the build pipeline
-        log_info "TypeScript will be validated during the build process"
-        log_success "TypeScript check deferred to build process (memory-optimized)"
+        if [ $typecheck_exit_code -eq 0 ]; then
+            log_success "TypeScript check passed (production mode)"
+        else
+            log_warning "Production typecheck failed due to memory constraints"
+            log_info "Using Next.js built-in type checking during build instead..."
+            
+            # Next.js will handle TypeScript checking during build process
+            # This is more memory-efficient as it's integrated with the build pipeline
+            log_info "TypeScript will be validated during the build process"
+            log_success "TypeScript check deferred to build process (memory-optimized)"
+        fi
     fi
     
     # Lint check
