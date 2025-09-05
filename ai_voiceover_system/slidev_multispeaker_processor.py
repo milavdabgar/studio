@@ -113,20 +113,31 @@ class SlidevMultiSpeakerProcessor:
         slide_data_list = []
         
         slide_counter = 1
-        for i, section in enumerate(sections):
-            if i == 0:  # Skip YAML frontmatter
-                continue
+        # Skip first section (initial YAML frontmatter)
+        # Then process in pairs: YAML + slide content, or just slide content
+        i = 1
+        while i < len(sections):
+            current_section = sections[i].strip()
             
-            # Skip config sections
-            if (section.strip().startswith('theme:') or 
-                section.strip().startswith('layout:') or
-                ('background:' in section and 'title:' in section and '# ' not in section)):
-                continue
-            
-            slide_data = self._parse_slide_clicks(section, slide_counter)
-            if slide_data:
-                slide_data_list.append(slide_data)
-                slide_counter += 1
+            # Check if this section is YAML (contains key:value pairs, no markdown content)
+            if self._is_yaml_section(current_section):
+                # This is YAML, so the next section should be the slide content
+                if i + 1 < len(sections):
+                    slide_content = sections[i + 1].strip()
+                    slide_data = self._parse_slide_clicks(slide_content, slide_counter)
+                    if slide_data:
+                        slide_data_list.append(slide_data)
+                        slide_counter += 1
+                    i += 2  # Skip both YAML and content sections
+                else:
+                    i += 1  # Only YAML left, skip it
+            else:
+                # This section is slide content (not YAML)
+                slide_data = self._parse_slide_clicks(current_section, slide_counter)
+                if slide_data:
+                    slide_data_list.append(slide_data)
+                    slide_counter += 1
+                i += 1
         
         print(f"✅ Parsed {len(slide_data_list)} slides with click notes")
         return slide_data_list
@@ -510,23 +521,62 @@ class SlidevMultiSpeakerProcessor:
         slide_data_list = []
         
         slide_counter = 1
-        for i, section in enumerate(sections):
-            if i == 0:  # Skip YAML frontmatter
-                continue
+        # Skip first section (initial YAML frontmatter)
+        # Then process in pairs: YAML + slide content, or just slide content
+        i = 1
+        while i < len(sections):
+            current_section = sections[i].strip()
             
-            # Skip config sections
-            if (section.strip().startswith('theme:') or 
-                section.strip().startswith('layout:') or
-                ('background:' in section and 'title:' in section and '# ' not in section)):
-                continue
-            
-            slide_data = self._parse_slide_section(section, slide_counter)
-            if slide_data:
-                slide_data_list.append(slide_data)
-                slide_counter += 1
+            # Check if this section is YAML (contains key:value pairs, no markdown content)
+            if self._is_yaml_section(current_section):
+                # This is YAML, so the next section should be the slide content
+                if i + 1 < len(sections):
+                    slide_content = sections[i + 1].strip()
+                    slide_data = self._parse_slide_section(slide_content, slide_counter)
+                    if slide_data:
+                        slide_data_list.append(slide_data)
+                        slide_counter += 1
+                    i += 2  # Skip both YAML and content sections
+                else:
+                    i += 1  # Only YAML left, skip it
+            else:
+                # This section is slide content (not YAML)
+                slide_data = self._parse_slide_section(current_section, slide_counter)
+                if slide_data:
+                    slide_data_list.append(slide_data)
+                    slide_counter += 1
+                i += 1
         
         print(f"✅ Parsed {len(slide_data_list)} slides with content")
         return slide_data_list
+    
+    def _is_yaml_section(self, section):
+        """Check if a section contains only YAML frontmatter"""
+        if not section:
+            return False
+        
+        lines = section.split('\n')
+        yaml_indicators = [':', 'theme:', 'layout:', 'transition:', 'level:', 'background:', 'class:', 'title:']
+        markdown_content_indicators = ['# ', '## ', '### ', '```', '<!--', '<div', '![', '[', '*', '>', '|']
+        
+        has_yaml = any(indicator in section for indicator in yaml_indicators)
+        
+        # Count non-comment, non-empty lines that look like markdown content
+        markdown_lines = 0
+        yaml_lines = 0
+        
+        for line in lines:
+            line = line.strip()
+            if not line or line.startswith('#'):  # Empty or comment lines
+                continue
+            
+            if any(line.startswith(indicator) for indicator in markdown_content_indicators):
+                markdown_lines += 1
+            elif ':' in line and not line.startswith('http'):  # Looks like YAML key:value
+                yaml_lines += 1
+        
+        # It's YAML if it has YAML indicators and mostly YAML lines, with minimal markdown
+        return has_yaml and yaml_lines > 0 and markdown_lines == 0
     
     def _parse_slide_section(self, section, slide_number):
         """Parse individual slide section for content and speaker notes"""
@@ -554,6 +604,12 @@ class SlidevMultiSpeakerProcessor:
             if line.startswith('# ') and not slide_data['title']:
                 slide_data['title'] = line[2:].strip()
                 break
+        
+        # Debug output
+        print(f"🔍 Debug Slide {slide_number}: title='{slide_data['title']}', notes_length={len(slide_data['speaker_notes'])}")
+        if not (slide_data['title'] or slide_data['speaker_notes']):
+            print(f"❌ Slide {slide_number} rejected - no title or speaker notes")
+            print(f"   First 100 chars: {section.strip()[:100]}")
         
         return slide_data if (slide_data['title'] or slide_data['speaker_notes']) else None
     
