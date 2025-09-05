@@ -138,9 +138,9 @@ if command -v node >/dev/null 2>&1; then
         npm ci --legacy-peer-deps --no-fund --quiet
     fi
     
-    # TypeScript check
+    # TypeScript check (using production optimized script with higher memory limit)
     log_info "TypeScript type checking..."
-    if ! npm run typecheck; then
+    if ! npm run typecheck:prod; then
         log_error "TypeScript errors found - aborting deployment"
         exit 1
     fi

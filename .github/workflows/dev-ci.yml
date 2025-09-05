@@ -30,7 +30,7 @@ jobs:
         run: npm ci
 
       - name: TypeScript Type Check
-        run: npm run typecheck
+        run: npm run typecheck:prod
 
       - name: ESLint Check (Strict)
         run: npm run lint
