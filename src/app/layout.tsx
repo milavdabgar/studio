@@ -387,11 +387,26 @@ export default function RootLayout({
     };
     fetchRoles();
 
+    // Register service worker but with better update handling
     if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
           .then((registration) => {
             console.log('Service Worker registered with scope:', registration.scope);
+            
+            // Handle service worker updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              if (newWorker) {
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // New service worker is available, refresh the page
+                    console.log('New service worker available, refreshing...');
+                    window.location.reload();
+                  }
+                });
+              }
+            });
           })
           .catch((error) => {
             console.error('Service Worker registration failed:', error);
@@ -465,6 +480,7 @@ export default function RootLayout({
             <meta name="apple-mobile-web-app-title" content="GP Palanpur" />
             <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (English)" href="/feed.xml?lang=en" />
             <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (Gujarati)" href="/feed.xml?lang=gu" />
+            <script src="/clear-sw.js"></script>
         </head>
         <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           <ThemeProvider>
@@ -493,6 +509,7 @@ export default function RootLayout({
             <meta name="apple-mobile-web-app-title" content="GP Palanpur" />
             <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (English)" href="/feed.xml?lang=en" />
             <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (Gujarati)" href="/feed.xml?lang=gu" />
+            <script src="/clear-sw.js"></script>
         </head>
         <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           <ThemeProvider>
@@ -519,6 +536,7 @@ export default function RootLayout({
            <meta name="apple-mobile-web-app-title" content="GP Palanpur" />
            <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (English)" href="/feed.xml?lang=en" />
            <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (Gujarati)" href="/feed.xml?lang=gu" />
+           <script src="/clear-sw.js"></script>
        </head>
       <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
         <ThemeProvider>

@@ -1,15 +1,14 @@
 
-const CACHE_NAME = 'gpp-next-cache-v2';
+const CACHE_NAME = 'gpp-next-cache-v3';
 const OFFLINE_URL = '/offline.html';
 
 // Define different cache types for better organization
-const STATIC_CACHE = 'gpp-static-v2';
-const STUDENT_DATA_CACHE = 'gpp-student-data-v2';
-const IMAGES_CACHE = 'gpp-images-v2';
+const STATIC_CACHE = 'gpp-static-v3';
+const STUDENT_DATA_CACHE = 'gpp-student-data-v3';
+const IMAGES_CACHE = 'gpp-images-v3';
 
-// Core assets to cache immediately
+// Core assets to cache immediately (excluding root to prevent cache issues)
 const CORE_ASSETS = [
-  '/',
   '/offline.html',
   '/manifest.json',
 ];
@@ -195,17 +194,15 @@ async function networkFirstStrategy(request, cacheName, options = {}) {
   }
 }
 
-// Navigation strategy with offline fallback
+// Navigation strategy with offline fallback (more conservative)
 async function navigationStrategy(request) {
   try {
-    const preloadResponse = await event.preloadResponse;
-    if (preloadResponse) {
-      return preloadResponse;
-    }
-
-    const networkResponse = await fetch(request);
+    // Always try network first for navigation
+    const networkResponse = await fetch(request, {
+      cache: 'no-cache'
+    });
     
-    // Cache successful student pages
+    // Cache successful student pages only
     if (networkResponse.ok) {
       const url = new URL(request.url);
       if (STUDENT_PAGES.some(page => url.pathname.startsWith(page))) {
@@ -226,8 +223,17 @@ async function navigationStrategy(request) {
       return cachedResponse;
     }
     
-    // Fallback to offline page
-    const staticCache = await caches.open(STATIC_CACHE);
-    return staticCache.match(OFFLINE_URL);
+    // Only show offline page if we're truly offline (check navigator.onLine)
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      const staticCache = await caches.open(STATIC_CACHE);
+      return staticCache.match(OFFLINE_URL);
+    }
+    
+    // If we're online but request failed, return a generic error instead of offline page
+    return new Response('Network Error', {
+      status: 504,
+      statusText: 'Gateway Timeout',
+      headers: { 'Content-Type': 'text/plain' }
+    });
   }
 }
