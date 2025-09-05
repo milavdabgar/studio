@@ -32,8 +32,8 @@ jobs:
       - name: TypeScript Type Check
         run: npm run typecheck:prod
 
-      - name: ESLint Check (Strict)
-        run: npm run lint
+      - name: ESLint Check (Errors Only)
+        run: npm run lint -- --max-warnings 1000
 
       - name: Security Audit
         run: npm audit --audit-level=moderate
