@@ -480,7 +480,7 @@ export default function RootLayout({
             <meta name="apple-mobile-web-app-title" content="GP Palanpur" />
             <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (English)" href="/feed.xml?lang=en" />
             <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (Gujarati)" href="/feed.xml?lang=gu" />
-            <script src="/clear-sw.js"></script>
+            <script src="/clear-sw.js" async></script>
         </head>
         <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           <ThemeProvider>
@@ -509,7 +509,7 @@ export default function RootLayout({
             <meta name="apple-mobile-web-app-title" content="GP Palanpur" />
             <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (English)" href="/feed.xml?lang=en" />
             <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (Gujarati)" href="/feed.xml?lang=gu" />
-            <script src="/clear-sw.js"></script>
+            <script src="/clear-sw.js" async></script>
         </head>
         <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           <ThemeProvider>
