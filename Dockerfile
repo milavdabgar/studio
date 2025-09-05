@@ -11,6 +11,22 @@ RUN npm ci --omit=dev --legacy-peer-deps --no-fund --quiet --no-audit
 # Rebuild the source code only when needed
 FROM node:24-alpine AS builder
 WORKDIR /app
+
+# Install build dependencies for native modules (like canvas)
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    cairo-dev \
+    jpeg-dev \
+    pango-dev \
+    musl-dev \
+    giflib-dev \
+    pixman-dev \
+    pangomm-dev \
+    libjpeg-turbo-dev \
+    freetype-dev
+
 COPY package.json package-lock.json* ./
 # Install all dependencies including dev dependencies for build
 RUN npm ci --legacy-peer-deps --no-fund --quiet --no-audit
