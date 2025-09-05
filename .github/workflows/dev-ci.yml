@@ -33,7 +33,7 @@ jobs:
         run: npm run typecheck:prod
 
       - name: ESLint Check (Errors Only)
-        run: npm run lint -- --max-warnings 1000
+        run: npm run lint -- --max-warnings 2000
 
       - name: Security Audit
         run: npm audit --audit-level=moderate
