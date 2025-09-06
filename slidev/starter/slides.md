@@ -61,13 +61,47 @@ transition: fade-out
 
 Slidev is a slides maker and presenter designed for developers, consist of the following features
 
+<div v-click="1">
+
 - 📝 **Text-based** - focus on the content with Markdown, and then style them later
+
+</div>
+
+<div v-click="2">
+
 - 🎨 **Themable** - themes can be shared and re-used as npm packages
+
+</div>
+
+<div v-click="3">
+
 - 🧑‍💻 **Developer Friendly** - code highlighting, live coding with autocompletion
+
+</div>
+
+<div v-click="4">
+
 - 🤹 **Interactive** - embed Vue components to enhance your expressions
+
+</div>
+
+<div v-click="5">
+
 - 🎥 **Recording** - built-in recording and camera view
+
+</div>
+
+<div v-click="6">
+
 - 📤 **Portable** - export to PDF, PPTX, PNGs, or even a hostable SPA
+
+</div>
+
+<div v-click="7">
+
 - 🛠 **Hackable** - virtually anything that's possible on a webpage is possible in Slidev
+
+</div>
 <br>
 <br>
 
@@ -86,23 +120,21 @@ h1 {
 </style>
 
 <!--
-Sarah: Now let me explain what makes Slidev special. Slidev is a revolutionary slides maker and presenter that's specifically designed with developers in mind.
+Sarah: Now let me explain what makes Slidev special. Slidev is a revolutionary slides maker and presenter that's specifically designed with developers in mind. Let's explore the key features that set it apart from traditional presentation tools.
 
-Dr. James: As you can see on this slide, Slidev offers six key features that set it apart from traditional presentation tools.
+[click] Dr. James: First, it's completely text-based - you focus on your content using Markdown, and style it later. This approach aligns perfectly with how developers work with documentation and code.
 
-Sarah: First, it's completely text-based - you focus on your content using Markdown, and style it later. This approach aligns perfectly with how developers work with documentation and code.
+[click] Sarah: Second, it's highly themable. Themes can be shared and reused as npm packages, making it easy to maintain consistent branding across your organization.
 
-Dr. James: Second, it's highly themable. Themes can be shared and reused as npm packages, making it easy to maintain consistent branding across your organization.
+[click] Dr. James: The third feature that developers love is the developer-friendly environment - you get code highlighting, live coding with autocompletion, and all the tools you're already familiar with.
 
-Sarah: The third feature that developers love is the developer-friendly environment - you get code highlighting, live coding with autocompletion, and all the tools you're already familiar with.
+[click] Sarah: Fourth, it's interactive. You can embed Vue components to enhance your expressions and create engaging, dynamic presentations.
 
-Dr. James: Fourth, it's interactive. You can embed Vue components to enhance your expressions and create engaging, dynamic presentations.
+[click] Dr. James: Fifth, it has built-in recording and camera view capabilities, perfect for creating video content or live streaming your presentations.
 
-Sarah: Fifth, it has built-in recording and camera view capabilities, perfect for creating video content or live streaming your presentations.
+[click] Sarah: Sixth, it's portable. You can export to PDF, PPTX, PNG images, or even create a hostable Single Page Application that works anywhere.
 
-Dr. James: And finally, it's portable. You can export to PDF, PPTX, PNG images, or even create a hostable Single Page Application that works anywhere.
-
-Sarah: The beauty of Slidev is that virtually anything possible on a webpage is possible in your slides. This opens up unlimited creative possibilities for technical presentations.
+[click] Dr. James: And finally, it's hackable - virtually anything possible on a webpage is possible in your slides. This opens up unlimited creative possibilities for technical presentations.
 -->
 
 ---
@@ -155,26 +187,44 @@ layoutClass: gap-16
 
 # Table of contents
 
+<div v-click="1">
+
 You can use the `Toc` component to generate a table of contents for your slides:
+
+</div>
+
+<div v-click="2">
 
 ```html
 <Toc minDepth="1" maxDepth="1" />
 ```
 
+</div>
+
+<div v-click="3">
+
 The title will be inferred from your slide content, or you can override it with `title` and `level` in your frontmatter.
+
+</div>
 
 ::right::
 
+<div v-click="4">
+
 <Toc text-sm minDepth="1" maxDepth="2" />
+
+</div>
 
 <!--
 Sarah: Here we have a practical demonstration of Slidev's Table of Contents component. This is a built-in component that automatically generates a structured overview of your presentation.
 
-Dr. James: The TOC component is highly customizable. You can control the minimum and maximum depth of headers it displays, adjust the styling, and even split it into multiple columns as we've done here.
+[click] Dr. James: The TOC component is incredibly easy to use. You simply include it in your slides like any other component.
 
-Sarah: Notice how it automatically infers the titles from your slide content, but you can also override them using the title and level properties in your frontmatter. This gives you complete control over how your presentation structure is displayed.
+[click] Sarah: Here's the basic syntax - you can control the minimum and maximum depth of headers it displays. This example shows a simple configuration for displaying only top-level headers.
 
-Dr. James: The two-column layout we're using here demonstrates Slidev's flexible layout system, making efficient use of screen space while maintaining readability.
+[click] Dr. James: What's particularly useful is that titles are automatically inferred from your slide content, but you can also override them using the title and level properties in your frontmatter. This gives you complete control over how your presentation structure is displayed.
+
+[click] Sarah: And here's the actual table of contents in action! The two-column layout we're using demonstrates Slidev's flexible layout system, making efficient use of screen space while maintaining readability and automatically staying in sync with your content.
 -->
 
 ---
@@ -345,7 +395,13 @@ Sarah: This next feature is absolutely amazing - Shiki Magic Move. It allows you
 
 You can use Vue components directly inside your slides.
 
+<div v-click="1">
+
 We have provided a few built-in components like `<Tweet/>` and `<Youtube/>` that you can use directly. And adding your custom components is also super easy.
+
+</div>
+
+<div v-click="2">
 
 ```html
 <Counter :count="10" />
@@ -354,16 +410,30 @@ We have provided a few built-in components like `<Tweet/>` and `<Youtube/>` that
 <!-- ./components/Counter.vue -->
 <Counter :count="10" m="t-4" />
 
+</div>
+
+<div v-click="3">
+
 Check out [the guides](https://sli.dev/builtin/components.html) for more.
 
 </div>
+
+</div>
 <div>
+
+<div v-click="4">
 
 ```html
 <Tweet id="1390115482657726468" />
 ```
 
+</div>
+
+<div v-click="5">
+
 <Tweet id="1390115482657726468" scale="0.65" />
+
+</div>
 
 </div>
 </div>
@@ -371,15 +441,15 @@ Check out [the guides](https://sli.dev/builtin/components.html) for more.
 <!--
 Dr. James: Now let's explore Slidev's component system. One of the most powerful aspects of Slidev is that you can use Vue components directly inside your slides.
 
-Sarah: We've provided several built-in components that you can use immediately. Here we see examples of the Tweet component for embedding social media content, and the Youtube component for video integration.
+[click] Sarah: We've provided several built-in components that you can use immediately, like Tweet and Youtube components. But what's really exciting is how easy it is to create your own custom components.
 
-Dr. James: But what's really exciting is how easy it is to create your own custom components. Notice this Counter component we're demonstrating - it's a fully interactive Vue component running right in the slide.
+[click] Dr. James: Here we see a practical example - this Counter component is a fully interactive Vue component running right in the slide. The component takes a count prop and displays it with full reactivity.
 
-Sarah: The component takes a count prop and displays it with full reactivity. You can see it in action right here in the presentation. This opens up endless possibilities for interactive demonstrations.
+[click] Sarah: You can create components for data visualizations, interactive demos, mini-applications, or any custom functionality your presentation needs. Check out the guides for more detailed examples.
 
-Dr. James: You can create components for data visualizations, interactive demos, mini-applications, or any custom functionality your presentation needs. The only limit is your imagination.
+[click] Dr. James: And here's the Tweet component in action. First, we see the code syntax for embedding a tweet.
 
-Sarah: This approach makes your presentations not just informative, but truly interactive and engaging for your audience.
+[click] Sarah: Then the actual tweet appears in the presentation! This approach makes your presentations not just informative, but truly interactive and engaging for your audience. The only limit is your imagination.
 -->
 
 ---
@@ -388,9 +458,17 @@ class: px-20
 
 # Themes
 
-Slidev comes with powerful theming support. Themes can provide styles, layouts, components, or even configurations for tools. Switching between themes by just **one edit** in your frontmatter:
+Slidev comes with powerful theming support. Themes can provide styles, layouts, components, or even configurations for tools. 
+
+<div v-click="1">
+
+Switching between themes by just **one edit** in your frontmatter:
+
+</div>
 
 <div grid="~ cols-2 gap-2" m="t-2">
+
+<div v-click="2">
 
 ```yaml
 ---
@@ -398,31 +476,53 @@ theme: default
 ---
 ```
 
+</div>
+
+<div v-click="3">
+
 ```yaml
 ---
 theme: seriph
 ---
 ```
 
+</div>
+
+<div v-click="4">
+
 <img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-default/01.png?raw=true" alt="">
+
+</div>
+
+<div v-click="5">
 
 <img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-seriph/01.png?raw=true" alt="">
 
 </div>
 
+</div>
+
+<div v-click="6">
+
 Read more about [How to use a theme](https://sli.dev/guide/theme-addon#use-theme) and
 check out the [Awesome Themes Gallery](https://sli.dev/resources/theme-gallery).
 
+</div>
+
 <!--
-Sarah: Theming in Slidev is incredibly powerful and developer-friendly. As you can see, switching between themes is as simple as changing one line in your frontmatter.
+Sarah: Theming in Slidev is incredibly powerful and developer-friendly. Themes can provide styles, layouts, components, or even configurations for tools.
 
-Dr. James: The visual difference is striking - the same content can look completely different with different themes. On the left, we see the default theme with its clean, minimalist approach. On the right, the Seriph theme provides a more elegant, serif-based design.
+[click] Dr. James: The beauty is in its simplicity - switching between themes is as easy as changing one line in your frontmatter.
 
-Sarah: What's particularly exciting is that themes can provide more than just styling. They can include custom layouts, components, and even tool configurations. This means each theme can offer a completely different presentation experience.
+[click] Sarah: Here's the default theme configuration. Just specify which theme you want to use in your frontmatter.
 
-Dr. James: The theme ecosystem is growing rapidly, with themes shared as npm packages. This makes it easy to find themes that match your brand, or even create and share your own themes with the community.
+[click] Dr. James: And here's how you switch to the Seriph theme - it's literally just changing one word!
 
-Sarah: For organizations, this means you can create a company theme once and use it across all your presentations, ensuring consistent branding and styling.
+[click] Sarah: The visual difference is striking! Here's what the same content looks like with the default theme - clean and minimalist.
+
+[click] Dr. James: And here's the Seriph theme providing a more elegant, serif-based design. The same content, completely different visual experience.
+
+[click] Sarah: What's particularly exciting is that themes can provide more than just styling - they can include custom layouts, components, and tool configurations. The theme ecosystem is growing rapidly, and for organizations, you can create a company theme once and use it across all presentations for consistent branding.
 -->
 
 ---
@@ -608,11 +708,17 @@ You can create diagrams / graphs from textual descriptions, directly in your Mar
 
 <div class="grid grid-cols-4 gap-5 pt-4 -mb-6">
 
+<div v-click="1">
+
 ```mermaid {scale: 0.5, alt: 'A simple sequence diagram'}
 sequenceDiagram
     Alice->John: Hello John, how are you?
     Note over Alice,John: A typical interaction
 ```
+
+</div>
+
+<div v-click="2">
 
 ```mermaid {theme: 'neutral', scale: 0.8}
 graph TD
@@ -620,6 +726,10 @@ B[Text] --> C{Decision}
 C -->|One| D[Result 1]
 C -->|Two| E[Result 2]
 ```
+
+</div>
+
+<div v-click="3">
 
 ```mermaid
 mindmap
@@ -640,6 +750,10 @@ mindmap
       Pen and paper
       Mermaid
 ```
+
+</div>
+
+<div v-click="4">
 
 ```plantuml {scale: 0.7}
 @startuml
@@ -676,22 +790,22 @@ database "MySql" {
 
 </div>
 
+</div>
+
 Learn more: [Mermaid Diagrams](https://sli.dev/features/mermaid) and [PlantUML Diagrams](https://sli.dev/features/plantuml)
 
 <!--
-Sarah: Diagrams are incredibly valuable for technical presentations, and Slidev makes them effortless through its integration with Mermaid and PlantUML.
+Sarah: Diagrams are incredibly valuable for technical presentations, and Slidev makes them effortless through its integration with Mermaid and PlantUML. What's amazing is that these diagrams are created from textual descriptions directly in your Markdown - no external tools needed!
 
-Dr. James: What's amazing is that these diagrams are created from textual descriptions directly in your Markdown. No external tools needed - you write the diagram syntax and Slidev renders them beautifully.
+[click] Dr. James: Let's start with sequence diagrams. These show the flow of communication between different actors in a system, perfect for API documentation or system architecture presentations. Notice how clean and professional it looks with automatic layout.
 
-Sarah: We have four different types of diagrams here. The sequence diagram shows the flow of communication between different actors in a system. This is perfect for API documentation or system architecture presentations.
+[click] Sarah: Next, we have flowcharts that demonstrate decision trees and process flows. This example shows a simple decision tree with conditional branches, automatically styled and beautifully rendered.
 
-Dr. James: The flowchart demonstrates decision trees and process flows. Notice how clean and professional it looks, with automatic layout and styling.
+[click] Dr. James: Here's a mindmap format, excellent for brainstorming sessions or showing relationships between different concepts. You can even include icons to make them more visually appealing, as you can see with the book icon.
 
-Sarah: The mindmap format is excellent for brainstorming sessions or showing the relationships between different concepts. You can even include icons to make them more visually appealing.
+[click] Sarah: And finally, PlantUML diagrams for component relationships and system architecture. This example shows packages, nodes, databases, and their interconnections - perfect for software design presentations and technical documentation.
 
-Dr. James: And the PlantUML diagram shows component relationships and system architecture. These diagrams are perfect for software design presentations and technical documentation.
-
-Sarah: The best part is that these diagrams are version-controlled with your slides and always stay in sync with your content.
+Dr. James: The best part is that all these diagrams are version-controlled with your slides and always stay in sync with your content.
 -->
 
 ---
@@ -702,9 +816,15 @@ dragPos:
 
 # Draggable Elements
 
+<div v-click="1">
+
 Double-click on the draggable elements to edit their positions.
 
+</div>
+
 <br>
+
+<div v-click="2">
 
 ###### Directive Usage
 
@@ -712,7 +832,11 @@ Double-click on the draggable elements to edit their positions.
 <img v-drag="'square'" src="https://sli.dev/logo.png">
 ```
 
+</div>
+
 <br>
+
+<div v-click="3">
 
 ###### Component Usage
 
@@ -723,6 +847,10 @@ Double-click on the draggable elements to edit their positions.
 </v-drag>
 ```
 
+</div>
+
+<div v-click="4">
+
 <v-drag pos="663,206,261,_,-15">
   <div text-center text-3xl border border-main rounded>
     Double-click me!
@@ -731,24 +859,38 @@ Double-click on the draggable elements to edit their positions.
 
 <img v-drag="'square'" src="https://sli.dev/logo.png">
 
+</div>
+
+<div v-click="5">
+
 ###### Draggable Arrow
 
 ```md
 <v-drag-arrow two-way />
 ```
 
+</div>
+
+<div v-click="6">
+
 <v-drag-arrow pos="67,452,253,46" two-way op70 />
+
+</div>
 
 <!--
 Dr. James: Draggable elements add an interactive dimension to your presentations. This feature is particularly useful for workshops or collaborative sessions.
 
-Sarah: Double-clicking on any draggable element allows you to edit its position in real-time. This is perfect for creating custom layouts or adjusting visual elements during your presentation.
+[click] Sarah: The key feature is that double-clicking on any draggable element allows you to edit its position in real-time. This is perfect for creating custom layouts or adjusting visual elements during your presentation.
 
-Dr. James: The v-drag directive can be applied to any element, turning it into an interactive component. This opens up possibilities for creating engaging, hands-on demonstrations.
+[click] Dr. James: Here's the directive usage - you can apply the v-drag directive to any element, like this image. Just give it an identifier and it becomes draggable.
 
-Sarah: The draggable arrows are particularly useful for creating custom diagrams or highlighting relationships between different parts of your content.
+[click] Sarah: For more complex scenarios, you can use the v-drag component. This allows you to create draggable containers with any content inside, perfect for interactive demonstrations.
 
-Dr. James: These interactive elements can be repositioned by your audience or during live demonstrations, making your presentations more dynamic and adaptable to the moment.
+[click] Dr. James: And here are the actual draggable elements in action! You can double-click on either the box or the Slidev logo to reposition them. This opens up possibilities for creating engaging, hands-on demonstrations.
+
+[click] Sarah: There are also specialized draggable arrows for creating custom diagrams. Here's the syntax for creating bidirectional arrows.
+
+[click] Dr. James: And here's the draggable arrow itself! These are particularly useful for highlighting relationships between different parts of your content. All these interactive elements can be repositioned during live demonstrations, making your presentations more dynamic and adaptable.
 -->
 
 ---
@@ -762,7 +904,13 @@ hide: false
 
 Slidev provides built-in Monaco Editor support.
 
+<div v-click="1">
+
 Add `{monaco}` to the code block to turn it into an editor:
+
+</div>
+
+<div v-click="2">
 
 ```ts {monaco}
 import { ref } from 'vue'
@@ -771,7 +919,15 @@ import { emptyArray } from './external'
 const arr = ref(emptyArray(10))
 ```
 
+</div>
+
+<div v-click="3">
+
 Use `{monaco-run}` to create an editor that can execute the code directly in the slide:
+
+</div>
+
+<div v-click="4">
 
 ```ts {monaco-run}
 import { version } from 'vue'
@@ -782,18 +938,18 @@ console.log(`vue ${version}`)
 console.log(emptyArray<number>(10).reduce(fib => [...fib, fib.at(-1)! + fib.at(-2)!], [1, 1]))
 ```
 
+</div>
+
 <!--
 Sarah: The Monaco Editor integration brings the full power of VS Code directly into your slides. This is revolutionary for coding presentations and workshops.
 
-Dr. James: What you're seeing here is a fully functional code editor running inside the slide. Your audience can interact with the code, modify it, and see immediate feedback.
+[click] Dr. James: The basic integration is incredibly simple - just add the monaco directive to any code block and it becomes a fully functional code editor with syntax highlighting, IntelliSense, and error detection.
 
-Sarah: The first example shows basic Monaco integration with syntax highlighting, IntelliSense, and error detection. This is perfect for code reviews or explaining complex algorithms step by step.
+[click] Sarah: Here's the first example in action! This is a fully functional code editor running inside the slide. Your audience can interact with the code, modify it, and see immediate feedback. Perfect for code reviews or explaining complex algorithms step by step.
 
-Dr. James: The second example with monaco-run is even more powerful - it can execute the code directly in the slide. Your audience can see the output in real-time as they or you modify the code.
+[click] Dr. James: But it gets even better! The monaco-run variant can execute the code directly in the slide, bringing your examples to life with real-time execution.
 
-Sarah: This transforms static code examples into interactive learning experiences. Students can experiment, test different approaches, and immediately see the results.
-
-Dr. James: For workshops and coding tutorials, this feature eliminates the need to switch between your presentation and a separate code editor, creating a seamless learning experience.
+[click] Sarah: And here's the executable editor! Your audience can see the output in real-time as they or you modify the code. This transforms static code examples into interactive learning experiences where students can experiment, test different approaches, and immediately see the results. For workshops and coding tutorials, this eliminates the need to switch between your presentation and a separate code editor.
 -->
 
 ---
