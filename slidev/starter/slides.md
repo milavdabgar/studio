@@ -317,15 +317,23 @@ const author = {
 ````
 
 <!--
-Sarah: This next feature is absolutely amazing - Shiki Magic Move. It allows you to create seamless animated transitions between different code snippets.
+Sarah: This next feature is absolutely amazing - Shiki Magic Move. It allows you to create seamless animated transitions between different code snippets. Here we start with our first code example - a reactive author object using Vue's reactive function. Notice how all the code is highlighted to show the complete structure.
 
-Dr. James: What you're seeing here is code that transforms step by step. This is powered by shiki-magic-move, and it creates a cinematic effect as the code evolves.
+[click] Dr. James: Now we're focusing on line 2, highlighting the name property. This selective highlighting helps draw attention to specific parts of the code transformation.
 
-Sarah: The magic move feature automatically detects similarities between code blocks and creates smooth transitions. It's perfect for showing refactoring steps, explaining code evolution, or demonstrating different approaches to solving a problem.
+[click] Sarah: Back to showing the full first code block. This gives context before we move to the next transformation step.
 
-Dr. James: Notice how we wrap multiple code blocks with four backticks and the magic-move directive. Each code block represents a step in the transformation, and Slidev handles all the complex animation logic for you.
+[click] Dr. James: Watch this magic! The code seamlessly transforms into a traditional Vue options API format. The magic-move feature automatically detects similarities and creates smooth transitions between the reactive function and the data option.
 
-Sarah: This feature transforms static code comparisons into dynamic, engaging storytelling tools that keep your audience focused on the changes you're highlighting.
+[click] Sarah: Now we're highlighting lines 1-2, showing the export default and data function declaration. Notice how the animation smoothly moves elements from their previous positions.
+
+[click] Dr. James: Here we focus on lines 3-4, highlighting the return statement and the author object structure. The transitions maintain visual continuity even as the code structure changes.
+
+[click] Sarah: This step highlights both the object structure (lines 3-4) and line 8, showing how the same data is represented in different syntactic forms. The magic move keeps related elements visually connected.
+
+[click] Dr. James: Now we transform to the modern arrow function syntax! This shows how the same data can be represented with concise arrow function syntax.
+
+[click] Sarah: And finally, we reach the ultimate transformation - Vue 3's script setup syntax! From reactive composition API to options API to arrow functions, and now to the most modern approach with script setup. This demonstrates how Shiki Magic Move can tell a complete story of code evolution in a visually stunning way, showing the progression of Vue development patterns over time.
 -->
 
 ---
@@ -585,17 +593,11 @@ $$
 [Learn more](https://sli.dev/features/latex)
 
 <!--
-Dr. James: Mathematical expressions are handled beautifully in Slidev through LaTeX support, powered by KaTeX. This is essential for technical and scientific presentations.
+Dr. James: Mathematical expressions are handled beautifully in Slidev through LaTeX support, powered by KaTeX. This is essential for technical and scientific presentations. You can include both inline math expressions and block-level equations. Here we see the first Maxwell equation - Gauss's law for electricity - being highlighted to start our mathematical demonstration.
 
-Sarah: You can include both inline math expressions and block-level equations. The inline math integrates seamlessly with your text, while block equations can be made the focus of your slide.
+[click] Sarah: Now we jump to the third equation - Faraday's law of electromagnetic induction. This selective revelation allows you to focus on specific equations without showing the complete set, perfect for building mathematical concepts step by step.
 
-[click] Dr. James: Here we see the first part of Maxwell's equations being highlighted. This step-by-step revelation is perfect for building complex mathematical concepts.
-
-[click] Sarah: Now we reveal more of the equations, allowing your audience to follow the mathematical progression without being overwhelmed by too much information at once.
-
-[click] Dr. James: Finally, we show the complete set of Maxwell's equations. This progressive disclosure technique is particularly powerful when explaining complex mathematical relationships.
-
-Sarah: The LaTeX rendering is production-quality, ensuring your mathematical content looks professional and is easily readable by your audience.
+[click] Dr. James: Finally, we reveal the complete set of Maxwell's equations! This progressive disclosure technique is particularly powerful when explaining complex mathematical relationships. The LaTeX rendering is production-quality, ensuring your mathematical content looks professional and is easily readable by your audience.
 -->
 
 ---
