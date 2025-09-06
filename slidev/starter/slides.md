@@ -63,43 +63,43 @@ Slidev is a slides maker and presenter designed for developers, consist of the f
 
 <div v-click="1">
 
-- 📝 **Text-based** - focus on the content with Markdown, and then style them later
+- 📝 **<span v-mark.underline.blue="1">Text-based</span>** - focus on the content with <span v-mark.circle.green="1">Markdown</span>, and then style them later
 
 </div>
 
 <div v-click="2">
 
-- 🎨 **Themable** - themes can be shared and re-used as npm packages
+- 🎨 **<span v-mark.underline.purple="2">Themable</span>** - themes can be shared and re-used as <span v-mark.circle.orange="2">npm packages</span>
 
 </div>
 
 <div v-click="3">
 
-- 🧑‍💻 **Developer Friendly** - code highlighting, live coding with autocompletion
+- 🧑‍💻 **<span v-mark.underline.cyan="3">Developer Friendly</span>** - <span v-mark.circle.red="3">code highlighting</span>, live coding with autocompletion
 
 </div>
 
 <div v-click="4">
 
-- 🤹 **Interactive** - embed Vue components to enhance your expressions
+- 🤹 **<span v-mark.underline.yellow="4">Interactive</span>** - embed <span v-mark.circle.blue="4">Vue components</span> to enhance your expressions
 
 </div>
 
 <div v-click="5">
 
-- 🎥 **Recording** - built-in recording and camera view
+- 🎥 **<span v-mark.underline.green="5">Recording</span>** - built-in <span v-mark.circle.purple="5">recording and camera view</span>
 
 </div>
 
 <div v-click="6">
 
-- 📤 **Portable** - export to PDF, PPTX, PNGs, or even a hostable SPA
+- 📤 **<span v-mark.underline.orange="6">Portable</span>** - export to <span v-mark.circle.cyan="6">PDF, PPTX, PNGs</span>, or even a hostable SPA
 
 </div>
 
 <div v-click="7">
 
-- 🛠 **Hackable** - virtually anything that's possible on a webpage is possible in Slidev
+- 🛠 **<span v-mark.underline.red="7">Hackable</span>** - virtually anything that's possible on a <span v-mark.circle.yellow="7">webpage</span> is possible in Slidev
 
 </div>
 <br>
@@ -144,14 +144,14 @@ level: 2
 
 # Navigation
 
-Hover on the bottom-left corner to see the navigation's controls panel, [learn more](https://sli.dev/guide/ui#navigation-bar)
+Hover on the <span v-mark.circle.orange="0">bottom-left corner</span> to see the navigation's controls panel, [learn more](https://sli.dev/guide/ui#navigation-bar)
 
-## Keyboard Shortcuts
+## <span v-mark.underline.blue="0">Keyboard Shortcuts</span>
 
 |                                                     |                             |
 | --------------------------------------------------- | --------------------------- |
-| <kbd>right</kbd> / <kbd>space</kbd>                 | next animation or slide     |
-| <kbd>left</kbd>  / <kbd>shift</kbd><kbd>space</kbd> | previous animation or slide |
+| <kbd>right</kbd> / <kbd>space</kbd>                 | <span v-mark.circle.green="0">next animation or slide</span>     |
+| <kbd>left</kbd>  / <kbd>shift</kbd><kbd>space</kbd> | <span v-mark.circle.purple="0">previous animation or slide</span> |
 | <kbd>up</kbd>                                       | previous slide              |
 | <kbd>down</kbd>                                     | next slide                  |
 
@@ -393,11 +393,11 @@ Sarah: This next feature is absolutely amazing - Shiki Magic Move. It allows you
 <div grid="~ cols-2 gap-4">
 <div>
 
-You can use Vue components directly inside your slides.
+You can use <span v-mark.underline.blue="0">Vue components</span> directly inside your slides.
 
 <div v-click="1">
 
-We have provided a few built-in components like `<Tweet/>` and `<Youtube/>` that you can use directly. And adding your custom components is also super easy.
+We have provided a few built-in components like <span v-mark.circle.green="1">`<Tweet/>`</span> and <span v-mark.circle.purple="1">`<Youtube/>`</span> that you can use directly. And adding your custom components is also super easy.
 
 </div>
 
@@ -458,11 +458,11 @@ class: px-20
 
 # Themes
 
-Slidev comes with powerful theming support. Themes can provide styles, layouts, components, or even configurations for tools. 
+Slidev comes with powerful <span v-mark.underline.blue="0">theming support</span>. Themes can provide styles, layouts, components, or even configurations for tools. 
 
 <div v-click="1">
 
-Switching between themes by just **one edit** in your frontmatter:
+Switching between themes by just **<span v-mark.circle.red="1">one edit</span>** in your frontmatter:
 
 </div>
 
@@ -704,7 +704,7 @@ Dr. James: Mathematical expressions are handled beautifully in Slidev through La
 
 # Diagrams
 
-You can create diagrams / graphs from textual descriptions, directly in your Markdown.
+You can create <span v-mark.underline.blue="0">diagrams / graphs</span> from <span v-mark.circle.green="0">textual descriptions</span>, directly in your Markdown.
 
 <div class="grid grid-cols-4 gap-5 pt-4 -mb-6">
 
