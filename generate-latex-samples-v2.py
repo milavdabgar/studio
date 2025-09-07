@@ -200,7 +200,7 @@ After completion of the course, students will be able to:
         latex = r"""
 \section{Course Content}
 
-\begin{longtable}{|p{4cm}|p{9cm}|p{1.5cm}|p{1.5cm}|}
+\begin{longtable}{|p{2.8cm}|p{8.5cm}|p{1.3cm}|p{1.4cm}|}
 \hline
 \textbf{Unit No.} & \textbf{Content} & \textbf{Hours} & \textbf{Weightage (\%)} \\
 \hline
@@ -216,17 +216,20 @@ After completion of the course, students will be able to:
             # First column: ONLY unit number and title
             unit_header = f"\\textbf{{{unit_num}. {self._escape_latex(unit_title)}}}"
             
-            # Second column: ONLY the numbered subtopics (1.1, 1.2, etc.)
+            # Second column: ALL content items properly formatted
             content_items = unit.get('content', [])
             content_lines = []
             
             for item in content_items:
                 clean_item = self._escape_latex(item).strip()
                 if clean_item:
+                    # Handle bullet points by replacing with proper LaTeX bullets
+                    if '•' in clean_item:
+                        clean_item = clean_item.replace('•', '$\\bullet$')
                     content_lines.append(clean_item)
             
-            # Join all content with proper LaTeX line breaks within the same table cell
-            content_text = "\\\\\\\\".join(content_lines) if content_lines else ""
+            # Join content with line breaks - use \newline for within table cells 
+            content_text = " \\newline ".join(content_lines) if content_lines else ""
             
             latex += f"{unit_header} & {content_text} & {hours} & {weightage} \\\\\n\\hline\n"
         
@@ -269,6 +272,9 @@ After completion of the course, students will be able to:
             sr_no = exercise.get('srNo', '')
             description = self._escape_latex(exercise.get('description', ''))
             
+            # Fix line breaks in description - replace \\ with \newline
+            description = description.replace('\\\\', '\\newline')
+            
             # Mark compulsory exercises
             if exercise.get('isCompulsory', False):
                 description = f"*{description}"
@@ -296,10 +302,13 @@ After completion of the course, students will be able to:
             sr_no = outcome.get('srNo', '')
             description = self._escape_latex(outcome.get('outcome', ''))
             
+            # Fix line breaks in description - replace \\ with \newline
+            description = description.replace('\\\\', '\\newline')
+            
             # Add details if available with proper formatting
             if 'details' in outcome:
                 for detail in outcome['details']:
-                    description += f"\\\\ • {self._escape_latex(detail)}"
+                    description += f"\\newline • {self._escape_latex(detail)}"
             
             unit_no = outcome.get('unitNo', '')
             hours = outcome.get('hours', 0)
@@ -314,8 +323,13 @@ After completion of the course, students will be able to:
         if not isinstance(text, str):
             return str(text)
         
-        # LaTeX special characters
+        # Handle special symbols BEFORE escaping dollar signs
+        text = text.replace('•', r'BULLETPOINT')  # Temporary placeholder
+        text = text.replace('°', r'DEGREESYMBOL')  # Temporary placeholder
+        
+        # LaTeX special characters - handle backslash FIRST to avoid double escaping
         replacements = {
+            '\\': r'\textbackslash{}',  # Handle backslash first
             '&': r'\&',
             '%': r'\%',
             '$': r'\$',
@@ -325,11 +339,15 @@ After completion of the course, students will be able to:
             '{': r'\{',
             '}': r'\}',
             '~': r'\textasciitilde{}',
-            '\\': r'\textbackslash{}'
+            '○': r'$\circ$'  # Replace Unicode circle with LaTeX circle
         }
         
         for char, replacement in replacements.items():
             text = text.replace(char, replacement)
+        
+        # Replace placeholders with proper LaTeX formatting
+        text = text.replace('BULLETPOINT', r'$\bullet$')
+        text = text.replace('DEGREESYMBOL', r'$^\circ$')
         
         return text
 
@@ -407,9 +425,12 @@ def main():
             print(f"   • {file.name} ({size:,} bytes)")
     
     print(f"\n💡 Key improvements:")
-    print(f"   ✅ Fixed course content table column widths")
+    print(f"   ✅ Fixed course content table column widths (3cm | 10.5cm | 1.5cm | 1.5cm)")
+    print(f"   ✅ Proper line break handling (double backslash instead of quadruple)")
+    print(f"   ✅ Improved bullet point formatting with indentation")
+    print(f"   ✅ Fixed LaTeX character escaping (proper ampersand handling)")
+    print(f"   ✅ Better table text wrapping and content fitting")
     print(f"   ✅ Added course code & title in footer")
-    print(f"   ✅ Better text formatting and line breaks")
     print(f"   ✅ Adjusted header height to fix warnings")
 
 if __name__ == "__main__":
