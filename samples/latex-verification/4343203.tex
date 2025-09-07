@@ -1,0 +1,240 @@
+
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+% GTU Colors
+\definecolor{gtublue}{RGB}{0,51,102}
+\definecolor{gtuorange}{RGB}{255,102,0}
+
+% Header and Footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{gtublue}{\textbf{Gujarat Technological University}}}
+\fancyhead[R]{\textcolor{gtuorange}{\textbf{COGC-2021}}}
+\fancyfoot[C]{\thepage}
+
+% Section styling
+\titleformat{\section}{\Large\bfseries\color{gtublue}}{}{0em}{}
+\titleformat{\subsection}{\large\bfseries\color{gtuorange}}{}{0em}{}
+
+% Custom commands
+\newcommand{\courseheader}[2]{
+    \begin{center}
+        \textcolor{gtublue}{\Huge\textbf{#1}}\\
+        \vspace{0.3cm}
+        \textcolor{gtuorange}{\Large Course Code: #2}\\
+        \vspace{0.5cm}
+        \rule{\textwidth}{2pt}
+    \end{center}
+}
+
+\begin{document}
+\courseheader{Java Programming}{4343203}
+
+
+\section{Course Information}
+
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Field} & \textbf{Details} \\
+\hline
+Program & Information and Communication Technology \\
+\hline
+Level & Diploma \\
+\hline
+Semester & Fourth \\
+\hline
+\end{tabular}
+
+
+\section{Rationale}
+
+This course is designed to teach object-oriented programming concepts, techniques, and applications using the Java programming language. Object-oriented programming emphasis on the fundamentals of the structured design with classes, including development, testing, implementation and documentation also includes object-oriented programming techniques, classes and objects.
+
+Java is a simple, portable, distributive, robust, secure, dynamic, architecture neutral, object oriented programming language. Java programming language is designed to enable the development of a small, reliable, portable, distributed, real-time operating platform, high-performance applications for the widest range of computing platforms possible as well as cross-platform interaction. By making applications available across heterogeneous environments, businesses can provide more services, boost end-user productivity, communication and collaboration to enterprise and consumer applications.
+
+The Java programming language originated as part of a research project to develop advanced software for a wide variety of network devices and embedded systems. The Java programming language is used as the teaching vehicle for this course.
+
+The aim of this course is that student should learn platform independent object oriented programming and java as base language for advanced technology like three tier architecture applications, cloud computing and web development. Java is also used to program electronic hardware devices such as air conditioners, televisions, refrigerators, washing machines and many others.
+
+
+\section{Course Outcomes}
+
+After completion of the course, students will be able to:
+
+\begin{longtable}{|p{1.5cm}|p{11cm}|p{2.5cm}|}
+\hline
+\textbf{No.} & \textbf{Course Outcomes} & \textbf{RBT Level} \\
+\hline
+\endhead
+CO-a & Write simple java programs for a given problem statement. &  \\
+\hline
+CO-b & Use object oriented programming concepts to solve real world problems. &  \\
+\hline
+CO-c & Develop an object-oriented program using inheritance and package concepts for a given problem statement. &  \\
+\hline
+CO-d & Develop an object oriented program using multithreading and exception handling for a given problem statement. &  \\
+\hline
+CO-e & Develop an object-oriented program by using the files and collection framework. &  \\
+\hline
+\end{longtable}
+
+
+\section{Teaching and Examination Scheme}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c||c|c|c|c|c|}
+\hline
+\multicolumn{4}{|c|}{\textbf{Teaching Scheme (Hours)}} & \multicolumn{5}{c|}{\textbf{Assessment Pattern (Marks)}} \\
+\hline
+\textbf{L} & \textbf{T} & \textbf{PR} & \textbf{C} & \textbf{Theory ESE} & \textbf{Theory CA} & \textbf{Practical CA} & \textbf{Practical ESE} & \textbf{Total} \\
+\hline
+3 & 0 & 4 & 5 & 70 & 30 & 25 & 25 & 150 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section{Underpinning Theory}
+
+\subsection{Introduction to Java Programming Language}
+
+\textbf{Unit Outcomes:}
+\begin{itemize}
+\item[1a] Describe java features and applications and environment setup of Java programming language
+\item[1b] Install Java Components
+\item[1c] Write simple program using java programming language
+\item[1d] Describe data types, identifiers, constants and variables
+\item[1e] Write programs using arrays
+\item[1f] List types of operators
+\item[1g] Write simple java programs using decision and control structures
+\end{itemize}
+
+\subsection{Object Oriented Programming Concepts}
+
+\textbf{Unit Outcomes:}
+\begin{itemize}
+\item[2a] Differentiate between POP and OOP
+\item[2b] List object oriented programming concepts
+\item[2c] Develop simple java program using class
+\item[2d] Use this and final keyword
+\item[2e] Write object oriented program using constructor
+\item[2f] Write java program using String class
+\end{itemize}
+
+\subsection{Inheritance, Packages & Interfaces}
+
+\textbf{Unit Outcomes:}
+\begin{itemize}
+\item[3a] List types of inheritance
+\item[3b] Write program to implement single, multilevel, hierarchical inheritance
+\item[3c] Write programs to implement method overriding
+\item[3d] Write programs to implement overriding using Object class
+\item[3e] Write programs to implement multiple inheritance
+\item[3f] Create a user-defined package and use that package
+\end{itemize}
+
+\subsection{Exception Handling & Multithreading}
+
+\textbf{Unit Outcomes:}
+\begin{itemize}
+\item[4a] Describe errors and types of exceptions
+\item[4b] List types of errors
+\item[4c] Write user-defined exceptions
+\item[4d] Define thread, creating threads, multithreading, thread priority \textbackslash{}& synchronization
+\end{itemize}
+
+\subsection{File Handling and Collections Framework}
+
+\textbf{Unit Outcomes:}
+\begin{itemize}
+\item[5a] Describe basics of streams, stream classes, creation, reading and writing files in context to file handling
+\item[5b] Describe Collections framework
+\item[5c] Write programs using ArrayList and LinkedList
+\item[5d] Write programs to Map classes
+\end{itemize}
+
+
+\section{Suggested Practical Exercises}
+
+\begin{longtable}{|p{1cm}|p{10cm}|p{2cm}|p{2cm}|}
+\hline
+\textbf{Sr. No} & \textbf{Practical Outcomes (PrOs)} & \textbf{Unit No.} & \textbf{Hrs.} \\
+\hline
+\endhead
+1 & *Install JDK, write a simple 'Hello World' or similar java program, compilation, debugging, executing using java compiler and interpreter. & I & 2 \\
+\hline
+2 & Write a program in Java to find maximum of three numbers using conditional operator. & I & 1 \\
+\hline
+3 & Write a program in Java to reverse the digits of a number using while loop & I & 1 \\
+\hline
+4 & Write a program in Java to add two 3*3 matrices. & I & 2 \\
+\hline
+5 & Write a program in Java to generate first n prime numbers. & I & 2 \\
+\hline
+6 & Write a program in Java which has a class Student having two instance variables enrollmentNo and name. Create 3 objects of Student class in main method and display student's name. & II & 1 \\
+\hline
+7 & *Write a program in Java which has a class Rectangle having two instance variables height and weight. Initialize the class using constructor. & II & 1 \\
+\hline
+8 & Write a program in Java demonstrate the use of 'this' keyword. & II & 2 \\
+\hline
+9 & Write a program in Java to demonstrate the use of 'static' keyword. & II & 2 \\
+\hline
+10 & Write a program in Java to demonstrate the use of "final" keyword. & II & 2 \\
+\hline
+11 & *Write a program in Java which has a class Shape having 2 overloaded methods area(float radius) and area(float length, float width). Display the area of circle and rectangle using overloaded methods. & II & 2 \\
+\hline
+12 & Write a program in Java to demonstrate the constructor overloading. & II & 2 \\
+\hline
+13 & Write a java program to demonstrate use of 'String' class methods: chatAt(), contains(), format(), length(), split() & II & 1 \\
+\hline
+14 & Write a program in Java to demonstrate single inheritance & III & 1 \\
+\hline
+15 & Write a program in Java to demonstrate multilevel inheritance & III & 2 \\
+\hline
+16 & Write a program in Java to demonstrate hierarchical inheritance. & III & 2 \\
+\hline
+17 & Write a program in Java to demonstrate method overriding. & III & 2 \\
+\hline
+18 & *Write a program in Java which has a class Car having two instance variables topSpeed and name. Override toString() method in Car class. Create 5 instances of Car class and print the instances. & III & 2 \\
+\hline
+19 & Write a program in Java to implement multiple inheritance using interfaces. & III & 2 \\
+\hline
+20 & *Write a program in Java which has an abstract class Shape having three subclasses: Triangle, Rectangle, and Circle. Define method area() in the abstract class Shape and override area() method to calculate the area. & III & 4 \\
+\hline
+21 & Write a program in Java to demonstrate use of final class. & III & 2 \\
+\hline
+22 & Write a program in Java to demonstrate use of package. & III & 2 \\
+\hline
+23 & Write a program in Java to develop user defined exception for 'Divide by Zero' error. & IV & 2 \\
+\hline
+24 & *Write a program in Java to develop Banking Application in which user deposits the amount Rs 25000 and then start withdrawing of Rs 20000, Rs 4000 and it throws exception "Not Sufficient Fund" when user withdraws Rs. 2000 thereafter. & IV & 2 \\
+\hline
+25 & *Write a program that executes two threads. One thread displays 'Thread1' every 1000 milliseconds, and the other displays 'Thread2' every 2000 milliseconds. Create the threads by extending the Thread class & IV & 2 \\
+\hline
+26 & Write a program that executes two threads. One thread will print the even numbers and another thread will print odd numbers from 1 to 200. & IV & 2 \\
+\hline
+27 & *Write a program in Java to perform read and write operations on a Text file. & V & 2 \\
+\hline
+28 & Write a program in Java to demonstrate use of List.
+1) Create ArrayList and add weekdays (in string form)
+2) Create LinkedList and add months (in string form)
+Display both List. & V & 2 \\
+\hline
+29 & Write a program in Java to create a new HashSet, add colors(in string form) and iterate through all elements using for-each loop to display the collection. & V & 2 \\
+\hline
+30 & *Write a Java program to create a new HashMap, add 5 students' data (enrolment no and name). retrieve and display the student's name from HashMap using enrolment no. & V & 2 \\
+\hline
+\end{longtable}
+
+\end{document}

@@ -87,9 +87,9 @@
       "unitNumber": "1",
       "unitTitle": "Problem Solving using Flowchart and Algorithm",
       "content": [
-        "Introduction, Steps for problem-solving, Algorithm and its characteristics, Importance of algorithm.",
-        "Symbolic representation of a flowchart, Importance and Limitations of flowchart, Flow of control",
-        "Problem solving using pseudocode"
+        "1.1 Introduction, Steps for problem-solving, Algorithm and its characteristics, Importance of algorithm.",
+        "1.2 Symbolic representation of a flowchart, Importance and Limitations of flowchart, Flow of control",
+        "1.3 Problem solving using pseudocode"
       ],
       "hours": 5,
       "weightage": 11
@@ -98,10 +98,10 @@
       "unitNumber": "2",
       "unitTitle": "Basics of Python",
       "content": [
-        "Introduction to python, Python features, Applications of python programming",
-        "Python installation",
-        "Basic structure of python program, Python Comments, Keywords, identifiers, variables, Data types, and Operators.",
-        "Type Conversion"
+        "2.1 Introduction to python, Python features, Applications of python programming",
+        "2.2 Python installation",
+        "2.3 Basic structure of python program, Python Comments, Keywords, identifiers, variables, Data types, and Operators.",
+        "2.4 Type Conversion"
       ],
       "hours": 10,
       "weightage": 17
@@ -110,10 +110,17 @@
       "unitNumber": "3",
       "unitTitle": "Flow of Control",
       "content": [
-        "Introduction to Flow of Control",
-        "Selection: If statement, Elif statement, Nested if statement, match statement",
-        "Repetition: For loop, While loop, Nested loop",
-        "break, continue, and pass Statements"
+        "3.1 Introduction to Flow of Control",
+        "3.2 Selection",
+        "• If statement",
+        "• Elif statement", 
+        "• Nested if statement",
+        "• match statement",
+        "3.3 Repetition",
+        "• For loop",
+        "• While loop",
+        "• Nested loop",
+        "3.4 break, continue, and pass Statements"
       ],
       "hours": 10,
       "weightage": 24
@@ -122,12 +129,20 @@
       "unitNumber": "4",
       "unitTitle": "Functions",
       "content": [
-        "Introduction to Functions",
-        "User Defined Functions: Arguments and Parameters",
-        "Scope of a Variable: Global Variable, Local Variable",
-        "Python Standard Library: Built-in functions, Input or output - input(), print()",
-        "Mathematical Functions - abs(), divmod(), max(), min(), pow(), sum()",
-        "Module: math, random, statistics"
+        "4.1 Introduction to Functions",
+        "4.2 User Defined Functions",
+        "• Arguments and Parameters",
+        "4.3 Scope of a Variable",
+        "• Global Variable",
+        "• Local Variable",
+        "Python Standard Library",
+        "• Built-in functions",
+        "• Input or output - input(), print()",
+        "• Mathematical Functions - abs(), divmod(), max(), min(), pow(), sum()",
+        "• Module",
+        "  ○ math",
+        "  ○ random", 
+        "  ○ statistics"
       ],
       "hours": 10,
       "weightage": 24
@@ -136,12 +151,12 @@
       "unitNumber": "5",
       "unitTitle": "Strings and Lists",
       "content": [
-        "Introduction to Strings, String Operations, Traversing a String",
-        "Strings Methods and Built-in Functions",
-        "Introduction to List and its Operations",
-        "List Methods and Built-in Functions",
-        "Nested and Copying Lists",
-        "List as Arguments to Function"
+        "5.1 Introduction to Strings, String Operations, Traversing a String",
+        "5.2 Strings Methods and Built-in Functions",
+        "5.3 Introduction to List and its Operations",
+        "5.4 List Methods and Built-in Functions",
+        "• Nested and Copying Lists",
+        "5.5 List as Arguments to Function"
       ],
       "hours": 10,
       "weightage": 24
@@ -152,6 +167,12 @@
     {
       "srNo": 1,
       "outcome": "Prepare flowchart and algorithm for a given problem.",
+      "details": [
+        "Find the sum of two given numbers.",
+        "Find a maximum out of two given numbers.",
+        "Find whether a given number is odd or even.",
+        "Find a maximum out of three given numbers."
+      ],
       "unitNo": 1,
       "hours": 2
     },
@@ -169,13 +190,21 @@
     },
     {
       "srNo": 4,
-      "outcome": "Create a program to read three numbers from the user and find the average. Convert temperature from Fahrenheit to Celsius.",
+      "outcome": "Create programs for mathematical operations and conversions.",
+      "details": [
+        "1) Create a program to read three numbers from the user and find the average of the numbers.",
+        "2) Create a program to convert temperature from Fahrenheit to Celsius unit using eq: C=(F-32)/1.8"
+      ],
       "unitNo": 2,
       "hours": 2
     },
     {
       "srNo": 5,
-      "outcome": "Create a program to identify whether the scanned number is even or odd. Find maximum number among three numbers.",
+      "outcome": "Create programs for conditional statements and comparison operations.",
+      "details": [
+        "1) Create a program to identify whether the scanned number is even or odd and print an appropriate message.",
+        "2) Create a program to find a maximum number among the given three numbers."
+      ],
       "unitNo": 3,
       "hours": 2
     },
@@ -187,7 +216,7 @@
     },
     {
       "srNo": 7,
-      "outcome": "Develop a program to print odd and even numbers from 1 to N numbers.",
+      "outcome": "Develop a program to print odd and even numbers from 1 to N numbers. (Where N is an integer number entered by the user)",
       "unitNo": 3,
       "hours": 2
     },
@@ -199,7 +228,11 @@
     },
     {
       "srNo": 9,
-      "outcome": "Develop a user-defined function to find the factorial. Create a user-defined function to print the Fibonacci series.",
+      "outcome": "Develop user-defined functions for mathematical operations.",
+      "details": [
+        "1) Develop a user-defined function to find the factorial of a given number.",
+        "2) Create a user-defined function to print the Fibonacci series of 0 to N numbers. (Where N is an integer number and passed as an argument)"
+      ],
       "unitNo": 4,
       "hours": 2
     },
@@ -217,19 +250,28 @@
     },
     {
       "srNo": 12,
-      "outcome": "Write programs to reverse words, check substring presence, and count vowels/consonants in strings.",
+      "outcome": "Write programs for string manipulation operations.",
+      "details": [
+        "1) Write a program to reverse words in a given sentence.",
+        "2) Write a program to check if a substring is present in a given string.",
+        "3) Write a program to count and display the number of vowels, consonants, uppercase, lowercase characters in a string."
+      ],
       "unitNo": 5,
       "hours": 2
     },
     {
       "srNo": 13,
-      "outcome": "Create a program to find the sum of all elements in a list. Find the smallest and largest element in a given list.",
+      "outcome": "Create programs for list operations and analysis.",
+      "details": [
+        "1) Create a program to find the sum of all elements in a list using a loop.",
+        "2) Create a program to find the smallest and largest element in a given list."
+      ],
       "unitNo": 5,
       "hours": 3
     },
     {
       "srNo": 14,
-      "outcome": "Write a Python program that takes a list and makes a new list with only the even elements.",
+      "outcome": "Given a list saved in variable: a = [1, 8, 7, 15, 25, 36, 48, 64, 81, 95]. Write a Python program that takes this list and makes a new list that has only the even elements of this list in it.",
       "unitNo": 5,
       "hours": 3
     }
@@ -237,14 +279,16 @@
 
   "specificationTable": [
     {
-      "unitNo": "Overall",
+      "unitNo": "Overall Distribution",
+      "unitTitle": "Theory Marks Distribution",
       "rememberLevel": 23,
       "understandLevel": 28,
       "applyLevel": 49,
       "analyzeLevel": 0,
       "evaluateLevel": 0,
       "createLevel": 0,
-      "totalMarks": 100
+      "totalMarks": 100,
+      "note": "R: Remember; U: Understanding; A: Application, N: Analyze and E: Evaluate C: Create (as per Revised Bloom's Taxonomy)"
     }
   ],
 
@@ -253,7 +297,7 @@
       "srNo": 1,
       "resourceName": "Computer System",
       "specifications": "Operating system: Windows 7 or higher Ver., macOS, and Linux, with 4GB or higher RAM, Python versions: 2.7.X, 3.6.X, or higher Ver.",
-      "applicableTo": "All"
+      "applicableTo": "All PrOs"
     },
     {
       "srNo": 2,
@@ -270,7 +314,7 @@
       "domain": "Programming"
     },
     {
-      "title": "Simple Calculator",
+      "title": "Simple Calculator", 
       "description": "Develop a simple calculator.",
       "domain": "Programming"
     },
@@ -295,6 +339,15 @@
       "domain": "Security"
     }
   ],
+
+  "projectGuidelines": {
+    "overview": "Only one project is planned to be undertaken by a student that needs to be assigned to him/her in the beginning of the semester. The project could be industry application based, internet-based, workshop-based, laboratory-based or field-based.",
+    "requirements": "Each project should encompass two or more COs which are in fact, an integration of PrOs, UOs and ADOs.",
+    "documentation": "Each student will have to maintain a dated work diary consisting of individual contributions in the project work and give a seminar presentation of it before submission.",
+    "duration": "The duration of the project should be about 14-16 (fourteen to sixteen) student engagement hours during the course.",
+    "submission": "The students ought to submit projects by the end of the semester to develop the industry-oriented COs.",
+    "customization": "Similar projects could be added by the concerned course teacher."
+  },
 
   "learningResources": {
     "books": [
@@ -334,47 +387,70 @@
         "isbn": "978-9352134755"
       }
     ],
-    "websites": [
+    "openSourceSoftware": [
       {
-        "title": "Python.org",
+        "name": "Python.org",
         "url": "https://www.python.org",
-        "type": "Official Website"
+        "description": "Official Python website"
       },
       {
-        "title": "Learn Python.org",
+        "name": "Learn Python.org",
         "url": "https://www.learnpython.org",
-        "type": "Interactive Tutorial"
+        "description": "Interactive Python tutorial"
       },
       {
-        "title": "Hackr.io Python Tutorials",
+        "name": "Hackr.io Python Tutorials",
         "url": "https://www.hackr.io/tutorials/learn-python",
-        "type": "Learning Resources"
+        "description": "Curated Python learning resources"
       },
       {
-        "title": "SoloLearn Python Course",
+        "name": "SoloLearn Python Course",
         "url": "https://www.sololearn.com/learning/1073",
-        "type": "Mobile Course"
+        "description": "Mobile-friendly Python course"
       },
       {
-        "title": "NPTEL",
+        "name": "NPTEL",
         "url": "https://www.nptel.iitm.ac.in",
-        "type": "Educational Platform"
+        "description": "National Programme on Technology Enhanced Learning"
       }
     ]
   },
 
   "studentActivities": [
-    "Prepare a document which differentiates python versions.",
-    "Undertake projects in teams",
-    "Give a seminar on any relevant topics.",
-    "Undertake a market survey of different python frameworks."
+    {
+      "activity": "Prepare a document which differentiates python versions.",
+      "type": "Research",
+      "context": "Students should perform following activities in group and prepare reports of about 5 pages for each activity. They should also collect/record physical evidences for their (student's) portfolio which may be useful for their placement interviews."
+    },
+    {
+      "activity": "Undertake projects in teams",
+      "type": "Collaborative Project",
+      "context": "Team-based project work to enhance collaboration skills and practical application of learned concepts."
+    },
+    {
+      "activity": "Give a seminar on any relevant topics.",
+      "type": "Presentation",
+      "context": "Individual or group presentations to develop communication skills and deepen understanding of Python-related topics."
+    },
+    {
+      "activity": "Undertake a market survey of different python frameworks.",
+      "type": "Market Research",
+      "context": "Industry analysis to understand current trends and applications of Python frameworks in the market."
+    }
   ],
+
+  "additionalNotes": {
+    "practicalNote": "More Practical Exercises can be designed and offered by the respective course teacher to develop the industry relevant skills/outcomes to match the COs. The above table is only a suggestive list.",
+    "totalPracticalHours": 30,
+    "rbtNote": "RBT: Revised Bloom's Taxonomy"
+  },
 
   "metadata": {
     "syllabusFormat": "new",
-    "version": "1.0",
+    "version": "2.0",
     "curriculumVersion": "2024-25",
     "createdAt": "2024-09-07T12:23:00.000Z",
+    "updatedAt": "2024-09-07T18:30:00.000Z",
     "id": "DI01016011",
     "subjectCode": "DI01016011"
   }

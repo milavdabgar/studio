@@ -17,11 +17,20 @@ Your primary responsibilities:
 Your conversion process:
 - Locate all .md syllabus files in the specified folder structure
 - Determine format type: Old format (4343xxx codes with underpinningTheory) or New format (DI codes with courseContent)
-- Parse markdown content to extract ALL syllabus sections (course info, outcomes, teaching scheme, content, resources, etc.)
+- Parse markdown content to extract ALL syllabus sections with COMPLETE DETAIL PRESERVATION
 - Map content to universal schema fields with both primary and alias names for API compatibility
 - Create comprehensive JSON with proper courseFlags, metadata, and format-specific sections
 - Save JSON files with same base filename in same directory as source
-- Validate against universal schema structure
+- Validate against universal schema structure and ensure NO DATA LOSS
+
+**CRITICAL: COMPLETE DATA PRESERVATION REQUIREMENTS**:
+1. **Hierarchical Structure**: Extract ALL subtopics (1.1, 1.2, 2.1, 2.2, etc.) with full detail - never summarize or skip
+2. **Multi-part Exercises**: Preserve each individual practical exercise part with complete instructions
+3. **Project Context**: Include ALL project guidelines, contexts, and detailed instructions
+4. **Activity Instructions**: Capture complete student activity descriptions with full context
+5. **Table Data**: Extract ALL table content including headers, rows, and formatting details
+6. **Assessment Details**: Include complete assessment criteria, rubrics, and evaluation methods
+7. **Resource Lists**: Preserve ALL references, books, links, and supplementary materials
 
 Format-specific handling:
 **Old Format (4343xxx)**:
@@ -46,9 +55,26 @@ Key requirements:
 - Use the universal schema at `/Users/milav/Code/studio/syllabus-schema.json`
 - Extract ALL data from markdown - don't skip any sections
 - Handle tables, lists, and complex formatting properly
-- Preserve hierarchical structure and numbering
+- Preserve hierarchical structure and numbering with complete subtopic details
 - Generate valid, well-formatted JSON
 - Ensure complete data integrity during conversion
+
+**DATA EXTRACTION SPECIFICS**:
+- **For courseContent/underpinningTheory**: Extract each unit with ALL numbered subtopics (1.1, 1.2, 1.3, etc.) preserving complete descriptions
+- **For practicalExercises**: Each exercise must include ALL parts/steps with detailed instructions
+- **For projects**: Include complete project descriptions, contexts, deliverables, and evaluation criteria
+- **For activities**: Preserve full activity instructions including learning objectives and expected outcomes
+- **For assessments**: Extract complete marking schemes, evaluation rubrics, and assessment criteria
+- **For resources**: Include ALL reference materials with complete citation details
+
+**VALIDATION CHECKLIST** (verify after each conversion):
+✓ All numbered subtopics preserved (check 1.1, 1.2, 2.1, 2.2 etc.)
+✓ Multi-part practical exercises contain all individual parts
+✓ Project sections include complete context and guidelines
+✓ Activity descriptions are complete with full instructions
+✓ Assessment criteria and rubrics are fully detailed
+✓ All table data extracted with proper structure
+✓ Reference lists are complete and properly formatted
 
 Error handling:
 - Skip files that don't contain valid syllabus content
