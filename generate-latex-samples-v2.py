@@ -170,11 +170,12 @@ After completion of the course, students will be able to:
 \section{Teaching and Examination Scheme}
 
 \begin{center}
-\begin{tabular}{|c|c|c|c||c|c|c|c|c|}
+\small
+\begin{tabular}{|c|c|c|c||p{1.8cm}|p{1.8cm}|p{1.8cm}|p{1.8cm}|c|}
 \hline
 \multicolumn{4}{|c|}{\textbf{Teaching Scheme (Hours)}} & \multicolumn{5}{c|}{\textbf{Assessment Pattern (Marks)}} \\
 \hline
-\textbf{L} & \textbf{T} & \textbf{PR} & \textbf{C} & \textbf{Theory ESE} & \textbf{Theory CA} & \textbf{Practical CA} & \textbf{Practical ESE} & \textbf{Total} \\
+\textbf{L} & \textbf{T} & \textbf{PR} & \textbf{C} & \textbf{\centering Theory ESE} & \textbf{\centering Theory CA} & \textbf{\centering Practical CA} & \textbf{\centering Practical ESE} & \textbf{Total} \\
 \hline
 """
         
@@ -200,9 +201,9 @@ After completion of the course, students will be able to:
         latex = r"""
 \section{Course Content}
 
-\begin{longtable}{|p{2.8cm}|p{8.5cm}|p{1.3cm}|p{1.4cm}|}
+\begin{longtable}{|p{2.8cm}|p{8.2cm}|p{1.3cm}|p{1.7cm}|}
 \hline
-\textbf{Unit No.} & \textbf{Content} & \textbf{Hours} & \textbf{Weightage (\%)} \\
+\textbf{Unit No.} & \textbf{Content} & \textbf{Hours} & \textbf{Weight\-age (\%)} \\
 \hline
 \endhead
 """
@@ -261,7 +262,7 @@ After completion of the course, students will be able to:
         latex = r"""
 \section{Suggested Practical Exercises}
 
-\begin{longtable}{|p{1cm}|p{11cm}|p{1.5cm}|p{1.5cm}|}
+\begin{longtable}{|p{0.8cm}|p{10.5cm}|p{1.3cm}|p{1.4cm}|}
 \hline
 \textbf{Sr. No} & \textbf{Practical Outcomes (PrOs)} & \textbf{Unit No.} & \textbf{Hrs.} \\
 \hline
@@ -291,7 +292,7 @@ After completion of the course, students will be able to:
         latex = r"""
 \section{Suggested Course Practical List}
 
-\begin{longtable}{|p{1cm}|p{11cm}|p{1.5cm}|p{1.5cm}|}
+\begin{longtable}{|p{0.8cm}|p{10.5cm}|p{1.3cm}|p{1.4cm}|}
 \hline
 \textbf{Sr. No} & \textbf{Practical Outcomes (PrOs)} & \textbf{Unit No.} & \textbf{Hrs.} \\
 \hline
