@@ -447,22 +447,22 @@
     "openSourceSoftware": [
       {
         "name": "Java Development Kit - JDK 23",
-        "url": "",
+        "url": "https://www.oracle.com/java/technologies/downloads/",
         "description": "Official Java Development Kit"
       },
       {
         "name": "IntelliJ IDEA Community Edition",
-        "url": "",
+        "url": "https://www.jetbrains.com/idea/download/",
         "description": "Free IDE for Java development"
       },
       {
         "name": "Visual Studio Code",
-        "url": "",
+        "url": "https://code.visualstudio.com/",
         "description": "Lightweight code editor with Java extensions"
       },
       {
         "name": "Eclipse IDE",
-        "url": "",
+        "url": "https://www.eclipse.org/downloads/",
         "description": "Open-source IDE for Java development"
       }
     ],

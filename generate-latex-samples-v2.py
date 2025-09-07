@@ -49,6 +49,16 @@ class SyllabusLatexGenerator:
 \titleformat{\section}{\Large\bfseries\color{gtublue}}{}{0em}{}
 \titleformat{\subsection}{\large\bfseries\color{gtuorange}}{}{0em}{}
 
+% Hyperlink styling - professional black links without underlines
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,
+    urlcolor=black,
+    citecolor=black,
+    pdfborder={0 0 0}
+}
+
 % Custom commands
 \newcommand{\courseheader}[2]{
     \begin{center}
@@ -869,8 +879,15 @@ The practical exercises, the underpinning knowledge and the relevant soft skills
             
             for software in resources['openSourceSoftware']:
                 name = self._escape_latex(software.get('name', ''))
+                url = software.get('url', '')
+                
                 if name:
-                    latex += f"\\item {name}\n"
+                    if url and url.strip():
+                        # Make it a clickable link
+                        latex += f"\\item \\href{{{url}}}{{{name}}}\n"
+                    else:
+                        # Plain text if no URL
+                        latex += f"\\item {name}\n"
             
             latex += r"\end{itemize}" + "\n"
         
@@ -902,8 +919,15 @@ The practical exercises, the underpinning knowledge and the relevant soft skills
                     
                     for website in websites:
                         title = self._escape_latex(website.get('title', ''))
+                        url = website.get('url', '')
+                        
                         if title:
-                            latex += f"\\item {title}\n"
+                            if url and url.strip():
+                                # Make it a clickable link
+                                latex += f"\\item \\href{{{url}}}{{{title}}}\n"
+                            else:
+                                # Plain text if no URL
+                                latex += f"\\item {title}\n"
                     
                     latex += r"\end{itemize}" + "\n"
         
