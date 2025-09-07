@@ -774,6 +774,42 @@ The practical exercises, the underpinning knowledge and the relevant soft skills
         latex = r"""
 \section{Suggested Specification Table with Marks (Theory)}
 
+"""
+        
+        if table and len(table) > 0:
+            # Use data from JSON
+            spec_data = table[0]  # Usually there's one overall distribution
+            
+            latex += r"""
+\begin{center}
+\small
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\multicolumn{6}{|c|}{\textbf{Distribution of Theory Marks (in \%)}} \\
+\hline
+\textbf{R Level} & \textbf{U Level} & \textbf{A Level} & \textbf{N Level} & \textbf{E Level} & \textbf{C Level} \\
+\hline
+"""
+            
+            # Get values from JSON data, with fallbacks
+            r_level = spec_data.get('rememberLevel', 0)
+            u_level = spec_data.get('understandLevel', 0) 
+            a_level = spec_data.get('applyLevel', 0)
+            n_level = spec_data.get('analyzeLevel', 0) if spec_data.get('analyzeLevel', 0) > 0 else '--'
+            e_level = spec_data.get('evaluateLevel', 0) if spec_data.get('evaluateLevel', 0) > 0 else '--'
+            c_level = spec_data.get('createLevel', 0) if spec_data.get('createLevel', 0) > 0 else '--'
+            
+            latex += f"{r_level} & {u_level} & {a_level} & {n_level} & {e_level} & {c_level} \\\\\n"
+            latex += r"""\hline
+\end{tabular}
+\end{center}
+
+\textit{Where R: Remember; U: Understanding; A: Application, N: Analyze and E: Evaluate C: Create (as per Revised Bloom's Taxonomy)}
+
+"""
+        else:
+            # Fallback if no data available
+            latex += r"""
 \begin{center}
 \small
 \begin{tabular}{|c|c|c|c|c|c|}
@@ -790,213 +826,172 @@ The practical exercises, the underpinning knowledge and the relevant soft skills
 \textit{Where R: Remember; U: Understanding; A: Application, N: Analyze and E: Evaluate C: Create (as per Revised Bloom's Taxonomy)}
 
 """
+        
         return latex
     
     def _generate_di_learning_resources(self, resources: Dict) -> str:
         latex = r"""
 \section{References/Suggested Learning Resources}
 
-\subsection{(a) Books:}
-\begin{enumerate}
-\item Java: The Complete Reference by Herbert Schildt, McGraw Hill Education, 12th Edition, 2021, ISBN: 9781260440232
-\item Programming with Java by E Balagurusamy, McGraw Hill Education, 6th Edition, 2019, ISBN: 9789353161491
-\item Core Java: Volume I - Fundamentals by Cay S. Horstmann, Prentice Hall, 11th Edition, 2018, ISBN: 9780135166307
-\item Head First Java by Kathy Sierra and Bert Bates, O'Reilly Media, 3rd Edition, 2022, ISBN: 9781491910771
-\item Thinking in Java by Bruce Eckel, Prentice Hall, 4th Edition, 2006, ISBN: 9780131872486
-\end{enumerate}
-
-\subsection{(b) Open source software and website:}
-\begin{itemize}
-\item \textbf{Softwares}
-\begin{itemize}
-\item Java Development Kit – JDK 23
-\item IntelliJ IDEA Community Edition
-\item Visual Studio Code
-\item Eclipse IDE
-\end{itemize}
-\item \textbf{Official Documentation}
-\begin{itemize}
-\item Official Java Documentation
-\end{itemize}
-\item \textbf{Online Tutorials}
-\begin{itemize}
-\item W3Schools Java Tutorial
-\item JavaTpoint - Java Programming Tutorials
-\item GeeksforGeeks - Java Programming Language
-\item Learn Java Online
-\item TutorialsPoint - Java Tutorials and Examples
-\end{itemize}
-\item \textbf{Video Courses}
-\begin{itemize}
-\item Introduction to Java Programming (Udacity YouTube Playlist)
-\item Programming in Java by Debasis Samanta, IIT Kharagpur (NPTEL YouTube Playlist)
-\item Java Tutorials For Beginners In Hindi (CodeWithHarry YouTube Playlist)
-\end{itemize}
-\item \textbf{Comprehensive Courses}
-\begin{itemize}
-\item Java Programming Nanodegree by Udacity
-\item Core Java Specialization by LearnQuest on Coursera
-\item Java Masterclass 2025: 130+ Hours of Expert Lessons by Tim Bulchka on Udemy
-\item Introduction to Object-Oriented Programming with Java by Georgia Tech on edX
-\end{itemize}
-\end{itemize}
-
 """
+        
+        # Books section
+        if 'books' in resources and resources['books']:
+            latex += r"\subsection{(a) Books:}" + "\n"
+            latex += r"\begin{enumerate}" + "\n"
+            
+            for book in resources['books']:
+                title = self._escape_latex(book.get('title', ''))
+                author = self._escape_latex(book.get('author', ''))
+                publication = self._escape_latex(book.get('publication', ''))
+                isbn = book.get('isbn', '')
+                
+                book_entry = f"{title}"
+                if author:
+                    book_entry += f" by {author}"
+                if publication:
+                    book_entry += f", {publication}"
+                if isbn:
+                    book_entry += f", ISBN: {isbn}"
+                
+                latex += f"\\item {book_entry}\n"
+            
+            latex += r"\end{enumerate}" + "\n\n"
+        
+        # Software and websites section
+        latex += r"\subsection{(b) Open source software and website:}" + "\n"
+        latex += r"\begin{itemize}" + "\n"
+        
+        # Software subsection
+        if 'openSourceSoftware' in resources and resources['openSourceSoftware']:
+            latex += r"\item \textbf{Softwares}" + "\n"
+            latex += r"\begin{itemize}" + "\n"
+            
+            for software in resources['openSourceSoftware']:
+                name = self._escape_latex(software.get('name', ''))
+                if name:
+                    latex += f"\\item {name}\n"
+            
+            latex += r"\end{itemize}" + "\n"
+        
+        # Websites section - categorize by type
+        if 'websites' in resources and resources['websites']:
+            website_categories = {}
+            
+            # Group websites by type
+            for website in resources['websites']:
+                website_type = website.get('type', 'Other')
+                if website_type not in website_categories:
+                    website_categories[website_type] = []
+                website_categories[website_type].append(website)
+            
+            # Generate sections for each type
+            for category_name, websites in website_categories.items():
+                if websites:
+                    # Map category names to display names
+                    display_names = {
+                        'Official Documentation': r'\textbf{Official Documentation}',
+                        'Online Tutorial': r'\textbf{Online Tutorials}',
+                        'Video Course': r'\textbf{Video Courses}',
+                        'Comprehensive Course': r'\textbf{Comprehensive Courses}'
+                    }
+                    
+                    display_name = display_names.get(category_name, f"\\textbf{{{self._escape_latex(category_name)}}}")
+                    latex += f"\\item {display_name}\n"
+                    latex += r"\begin{itemize}" + "\n"
+                    
+                    for website in websites:
+                        title = self._escape_latex(website.get('title', ''))
+                        if title:
+                            latex += f"\\item {title}\n"
+                    
+                    latex += r"\end{itemize}" + "\n"
+        
+        latex += r"\end{itemize}" + "\n\n"
+        
         return latex
     
     def _generate_di_laboratory_resources(self, resources: List[Dict]) -> str:
         latex = r"""
 \section{List of Laboratory/Learning Resources Required}
 
-\begin{enumerate}
-\item Computer laboratory with networked computers (1:1 ratio)
-\item Latest Java Development Kit (JDK 17 or above)
-\item Integrated Development Environment (IDE):
-\begin{itemize}
-\item IntelliJ IDEA Community Edition
-\item Eclipse IDE for Java Developers
-\item Visual Studio Code with Java extensions
-\end{itemize}
-\item Internet connectivity for accessing online resources
-\item Projector/Smart board for demonstrations
-\item Java documentation and reference materials
-\item Sample programs and code libraries
-\item Testing frameworks (JUnit)
-\item Version control system (Git)
-\item Database connectivity (MySQL/PostgreSQL for advanced topics)
-\end{enumerate}
-
 """
+        
+        if resources:
+            latex += r"\begin{longtable}{|p{1cm}|p{8cm}|p{3cm}|p{2cm}|}" + "\n"
+            latex += r"\hline" + "\n"
+            latex += r"\textbf{Sr. No} & \textbf{Resource Name} & \textbf{Specifications} & \textbf{Applicable To} \\" + "\n"
+            latex += r"\hline" + "\n"
+            latex += r"\endhead" + "\n"
+            
+            for resource in resources:
+                sr_no = resource.get('srNo', '')
+                name = self._escape_latex(resource.get('resourceName', ''))
+                specs = self._escape_latex(resource.get('specifications', ''))
+                applicable = self._escape_latex(resource.get('applicableTo', ''))
+                
+                latex += f"{sr_no} & {name} & {specs} & {applicable} \\\\\n\\hline\n"
+            
+            latex += r"\end{longtable}" + "\n\n"
+        else:
+            # Fallback to generic format if no specific resources provided
+            latex += r"\begin{enumerate}" + "\n"
+            latex += r"\item Computer laboratory with networked computers (1:1 ratio)" + "\n"
+            latex += r"\item Required development environment and tools" + "\n"  
+            latex += r"\item Internet connectivity for accessing online resources" + "\n"
+            latex += r"\item Projector/Smart board for demonstrations" + "\n"
+            latex += r"\end{enumerate}" + "\n\n"
+        
         return latex
     
     def _generate_di_project_list(self, projects: List[Dict]) -> str:
         latex = r"""
 \section{Suggested Project List}
 
-\begin{enumerate}
-\item \textbf{Student Information Management System}
-\begin{itemize}
-\item Design a console-based application to manage student records
-\item Features: Add, update, delete, and search student information
-\item Use classes, objects, and file handling
-\end{itemize}
-
-\item \textbf{Library Management System}
-\begin{itemize}
-\item Create a system to manage books, members, and borrowing records
-\item Implement inheritance and polymorphism concepts
-\item Use collections framework for data storage
-\end{itemize}
-
-\item \textbf{Simple Banking System}
-\begin{itemize}
-\item Develop a basic banking application with account management
-\item Features: Create account, deposit, withdraw, check balance
-\item Implement exception handling for invalid operations
-\end{itemize}
-
-\item \textbf{Employee Payroll System}
-\begin{itemize}
-\item Build a payroll management system for different employee types
-\item Use inheritance for different employee categories
-\item Implement interfaces for payroll calculations
-\end{itemize}
-
-\item \textbf{Online Quiz Application}
-\begin{itemize}
-\item Create a multiple-choice quiz system
-\item Features: Question management, scoring, time limits
-\item Use multithreading for timer functionality
-\end{itemize}
-
-\item \textbf{Inventory Management System}
-\begin{itemize}
-\item Develop an inventory tracking system for products
-\item Features: Add/remove products, stock management, reports
-\item Use serialization for data persistence
-\end{itemize}
-
-\item \textbf{Simple Chat Application}
-\begin{itemize}
-\item Create a basic client-server chat system
-\item Implement socket programming and multithreading
-\item Features: Multiple users, message broadcasting
-\end{itemize}
-
-\item \textbf{Calculator with GUI}
-\begin{itemize}
-\item Build a graphical calculator application
-\item Use Swing or JavaFX for the user interface
-\item Implement all basic arithmetic operations
-\end{itemize}
-\end{enumerate}
-
 """
+        
+        if projects:
+            latex += r"\begin{enumerate}" + "\n"
+            
+            for project in projects:
+                title = self._escape_latex(project.get('title', ''))
+                description = self._escape_latex(project.get('description', ''))
+                domain = self._escape_latex(project.get('domain', ''))
+                
+                if title:
+                    latex += f"\\item \\textbf{{{title}}}\n"
+                    if description:
+                        latex += "\\begin{itemize}\n"
+                        latex += f"\\item {description}\n"
+                        if domain:
+                            latex += f"\\item Domain: {domain}\n"
+                        latex += "\\end{itemize}\n\n"
+            
+            latex += r"\end{enumerate}" + "\n\n"
+        else:
+            # Fallback message if no projects provided
+            latex += "Please refer to course materials for suggested project topics.\n\n"
+        
         return latex
     
     def _generate_di_student_activities(self, activities: List[str]) -> str:
         latex = r"""
 \section{Suggested Activities for Students}
 
-\begin{enumerate}
-\item \textbf{Programming Practice}
-\begin{itemize}
-\item Solve daily programming challenges on platforms like LeetCode, HackerRank, or CodeChef
-\item Practice coding problems related to each unit after completion
-\item Participate in online coding contests
-\end{itemize}
-
-\item \textbf{Code Reading and Analysis}
-\begin{itemize}
-\item Study and analyze open-source Java projects on GitHub
-\item Review and understand well-written Java code examples
-\item Document code analysis findings in a learning journal
-\end{itemize}
-
-\item \textbf{Group Programming Projects}
-\begin{itemize}
-\item Form teams of 3-4 students for collaborative programming projects
-\item Use version control systems (Git) for team collaboration
-\item Practice code review and pair programming techniques
-\end{itemize}
-
-\item \textbf{Technical Documentation}
-\begin{itemize}
-\item Write technical documentation for developed programs
-\item Create user manuals and API documentation
-\item Maintain programming portfolios and project reports
-\end{itemize}
-
-\item \textbf{Peer Learning Activities}
-\begin{itemize}
-\item Organize peer teaching sessions on complex topics
-\item Conduct code walk-throughs and debugging sessions
-\item Participate in study groups for exam preparation
-\end{itemize}
-
-\item \textbf{Industry Connection}
-\begin{itemize}
-\item Attend Java user group meetups and technical seminars
-\item Follow Java community blogs and forums
-\item Participate in hackathons and coding competitions
-\end{itemize}
-
-\item \textbf{Practical Applications}
-\begin{itemize}
-\item Develop mobile applications using Java frameworks
-\item Create web applications using Java technologies
-\item Explore Java's role in different domains (web, mobile, enterprise)
-\end{itemize}
-
-\item \textbf{Certification Preparation}
-\begin{itemize}
-\item Prepare for Oracle Java certification exams
-\item Complete online Java courses with certificates
-\item Build a professional portfolio on platforms like LinkedIn
-\end{itemize}
-\end{enumerate}
-
 """
+        
+        if activities:
+            latex += r"\begin{enumerate}" + "\n"
+            
+            for i, activity in enumerate(activities, 1):
+                escaped_activity = self._escape_latex(activity)
+                latex += f"\\item {escaped_activity}\n\n"
+            
+            latex += r"\end{enumerate}" + "\n\n"
+        else:
+            # Fallback message if no activities provided
+            latex += "Students are encouraged to engage in additional learning activities as recommended by the instructor.\n\n"
+        
         return latex
 
 
