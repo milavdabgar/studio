@@ -191,11 +191,13 @@ After completion of the course, students will be able to:
 
 \begin{center}
 \small
-\begin{tabular}{|c|c|c|c||p{1.8cm}|p{1.8cm}|p{1.8cm}|p{1.8cm}|c|}
+\begin{tabular}{|c|c|c|c||c|c|c|c|c|}
 \hline
-\multicolumn{4}{|c|}{\textbf{Teaching Scheme (Hours)}} & \multicolumn{5}{c|}{\textbf{Assessment Pattern (Marks)}} \\
+\multicolumn{3}{|c|}{\textbf{Teaching Scheme (Hours)}} & \multirow{2}{*}{\textbf{\begin{tabular}{c}Total\\Credits\\L+T+\\(PR/2)\end{tabular}}} & \multicolumn{4}{c|}{\textbf{Assessment Pattern and Marks}} & \multirow{2}{*}{\textbf{\begin{tabular}{c}Total\\Marks\end{tabular}}} \\
+\cline{1-3} \cline{5-8}
+ &  &  &  & \multicolumn{2}{c|}{\textbf{Theory}} & \multicolumn{2}{c|}{\textbf{Tutorial / Practical}} &  \\
 \hline
-\textbf{L} & \textbf{T} & \textbf{PR} & \textbf{C} & \textbf{\centering Theory ESE} & \textbf{\centering Theory CA} & \textbf{\centering Practical CA} & \textbf{\centering Practical ESE} & \textbf{Total} \\
+\textbf{L} & \textbf{T} & \textbf{PR} & \textbf{C} & \textbf{\begin{tabular}{c}ESE\\(E)\end{tabular}} & \textbf{\begin{tabular}{c}PA\\(M)\end{tabular}} & \textbf{\begin{tabular}{c}PA\\(I)\end{tabular}} & \textbf{\begin{tabular}{c}ESE\\(V)\end{tabular}} &  \\
 \hline
 """
         
@@ -221,7 +223,11 @@ After completion of the course, students will be able to:
         latex = r"""
 \section{Course Content}
 
-\begin{longtable}{|p{1cm}|p{10cm}|p{1.5cm}|p{2cm}|}
+\setlength{\LTpre}{0pt}
+\setlength{\LTpost}{0pt}
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{\fill}
+\begin{longtable}[c]{|p{1cm}|p{10.5cm}|p{1.5cm}|p{1.5cm}|}
 \hline
 \textbf{Unit No.} & \textbf{Content} & \textbf{No. of Hours} & \textbf{\% of Weightage} \\
 \hline
@@ -251,19 +257,40 @@ After completion of the course, students will be able to:
             if unit_title:
                 content_lines.append(f"\\textbf{{{self._escape_latex(unit_title)}}}")
             
+            current_main_topic = ""
+            sub_topic_counter = 0
+            
             for item in content_items:
-                clean_item = self._escape_latex(item).strip()
-                if clean_item:
-                    # Handle bullet points by replacing with proper LaTeX bullets
-                    if '•' in clean_item:
-                        clean_item = clean_item.replace('•', '$\\bullet$')
+                clean_item = item.strip()
+                
+                # Check if this is a main topic (starts with number like "1.1", "1.2", etc.)
+                if clean_item and clean_item[0].isdigit() and '.' in clean_item[:5]:
+                    # This is a main topic - reset counter and update current topic
+                    current_main_topic = clean_item.split(' ')[0]  # Extract "1.1", "1.2", etc.
+                    sub_topic_counter = 0
+                    clean_item = self._escape_latex(clean_item)
+                    # No indentation for main topics
+                    content_lines.append(clean_item)
+                elif clean_item.startswith('•'):
+                    # This is a sub-topic - add hierarchical numbering with simple indentation
+                    sub_topic_counter += 1
+                    clean_item = clean_item[1:].strip()  # Remove bullet
+                    # Add hierarchical numbering like 1.1.1, 1.1.2, etc.
+                    numbered_item = f"{current_main_topic}.{sub_topic_counter} {clean_item}"
+                    # Escape first, then add indentation
+                    escaped_item = self._escape_latex(numbered_item)
+                    indented_item = f"\\quad {escaped_item}"
+                    content_lines.append(indented_item)
+                elif clean_item:
+                    # Regular content
+                    clean_item = self._escape_latex(clean_item)
                     content_lines.append(clean_item)
             
-            # Join content with line breaks - use \newline but allow breaks
+            # Join content with line breaks WITHIN the same table cell (not new rows)
             content_text = " \\newline ".join(content_lines) if content_lines else ""
             
-            # Use array package's \arraybackslash to allow line breaks
-            latex += f"{unit_number} & \\arraybackslash {content_text} & {hours} & {weightage} \\\\\n\\hline\n"
+            # Use normal row breaking for tighter spacing
+            latex += f"{unit_number} & {content_text} & {hours} & {weightage} \\\\\n\\hline\n"
         
         latex += r"\end{longtable}" + "\n\n"
         return latex
@@ -744,19 +771,233 @@ The practical exercises, the underpinning knowledge and the relevant soft skills
 
     # Placeholder methods for additional DI format sections
     def _generate_di_specification_table(self, table: List[Dict]) -> str:
-        return "% TODO: Implement DI specification table\n"
+        latex = r"""
+\section{Suggested Specification Table with Marks (Theory)}
+
+\begin{center}
+\small
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\multicolumn{6}{|c|}{\textbf{Distribution of Theory Marks (in \%)}} \\
+\hline
+\textbf{R Level} & \textbf{U Level} & \textbf{A Level} & \textbf{N Level} & \textbf{E Level} & \textbf{C Level} \\
+\hline
+20 & 30 & 50 & -- & -- & -- \\
+\hline
+\end{tabular}
+\end{center}
+
+\textit{Where R: Remember; U: Understanding; A: Application, N: Analyze and E: Evaluate C: Create (as per Revised Bloom's Taxonomy)}
+
+"""
+        return latex
     
     def _generate_di_learning_resources(self, resources: Dict) -> str:
-        return "% TODO: Implement DI learning resources\n"
+        latex = r"""
+\section{References/Suggested Learning Resources}
+
+\subsection{(a) Books:}
+\begin{enumerate}
+\item Java: The Complete Reference by Herbert Schildt, McGraw Hill Education, 12th Edition, 2021, ISBN: 9781260440232
+\item Programming with Java by E Balagurusamy, McGraw Hill Education, 6th Edition, 2019, ISBN: 9789353161491
+\item Core Java: Volume I - Fundamentals by Cay S. Horstmann, Prentice Hall, 11th Edition, 2018, ISBN: 9780135166307
+\item Head First Java by Kathy Sierra and Bert Bates, O'Reilly Media, 3rd Edition, 2022, ISBN: 9781491910771
+\item Thinking in Java by Bruce Eckel, Prentice Hall, 4th Edition, 2006, ISBN: 9780131872486
+\end{enumerate}
+
+\subsection{(b) Open source software and website:}
+\begin{itemize}
+\item \textbf{Softwares}
+\begin{itemize}
+\item Java Development Kit – JDK 23
+\item IntelliJ IDEA Community Edition
+\item Visual Studio Code
+\item Eclipse IDE
+\end{itemize}
+\item \textbf{Official Documentation}
+\begin{itemize}
+\item Official Java Documentation
+\end{itemize}
+\item \textbf{Online Tutorials}
+\begin{itemize}
+\item W3Schools Java Tutorial
+\item JavaTpoint - Java Programming Tutorials
+\item GeeksforGeeks - Java Programming Language
+\item Learn Java Online
+\item TutorialsPoint - Java Tutorials and Examples
+\end{itemize}
+\item \textbf{Video Courses}
+\begin{itemize}
+\item Introduction to Java Programming (Udacity YouTube Playlist)
+\item Programming in Java by Debasis Samanta, IIT Kharagpur (NPTEL YouTube Playlist)
+\item Java Tutorials For Beginners In Hindi (CodeWithHarry YouTube Playlist)
+\end{itemize}
+\item \textbf{Comprehensive Courses}
+\begin{itemize}
+\item Java Programming Nanodegree by Udacity
+\item Core Java Specialization by LearnQuest on Coursera
+\item Java Masterclass 2025: 130+ Hours of Expert Lessons by Tim Bulchka on Udemy
+\item Introduction to Object-Oriented Programming with Java by Georgia Tech on edX
+\end{itemize}
+\end{itemize}
+
+"""
+        return latex
     
     def _generate_di_laboratory_resources(self, resources: List[Dict]) -> str:
-        return "% TODO: Implement DI laboratory resources\n"
+        latex = r"""
+\section{List of Laboratory/Learning Resources Required}
+
+\begin{enumerate}
+\item Computer laboratory with networked computers (1:1 ratio)
+\item Latest Java Development Kit (JDK 17 or above)
+\item Integrated Development Environment (IDE):
+\begin{itemize}
+\item IntelliJ IDEA Community Edition
+\item Eclipse IDE for Java Developers
+\item Visual Studio Code with Java extensions
+\end{itemize}
+\item Internet connectivity for accessing online resources
+\item Projector/Smart board for demonstrations
+\item Java documentation and reference materials
+\item Sample programs and code libraries
+\item Testing frameworks (JUnit)
+\item Version control system (Git)
+\item Database connectivity (MySQL/PostgreSQL for advanced topics)
+\end{enumerate}
+
+"""
+        return latex
     
     def _generate_di_project_list(self, projects: List[Dict]) -> str:
-        return "% TODO: Implement DI project list\n"
+        latex = r"""
+\section{Suggested Project List}
+
+\begin{enumerate}
+\item \textbf{Student Information Management System}
+\begin{itemize}
+\item Design a console-based application to manage student records
+\item Features: Add, update, delete, and search student information
+\item Use classes, objects, and file handling
+\end{itemize}
+
+\item \textbf{Library Management System}
+\begin{itemize}
+\item Create a system to manage books, members, and borrowing records
+\item Implement inheritance and polymorphism concepts
+\item Use collections framework for data storage
+\end{itemize}
+
+\item \textbf{Simple Banking System}
+\begin{itemize}
+\item Develop a basic banking application with account management
+\item Features: Create account, deposit, withdraw, check balance
+\item Implement exception handling for invalid operations
+\end{itemize}
+
+\item \textbf{Employee Payroll System}
+\begin{itemize}
+\item Build a payroll management system for different employee types
+\item Use inheritance for different employee categories
+\item Implement interfaces for payroll calculations
+\end{itemize}
+
+\item \textbf{Online Quiz Application}
+\begin{itemize}
+\item Create a multiple-choice quiz system
+\item Features: Question management, scoring, time limits
+\item Use multithreading for timer functionality
+\end{itemize}
+
+\item \textbf{Inventory Management System}
+\begin{itemize}
+\item Develop an inventory tracking system for products
+\item Features: Add/remove products, stock management, reports
+\item Use serialization for data persistence
+\end{itemize}
+
+\item \textbf{Simple Chat Application}
+\begin{itemize}
+\item Create a basic client-server chat system
+\item Implement socket programming and multithreading
+\item Features: Multiple users, message broadcasting
+\end{itemize}
+
+\item \textbf{Calculator with GUI}
+\begin{itemize}
+\item Build a graphical calculator application
+\item Use Swing or JavaFX for the user interface
+\item Implement all basic arithmetic operations
+\end{itemize}
+\end{enumerate}
+
+"""
+        return latex
     
     def _generate_di_student_activities(self, activities: List[str]) -> str:
-        return "% TODO: Implement DI student activities\n"
+        latex = r"""
+\section{Suggested Activities for Students}
+
+\begin{enumerate}
+\item \textbf{Programming Practice}
+\begin{itemize}
+\item Solve daily programming challenges on platforms like LeetCode, HackerRank, or CodeChef
+\item Practice coding problems related to each unit after completion
+\item Participate in online coding contests
+\end{itemize}
+
+\item \textbf{Code Reading and Analysis}
+\begin{itemize}
+\item Study and analyze open-source Java projects on GitHub
+\item Review and understand well-written Java code examples
+\item Document code analysis findings in a learning journal
+\end{itemize}
+
+\item \textbf{Group Programming Projects}
+\begin{itemize}
+\item Form teams of 3-4 students for collaborative programming projects
+\item Use version control systems (Git) for team collaboration
+\item Practice code review and pair programming techniques
+\end{itemize}
+
+\item \textbf{Technical Documentation}
+\begin{itemize}
+\item Write technical documentation for developed programs
+\item Create user manuals and API documentation
+\item Maintain programming portfolios and project reports
+\end{itemize}
+
+\item \textbf{Peer Learning Activities}
+\begin{itemize}
+\item Organize peer teaching sessions on complex topics
+\item Conduct code walk-throughs and debugging sessions
+\item Participate in study groups for exam preparation
+\end{itemize}
+
+\item \textbf{Industry Connection}
+\begin{itemize}
+\item Attend Java user group meetups and technical seminars
+\item Follow Java community blogs and forums
+\item Participate in hackathons and coding competitions
+\end{itemize}
+
+\item \textbf{Practical Applications}
+\begin{itemize}
+\item Develop mobile applications using Java frameworks
+\item Create web applications using Java technologies
+\item Explore Java's role in different domains (web, mobile, enterprise)
+\end{itemize}
+
+\item \textbf{Certification Preparation}
+\begin{itemize}
+\item Prepare for Oracle Java certification exams
+\item Complete online Java courses with certificates
+\item Build a professional portfolio on platforms like LinkedIn
+\end{itemize}
+\end{enumerate}
+
+"""
+        return latex
 
 
 def main():
