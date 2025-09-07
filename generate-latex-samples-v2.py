@@ -49,14 +49,13 @@ class SyllabusLatexGenerator:
 \titleformat{\section}{\Large\bfseries\color{gtublue}}{}{0em}{}
 \titleformat{\subsection}{\large\bfseries\color{gtuorange}}{}{0em}{}
 
-% Hyperlink styling - professional black links without underlines
+% Hyperlink styling - blue links with underlines to match original syllabus
 \hypersetup{
     colorlinks=true,
-    linkcolor=black,
-    filecolor=black,
-    urlcolor=black,
-    citecolor=black,
-    pdfborder={0 0 0}
+    linkcolor=blue,
+    filecolor=blue,
+    urlcolor=blue,
+    citecolor=blue
 }
 
 % Custom commands
