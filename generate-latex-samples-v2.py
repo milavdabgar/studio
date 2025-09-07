@@ -63,8 +63,28 @@ class SyllabusLatexGenerator:
 \begin{document}
 """
 
+    def _detect_syllabus_format(self, syllabus_data: Dict[str, Any]) -> str:
+        """Detect if syllabus is COGC-2021 or DI format"""
+        course_code = syllabus_data.get('courseInfo', {}).get('courseCode', '')
+        if course_code.startswith('DI'):
+            return 'new_di'
+        elif course_code.startswith('43'):
+            return 'cogc_2021'
+        return 'unknown'
+    
     def generate_latex(self, json_data: Dict[str, Any]) -> str:
-        """Generate complete LaTeX document from JSON data"""
+        """Generate complete LaTeX document from JSON data using format-specific generators"""
+        format_type = self._detect_syllabus_format(json_data)
+        
+        if format_type == 'new_di':
+            return self._generate_di_format_latex(json_data)
+        elif format_type == 'cogc_2021':
+            return self._generate_cogc_format_latex(json_data)
+        else:
+            return self._generate_generic_latex(json_data)
+    
+    def _generate_generic_latex(self, json_data: Dict[str, Any]) -> str:
+        """Generate LaTeX for unknown/generic format - fallback method"""
         latex_content = self.latex_template
         
         # Course header and footer info
@@ -352,6 +372,381 @@ After completion of the course, students will be able to:
         
         return text
 
+    def _generate_di_format_latex(self, json_data: Dict[str, Any]) -> str:
+        """Generate LaTeX specifically for new DI format syllabi"""
+        latex_content = self.latex_template
+        
+        # Course header and footer info
+        course_info = json_data.get('courseInfo', {})
+        course_title = course_info.get('courseTitle', 'Course Title')
+        course_code = course_info.get('courseCode', 'XXX')
+        
+        # Replace placeholders in template - adjust header for new format
+        latex_content = latex_content.replace('COURSE_CODE_PLACEHOLDER', course_code)
+        latex_content = latex_content.replace('COURSE_TITLE_PLACEHOLDER', course_title)
+        latex_content = latex_content.replace('\\textcolor{gtuorange}{\\textbf{COGC-2021}}', 
+                                            '\\textcolor{gtuorange}{\\textbf{w.e.f. 2024-25}}')
+        
+        latex_content += f"\\courseheader{{{course_title}}}{{{course_code}}}\n\n"
+        
+        # DI Format specific sections
+        latex_content += self._generate_di_course_info(course_info)
+        
+        # Prerequisites section (specific to DI format)
+        if course_info.get('prerequisite'):
+            latex_content += f"""
+\\section{{Prerequisites}}
+
+{self._escape_latex(course_info['prerequisite'])}
+
+"""
+        
+        # Course Description (if available)
+        if json_data.get('courseDescription'):
+            latex_content += f"""
+\\section{{Course Description}}
+
+{self._escape_latex(json_data['courseDescription'])}
+
+"""
+        
+        # Rationale
+        if 'rationale' in json_data:
+            latex_content += f"""
+\\section{{Rationale}}
+
+{self._escape_latex(json_data['rationale'])}
+
+"""
+        
+        # Course Outcomes with DI format styling
+        if 'courseOutcomes' in json_data:
+            latex_content += self._generate_di_course_outcomes(json_data['courseOutcomes'])
+        
+        # Teaching and Examination Scheme
+        if 'teachingExamScheme' in json_data:
+            latex_content += self._generate_di_teaching_scheme(json_data['teachingExamScheme'])
+        
+        # Course Content (DI format has different structure)
+        if 'courseContent' in json_data:
+            latex_content += self._generate_course_content(json_data['courseContent'])
+        
+        # Specification Table (DI format)
+        if 'specificationTable' in json_data:
+            latex_content += self._generate_di_specification_table(json_data['specificationTable'])
+        
+        # Learning Resources (DI format)
+        if 'learningResources' in json_data:
+            latex_content += self._generate_di_learning_resources(json_data['learningResources'])
+        
+        # Practical Outcomes (DI format)
+        if 'practicalOutcomes' in json_data:
+            latex_content += self._generate_practical_outcomes(json_data['practicalOutcomes'])
+        
+        # Laboratory Resources (DI format)
+        if 'laboratoryResources' in json_data:
+            latex_content += self._generate_di_laboratory_resources(json_data['laboratoryResources'])
+        
+        # Project List (DI format)
+        if 'projectList' in json_data:
+            latex_content += self._generate_di_project_list(json_data['projectList'])
+        
+        # Student Activities (DI format)
+        if 'studentActivities' in json_data:
+            latex_content += self._generate_di_student_activities(json_data['studentActivities'])
+        
+        latex_content += r"\end{document}"
+        return latex_content
+
+    def _generate_cogc_format_latex(self, json_data: Dict[str, Any]) -> str:
+        """Generate LaTeX specifically for old COGC-2021 format syllabi"""
+        latex_content = self.latex_template
+        
+        # Course header and footer info
+        course_info = json_data.get('courseInfo', {})
+        course_title = course_info.get('courseTitle', 'Course Title')
+        course_code = course_info.get('courseCode', 'XXX')
+        
+        # Replace placeholders in template
+        latex_content = latex_content.replace('COURSE_CODE_PLACEHOLDER', course_code)
+        latex_content = latex_content.replace('COURSE_TITLE_PLACEHOLDER', course_title)
+        
+        latex_content += f"\\courseheader{{{course_title}}}{{{course_code}}}\n\n"
+        
+        # COGC Format specific sections
+        latex_content += self._generate_cogc_course_info(course_info)
+        
+        # Rationale
+        if 'rationale' in json_data:
+            latex_content += f"""
+\\section{{Rationale}}
+
+{self._escape_latex(json_data['rationale'])}
+
+"""
+        
+        # Competency (specific to COGC format)
+        if 'competency' in json_data:
+            latex_content += f"""
+\\section{{Competency}}
+
+The aim of this course is to help the students to attain the following industry identified competency through various teaching-learning experiences:
+
+{self._escape_latex(json_data['competency'])}
+
+"""
+        
+        # Course Outcomes
+        if 'courseOutcomes' in json_data:
+            latex_content += self._generate_cogc_course_outcomes(json_data['courseOutcomes'])
+        
+        # Teaching and Examination Scheme
+        if 'teachingExamScheme' in json_data:
+            latex_content += self._generate_teaching_scheme(json_data['teachingExamScheme'])
+        
+        # Practical Exercises (COGC format)
+        if 'practicalExercises' in json_data:
+            latex_content += self._generate_cogc_practical_exercises(json_data['practicalExercises'])
+        
+        # Performance Indicators (COGC format)
+        if 'performanceIndicators' in json_data:
+            latex_content += self._generate_cogc_performance_indicators(json_data['performanceIndicators'])
+        
+        # Equipment (COGC format)
+        if 'equipment' in json_data:
+            latex_content += self._generate_cogc_equipment(json_data['equipment'])
+        
+        # Affective Domain Outcomes (COGC format)
+        if 'affectiveDomainOutcomes' in json_data:
+            latex_content += self._generate_cogc_affective_domain(json_data['affectiveDomainOutcomes'])
+        
+        # Underpinning Theory (COGC format)
+        if 'underpinningTheory' in json_data:
+            latex_content += self._generate_cogc_underpinning_theory(json_data['underpinningTheory'])
+        
+        # Specification Table (COGC format)
+        if 'specificationTable' in json_data:
+            latex_content += self._generate_cogc_specification_table(json_data['specificationTable'])
+        
+        # Student Activities (COGC format)
+        if 'studentActivities' in json_data:
+            latex_content += self._generate_cogc_student_activities(json_data['studentActivities'])
+        
+        # Instructional Strategies (COGC format)
+        if 'instructionalStrategies' in json_data:
+            latex_content += self._generate_cogc_instructional_strategies(json_data['instructionalStrategies'])
+        
+        # Micro Projects (COGC format)
+        if 'microProjects' in json_data:
+            latex_content += self._generate_cogc_micro_projects(json_data['microProjects'])
+        
+        # Learning Resources
+        if 'learningResources' in json_data:
+            latex_content += self._generate_cogc_learning_resources(json_data['learningResources'])
+        
+        # Competency Mapping (COGC format)
+        if 'competencyMapping' in json_data:
+            latex_content += self._generate_cogc_competency_mapping(json_data['competencyMapping'])
+        
+        # Development Committee (COGC format)
+        if 'developmentCommittee' in json_data:
+            latex_content += self._generate_cogc_development_committee(json_data['developmentCommittee'])
+        
+        latex_content += r"\end{document}"
+        return latex_content
+
+    # DI Format specific methods
+    def _generate_di_course_info(self, course_info: Dict) -> str:
+        """Generate course info table for DI format"""
+        latex = r"""
+\section{Course Information}
+
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Field} & \textbf{Details} \\
+\hline
+"""
+        
+        # DI format specific fields order
+        di_fields = [
+            ('Program', course_info.get('program', '')),
+            ('Branch', course_info.get('branch', '')),
+            ('Level', course_info.get('level', '')),
+            ('Semester', str(course_info.get('semester', ''))),
+            ('Academic Year', course_info.get('academicYear', '')),
+            ('Category', course_info.get('category', ''))
+        ]
+        
+        for field, value in di_fields:
+            if value:
+                latex += f"{field} & {self._escape_latex(value)} \\\\\n\\hline\n"
+        
+        latex += r"\end{tabular}" + "\n\n"
+        return latex
+
+    def _generate_di_course_outcomes(self, outcomes: List[Dict]) -> str:
+        """Generate course outcomes for DI format with RBT levels"""
+        latex = r"""
+\section{Course Outcomes}
+
+After completion of the course, students will be able to:
+
+\begin{longtable}{|p{1cm}|p{11cm}|p{2.5cm}|}
+\hline
+\textbf{No.} & \textbf{Course Outcomes} & \textbf{RBT Level} \\
+\hline
+\endhead
+"""
+        
+        for outcome in outcomes:
+            co_id = outcome.get('id', '')
+            description = self._escape_latex(outcome.get('description', ''))
+            # DI format uses combined RBT levels like "R,U,A"
+            rbt_level = outcome.get('rbtLevel', outcome.get('bloomLevel', ''))
+            latex += f"{co_id} & {description} & {rbt_level} \\\\\n\\hline\n"
+        
+        latex += r"\end{longtable}" + "\n\n"
+        latex += "*RBT: Revised Bloom's Taxonomy\n\n"
+        return latex
+
+    def _generate_di_teaching_scheme(self, scheme: Dict) -> str:
+        """Generate teaching scheme for DI format with different column headers"""
+        teaching = scheme.get('teachingScheme', {})
+        examination = scheme.get('examinationScheme', {})
+        
+        latex = r"""
+\section{Teaching and Examination Scheme}
+
+\begin{center}
+\small
+\begin{tabular}{|c|c|c|c||p{1.8cm}|p{1.8cm}|p{1.8cm}|p{1.8cm}|c|}
+\hline
+\multicolumn{4}{|c|}{\textbf{Teaching Scheme (Hours)}} & \multicolumn{5}{c|}{\textbf{Assessment Pattern and Marks}} \\
+\hline
+\textbf{L} & \textbf{T} & \textbf{PR} & \textbf{C} & \textbf{\centering Theory ESE (E)} & \textbf{\centering Theory PA (M)} & \textbf{\centering Tutorial/Practical PA (I)} & \textbf{\centering Tutorial/Practical ESE (V)} & \textbf{Total} \\
+\hline
+"""
+        
+        l = teaching.get('lecture', teaching.get('lectureHours', 0))
+        t = teaching.get('tutorial', teaching.get('tutorialHours', 0))
+        pr = teaching.get('practical', teaching.get('practicalHours', 0))
+        c = teaching.get('credits', 0)
+        
+        theory_ese = examination.get('theoryESE', examination.get('theoryEseMarks', 0))
+        theory_ca = examination.get('theoryCA', examination.get('theoryPaMarks', 0))
+        practical_ca = examination.get('practicalCA', examination.get('practicalPaMarks', 0))
+        practical_ese = examination.get('practicalESE', examination.get('practicalEseMarks', 0))
+        total = examination.get('totalMarks', 0)
+        
+        latex += f"{l} & {t} & {pr} & {c} & {theory_ese} & {theory_ca} & {practical_ca} & {practical_ese} & {total} \\\\\n"
+        latex += r"\hline" + "\n"
+        latex += r"\end{tabular}" + "\n"
+        latex += r"\end{center}" + "\n\n"
+        
+        return latex
+
+    # COGC Format specific methods  
+    def _generate_cogc_course_info(self, course_info: Dict) -> str:
+        """Generate course info table for COGC format"""
+        latex = r"""
+\section{Course Information}
+
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Field} & \textbf{Details} \\
+\hline
+"""
+        
+        # COGC format specific fields order
+        cogc_fields = [
+            ('Program', course_info.get('program', '')),
+            ('Branch', course_info.get('branch', '')),
+            ('Level', course_info.get('level', '')),
+            ('Semester', str(course_info.get('semester', ''))),
+            ('Curriculum', course_info.get('curriculum', 'COGC-2021')),
+            ('Category', course_info.get('category', '')),
+            ('Prerequisites', course_info.get('prerequisite', ''))
+        ]
+        
+        for field, value in cogc_fields:
+            if value:
+                latex += f"{field} & {self._escape_latex(value)} \\\\\n\\hline\n"
+        
+        latex += r"\end{tabular}" + "\n\n"
+        return latex
+
+    def _generate_cogc_course_outcomes(self, outcomes: List[Dict]) -> str:
+        """Generate course outcomes for COGC format"""
+        latex = r"""
+\section{Course Outcomes (COs)}
+
+The practical exercises, the underpinning knowledge and the relevant soft skills associated with this competency are to be developed in the student to display the following COs:
+
+\subsection{Course Outcomes}
+
+"""
+        
+        for i, outcome in enumerate(outcomes):
+            letter = chr(ord('a') + i)  # a, b, c, d, e...
+            description = self._escape_latex(outcome.get('description', ''))
+            latex += f"{letter}) {description}\\newline\n"
+        
+        latex += "\n\n"
+        return latex
+
+    # Placeholder methods for additional COGC format sections
+    def _generate_cogc_practical_exercises(self, exercises: List[Dict]) -> str:
+        return self._generate_practical_exercises(exercises)
+    
+    def _generate_cogc_performance_indicators(self, indicators: List[Dict]) -> str:
+        return "% TODO: Implement COGC performance indicators\n"
+    
+    def _generate_cogc_equipment(self, equipment: Dict) -> str:
+        return "% TODO: Implement COGC equipment section\n"
+    
+    def _generate_cogc_affective_domain(self, outcomes: List[str]) -> str:
+        return "% TODO: Implement COGC affective domain\n"
+    
+    def _generate_cogc_underpinning_theory(self, theory: List[Dict]) -> str:
+        return self._generate_underpinning_theory(theory)
+    
+    def _generate_cogc_specification_table(self, table: List[Dict]) -> str:
+        return "% TODO: Implement COGC specification table\n"
+    
+    def _generate_cogc_student_activities(self, activities: List[str]) -> str:
+        return "% TODO: Implement COGC student activities\n"
+    
+    def _generate_cogc_instructional_strategies(self, strategies: List[str]) -> str:
+        return "% TODO: Implement COGC instructional strategies\n"
+    
+    def _generate_cogc_micro_projects(self, projects: List[Dict]) -> str:
+        return "% TODO: Implement COGC micro projects\n"
+    
+    def _generate_cogc_learning_resources(self, resources: Dict) -> str:
+        return "% TODO: Implement COGC learning resources\n"
+    
+    def _generate_cogc_competency_mapping(self, mapping: Dict) -> str:
+        return "% TODO: Implement COGC competency mapping\n"
+    
+    def _generate_cogc_development_committee(self, committee: List[Dict]) -> str:
+        return "% TODO: Implement COGC development committee\n"
+
+    # Placeholder methods for additional DI format sections
+    def _generate_di_specification_table(self, table: List[Dict]) -> str:
+        return "% TODO: Implement DI specification table\n"
+    
+    def _generate_di_learning_resources(self, resources: Dict) -> str:
+        return "% TODO: Implement DI learning resources\n"
+    
+    def _generate_di_laboratory_resources(self, resources: List[Dict]) -> str:
+        return "% TODO: Implement DI laboratory resources\n"
+    
+    def _generate_di_project_list(self, projects: List[Dict]) -> str:
+        return "% TODO: Implement DI project list\n"
+    
+    def _generate_di_student_activities(self, activities: List[str]) -> str:
+        return "% TODO: Implement DI student activities\n"
+
 
 def main():
     """Generate improved LaTeX samples for visual verification"""
@@ -397,6 +792,16 @@ def main():
             with open(json_path, 'r', encoding='utf-8') as f:
                 json_data = json.load(f)
             
+            # Detect format
+            format_type = generator._detect_syllabus_format(json_data)
+            format_name = {
+                'new_di': 'New DI Format',
+                'cogc_2021': 'COGC-2021 Format',
+                'unknown': 'Generic Format'
+            }.get(format_type, 'Unknown Format')
+            
+            print(f"   Format: {format_name} ({format_type})")
+            
             # Generate LaTeX content
             latex_content = generator.generate_latex(json_data)
             
@@ -426,6 +831,7 @@ def main():
             print(f"   • {file.name} ({size:,} bytes)")
     
     print(f"\n💡 Key improvements:")
+    print(f"   ✅ FORMAT-SPECIFIC GENERATORS: Automatic detection of COGC-2021 vs DI formats")
     print(f"   ✅ Fixed course content table column widths (3cm | 10.5cm | 1.5cm | 1.5cm)")
     print(f"   ✅ Proper line break handling (double backslash instead of quadruple)")
     print(f"   ✅ Improved bullet point formatting with indentation")
@@ -433,6 +839,8 @@ def main():
     print(f"   ✅ Better table text wrapping and content fitting")
     print(f"   ✅ Added course code & title in footer")
     print(f"   ✅ Adjusted header height to fix warnings")
+    print(f"   ✅ COGC-2021: Competency section, letter-style course outcomes (a,b,c...)")
+    print(f"   ✅ DI Format: Prerequisites section, RBT levels, different headers")
 
 if __name__ == "__main__":
     main()
