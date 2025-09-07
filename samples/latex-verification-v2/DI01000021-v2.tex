@@ -1,0 +1,149 @@
+
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+% GTU Colors
+\definecolor{gtublue}{RGB}{0,51,102}
+\definecolor{gtuorange}{RGB}{255,102,0}
+
+% Header and Footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{gtublue}{\textbf{Gujarat Technological University}}}
+\fancyhead[R]{\textcolor{gtuorange}{\textbf{w.e.f. 2024-25}}}
+\fancyfoot[L]{\textcolor{gtublue}{\small DI01000021}}
+\fancyfoot[C]{\thepage}
+\fancyfoot[R]{\textcolor{gtuorange}{\small Mathematics-I}}
+
+% Adjust header height
+\setlength{\headheight}{15pt}
+
+% Section styling
+\titleformat{\section}{\Large\bfseries\color{gtublue}}{}{0em}{}
+\titleformat{\subsection}{\large\bfseries\color{gtuorange}}{}{0em}{}
+
+% Custom commands
+\newcommand{\courseheader}[2]{
+    \begin{center}
+        \textcolor{gtublue}{\Huge\textbf{#1}}\\
+        \vspace{0.3cm}
+        \textcolor{gtuorange}{\Large Course Code: #2}\\
+        \vspace{0.5cm}
+        \rule{\textwidth}{2pt}
+    \end{center}
+}
+
+\begin{document}
+\courseheader{Mathematics-I}{DI01000021}
+
+
+\section{Course Information}
+
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Field} & \textbf{Details} \\
+\hline
+Program & Engineering \\
+\hline
+Branch & All \\
+\hline
+Level & Diploma \\
+\hline
+Semester & 1 \\
+\hline
+Academic Year & 2024 \\
+\hline
+Category & BSC \\
+\hline
+\end{tabular}
+
+
+\section{Prerequisites}
+
+Linear equation in two variables, Factorization, Polynomial, Quadratic Equation, Coordinate Geometry, LCM, GCD, Concept of Set.
+
+
+\section{Rationale}
+
+This course of Mathematics is being introduced for providing a solid foundation in basic mathematics concepts and operations that are crucial for further education and everyday problem-solving. This course is an attempt to include topics which are directly applicable to various fields of engineering, technology, business and sciences and develop logical reasoning and critical thinking abilities. The course is designed focusing on multidisciplinary and competency development to ensure students can effectively use mathematical methods and principles in their vocational and technical fields. The components of course ensure that it is comprehensive, practical and aligned with both academic and professional requirements.
+
+
+\section{Course Outcomes}
+
+After completion of the course, students will be able to:
+
+\begin{longtable}{|p{1cm}|p{11cm}|p{2.5cm}|}
+\hline
+\textbf{No.} & \textbf{Course Outcomes} & \textbf{RBT Level} \\
+\hline
+\endhead
+CO1 & Interpret the function graphically, numerically and analytically. & A \\
+\hline
+CO2 & Demonstrate the ability to algebraically analyse basic functions used in Trigonometry. & A \\
+\hline
+CO3 & Demonstrate the ability to crack engineering related problems based on concepts of Vectors. & A \\
+\hline
+CO4 & Solve basic engineering problems under given conditions of straight lines and circle. & A \\
+\hline
+CO5 & Demonstrate the ability to analyse and illustrate the Functions using the concept of Limit. & A \\
+\hline
+\end{longtable}
+
+*RBT: Revised Bloom's Taxonomy
+
+
+\section{Teaching and Examination Scheme}
+
+\begin{center}
+\small
+\begin{tabular}{|c|c|c|c||p{1.8cm}|p{1.8cm}|p{1.8cm}|p{1.8cm}|c|}
+\hline
+\multicolumn{4}{|c|}{\textbf{Teaching Scheme (Hours)}} & \multicolumn{5}{c|}{\textbf{Assessment Pattern and Marks}} \\
+\hline
+\textbf{L} & \textbf{T} & \textbf{PR} & \textbf{C} & \textbf{\centering Theory ESE (E)} & \textbf{\centering Theory PA (M)} & \textbf{\centering Tutorial/Practical PA (I)} & \textbf{\centering Tutorial/Practical ESE (V)} & \textbf{Total} \\
+\hline
+3 & 1 & 0 & 4 & 70 & 30 & 0 & 0 & 100 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section{Course Content}
+
+\begin{longtable}{|p{1cm}|p{10cm}|p{1.5cm}|p{2cm}|}
+\hline
+\textbf{Unit No.} & \textbf{Content} & \textbf{No. of Hours} & \textbf{\% of Weightage} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Unit No.} & \textbf{Content} & \textbf{No. of Hours} & \textbf{\% of Weightage} \\
+\hline
+\endhead
+\hline
+\endfoot
+1 & \arraybackslash \textbf{Determinant and Function} \newline 1.1 Determinant and its value up to 3rd order (Without properties) \newline 1.2 Function and simple examples \newline 1.3 Logarithm as a function \newline 1.4 Laws of Logarithm and related Simple examples & 9 & 23 \\
+\hline
+2 & \arraybackslash \textbf{Trigonometry} \newline 2.1 Units of Angles (degree and radian) \newline 2.2 Trigonometric Functions \newline 2.3 Allied \& Compound Angles, Multiple-Submultiples angles \newline 2.4 Graph of Sine and Cosine \newline 2.5 Periodic Trigonometric function \newline 2.6 Sum and factor formulae \newline 2.7 Inverse Trigonometric function & 12 & 20 \\
+\hline
+3 & \arraybackslash \textbf{Vectors} \newline 3.1 Introduction to Vectors \newline 3.2 Vector Operations \newline 3.3 Angle between two Vectors \newline 3.4 Applications of Scalar and Vector Product (Work Done and Moment of Force) & 9 & 20 \\
+\hline
+4 & \arraybackslash \textbf{Coordinate Geometry} \newline 4.1 Straight line (Two-point form) and slope of straight line \newline 4.2 Slope point form, Intercept form, General form of line \newline 4.3 Condition of parallel and perpendicular lines \newline 4.4 Equations of Parallel lines and Perpendicular lines to the given lines \newline 4.5 Angle between two lines \newline 4.6 Equation of circle with center and Radius \newline 4.7 General equation of circle \newline 4.8 Tangent and normal to a circle & 8 & 20 \\
+\hline
+5 & \arraybackslash \textbf{Limit} \newline 5.1 Limit of a Function \newline 5.2 Standard formulae of Limit and related simple examples & 7 & 17 \\
+\hline
+\end{longtable}
+
+% TODO: Implement DI specification table
+% TODO: Implement DI learning resources
+% TODO: Implement DI laboratory resources
+\end{document}

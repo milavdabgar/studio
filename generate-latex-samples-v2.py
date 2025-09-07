@@ -221,11 +221,17 @@ After completion of the course, students will be able to:
         latex = r"""
 \section{Course Content}
 
-\begin{longtable}{|p{2.8cm}|p{8.2cm}|p{1.3cm}|p{1.7cm}|}
+\begin{longtable}{|p{1cm}|p{10cm}|p{1.5cm}|p{2cm}|}
 \hline
-\textbf{Unit No.} & \textbf{Content} & \textbf{Hours} & \textbf{Weight\-age (\%)} \\
+\textbf{Unit No.} & \textbf{Content} & \textbf{No. of Hours} & \textbf{\% of Weightage} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Unit No.} & \textbf{Content} & \textbf{No. of Hours} & \textbf{\% of Weightage} \\
 \hline
 \endhead
+\hline
+\endfoot
 """
         
         for unit in content:
@@ -234,12 +240,16 @@ After completion of the course, students will be able to:
             hours = unit.get('hours', 0)
             weightage = unit.get('weightage', 0)
             
-            # First column: ONLY unit number and title
-            unit_header = f"\\textbf{{{unit_num}. {self._escape_latex(unit_title)}}}"
+            # First column: ONLY unit number (no title)
+            unit_number = str(unit_num).replace('.', '')  # Clean unit number
             
-            # Second column: ALL content items properly formatted
+            # Second column: Unit title as first line, then content items
             content_items = unit.get('content', [])
             content_lines = []
+            
+            # Add unit title as first line in content column
+            if unit_title:
+                content_lines.append(f"\\textbf{{{self._escape_latex(unit_title)}}}")
             
             for item in content_items:
                 clean_item = self._escape_latex(item).strip()
@@ -249,10 +259,11 @@ After completion of the course, students will be able to:
                         clean_item = clean_item.replace('•', '$\\bullet$')
                     content_lines.append(clean_item)
             
-            # Join content with line breaks - use \newline for within table cells 
+            # Join content with line breaks - use \newline but allow breaks
             content_text = " \\newline ".join(content_lines) if content_lines else ""
             
-            latex += f"{unit_header} & {content_text} & {hours} & {weightage} \\\\\n\\hline\n"
+            # Use array package's \arraybackslash to allow line breaks
+            latex += f"{unit_number} & \\arraybackslash {content_text} & {hours} & {weightage} \\\\\n\\hline\n"
         
         latex += r"\end{longtable}" + "\n\n"
         return latex
@@ -766,6 +777,10 @@ def main():
         {
             "name": "Java Programming (Old Format - Complex)",
             "path": "content/resources/study-materials/32-ict/sem-4/4343203-java/4343203.json"
+        },
+        {
+            "name": "Java Programming (New DI Format - sem-3)",
+            "path": "content/resources/study-materials/32-ict/sem-3/DI03032021/DI03032021.json"
         }
     ]
     

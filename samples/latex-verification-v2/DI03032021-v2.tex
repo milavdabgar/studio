@@ -1,0 +1,215 @@
+
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+% GTU Colors
+\definecolor{gtublue}{RGB}{0,51,102}
+\definecolor{gtuorange}{RGB}{255,102,0}
+
+% Header and Footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{gtublue}{\textbf{Gujarat Technological University}}}
+\fancyhead[R]{\textcolor{gtuorange}{\textbf{w.e.f. 2024-25}}}
+\fancyfoot[L]{\textcolor{gtublue}{\small DI03032021}}
+\fancyfoot[C]{\thepage}
+\fancyfoot[R]{\textcolor{gtuorange}{\small Java Programming}}
+
+% Adjust header height
+\setlength{\headheight}{15pt}
+
+% Section styling
+\titleformat{\section}{\Large\bfseries\color{gtublue}}{}{0em}{}
+\titleformat{\subsection}{\large\bfseries\color{gtuorange}}{}{0em}{}
+
+% Custom commands
+\newcommand{\courseheader}[2]{
+    \begin{center}
+        \textcolor{gtublue}{\Huge\textbf{#1}}\\
+        \vspace{0.3cm}
+        \textcolor{gtuorange}{\Large Course Code: #2}\\
+        \vspace{0.5cm}
+        \rule{\textwidth}{2pt}
+    \end{center}
+}
+
+\begin{document}
+\courseheader{Java Programming}{DI03032021}
+
+
+\section{Course Information}
+
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Field} & \textbf{Details} \\
+\hline
+Program & Engineering \\
+\hline
+Branch & Information \& Communication Technology \\
+\hline
+Level & Diploma \\
+\hline
+Semester & 3 \\
+\hline
+Academic Year & w.e.f. 2024-25 \\
+\hline
+Category & PCC \\
+\hline
+\end{tabular}
+
+
+\section{Prerequisites}
+
+Basic computer programming concepts: Students should have a foundational understanding of programming principles, including variables, control structures, data types, and basic algorithms. Familiarity with any programming language, such as C or Python, is recommended.
+
+
+\section{Rationale}
+
+The aim of this course is for students to master platform-independent object-oriented programming with Java as the foundation for advanced technologies like web applications, cloud computing, and enterprise systems. Students will learn to design, implement, test, and debug Java applications using object-oriented principles. The course emphasizes hands-on programming experience through practical exercises and projects that reinforce theoretical concepts and develop problem-solving abilities.
+
+
+\section{Course Outcomes}
+
+After completion of the course, students will be able to:
+
+\begin{longtable}{|p{1cm}|p{11cm}|p{2.5cm}|}
+\hline
+\textbf{No.} & \textbf{Course Outcomes} & \textbf{RBT Level} \\
+\hline
+\endhead
+CO1 & Write simple Java programs using basic syntax, data types, and control structures. & R,U,A \\
+\hline
+CO2 & Apply object-oriented programming concepts to solve real-world problems. & R,U,A \\
+\hline
+CO3 & Develop Java applications using inheritance, interfaces, and packages. & R,U,A \\
+\hline
+CO4 & Implement exception handling and multithreading in Java programs. & R,U,A \\
+\hline
+CO5 & Develop Java applications using file handling and collections framework. & R,U,A \\
+\hline
+\end{longtable}
+
+*RBT: Revised Bloom's Taxonomy
+
+
+\section{Teaching and Examination Scheme}
+
+\begin{center}
+\small
+\begin{tabular}{|c|c|c|c||p{1.8cm}|p{1.8cm}|p{1.8cm}|p{1.8cm}|c|}
+\hline
+\multicolumn{4}{|c|}{\textbf{Teaching Scheme (Hours)}} & \multicolumn{5}{c|}{\textbf{Assessment Pattern and Marks}} \\
+\hline
+\textbf{L} & \textbf{T} & \textbf{PR} & \textbf{C} & \textbf{\centering Theory ESE (E)} & \textbf{\centering Theory PA (M)} & \textbf{\centering Tutorial/Practical PA (I)} & \textbf{\centering Tutorial/Practical ESE (V)} & \textbf{Total} \\
+\hline
+3 & 0 & 2 & 4 & 70 & 30 & 20 & 30 & 150 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section{Course Content}
+
+\begin{longtable}{|p{1cm}|p{10cm}|p{1.5cm}|p{2cm}|}
+\hline
+\textbf{Unit No.} & \textbf{Content} & \textbf{No. of Hours} & \textbf{\% of Weightage} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Unit No.} & \textbf{Content} & \textbf{No. of Hours} & \textbf{\% of Weightage} \\
+\hline
+\endhead
+\hline
+\endfoot
+1 & \arraybackslash \textbf{Introduction to Java Programming} \newline 1.1 Explain Java features and platform independence \newline $\bullet$ Introduction to Java and history \newline $\bullet$ Features of Java and JVM architecture \newline $\bullet$ Java applications and platform independence \newline 1.2 Install and configure Java development environment \newline $\bullet$ JDK, JRE, and JVM components \newline $\bullet$ Java environment setup and tools \newline 1.3 Write, compile, and execute simple Java programs \newline $\bullet$ Structure of Java program \newline $\bullet$ Compilation and execution process \newline $\bullet$ Comments and documentation \newline 1.4 Apply data types, variables, and operators in Java programs \newline $\bullet$ Primitive data types and variables \newline $\bullet$ Type conversion and casting \newline $\bullet$ Operators (arithmetic, relational, logical, bitwise) \newline $\bullet$ Operator precedence and associativity & 9 & 20 \\
+\hline
+2 & \arraybackslash \textbf{Object-Oriented Programming Concepts} \newline 2.1 Explain object-oriented programming principles \newline $\bullet$ Object-oriented programming fundamentals \newline $\bullet$ Class, object, encapsulation, inheritance, polymorphism \newline $\bullet$ Procedural vs. Object-oriented programming \newline 2.2 Create classes and objects in Java \newline $\bullet$ Class definition and object creation \newline $\bullet$ Memory allocation for objects \newline $\bullet$ Object references and garbage collection \newline 2.3 Apply encapsulation through access modifiers \newline $\bullet$ Access modifiers (public, private, protected, default) \newline $\bullet$ Data hiding and encapsulation principles \newline $\bullet$ Getter and setter methods \newline 2.4 Implement constructors and methods in Java programs \newline $\bullet$ Methods and parameter passing \newline $\bullet$ 'this' keyword and its usage \newline $\bullet$ Constructor types and chaining \newline 2.5 Use method overloading and static components \newline $\bullet$ Method overloading principles \newline $\bullet$ Constructor overloading \newline $\bullet$ Static variables, methods, and blocks \newline $\bullet$ Final keyword with variables, methods, and classes & 9 & 20 \\
+\hline
+3 & \arraybackslash \textbf{Inheritance, Interfaces, and Packages} \newline 3.1 Implement inheritance in Java programs \newline $\bullet$ Inheritance concepts and types \newline 3.2 Apply method overriding and polymorphism \newline $\bullet$ Method overriding principles \newline $\bullet$ Dynamic method dispatch \newline 3.3 Create and implement interfaces \newline $\bullet$ Interface definition and implementation \newline $\bullet$ Multiple inheritance through interfaces \newline 3.4 Develop abstract classes \newline $\bullet$ Abstract classes and methods \newline 3.5 Organize code using packages \newline $\bullet$ Package creation and management \newline $\bullet$ Import statements and access control & 9 & 20 \\
+\hline
+4 & \arraybackslash \textbf{Exception Handling and Multithreading} \newline 4.1 Implement exception handling in Java applications \newline $\bullet$ Exception handling fundamentals \newline $\bullet$ Exception hierarchy and types \newline $\bullet$ Try, catch, finally blocks \newline 4.2 Create custom exceptions \newline $\bullet$ Custom exception creation \newline $\bullet$ Exception handling best practices \newline 4.3 Explain multithreading concepts and benefits \newline $\bullet$ Multithreading concepts and benefits \newline $\bullet$ Process vs. Thread \newline $\bullet$ Thread lifecycle and states \newline 4.4 Create and manage threads in Java programs \newline $\bullet$ Thread creation approaches \newline $\bullet$ Extending Thread class \newline $\bullet$ Implementing Runnable interface \newline $\bullet$ Thread synchronization and communication & 9 & 20 \\
+\hline
+5 & \arraybackslash \textbf{Collections \& File Handling} \newline 5.1 Implement string manipulation in Java programs \newline $\bullet$ String class and its methods \newline $\bullet$ String immutability concept \newline $\bullet$ StringBuilder and StringBuffer \newline $\bullet$ String operations and regular expressions \newline 5.2 Apply Java Collections Framework for data management \newline $\bullet$ Collections Framework overview \newline $\bullet$ List interface and implementations (ArrayList, LinkedList) \newline $\bullet$ Set interface and implementations (HashSet, TreeSet) \newline $\bullet$ Map interface and implementations (HashMap, TreeMap) \newline $\bullet$ Iterator and enhanced for-loop \newline 5.3 Perform file input/output operations \newline $\bullet$ File handling fundamentals \newline $\bullet$ File class and operations \newline $\bullet$ Byte streams vs. Character streams \newline $\bullet$ Reading and writing text files \newline 5.4 Implement serialization for object persistence \newline $\bullet$ Object serialization concepts \newline $\bullet$ Serializable interface \newline $\bullet$ ObjectInputStream and ObjectOutputStream & 9 & 20 \\
+\hline
+\end{longtable}
+
+% TODO: Implement DI specification table
+% TODO: Implement DI learning resources
+
+\section{Suggested Course Practical List}
+
+\begin{longtable}{|p{0.8cm}|p{10.5cm}|p{1.3cm}|p{1.4cm}|}
+\hline
+\textbf{Sr. No} & \textbf{Practical Outcomes (PrOs)} & \textbf{Unit No.} & \textbf{Hrs.} \\
+\hline
+\endhead
+1 & Install JDK, write a simple "Hello World" program, compile, and execute using Java compiler and interpreter. & I & 1 \\
+\hline
+2 & Write a Java program to implement basic arithmetic operations and demonstrate type casting. & I & 1 \\
+\hline
+3 & Create a Java program that demonstrates the use of decision-making and loop statements. & I & 1 \\
+\hline
+4 & Develop a program to perform operations on one-dimensional and two-dimensional arrays. & I & 1 \\
+\hline
+5 & Write a program that demonstrates the use of enhanced for-loop with arrays and simple lambda expressions. & I & 1 \\
+\hline
+6 & Create a class to represent a Student with appropriate attributes and methods, then instantiate and manipulate Student objects. & II & 1 \\
+\hline
+7 & Implement a class with proper encapsulation using private attributes and public getter/setter methods. & II & 1 \\
+\hline
+8 & Create a program that demonstrates the use of constructors and 'this' keyword. & II & 1 \\
+\hline
+9 & Develop a program to demonstrate method overloading for different operations. & II & 1 \\
+\hline
+10 & Implement a class with static methods, variables, and blocks, then demonstrate their behaviour. & II & 1 \\
+\hline
+11 & Create a program to demonstrate single, multilevel, and hierarchical inheritance. & III & 1 \\
+\hline
+12 & Implement method overriding and demonstrate dynamic method dispatch. & III & 1 \\
+\hline
+13 & Develop a program with an abstract class containing both abstract and concrete methods. & III & 1 \\
+\hline
+14 & Create and implement interfaces for multiple inheritance and define default methods. & III & 1 \\
+\hline
+15 & Develop a program that organizes classes in packages and demonstrates import statements. & III & 1 \\
+\hline
+16 & Implement exception handling using try, catch, and finally blocks for different scenarios. & IV & 1 \\
+\hline
+17 & Create custom exceptions and demonstrate their usage in handling specific error conditions. & IV & 1 \\
+\hline
+18 & Develop a multithreaded application by extending Thread class to perform concurrent tasks. & IV & 1 \\
+\hline
+19 & Implement a multithreaded program using Runnable interface and demonstrate thread states. & IV & 1 \\
+\hline
+20 & Create a program that demonstrates thread synchronization and inter-thread communication. & IV & 1 \\
+\hline
+21 & Develop a program to demonstrate String class methods and string manipulation operations. & V & 1 \\
+\hline
+22 & Implement a program using ArrayList and LinkedList to demonstrate List interface capabilities. & V & 1 \\
+\hline
+23 & Create an application that utilizes HashSet and HashMap for efficient data management. & V & 1 \\
+\hline
+24 & Develop a program to read, write, and manipulate text files using file streams. & V & 1 \\
+\hline
+25 & Implement object serialization to save and retrieve object states from files. & V & 2 \\
+\hline
+26 & Develop a program that demonstrates serialization of collection objects. & V & 2 \\
+\hline
+27 & Create a simple CRUD application combining collections, file handling, and exception handling. & Multiple & 2 \\
+\hline
+\end{longtable}
+
+% TODO: Implement DI laboratory resources
+% TODO: Implement DI project list
+% TODO: Implement DI student activities
+\end{document}
