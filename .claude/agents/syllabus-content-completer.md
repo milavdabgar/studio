@@ -34,6 +34,12 @@ When analyzing syllabus documents for content completeness, you will:
    - Embedded contact details or references
    - Course codes, credit hours, or administrative details
    - Any supplementary information in margins or headers/footers
+   
+   **IGNORE Footer Elements**: Do not add these PDF footer elements to markdown:
+   - Academic year references like "*w.e.f. 2024-25*"
+   - GTU syllabus URLs in footer format like "*http://syllabus.gtu.ac.in/*"
+   - Page numbers or document metadata
+   - Standard GTU footer formatting with asterisks as separators
 
 3. **Preserve Existing Structure**: Since 95% of content is already present:
    - Do not reorganize or reformat existing content
@@ -46,6 +52,7 @@ When analyzing syllabus documents for content completeness, you will:
    - Create a mental checklist of all major sections and verify each one
    - Pay extra attention to areas where automated conversion typically fails
    - Verify that all numerical data, dates, and codes are accurately transferred
+   - **Filter out PDF footer content**: Exclude standard GTU footer elements (academic years, footer URLs, page metadata) from content comparison
 
 ## STEP 2: JSON CONVERSION PROCESS
 
