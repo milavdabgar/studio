@@ -4,14 +4,14 @@
     "subcode": "4331101",
     "courseTitle": "Electronic Circuits & Networks",
     "subjectName": "Electronic Circuits & Networks",
-    "semester": "3",
+    "semester": 3,
     "program": "Electronics and Communication Engineering",
     "level": "Diploma",
     "curriculum": "COGC-2021",
     "category": "Core",
-    "departmentId": "11",
-    "programId": "ec",
-    "departmentName": "Electronics and Communication Engineering",
+    "departmentId": "EC",
+    "programId": "EC",
+    "departmentName": "Electronics and Communication",
     "programName": "Electronics and Communication Engineering"
   },
   "teachingExamScheme": {
@@ -40,7 +40,7 @@
       "isTheory": true,
       "theoryExamDuration": "3 hours",
       "isPractical": true,
-      "practicalExamDuration": "2 hours",
+      "practicalExamDuration": "3 hours",
       "isFunctional": false,
       "isSemiPractical": false
     }
@@ -69,6 +69,478 @@
       "description": "Build different types of Attenuators and constant K-type passive filters."
     }
   ],
+  "underpinningTheory": [
+    {
+      "unitNumber": "Unit-I",
+      "unitTitle": "Network Elements And Network Topology",
+      "unitOutcomes": [
+        {
+          "id": "1a",
+          "description": "Define network elements."
+        },
+        {
+          "id": "1b",
+          "description": "Determine voltage, current and power relationship for resistors connected in series, parallel and in combination"
+        },
+        {
+          "id": "1c",
+          "description": "Determine voltage, current and power relationship for capacitors connected in series, parallel and in combination"
+        },
+        {
+          "id": "1d",
+          "description": "Determine voltage, current and power relationship for capacitors connected in series, parallel and in combination"
+        },
+        {
+          "id": "1e",
+          "description": "Analyze the circuit to calculate voltage and current at various Points in circuit"
+        },
+        {
+          "id": "1f",
+          "description": "Explain Energy source and source transformation."
+        },
+        {
+          "id": "1g",
+          "description": "Differentiate between voltage source and current source."
+        },
+        {
+          "id": "1h",
+          "description": "Define various terms related to network topology."
+        }
+      ],
+      "topics": [
+        {
+          "topicNumber": "1.1",
+          "title": "Network Elements",
+          "subtopics": [
+            "Active elements, Passive elements",
+            "Bilateral and unilateral elements",
+            "Lumped and distributed elements",
+            "Linear and nonlinear elements"
+          ]
+        },
+        {
+          "topicNumber": "1.2",
+          "title": "Resistor Connections",
+          "subtopics": [
+            "Resistors connected in series",
+            "Resistors connected in parallel",
+            "Resistors in combination"
+          ]
+        },
+        {
+          "topicNumber": "1.3",
+          "title": "Capacitor Connections",
+          "subtopics": [
+            "Capacitors connected in series",
+            "Capacitors connected in parallel",
+            "Capacitors in combination"
+          ]
+        },
+        {
+          "topicNumber": "1.4",
+          "title": "Inductor Connections",
+          "subtopics": [
+            "Inductors connected in series",
+            "Inductors connected in parallel",
+            "Inductors in combination"
+          ]
+        },
+        {
+          "topicNumber": "1.5",
+          "title": "Circuit Analysis Methods",
+          "subtopics": [
+            "Voltage division method",
+            "Current division method"
+          ]
+        },
+        {
+          "topicNumber": "1.6",
+          "title": "Energy Sources",
+          "subtopics": ["Energy sources"]
+        },
+        {
+          "topicNumber": "1.7",
+          "title": "Source Transformation",
+          "subtopics": [
+            "Voltage source to current source transformation",
+            "Current source to voltage source transformation",
+            "Ideal and practical sources"
+          ]
+        },
+        {
+          "topicNumber": "1.8",
+          "title": "Network Topology Terms",
+          "subtopics": [
+            "Branch, Node, Loop, Mesh",
+            "Terms related to network topology"
+          ]
+        },
+        {
+          "topicNumber": "1.9",
+          "title": "Network Graph",
+          "subtopics": ["The 'graph' of a network"]
+        },
+        {
+          "topicNumber": "1.10",
+          "title": "Network Tree",
+          "subtopics": ["'Tree' of a network"]
+        },
+        {
+          "topicNumber": "1.11",
+          "title": "Tie-set Schedules",
+          "subtopics": ["Link current: Tie-set Schedules"]
+        },
+        {
+          "topicNumber": "1.12",
+          "title": "Cut-set Schedules",
+          "subtopics": ["Tree-branch voltages: Cut set Schedules"]
+        },
+        {
+          "topicNumber": "1.13",
+          "title": "Mesh Current Method",
+          "subtopics": ["Mesh current method of choosing current variables"]
+        },
+        {
+          "topicNumber": "1.14",
+          "title": "Loop Current Method",
+          "subtopics": ["Loop current method"]
+        },
+        {
+          "topicNumber": "1.15",
+          "title": "Node-pair Voltage Method",
+          "subtopics": ["Node-pair voltage Method"]
+        },
+        {
+          "topicNumber": "1.16",
+          "title": "Node-to-datum Voltage Method",
+          "subtopics": ["Node-to-datum Voltage Method"]
+        }
+      ]
+    },
+    {
+      "unitNumber": "Unit-II",
+      "unitTitle": "Two Port Networks",
+      "unitOutcomes": [
+        {
+          "id": "2a",
+          "description": "Distinguish the various networks."
+        },
+        {
+          "id": "2b",
+          "description": "Explain Network Configuration"
+        },
+        {
+          "id": "2c",
+          "description": "Represent Two Port Parameter"
+        },
+        {
+          "id": "2d",
+          "description": "Define various two port impedances"
+        },
+        {
+          "id": "2e",
+          "description": "Describe steps to obtain characteristic impedance of standard T and π networks (ZOT and ZOπ)"
+        },
+        {
+          "id": "2f",
+          "description": "Describe steps to obtain relation between ZOT and ZOπ"
+        },
+        {
+          "id": "2g",
+          "description": "Describe steps of conversion between T to π networks and vice versa"
+        }
+      ],
+      "topics": [
+        {
+          "topicNumber": "2.1",
+          "title": "Network Classification",
+          "subtopics": [
+            "Passive and Active networks",
+            "Linear and Non-linear networks",
+            "Lumped and Distributed networks",
+            "Unilateral and Bilateral networks",
+            "Symmetrical and Asymmetrical networks",
+            "Single port and Two port Networks"
+          ]
+        },
+        {
+          "topicNumber": "2.2",
+          "title": "Network Sections",
+          "subtopics": [
+            "T section: Symmetrical and Asymmetrical",
+            "π section: Symmetrical and Asymmetrical"
+          ]
+        },
+        {
+          "topicNumber": "2.3",
+          "title": "Z-parameter",
+          "subtopics": ["Representation of Z-parameter"]
+        },
+        {
+          "topicNumber": "2.4",
+          "title": "Y-parameter",
+          "subtopics": ["Representation of Y-parameter"]
+        },
+        {
+          "topicNumber": "2.5",
+          "title": "h-parameter",
+          "subtopics": ["Representation of h-parameter"]
+        },
+        {
+          "topicNumber": "2.6",
+          "title": "ABCD parameter",
+          "subtopics": ["Representation of ABCD parameter"]
+        },
+        {
+          "topicNumber": "2.7",
+          "title": "Two Port Impedances",
+          "subtopics": [
+            "Transfer Impedance",
+            "Driving point Impedance",
+            "Image Impedance",
+            "Terminating Impedance",
+            "Input and Output Impedances"
+          ]
+        },
+        {
+          "topicNumber": "2.8",
+          "title": "Characteristic Impedance",
+          "subtopics": [
+            "Characteristic Impedance of standard T networks (ZOT)",
+            "Characteristic Impedance of standard π networks (ZOπ)",
+            "Relation between ZOT and ZOπ"
+          ]
+        },
+        {
+          "topicNumber": "2.9",
+          "title": "Network Conversion",
+          "subtopics": [
+            "T to π network conversion",
+            "π to T network conversion",
+            "Star to Delta conversion",
+            "Delta to Star conversion"
+          ]
+        }
+      ]
+    },
+    {
+      "unitNumber": "Unit-III",
+      "unitTitle": "Network Theorems",
+      "unitOutcomes": [
+        {
+          "id": "3a",
+          "description": "Analyze the circuit to Calculate voltage and current in the given resistive circuits using KCL and KVL"
+        },
+        {
+          "id": "3b",
+          "description": "Analyse the resistive circuits to calculate voltage and current using Mesh and nodal analysis method"
+        },
+        {
+          "id": "3c",
+          "description": "Explain the steps to find the dual of given circuit having R-L-C"
+        },
+        {
+          "id": "3d",
+          "description": "Explain the steps to Calculate the current in any branch of the circuit using Superposition Theorem."
+        },
+        {
+          "id": "3e",
+          "description": "Use Superposition Theorem to calculate the current in any branch of the circuit."
+        },
+        {
+          "id": "3f",
+          "description": "Explain the steps to calculate the Vth, Rth and load current in the circuit using Thevenin's Theorem."
+        },
+        {
+          "id": "3g",
+          "description": "Use Thevenin's Theorem to calculate Vth, Rth and load current in the given circuit."
+        },
+        {
+          "id": "3h",
+          "description": "Explain the steps to calculate the load current in the circuit using Norton's Theorem."
+        },
+        {
+          "id": "3i",
+          "description": "Calculate the load current in the given circuit using Norton's Theorem."
+        },
+        {
+          "id": "3j",
+          "description": "Describe the Maximum Power Transfer condition for any given circuit"
+        },
+        {
+          "id": "3k",
+          "description": "Define the Reciprocity Theorem"
+        }
+      ],
+      "topics": [
+        {
+          "topicNumber": "3.1",
+          "title": "Kirchhoff's Laws",
+          "subtopics": [
+            "Kirchhoff's Voltage Law (KVL)",
+            "Kirchhoff's Current Law (KCL)"
+          ]
+        },
+        {
+          "topicNumber": "3.2",
+          "title": "Network Analysis Methods",
+          "subtopics": [
+            "Mesh Analysis of Networks",
+            "Nodal Analysis of Networks"
+          ]
+        },
+        {
+          "topicNumber": "3.3",
+          "title": "Duality Principle",
+          "subtopics": ["Principle of Duality"]
+        },
+        {
+          "topicNumber": "3.4",
+          "title": "Network Theorems",
+          "subtopics": [
+            "Super Position Theorem",
+            "Thevenin's Theorem",
+            "Norton's Theorem",
+            "Maximum Power Transfer Theorem",
+            "Reciprocity Theorem"
+          ]
+        }
+      ]
+    },
+    {
+      "unitNumber": "Unit-IV",
+      "unitTitle": "Resonance and Coupled Circuits",
+      "unitOutcomes": [
+        {
+          "id": "4a",
+          "description": "Determine Quality factor of a Coil and Capacitor."
+        },
+        {
+          "id": "4b",
+          "description": "Analyze the behavior of Series and Parallel resonant circuit using frequency response curve and calculate resonance frequency and various parameters of Series and Parallel resonant circuit."
+        }
+      ],
+      "topics": [
+        {
+          "topicNumber": "4.1",
+          "title": "Quality Factor",
+          "subtopics": [
+            "Quality factor of coil",
+            "Q-factor of capacitor"
+          ]
+        },
+        {
+          "topicNumber": "4.2",
+          "title": "Resonant Circuits",
+          "subtopics": [
+            "Series resonant circuit",
+            "Parallel resonant circuit",
+            "Resonance frequency",
+            "Impedance at resonance",
+            "Bandwidth of resonance circuit",
+            "Selectivity of series resonance circuit",
+            "Selectivity of parallel resonance circuit"
+          ]
+        },
+        {
+          "topicNumber": "4.3",
+          "title": "Coupled Circuits",
+          "subtopics": [
+            "Coupled circuit",
+            "Mutual Inductance"
+          ]
+        },
+        {
+          "topicNumber": "4.4",
+          "title": "Coupling Coefficient",
+          "subtopics": ["Derive equation for co-efficient of coupling"]
+        }
+      ]
+    },
+    {
+      "unitNumber": "Unit-V",
+      "unitTitle": "Attenuators & Filters",
+      "unitOutcomes": [
+        {
+          "id": "5a",
+          "description": "Classify various types Of attenuators."
+        },
+        {
+          "id": "5b",
+          "description": "Explain relation between decibel and neper"
+        },
+        {
+          "id": "5c",
+          "description": "Using the relation N= Is / IR obtain the equations of R1 and R2for Symmetrical T and π Types of attenuators offering Given amount of attenuation (Kirchhoff's Laws and Mesh analysis)"
+        },
+        {
+          "id": "5d",
+          "description": "Define Lattice attenuator"
+        },
+        {
+          "id": "5e",
+          "description": "Classify the various passive Filter circuits."
+        },
+        {
+          "id": "5f",
+          "description": "Derive the cut-off frequency equations for constant-k type, T and π sections of low Pass and High Pass filters"
+        },
+        {
+          "id": "5g",
+          "description": "Use the pass band equation -1 < Z1 / 4Z2 < 0 to obtain the equation of cut-off frequency for Constant-k type T & π sections- Low Pass and High Pass filters and calculate fc."
+        },
+        {
+          "id": "5h",
+          "description": "Use the equations R02=L/C and the equation for fc to obtain the equations for L and C and calculate values of L and C for given specifications."
+        },
+        {
+          "id": "5i",
+          "description": "Describe limitations of constant-k type filters."
+        },
+        {
+          "id": "5j",
+          "description": "Compare high pass, low pass, band Pass and band stop filters."
+        }
+      ],
+      "topics": [
+        {
+          "topicNumber": "5.1",
+          "title": "Attenuators",
+          "subtopics": [
+            "Attenuators",
+            "T type attenuators",
+            "π type attenuators",
+            "Lattice attenuators"
+          ]
+        },
+        {
+          "topicNumber": "5.2",
+          "title": "Filter Classification",
+          "subtopics": ["Classification of passive filters"]
+        },
+        {
+          "topicNumber": "5.3",
+          "title": "Constant K-type Filters",
+          "subtopics": [
+            "Constant 'K' type filter",
+            "T sections - Low Pass",
+            "T sections - High Pass", 
+            "π sections - Low Pass",
+            "π sections - High Pass"
+          ]
+        },
+        {
+          "topicNumber": "5.4",
+          "title": "Band Pass and Band Stop Filters",
+          "subtopics": [
+            "Introduction to band pass filters",
+            "Introduction to band stop filters",
+            "Comparison of band pass and band stop filters"
+          ]
+        }
+      ]
+    }
+  ],
   "practicalExercises": [
     {
       "srNo": 1,
@@ -87,7 +559,7 @@
     {
       "srNo": 3,
       "description": "Calculate voltage in the given resistive circuits using KVL.",
-      "unitNo": "3",
+      "unitNo": "3", 
       "hours": 2,
       "isCompulsory": true
     },
@@ -163,7 +635,7 @@
     },
     {
       "srNo": 14,
-      "description": "Using the relation N=Is/IR and design equations of R1 and R2 for Symmetrical T and π types of attenuators offering given amount attenuation solve the numericals.",
+      "description": "Using the relation N=Is/IR and design equations of R1 and R2 for Symmetrical T and π types of attenuators offering given amount of attenuation solve the numericals.",
       "unitNo": "5",
       "hours": 2,
       "isCompulsory": false
@@ -189,6 +661,43 @@
       "hours": 2,
       "isCompulsory": false
     }
+  ],
+  "performanceIndicators": [
+    {
+      "indicator": "Prepare of experimental setup",
+      "weightage": 20
+    },
+    {
+      "indicator": "Operate the equipment setup or circuit",
+      "weightage": 30
+    },
+    {
+      "indicator": "Follow safe practices measures",
+      "weightage": 10
+    },
+    {
+      "indicator": "Record observations correctly",
+      "weightage": 30
+    },
+    {
+      "indicator": "Interpret the result and conclude",
+      "weightage": 10
+    }
+  ],
+  "equipment": {
+    "hardware": [
+      "Dual variable DC power supply, 0-30V, 2A, With Short circuit protection, separate display for voltage and current",
+      "Cathode Ray Oscilloscope, Dual Trace 20Mhz, 1MegaΩ Input Impedance",
+      "Function Generator 0-2 MHz with Sine, square and triangular output with variable frequency and amplitude",
+      "Digital Multimeter: 3 1/2 digit display, 9999 counts digital multimeter measures: Vac, Vdc (1000V max), Adc, Aac (10 amp max), Resistance (0 - 2 Mega Ohm), with diode and transistor tester",
+      "Bread Board 840-1000 contact points: Positive and Negative DC power rails on opposite sides of the board",
+      "Trainer kit for Network Theorems, Resonance and Passive Filters"
+    ],
+    "software": []
+  },
+  "affectiveDomainOutcomes": [
+    "Work as a leader/a team member.",
+    "Follow safety practices while using electrical, electronics, pneumatic instruments and tools."
   ],
   "specificationTable": [
     {
@@ -252,385 +761,6 @@
       "totalMarks": 14
     }
   ],
-  "performanceIndicators": [
-    {
-      "indicator": "Prepare of experimental setup",
-      "weightage": 20
-    },
-    {
-      "indicator": "Operate the equipment setup or circuit",
-      "weightage": 30
-    },
-    {
-      "indicator": "Follow safe practices measures",
-      "weightage": 10
-    },
-    {
-      "indicator": "Record observations correctly",
-      "weightage": 30
-    },
-    {
-      "indicator": "Interpret the result and conclude",
-      "weightage": 10
-    }
-  ],
-  "equipment": {
-    "hardware": [
-      "Dual variable DC power supply, 0-30V, 2A, With Short circuit protection, separate display for voltage and current",
-      "Cathode Ray Oscilloscope, Dual Trace 20Mhz, 1MegaΩ Input Impedance", 
-      "Function Generator 0-2 MHz with Sine, square and triangular output with variable frequency and amplitude",
-      "Digital Multimeter: 3 1/2 digit display, 9999 counts digital multimeter measures: Vac, Vdc (1000V max), Adc, Aac (10 amp max), Resistance (0 - 2 Mega Ohm), with diode and transistor tester",
-      "Bread Board 840-1000 contact points: Positive and Negative DC power rails on opposite sides of the board",
-      "Trainer kit for Network Theorems, Resonance and Passive Filters"
-    ],
-    "software": []
-  },
-  "affectiveDomainOutcomes": [
-    "Work as a leader/a team member.",
-    "Follow safety practices while using electrical, electronics, pneumatic instruments and tools."
-  ],
-  "underpinningTheory": [
-    {
-      "unitNumber": "Unit-I",
-      "unitTitle": "Network Elements And Network Topology",
-      "unitOutcomes": [
-        {
-          "id": "1a",
-          "description": "Define network elements."
-        },
-        {
-          "id": "1b", 
-          "description": "Determine voltage, current and power relationship for resistors connected in series, parallel and in combination"
-        },
-        {
-          "id": "1c",
-          "description": "Determine voltage, current and power relationship for capacitors connected in series, parallel and in combination"
-        },
-        {
-          "id": "1d",
-          "description": "Determine voltage, current and power relationship for capacitors connected in series, parallel and in combination"
-        },
-        {
-          "id": "1e",
-          "description": "Analyze the circuit to calculate voltage and current at various Points in circuit"
-        },
-        {
-          "id": "1f",
-          "description": "Explain Energy source and source transformation."
-        },
-        {
-          "id": "1g",
-          "description": "Differentiate between voltage source and current source."
-        },
-        {
-          "id": "1h",
-          "description": "Define various terms related to network topology."
-        }
-      ],
-      "topics": [
-        {
-          "topicNumber": "1.1",
-          "title": "Active elements, Passive elements, Bilateral and unilateral elements, Lumped and distributed elements, Linear and nonlinear elements."
-        },
-        {
-          "topicNumber": "1.2",
-          "title": "Resistors connected in series, parallel and in combination"
-        },
-        {
-          "topicNumber": "1.3",
-          "title": "Capacitors connected in series, parallel and in combination"
-        },
-        {
-          "topicNumber": "1.4",
-          "title": "Inductors connected in series, parallel and in combination"
-        },
-        {
-          "topicNumber": "1.5",
-          "title": "Voltage and Current division method"
-        },
-        {
-          "topicNumber": "1.6",
-          "title": "Energy sources"
-        },
-        {
-          "topicNumber": "1.7",
-          "title": "Transformation of energy sources- Voltage source to current source and vice versa (ideal and practical)"
-        },
-        {
-          "topicNumber": "1.8",
-          "title": "Branch, Node, Loop, Mesh and terms related to network topology"
-        },
-        {
-          "topicNumber": "1.9",
-          "title": "The 'graph' of a network"
-        },
-        {
-          "topicNumber": "1.10",
-          "title": "'Tree' of a network"
-        },
-        {
-          "topicNumber": "1.11",
-          "title": "Link current: Tie-set Schedules"
-        },
-        {
-          "topicNumber": "1.12",
-          "title": "Tree-branch voltages: Cut set Schedules"
-        },
-        {
-          "topicNumber": "1.13",
-          "title": "Mesh current method of choosing current variables"
-        },
-        {
-          "topicNumber": "1.14",
-          "title": "Loop current method"
-        },
-        {
-          "topicNumber": "1.15",
-          "title": "Node-pair voltage Method"
-        },
-        {
-          "topicNumber": "1.16",
-          "title": "Node-to-datum Voltage Method"
-        }
-      ]
-    },
-    {
-      "unitNumber": "UNIT- II",
-      "unitTitle": "Two Port Networks",
-      "unitOutcomes": [
-        {
-          "id": "2a",
-          "description": "Distinguish the various networks."
-        },
-        {
-          "id": "2b",
-          "description": "Explain Network Configuration"
-        },
-        {
-          "id": "2c",
-          "description": "Represent Two Port Parameter"
-        },
-        {
-          "id": "2d",
-          "description": "Define various two port impedances"
-        },
-        {
-          "id": "2e",
-          "description": "Describe steps to obtain characteristic impedance of standard T and π networks (ZOT and ZOπ)"
-        },
-        {
-          "id": "2f",
-          "description": "Describe steps to obtain relation between ZOT and ZOπ"
-        },
-        {
-          "id": "2g",
-          "description": "Describe steps of conversion between T to π networks and vice versa"
-        }
-      ],
-      "topics": [
-        {
-          "topicNumber": "2.1",
-          "title": "Passive and Active, Linear and Non-linear, Lumped and Distributed, Unilateral and Bilateral, Symmetrical and Asymmetrical, Single port and Two port Network"
-        },
-        {
-          "topicNumber": "2.2",
-          "title": "T and π section: Symmetrical and Asymmetrical sections"
-        },
-        {
-          "topicNumber": "2.3",
-          "title": "Representation of Z-parameter"
-        },
-        {
-          "topicNumber": "2.4",
-          "title": "Representation of Y-parameter"
-        },
-        {
-          "topicNumber": "2.5",
-          "title": "Representation of h-parameter"
-        },
-        {
-          "topicNumber": "2.6",
-          "title": "Representation of ABCD parameter"
-        },
-        {
-          "topicNumber": "2.7",
-          "title": "Transfer Impedance, Driving point Impedance, Image Impedance and Terminating Impedance, Input and Output Impedances"
-        },
-        {
-          "topicNumber": "2.8",
-          "title": "Characteristic Impedance of standard T and π networks (Z OT and Z Oπ) and relation between them"
-        },
-        {
-          "topicNumber": "2.9",
-          "title": "T to π and π toT network conversion or Star to Delta and Delta to Star conversion"
-        }
-      ]
-    },
-    {
-      "unitNumber": "Unit-III",
-      "unitTitle": "Network Theorems",
-      "unitOutcomes": [
-        {
-          "id": "3a",
-          "description": "Analyze the circuit to Calculate voltage and current in the given resistive circuits using KCL and KVL"
-        },
-        {
-          "id": "3b",
-          "description": "Analyse the resistive circuits to calculate voltage and current using Mesh and nodal analysis method"
-        },
-        {
-          "id": "3c",
-          "description": "Explain the steps to find the dual of given circuit having R-L-C"
-        },
-        {
-          "id": "3d",
-          "description": "Explain the steps to Calculate the current in any branch of the circuit using Superposition Theorem."
-        },
-        {
-          "id": "3e",
-          "description": "Use Superposition Theorem to calculate the current in any branch of the circuit."
-        },
-        {
-          "id": "3f",
-          "description": "Explain the steps to calculate the Vth, Rth and load current in the circuit using Thevenin's Theorem."
-        },
-        {
-          "id": "3g",
-          "description": "Use Thevenin's Theorem to calculate Vth, Rth and load current in the given circuit."
-        },
-        {
-          "id": "3h",
-          "description": "Explain the steps to calculate the load current in the circuit using Norton's Theorem."
-        },
-        {
-          "id": "3i",
-          "description": "Calculate the load current in the given circuit using Norton's Theorem."
-        },
-        {
-          "id": "3j",
-          "description": "Describe the Maximum Power Transfer condition for any given circuit"
-        },
-        {
-          "id": "3k",
-          "description": "Define the Reciprocity Theorem"
-        }
-      ],
-      "topics": [
-        {
-          "topicNumber": "3.1",
-          "title": "Kirchhoff's Voltage and Current law(KVL and KCL)"
-        },
-        {
-          "topicNumber": "3.2",
-          "title": "Mesh Analysis and Nodal Analysis of Networks"
-        },
-        {
-          "topicNumber": "3.3",
-          "title": "Principle of Duality"
-        },
-        {
-          "topicNumber": "3.4",
-          "title": "Super Position Theorem, Thevenin's Theorem, Norton's Theorem, Maximum Power Transfer Theorem, Reciprocity Theorem"
-        }
-      ]
-    },
-    {
-      "unitNumber": "Unit-IV",
-      "unitTitle": "Resonance and Coupled Circuits",
-      "unitOutcomes": [
-        {
-          "id": "4a",
-          "description": "Determine Quality factor of a Coil and Capacitor."
-        },
-        {
-          "id": "4b",
-          "description": "Analyze the behavior of Series and Parallel resonant circuit using frequency response curve and calculate resonance frequency and various parameters of Series and Parallel resonant circuit."
-        }
-      ],
-      "topics": [
-        {
-          "topicNumber": "4.1",
-          "title": "Quality factor or Q-factor of coil and capacitor"
-        },
-        {
-          "topicNumber": "4.2",
-          "title": "Series and parallel resonant circuit, resonance frequency, impedance at resonance, bandwidth and selectivity of series and parallel resonance circuit."
-        },
-        {
-          "topicNumber": "4.3",
-          "title": "Coupled circuit, mutual Inductance"
-        },
-        {
-          "topicNumber": "4.4",
-          "title": "Derive equation for co-efficient of coupling"
-        }
-      ]
-    },
-    {
-      "unitNumber": "Unit-V",
-      "unitTitle": "Attenuators & Filters",
-      "unitOutcomes": [
-        {
-          "id": "5a",
-          "description": "Classify various types Of attenuators."
-        },
-        {
-          "id": "5b",
-          "description": "Explain relation between decibel and neper"
-        },
-        {
-          "id": "5c",
-          "description": "Using the relation N= Is / IR obtain the equations of R1 and R2for Symmetrical T and π Types of attenuators offering Given amount of attenuation (Kirchhoff's Laws and Mesh analysis)"
-        },
-        {
-          "id": "5d",
-          "description": "Define Lattice attenuator"
-        },
-        {
-          "id": "5e",
-          "description": "Classify the various passive Filter circuits."
-        },
-        {
-          "id": "5f",
-          "description": "Derive the cut-off frequency equations for constant-k type, T and π sections of low Pass and High Pass filters"
-        },
-        {
-          "id": "5g",
-          "description": "Use the pass band equation -1 < Z1 / 4Z2 < 0 to obtain the equation of cut-off frequency for Constant-k type T & π sections- Low Pass and High Pass filters and calculate fc."
-        },
-        {
-          "id": "5h",
-          "description": "Use the equations R02=L/C and the equation for fc to obtain the equations for L and C and calculate values of L and C for given specifications."
-        },
-        {
-          "id": "5i",
-          "description": "Describe limitations of constant-k type filters."
-        },
-        {
-          "id": "5j",
-          "description": "Compare high pass, low pass, band Pass and band stop filters."
-        }
-      ],
-      "topics": [
-        {
-          "topicNumber": "5.1",
-          "title": "Attenuators, T and π attenuators, Lattice attenuators"
-        },
-        {
-          "topicNumber": "5.2",
-          "title": "Classification of passive filters"
-        },
-        {
-          "topicNumber": "5.3",
-          "title": "Passive Filters: Constant 'K 'type filter (T and π sections - Low Pass, High Pass)"
-        },
-        {
-          "topicNumber": "5.4",
-          "title": "Introduction and comparison of band pass and band stop filters"
-        }
-      ]
-    }
-  ],
   "studentActivities": [
     "Teacher guided tutorial exercises to solve problems based on all units.",
     "Implement all circuits on breadboard and verify the design."
@@ -654,31 +784,36 @@
         "srNo": 1,
         "title": "Network Analysis",
         "author": "Mithal G.K.",
-        "publication": "Khanna Publication, 2008 or latest Edition"
+        "publication": "Khanna Publication, 2008 or latest Edition",
+        "isbn": ""
       },
       {
         "srNo": 2,
         "title": "Network Analysis and Synthesis",
         "author": "Chakraborti A.",
-        "publication": "Dhanpat Rai Publication, 2009 or latest edition"
+        "publication": "Dhanpat Rai Publication, 2009 or latest edition",
+        "isbn": ""
       },
       {
         "srNo": 3,
         "title": "Networks and Transmission lines",
         "author": "T. Anil Kumar",
-        "publication": "Pearson Education, 2006 or latest edition"
+        "publication": "Pearson Education, 2006 or latest edition",
+        "isbn": ""
       },
       {
         "srNo": 4,
         "title": "Networks Lines and Fields",
         "author": "Ryder J.D.",
-        "publication": "Prentice Hall Inc. 2008 or latest edition"
+        "publication": "Prentice Hall Inc. 2008 or latest edition",
+        "isbn": ""
       },
       {
         "srNo": 5,
         "title": "Network Analysis",
         "author": "M.E.Van Valkenburg",
-        "publication": "Prentice Hall Inc. 2011 or latest edition"
+        "publication": "Prentice Hall Inc. 2011 or latest edition",
+        "isbn": ""
       }
     ],
     "websites": [
@@ -690,7 +825,7 @@
       {
         "title": "All About Circuits",
         "url": "http://www.allaboutcircuits.com/vol_1/index.html",
-        "type": "Learning Resource"
+        "type": "Circuit Learning Resource"
       },
       {
         "title": "Electrical Network - Wikipedia",
@@ -700,7 +835,7 @@
       {
         "title": "McGraw Hill Engineering",
         "url": "http://www.mhhe.com/engcs/electrical/hkd/tutmenu.htm",
-        "type": "Educational Resource"
+        "type": "Tutorial"
       },
       {
         "title": "Network Analysis - Wikipedia",
@@ -712,7 +847,9 @@
         "url": "http://www.indianshout.com/tag/circuit-theory-study-material",
         "type": "Study Material"
       }
-    ]
+    ],
+    "openSourceSoftware": [],
+    "mobileApps": []
   },
   "competencyMapping": {
     "programOutcomes": [
@@ -721,7 +858,7 @@
         "description": "Basic & Discipline specific knowledge"
       },
       {
-        "poNumber": "PO2", 
+        "poNumber": "PO2",
         "description": "Problem Analysis"
       },
       {
@@ -812,23 +949,29 @@
     {
       "name": "Kshama Rajesh Shah",
       "designation": "Lecturer EC",
-      "institute": "Government Polytechnic, Gandhinagar"
+      "institute": "Government Polytechnic, Gandhinagar",
+      "contact": "",
+      "email": ""
     },
     {
       "name": "Aruna J Solanki",
       "designation": "Lecturer EC",
-      "institute": "BBIT, V V NAGAR"
+      "institute": "BBIT, V V NAGAR",
+      "contact": "",
+      "email": ""
     },
     {
       "name": "Ravindra .R. Dudani",
       "designation": "Lecturer EC",
-      "institute": "AVPTI RAJKOT"
+      "institute": "AVPTI RAJKOT",
+      "contact": "",
+      "email": ""
     }
   ],
   "metadata": {
     "syllabusFormat": "old",
     "version": "COGC-2021",
-    "createdAt": "2024-09-08T00:00:00Z",
-    "updatedAt": "2024-09-08T00:00:00Z"
+    "createdAt": "2025-09-08T00:00:00Z",
+    "curriculumVersion": "COGC-2021"
   }
 }
