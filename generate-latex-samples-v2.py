@@ -18,7 +18,7 @@ class SyllabusLatexGenerator:
         return r"""
 \documentclass[11pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
-\usepackage[margin=0.8in,top=1.2in,bottom=1in]{geometry}
+\usepackage[margin=0.6in,top=0.7in,bottom=0.8in]{geometry}
 \usepackage{fancyhdr}
 \usepackage{booktabs}
 \usepackage{longtable}
@@ -71,21 +71,19 @@ class SyllabusLatexGenerator:
 \pagestyle{gtupage}
 
 % Adjust header height for subsequent pages
-\setlength{\headheight}{35pt}
+\setlength{\headheight}{39pt}
 \setlength{\headsep}{15pt}
 
-% Add golden border to all pages except first
+% Add golden border to all pages
 \AddToShipoutPicture{
-    \ifnum\value{page}>1
-        \AtPageLowerLeft{
-            \begin{tikzpicture}[overlay,remember picture]
-                \draw[color=gtugold,line width=2pt] 
-                    ([shift={(12pt,12pt)}]current page.south west) 
-                    rectangle 
-                    ([shift={(-12pt,-12pt)}]current page.north east);
-            \end{tikzpicture}
-        }
-    \fi
+    \AtPageLowerLeft{
+        \begin{tikzpicture}[overlay,remember picture]
+            \draw[color=gtugold,line width=2pt] 
+                ([shift={(12pt,12pt)}]current page.south west) 
+                rectangle 
+                ([shift={(-12pt,-12pt)}]current page.north east);
+        \end{tikzpicture}
+    }
 }
 
 % Section styling - matching GTU format
@@ -104,39 +102,26 @@ class SyllabusLatexGenerator:
 % Table styling to match GTU format
 \renewcommand{\arraystretch}{1.2}
 
-% Custom command for first page header with course details and golden border
+% Custom command for first page header with course details
 \newcommand{\firstpageheader}[5]{
     \thispagestyle{firstpage}
-    \vspace*{-0.5cm}
-    
-    % Golden border around entire page content
-    \noindent\fcolorbox{gtugold}{white}{
-    \begin{minipage}{\dimexpr\textwidth-24pt-4pt\relax}
-    \vspace{0.5cm}
+    \vspace*{0.2cm}
     
     \begin{center}
         % Logo and title section - matching original layout exactly
-        \includegraphics[height=2.2cm]{gtu-logo.png}
-        \hspace{0.8cm}
-        \begin{minipage}[c]{9cm}
+        \includegraphics[height=1.8cm]{gtu-logo.png}
+        \hspace{0.5cm}
+        \begin{minipage}[c]{10cm}
             \centering
-            \textcolor{gtured}{\textbf{\LARGE GUJARAT TECHNOLOGICAL UNIVERSITY}}\\[0.15cm]
-            \textcolor{gtured}{\textbf{\small (Established under Gujarat Technological University Act 2007)}}\\[0.3cm]
-            \textcolor{gtured}{\textbf{\normalsize Program Name: #1}}\\[0.1cm]
-            \textcolor{gtured}{\textbf{\normalsize Level: #2}}\\[0.1cm]
-            \textcolor{gtured}{\textbf{\normalsize Branch: #3}}\\[0.15cm]
-            \textcolor{gtured}{\textbf{\normalsize Course / Subject Code : #4}}\\[0.1cm]
+            \textcolor{gtured}{\textbf{\large GUJARAT TECHNOLOGICAL UNIVERSITY}}\\[0.05cm]
+            \textcolor{gtured}{\textbf{\normalsize Program Name: #1}}\\[0.02cm]
+            \textcolor{gtured}{\textbf{\normalsize Level: #2}}\\[0.02cm]
+            \textcolor{gtured}{\textbf{\normalsize Branch: #3}}\\[0.05cm]
+            \textcolor{gtured}{\textbf{\normalsize Course / Subject Code : #4}}\\[0.02cm]
             \textcolor{gtured}{\textbf{\normalsize Course / Subject Name : #5}}
         \end{minipage}
     \end{center}
-    \vspace{0.5cm}
-}
-
-% Command to end first page border
-\newcommand{\endfirstpage}{
-    \vspace{0.5cm}
-    \end{minipage}
-    }
+    \vspace{0.3cm}
 }
 
 \begin{document}
@@ -617,7 +602,6 @@ After completion of the course, students will be able to:
             latex_content += self._generate_di_course_outcomes(json_data['courseOutcomes'])
         
         # End first page border
-        latex_content += "\\endfirstpage\n\n"
         latex_content += "\\newpage\n\n"
         
         # Teaching and Examination Scheme
