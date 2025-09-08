@@ -1,25 +1,39 @@
 {
   "courseInfo": {
     "courseCode": "1333202",
+    "subcode": "1333202",
     "courseTitle": "Microprocessor & Microcontroller Systems",
+    "subjectName": "Microprocessor & Microcontroller Systems",
     "semester": 3,
     "program": "Information & Communication Technology",
     "level": "Diploma",
-    "curriculum": "COGC-2021"
+    "curriculum": "COGC-2021",
+    "category": "Core"
   },
   "teachingExamScheme": {
     "teachingScheme": {
       "lecture": 3,
+      "lectureHours": 3,
       "tutorial": 0,
+      "tutorialHours": 0,
       "practical": 2,
+      "practicalHours": 2,
       "credits": 4
     },
     "examinationScheme": {
-      "theoryCA": 30,
       "theoryESE": 70,
+      "theoryEseMarks": 70,
+      "theoryCA": 30,
+      "theoryPaMarks": 30,
       "practicalCA": 25,
+      "practicalPaMarks": 25,
       "practicalESE": 25,
+      "practicalEseMarks": 25,
       "totalMarks": 150
+    },
+    "courseFlags": {
+      "isTheory": true,
+      "isPractical": true
     }
   },
   "rationale": "The engineering technologists (i.e. diploma engineering holders) have to develop skills for system design of Automatic circuit operations in various fields. Microprocessors & Microcontroller are the sole of all embedded electronic equipment and are used in most of the areas of electronics. They include product ranges from tiny consumer electronic products to complex industrial process controllers. A diploma engineer needs to maintain such systems. Programming practices will further help the students to develop indigenous microcontroller-based applications. Hence this course is designed to achieve the system maintenance competency among students.",

@@ -503,5 +503,11 @@
       "contact": "99240502939",
       "email": "gpgsecamp@gmail.com"
     }
-  ]
+  ],
+  "metadata": {
+    "syllabusFormat": "old",
+    "curriculumVersion": "COGC-2021",
+    "version": "1.0",
+    "createdAt": "2025-01-27T12:00:00Z"
+  }
 }
