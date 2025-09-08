@@ -228,6 +228,40 @@ After completion of the course, students will be able to:
         
         return latex
     
+    def _get_content_indentation(self, item: str) -> int:
+        """Determine indentation level based on numbering depth and bullet points"""
+        item = item.strip()
+        
+        # Handle bullet points
+        if item.startswith('•'):
+            return 1
+        if item.startswith('○'):
+            return 2
+        
+        # Handle numbered items by counting dots
+        # Examples: "1.1" = 0, "1.1.1" = 1, "1.1.1.1" = 2
+        if item and item[0].isdigit():
+            # Find the first space to get the numbering part
+            space_idx = item.find(' ')
+            if space_idx > 0:
+                numbering = item[:space_idx]
+                dot_count = numbering.count('.')
+                
+                # Indentation based on numbering depth:
+                # 1.1, 2.1 = 0 indentation (base level)
+                # 1.1.1, 1.1.2 = 1 level indentation 
+                # 1.1.1.1 = 2 levels indentation
+                if dot_count == 1:  # 1.1, 2.1
+                    return 0
+                elif dot_count == 2:  # 1.1.1, 1.1.2
+                    return 1  
+                elif dot_count == 3:  # 1.1.1.1, 1.1.1.2
+                    return 2
+                else:  # Deeper nesting
+                    return min(dot_count - 1, 3)  # Cap at 3 levels of indentation
+        
+        return 0
+    
     def _generate_course_content(self, content: List[Dict]) -> str:
         latex = r"""
 \section{Course Content}
@@ -266,34 +300,54 @@ After completion of the course, students will be able to:
             if unit_title:
                 content_lines.append(f"\\textbf{{{self._escape_latex(unit_title)}}}")
             
-            current_main_topic = ""
-            sub_topic_counter = 0
+            # Process content items and convert bullet points to numbered format
+            current_main_topic = None
+            sub_topic_counter = 1
             
             for item in content_items:
                 clean_item = item.strip()
                 
-                # Check if this is a main topic (starts with number like "1.1", "1.2", etc.)
-                if clean_item and clean_item[0].isdigit() and '.' in clean_item[:5]:
-                    # This is a main topic - reset counter and update current topic
-                    current_main_topic = clean_item.split(' ')[0]  # Extract "1.1", "1.2", etc.
-                    sub_topic_counter = 0
-                    clean_item = self._escape_latex(clean_item)
-                    # No indentation for main topics
-                    content_lines.append(clean_item)
+                if not clean_item:
+                    continue
+                
+                # Check if this is a numbered main topic (like "1.1 Something")
+                if clean_item and clean_item[0].isdigit() and '.' in clean_item:
+                    # This is a main topic - reset sub-topic counter
+                    current_main_topic = clean_item.split()[0]  # Get "1.1" part
+                    sub_topic_counter = 1
+                    
+                    # Main topics get no indentation
+                    escaped_item = self._escape_latex(clean_item)
+                    content_lines.append(escaped_item)
+                    
                 elif clean_item.startswith('•'):
-                    # This is a sub-topic - add hierarchical numbering with simple indentation
-                    sub_topic_counter += 1
-                    clean_item = clean_item[1:].strip()  # Remove bullet
-                    # Add hierarchical numbering like 1.1.1, 1.1.2, etc.
-                    numbered_item = f"{current_main_topic}.{sub_topic_counter} {clean_item}"
-                    # Escape first, then add indentation
-                    escaped_item = self._escape_latex(numbered_item)
-                    indented_item = f"\\quad {escaped_item}"
-                    content_lines.append(indented_item)
-                elif clean_item:
-                    # Regular content
-                    clean_item = self._escape_latex(clean_item)
-                    content_lines.append(clean_item)
+                    # Convert bullet point to numbered sub-topic
+                    if current_main_topic:
+                        # Convert "• Something" to "1.1.1 Something" format
+                        bullet_text = clean_item[1:].strip()  # Remove bullet and leading space
+                        numbered_item = f"{current_main_topic}.{sub_topic_counter} {bullet_text}"
+                        sub_topic_counter += 1
+                        
+                        # Apply one level of indentation for sub-topics
+                        escaped_item = self._escape_latex(numbered_item)
+                        indented_item = f"\\phantom{{xxx}}{escaped_item}"
+                        content_lines.append(indented_item)
+                    else:
+                        # Fallback: treat as regular bullet with indentation
+                        escaped_item = self._escape_latex(clean_item)
+                        indented_item = f"\\phantom{{xxx}}{escaped_item}"
+                        content_lines.append(indented_item)
+                else:
+                    # Other content - determine indentation level
+                    indentation = self._get_content_indentation(clean_item)
+                    escaped_item = self._escape_latex(clean_item)
+                    
+                    if indentation > 0:
+                        indent_str = f"\\phantom{{{'x' * (3 * indentation)}}}"
+                        indented_item = f"{indent_str}{escaped_item}"
+                        content_lines.append(indented_item)
+                    else:
+                        content_lines.append(escaped_item)
             
             # Join content with line breaks WITHIN the same table cell (not new rows)
             content_text = " \\newline ".join(content_lines) if content_lines else ""
@@ -997,7 +1051,7 @@ The practical exercises, the underpinning knowledge and the relevant soft skills
         
         return latex
     
-    def _generate_di_student_activities(self, activities: List[str]) -> str:
+    def _generate_di_student_activities(self, activities) -> str:
         latex = r"""
 \section{Suggested Activities for Students}
 
@@ -1006,9 +1060,25 @@ The practical exercises, the underpinning knowledge and the relevant soft skills
         if activities:
             latex += r"\begin{enumerate}" + "\n"
             
-            for i, activity in enumerate(activities, 1):
-                escaped_activity = self._escape_latex(activity)
-                latex += f"\\item {escaped_activity}\n\n"
+            for activity_item in activities:
+                if isinstance(activity_item, dict):
+                    # Handle structured activity object
+                    activity_text = activity_item.get('activity', '')
+                    activity_type = activity_item.get('type', '')
+                    context = activity_item.get('context', '')
+                    
+                    # Format as: Activity description (Type): Context
+                    formatted_activity = f"{self._escape_latex(activity_text)}"
+                    if activity_type:
+                        formatted_activity += f" (\\textbf{{{activity_type}}})"
+                    if context:
+                        formatted_activity += f": {self._escape_latex(context)}"
+                    
+                    latex += f"\\item {formatted_activity}\n\n"
+                else:
+                    # Handle simple string activity
+                    escaped_activity = self._escape_latex(str(activity_item))
+                    latex += f"\\item {escaped_activity}\n\n"
             
             latex += r"\end{enumerate}" + "\n\n"
         else:
