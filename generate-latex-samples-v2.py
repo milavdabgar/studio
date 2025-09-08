@@ -200,13 +200,15 @@ After completion of the course, students will be able to:
 
 \begin{center}
 \small
-\begin{tabular}{|c|c|c|c||c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 \hline
-\multicolumn{3}{|c|}{\textbf{Teaching Scheme (Hours)}} & \multirow{2}{*}{\textbf{\begin{tabular}{c}Total\\Credits\\L+T+\\(PR/2)\end{tabular}}} & \multicolumn{4}{c|}{\textbf{Assessment Pattern and Marks}} & \multirow{2}{*}{\textbf{\begin{tabular}{c}Total\\Marks\end{tabular}}} \\
-\cline{1-3} \cline{5-8}
- &  &  &  & \multicolumn{2}{c|}{\textbf{Theory}} & \multicolumn{2}{c|}{\textbf{Tutorial / Practical}} &  \\
+\multirow{3}{*}{\textbf{\begin{tabular}{c}Teaching Scheme\\(in Hours)\end{tabular}}} & \multirow{3}{*}{\textbf{\begin{tabular}{c}Total\\Credits\\L+T+\\(PR/2)\end{tabular}}} & \multicolumn{6}{c|}{\textbf{Assessment Pattern and Marks}} & \multirow{3}{*}{\textbf{\begin{tabular}{c}Total\\Marks\end{tabular}}} \\
+\cline{3-8}
+ &  & \multicolumn{2}{c|}{\textbf{Theory}} & \multicolumn{2}{c|}{\textbf{Tutorial / Practical}} & & &  \\
+\cline{3-8}
+ &  & \textbf{\begin{tabular}{c}ESE\\(E)\end{tabular}} & \textbf{\begin{tabular}{c}PA\\(M)\end{tabular}} & \textbf{\begin{tabular}{c}PA\\(I)\end{tabular}} & \textbf{\begin{tabular}{c}ESE\\(V)\end{tabular}} & & &  \\
 \hline
-\textbf{L} & \textbf{T} & \textbf{PR} & \textbf{C} & \textbf{\begin{tabular}{c}ESE\\(E)\end{tabular}} & \textbf{\begin{tabular}{c}PA\\(M)\end{tabular}} & \textbf{\begin{tabular}{c}PA\\(I)\end{tabular}} & \textbf{\begin{tabular}{c}ESE\\(V)\end{tabular}} &  \\
+\textbf{L} & \textbf{T} & \textbf{PR} & \textbf{C} & \textbf{} & \textbf{} & \textbf{} & \textbf{} & \\
 \hline
 """
         
@@ -711,7 +713,7 @@ After completion of the course, students will be able to:
         return latex
 
     def _generate_di_teaching_scheme(self, scheme: Dict) -> str:
-        """Generate teaching scheme for DI format with different column headers"""
+        """Generate teaching scheme for DI format with proper 3-tier header structure"""
         teaching = scheme.get('teachingScheme', {})
         examination = scheme.get('examinationScheme', {})
         
@@ -720,11 +722,13 @@ After completion of the course, students will be able to:
 
 \begin{center}
 \small
-\begin{tabular}{|c|c|c|c||p{1.8cm}|p{1.8cm}|p{1.8cm}|p{1.8cm}|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 \hline
-\multicolumn{4}{|c|}{\textbf{Teaching Scheme (Hours)}} & \multicolumn{5}{c|}{\textbf{Assessment Pattern and Marks}} \\
-\hline
-\textbf{L} & \textbf{T} & \textbf{PR} & \textbf{C} & \textbf{\centering Theory ESE (E)} & \textbf{\centering Theory PA (M)} & \textbf{\centering Tutorial/Practical PA (I)} & \textbf{\centering Tutorial/Practical ESE (V)} & \textbf{Total} \\
+\multicolumn{3}{|c|}{\textbf{\begin{tabular}{c}Teaching Scheme\\(in Hours)\end{tabular}}} & \multirow{3}{*}{\textbf{\begin{tabular}{c}Total\\Credits\\L+T+\\(PR/2)\end{tabular}}} & \multicolumn{4}{c|}{\textbf{Assessment Pattern and Marks}} & \multirow{3}{*}{\textbf{\begin{tabular}{c}Total\\Marks\end{tabular}}} \\
+\cline{1-3}\cline{5-8}
+ & & & & \multicolumn{2}{c|}{\textbf{Theory}} & \multicolumn{2}{c|}{\textbf{Tutorial / Practical}} & \\
+\cline{5-8}
+\textbf{L} & \textbf{T} & \textbf{PR} & & \textbf{\begin{tabular}{c}ESE\\(E)\end{tabular}} & \textbf{PA(M)} & \textbf{PA(I)} & \textbf{\begin{tabular}{c}ESE (V)\end{tabular}} & \\
 \hline
 """
         
