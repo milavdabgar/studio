@@ -14,11 +14,11 @@ class SyllabusLatexGenerator:
         self.latex_template = self._get_base_template()
     
     def _get_base_template(self) -> str:
-        """Base LaTeX template with GTU styling"""
+        """Base LaTeX template with authentic GTU styling"""
         return r"""
 \documentclass[11pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
-\usepackage[margin=1in]{geometry}
+\usepackage[margin=0.8in,top=1.2in,bottom=1in]{geometry}
 \usepackage{fancyhdr}
 \usepackage{booktabs}
 \usepackage{longtable}
@@ -28,45 +28,115 @@ class SyllabusLatexGenerator:
 \usepackage{titlesec}
 \usepackage{enumitem}
 \usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{hhline}
+\usepackage{afterpage}
+\usepackage{tikz}
+\usepackage{eso-pic}
 
-% GTU Colors
-\definecolor{gtublue}{RGB}{0,51,102}
-\definecolor{gtuorange}{RGB}{255,102,0}
+% GTU Colors - matching authentic colors
+\definecolor{gtured}{RGB}{176,48,50}
+\definecolor{gtugold}{RGB}{218,165,32}
+\definecolor{gtutext}{RGB}{0,0,0}
 
-% Header and Footer
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[L]{\textcolor{gtublue}{\textbf{Gujarat Technological University}}}
-\fancyhead[R]{\textcolor{gtuorange}{\textbf{COGC-2021}}}
-\fancyfoot[L]{\textcolor{gtublue}{\small COURSE_CODE_PLACEHOLDER}}
-\fancyfoot[C]{\thepage}
-\fancyfoot[R]{\textcolor{gtuorange}{\small COURSE_TITLE_PLACEHOLDER}}
-
-% Adjust header height
-\setlength{\headheight}{15pt}
-
-% Section styling
-\titleformat{\section}{\Large\bfseries\color{gtublue}}{}{0em}{}
-\titleformat{\subsection}{\large\bfseries\color{gtuorange}}{}{0em}{}
-
-% Hyperlink styling - blue links with underlines to match original syllabus
-\hypersetup{
-    colorlinks=true,
-    linkcolor=blue,
-    filecolor=blue,
-    urlcolor=blue,
-    citecolor=blue
+% Define fancy page styles with golden borders on all pages
+\fancypagestyle{gtupage}{
+    \fancyhf{}
+    % Header with GTU logo and info
+    \fancyhead[L]{
+        \includegraphics[height=0.6cm]{gtu-logo.png}
+    }
+    \fancyhead[C]{
+        \textbf{GUJARAT TECHNOLOGICAL UNIVERSITY}\\
+        \textbf{\footnotesize (Established under Gujarat Technological University Act 2007)}\\
+        \textbf{\footnotesize COURSE CURRICULUM}
+    }
+    \fancyhead[R]{
+        \textbf{\footnotesize COURSE_YEAR_PLACEHOLDER}\\
+        \textbf{\footnotesize Page \thepage}
+    }
+    \renewcommand{\headrulewidth}{1pt}
+    \renewcommand{\footrulewidth}{0pt}
 }
 
-% Custom commands
-\newcommand{\courseheader}[2]{
+% First page style - no header to avoid duplication
+\fancypagestyle{firstpage}{
+    \fancyhf{}
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0pt}
+}
+
+% Set default page style  
+\pagestyle{gtupage}
+
+% Adjust header height for subsequent pages
+\setlength{\headheight}{35pt}
+\setlength{\headsep}{15pt}
+
+% Add golden border to all pages except first
+\AddToShipoutPicture{
+    \ifnum\value{page}>1
+        \AtPageLowerLeft{
+            \begin{tikzpicture}[overlay,remember picture]
+                \draw[color=gtugold,line width=2pt] 
+                    ([shift={(12pt,12pt)}]current page.south west) 
+                    rectangle 
+                    ([shift={(-12pt,-12pt)}]current page.north east);
+            \end{tikzpicture}
+        }
+    \fi
+}
+
+% Section styling - matching GTU format
+\titleformat{\section}{\large\bfseries}{}{0em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+
+% Hyperlink styling
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+% Table styling to match GTU format
+\renewcommand{\arraystretch}{1.2}
+
+% Custom command for first page header with course details and golden border
+\newcommand{\firstpageheader}[5]{
+    \thispagestyle{firstpage}
+    \vspace*{-0.5cm}
+    
+    % Golden border around entire page content
+    \noindent\fcolorbox{gtugold}{white}{
+    \begin{minipage}{\dimexpr\textwidth-24pt-4pt\relax}
+    \vspace{0.5cm}
+    
     \begin{center}
-        \textcolor{gtublue}{\Huge\textbf{#1}}\\
-        \vspace{0.3cm}
-        \textcolor{gtuorange}{\Large Course Code: #2}\\
-        \vspace{0.5cm}
-        \rule{\textwidth}{2pt}
+        % Logo and title section - matching original layout exactly
+        \includegraphics[height=2.2cm]{gtu-logo.png}
+        \hspace{0.8cm}
+        \begin{minipage}[c]{9cm}
+            \centering
+            \textcolor{gtured}{\textbf{\LARGE GUJARAT TECHNOLOGICAL UNIVERSITY}}\\[0.15cm]
+            \textcolor{gtured}{\textbf{\small (Established under Gujarat Technological University Act 2007)}}\\[0.3cm]
+            \textcolor{gtured}{\textbf{\normalsize Program Name: #1}}\\[0.1cm]
+            \textcolor{gtured}{\textbf{\normalsize Level: #2}}\\[0.1cm]
+            \textcolor{gtured}{\textbf{\normalsize Branch: #3}}\\[0.15cm]
+            \textcolor{gtured}{\textbf{\normalsize Course / Subject Code : #4}}\\[0.1cm]
+            \textcolor{gtured}{\textbf{\normalsize Course / Subject Name : #5}}
+        \end{minipage}
     \end{center}
+    \vspace{0.5cm}
+}
+
+% Command to end first page border
+\newcommand{\endfirstpage}{
+    \vspace{0.5cm}
+    \end{minipage}
+    }
 }
 
 \begin{document}
@@ -104,8 +174,13 @@ class SyllabusLatexGenerator:
         # Replace placeholders in template
         latex_content = latex_content.replace('COURSE_CODE_PLACEHOLDER', course_code)
         latex_content = latex_content.replace('COURSE_TITLE_PLACEHOLDER', course_title)
+        latex_content = latex_content.replace('COURSE_YEAR_PLACEHOLDER', course_info.get('academicYear', 'w.e.f. 2024-25'))
         
-        latex_content += f"\\courseheader{{{course_title}}}{{{course_code}}}\n\n"
+        # Generate first page header with course details
+        program = course_info.get('program', 'Engineering')
+        level = course_info.get('level', 'Diploma') 
+        branch = self._escape_latex(course_info.get('branch', ''))  # Escape ampersand
+        latex_content += f"\\firstpageheader{{{program}}}{{{level}}}{{{branch}}}{{{course_code}}}{{{course_title}}}\n\n"
         
         # Course information table
         latex_content += self._generate_course_info(course_info)
@@ -487,20 +562,29 @@ After completion of the course, students will be able to:
         # Replace placeholders in template - adjust header for new format
         latex_content = latex_content.replace('COURSE_CODE_PLACEHOLDER', course_code)
         latex_content = latex_content.replace('COURSE_TITLE_PLACEHOLDER', course_title)
-        latex_content = latex_content.replace('\\textcolor{gtuorange}{\\textbf{COGC-2021}}', 
-                                            '\\textcolor{gtuorange}{\\textbf{w.e.f. 2024-25}}')
+        latex_content = latex_content.replace('COURSE_YEAR_PLACEHOLDER', course_info.get('academicYear', 'w.e.f. 2024-25'))
         
-        latex_content += f"\\courseheader{{{course_title}}}{{{course_code}}}\n\n"
+        # Generate first page header with course details and border
+        program = course_info.get('program', 'Engineering')
+        level = course_info.get('level', 'Diploma') 
+        branch = self._escape_latex(course_info.get('branch', ''))  # Escape ampersand
+        latex_content += f"\\firstpageheader{{{program}}}{{{level}}}{{{branch}}}{{{course_code}}}{{{course_title}}}\n\n"
         
-        # DI Format specific sections
-        latex_content += self._generate_di_course_info(course_info)
+        # DI Format specific sections - add course details table right after header
+        latex_content += self._generate_first_page_course_details_table(course_info)
         
-        # Prerequisites section (specific to DI format)
+        # Prerequisites section in table format like original
         if course_info.get('prerequisite'):
             latex_content += f"""
-\\section{{Prerequisites}}
+\\begin{{center}}
+\\begin{{tabular}}{{|l|p{{11cm}}|}}
+\\hline
+\\textbf{{Prerequisite:}} & {self._escape_latex(course_info['prerequisite'])} \\\\
+\\hline
+\\end{{tabular}}
+\\end{{center}}
 
-{self._escape_latex(course_info['prerequisite'])}
+\\vspace{{0.3cm}}
 
 """
         
@@ -513,18 +597,28 @@ After completion of the course, students will be able to:
 
 """
         
-        # Rationale
+        # Rationale in table format like original
         if 'rationale' in json_data:
             latex_content += f"""
-\\section{{Rationale}}
+\\begin{{center}}
+\\begin{{tabular}}{{|l|p{{11cm}}|}}
+\\hline
+\\textbf{{Rationale:}} & {self._escape_latex(json_data['rationale'])} \\\\
+\\hline
+\\end{{tabular}}
+\\end{{center}}
 
-{self._escape_latex(json_data['rationale'])}
+\\vspace{{0.3cm}}
 
 """
         
         # Course Outcomes with DI format styling
         if 'courseOutcomes' in json_data:
             latex_content += self._generate_di_course_outcomes(json_data['courseOutcomes'])
+        
+        # End first page border
+        latex_content += "\\endfirstpage\n\n"
+        latex_content += "\\newpage\n\n"
         
         # Teaching and Examination Scheme
         if 'teachingExamScheme' in json_data:
@@ -573,8 +667,13 @@ After completion of the course, students will be able to:
         # Replace placeholders in template
         latex_content = latex_content.replace('COURSE_CODE_PLACEHOLDER', course_code)
         latex_content = latex_content.replace('COURSE_TITLE_PLACEHOLDER', course_title)
+        latex_content = latex_content.replace('COURSE_YEAR_PLACEHOLDER', course_info.get('academicYear', 'w.e.f. 2024-25'))
         
-        latex_content += f"\\courseheader{{{course_title}}}{{{course_code}}}\n\n"
+        # Generate first page header with course details
+        program = course_info.get('program', 'Engineering')
+        level = course_info.get('level', 'Diploma') 
+        branch = self._escape_latex(course_info.get('branch', ''))  # Escape ampersand
+        latex_content += f"\\firstpageheader{{{program}}}{{{level}}}{{{branch}}}{{{course_code}}}{{{course_title}}}\n\n"
         
         # COGC Format specific sections
         latex_content += self._generate_cogc_course_info(course_info)
@@ -688,28 +787,32 @@ The aim of this course is to help the students to attain the following industry 
         return latex
 
     def _generate_di_course_outcomes(self, outcomes: List[Dict]) -> str:
-        """Generate course outcomes for DI format with RBT levels"""
+        """Generate course outcomes for DI format matching original layout"""
         latex = r"""
-\section{Course Outcomes}
+\textbf{Course Outcome:}\\
+After Completion of the Course, Student will able to:
 
-After completion of the course, students will be able to:
-
-\begin{longtable}{|p{1cm}|p{11cm}|p{2.5cm}|}
+\begin{center}
+\begin{tabular}{|c|p{10cm}|c|}
 \hline
-\textbf{No.} & \textbf{Course Outcomes} & \textbf{RBT Level} \\
+\textbf{No} & \textbf{Course Outcomes} & \textbf{RBT Level} \\
 \hline
-\endhead
 """
         
         for outcome in outcomes:
-            co_id = outcome.get('id', '')
+            co_id = outcome.get('id', '').replace('CO', '')  # Remove CO prefix for cleaner look
             description = self._escape_latex(outcome.get('description', ''))
             # DI format uses combined RBT levels like "R,U,A"
             rbt_level = outcome.get('rbtLevel', outcome.get('bloomLevel', ''))
             latex += f"{co_id} & {description} & {rbt_level} \\\\\n\\hline\n"
         
-        latex += r"\end{longtable}" + "\n\n"
-        latex += "*RBT: Revised Bloom's Taxonomy\n\n"
+        latex += r"""\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+\textit{*Revised Bloom's Taxonomy (RBT)}
+
+"""
         return latex
 
     def _generate_di_teaching_scheme(self, scheme: Dict) -> str:
@@ -835,6 +938,26 @@ The practical exercises, the underpinning knowledge and the relevant soft skills
     
     def _generate_cogc_development_committee(self, committee: List[Dict]) -> str:
         return "% TODO: Implement COGC development committee\n"
+
+    def _generate_first_page_course_details_table(self, course_info: Dict) -> str:
+        """Generate the course details table for first page like in original GTU syllabus"""
+        latex = r"""
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{w.e.f Academic Year:} & """ + self._escape_latex(course_info.get('academicYear', '2024-25')) + r""" \\
+\hline
+\textbf{Semester:} & """ + str(course_info.get('semester', '')) + r"""$^{rd}$ \\
+\hline
+\textbf{Category of the Course:} & """ + self._escape_latex(course_info.get('category', '')) + r""" \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+
+"""
+        return latex
 
     # Placeholder methods for additional DI format sections
     def _generate_di_specification_table(self, table: List[Dict]) -> str:
