@@ -1,0 +1,253 @@
+{
+  "subjectInfo": {
+    "courseCode": "1333204",
+    "courseName": "Unknown Subject",
+    "semester": 3,
+    "branch": "Information and Communication Technology",
+    "curriculum": "COGC-2021"
+  },
+  "questionBank": {
+    "units": [
+      {
+        "unitNumber": "Unit – I",
+        "unitTitle": "Introductionto Database Systems",
+        "topics": [
+          {
+            "topicNumber": "Unit – I.1",
+            "title": "{'code': '1.1', 'title': 'Introduction', 'subtopics': ['1.1.1 Data and Information', '1.1.2 Database and Database Management System', '1.1.3 Metadata', '1.1.4 Data items,fields & records', '1.1.5 Data Dictionary']}",
+            "subtopics": [
+              {
+                "subtopicNumber": "Unit – I.1.1",
+                "title": "{'code': '1.1', 'title': 'Introduction', 'subtopics': ['1.1.1 Data and Information', '1.1.2 Database and Database Management System', '1.1.3 Metadata', '1.1.4 Data items,fields & records', '1.1.5 Data Dictionary']}",
+                "questions": [],
+                "practicalQuestions": []
+              }
+            ]
+          },
+          {
+            "topicNumber": "Unit – I.2",
+            "title": "{'code': '1.2', 'title': 'Purpose of Database System', 'subtopics': []}",
+            "subtopics": [
+              {
+                "subtopicNumber": "Unit – I.2.1",
+                "title": "{'code': '1.2', 'title': 'Purpose of Database System', 'subtopics': []}",
+                "questions": [],
+                "practicalQuestions": []
+              }
+            ]
+          },
+          {
+            "topicNumber": "Unit – I.3",
+            "title": "{'code': '1.3', 'title': 'File oriented System versus database system', 'subtopics': []}",
+            "subtopics": [
+              {
+                "subtopicNumber": "Unit – I.3.1",
+                "title": "{'code': '1.3', 'title': 'File oriented System versus database system', 'subtopics': []}",
+                "questions": [],
+                "practicalQuestions": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unitNumber": "Unit – II",
+        "unitTitle": "ER Model and Relational Algebra",
+        "topics": [
+          {
+            "topicNumber": "Unit – II.1",
+            "title": "{'code': '2.1', 'title': 'Basic concepts of E-R', 'subtopics': ['2.1.1 Entity', '2.2.2 Attributes', '2.2.3 Relationship', '2.2.3.1 Participation', '2.2.3.2 Recursive relationships', '2.2.3.3 Degree of relationship set']}",
+            "subtopics": [
+              {
+                "subtopicNumber": "Unit – II.1.1",
+                "title": "{'code': '2.1', 'title': 'Basic concepts of E-R', 'subtopics': ['2.1.1 Entity', '2.2.2 Attributes', '2.2.3 Relationship', '2.2.3.1 Participation', '2.2.3.2 Recursive relationships', '2.2.3.3 Degree of relationship set']}",
+                "questions": [],
+                "practicalQuestions": []
+              }
+            ]
+          },
+          {
+            "topicNumber": "Unit – II.2",
+            "title": "{'code': '2.2', 'title': 'Mapping Cardinality', 'subtopics': []}",
+            "subtopics": [
+              {
+                "subtopicNumber": "Unit – II.2.1",
+                "title": "{'code': '2.2', 'title': 'Mapping Cardinality', 'subtopics': []}",
+                "questions": [],
+                "practicalQuestions": []
+              }
+            ]
+          },
+          {
+            "topicNumber": "Unit – II.3",
+            "title": "{'code': '2.3', 'title': 'Key', 'subtopics': ['2.3.1 Primary, Foreign, Super, Candidate']}",
+            "subtopics": [
+              {
+                "subtopicNumber": "Unit – II.3.1",
+                "title": "{'code': '2.3', 'title': 'Key', 'subtopics': ['2.3.1 Primary, Foreign, Super, Candidate']}",
+                "questions": [],
+                "practicalQuestions": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unitNumber": "Unit-III",
+        "unitTitle": "StructuredQuery Language",
+        "topics": [
+          {
+            "topicNumber": "Unit-III.1",
+            "title": "{'code': '3.1', 'title': 'SQL Data types', 'subtopics': []}",
+            "subtopics": [
+              {
+                "subtopicNumber": "Unit-III.1.1",
+                "title": "{'code': '3.1', 'title': 'SQL Data types', 'subtopics': []}",
+                "questions": [],
+                "practicalQuestions": []
+              }
+            ]
+          },
+          {
+            "topicNumber": "Unit-III.2",
+            "title": "{'code': '3.2', 'title': 'Data Definition Language Commands: create, alter, truncate, drop', 'subtopics': []}",
+            "subtopics": [
+              {
+                "subtopicNumber": "Unit-III.2.1",
+                "title": "{'code': '3.2', 'title': 'Data Definition Language Commands: create, alter, truncate, drop', 'subtopics': []}",
+                "questions": [],
+                "practicalQuestions": []
+              }
+            ]
+          },
+          {
+            "topicNumber": "Unit-III.3",
+            "title": "{'code': '3.3', 'title': 'Data Manipulation Language Commands: insert, select, update, delete', 'subtopics': []}",
+            "subtopics": [
+              {
+                "subtopicNumber": "Unit-III.3.1",
+                "title": "{'code': '3.3', 'title': 'Data Manipulation Language Commands: insert, select, update, delete', 'subtopics': []}",
+                "questions": [],
+                "practicalQuestions": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unitNumber": "Unit–IV",
+        "unitTitle": "Refining database design through Normalization",
+        "topics": [
+          {
+            "topicNumber": "Unit–IV.1",
+            "title": "{'code': '4.1', 'title': 'Importance of Normalization', 'subtopics': []}",
+            "subtopics": [
+              {
+                "subtopicNumber": "Unit–IV.1.1",
+                "title": "{'code': '4.1', 'title': 'Importance of Normalization', 'subtopics': []}",
+                "questions": [],
+                "practicalQuestions": []
+              }
+            ]
+          },
+          {
+            "topicNumber": "Unit–IV.2",
+            "title": "{'code': '4.2', 'title': 'Functional Dependencies', 'subtopics': ['4.2.1 Partial Functional Dependency', '4.2.2 Full Functional Dependency', '4.2.3 Transitive Dependency']}",
+            "subtopics": [
+              {
+                "subtopicNumber": "Unit–IV.2.1",
+                "title": "{'code': '4.2', 'title': 'Functional Dependencies', 'subtopics': ['4.2.1 Partial Functional Dependency', '4.2.2 Full Functional Dependency', '4.2.3 Transitive Dependency']}",
+                "questions": [],
+                "practicalQuestions": []
+              }
+            ]
+          },
+          {
+            "topicNumber": "Unit–IV.3",
+            "title": "{'code': '4.3', 'title': 'Normal Forms', 'subtopics': ['4.3.1 First Normal Form', '4.3.2 Second Normal Form', '4.3.3 Third Normal Form']}",
+            "subtopics": [
+              {
+                "subtopicNumber": "Unit–IV.3.1",
+                "title": "{'code': '4.3', 'title': 'Normal Forms', 'subtopics': ['4.3.1 First Normal Form', '4.3.2 Second Normal Form', '4.3.3 Third Normal Form']}",
+                "questions": [],
+                "practicalQuestions": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unitNumber": "Unit–V",
+        "unitTitle": "Transaction Management",
+        "topics": [
+          {
+            "topicNumber": "Unit–V.1",
+            "title": "{'code': '5.1', 'title': 'Transaction concepts, properties of transactions.', 'subtopics': []}",
+            "subtopics": [
+              {
+                "subtopicNumber": "Unit–V.1.1",
+                "title": "{'code': '5.1', 'title': 'Transaction concepts, properties of transactions.', 'subtopics': []}",
+                "questions": [],
+                "practicalQuestions": []
+              }
+            ]
+          },
+          {
+            "topicNumber": "Unit–V.2",
+            "title": "{'code': '5.2', 'title': 'Serializability of transactions', 'subtopics': ['5.2.1 Conflict Serializability', '5.2.2 View Serializability']}",
+            "subtopics": [
+              {
+                "subtopicNumber": "Unit–V.2.1",
+                "title": "{'code': '5.2', 'title': 'Serializability of transactions', 'subtopics': ['5.2.1 Conflict Serializability', '5.2.2 View Serializability']}",
+                "questions": [],
+                "practicalQuestions": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "statistics": {
+    "totalQuestions": 60,
+    "totalMappedQuestions": 42,
+    "questionsByDifficulty": {
+      "easy": 20,
+      "medium": 20,
+      "hard": 20
+    },
+    "questionsByUnit": {
+      "Unit-III": 8,
+      "Unit-V": 1,
+      "Unit-II": 11,
+      "Unit-IV": 4,
+      "Unit-I": 18
+    },
+    "coveragePercentage": 70.0,
+    "bilingualCoverage": {
+      "questionsWithGujarati": 30,
+      "questionsWithEnglish": 60
+    },
+    "lastUpdated": "2024-09-10T00:00:00Z"
+  },
+  "metadata": {
+    "version": "1.0",
+    "createdAt": "2024-09-10T00:00:00Z",
+    "lastModified": "2024-09-10T00:00:00Z",
+    "syllabusRef": "1333204.json",
+    "format": "universal-bilingual-question-bank",
+    "languages": [
+      "en",
+      "gu"
+    ],
+    "totalPapersProcessed": 4,
+    "processedPapers": [
+      "1333204-summer-2025",
+      "1333204-winter-2024",
+      "1333204-summer-2024",
+      "1333204-winter-2023"
+    ],
+    "mappingAccuracy": 70.0,
+    "generatedBy": "universal-bilingual-question-bank-generator"
+  }
+}
