@@ -6,37 +6,18 @@
     "subjectName": "Foundation of AI and ML",
     "semester": "5",
     "program": "Information Technology",
+    "branch": "Information Technology",
     "level": "Diploma",
     "curriculum": "COGC-2021",
-    "departmentId": "placeholder_department_id",
-    "programId": "placeholder_program_id",
-    "departmentName": "Information Technology",
-    "programName": "Diploma in Information Technology"
+    "academicYear": "w.e.f. 2024-25",
+    "effFrom": "2024-25",
+    "category": "Core"
   },
+  
   "rationale": "Artificial Intelligence (AI) and Machine Learning (ML) technologies have immense growth potential and are expected to shape the future of various fields. Understanding AI and ML gives learners a competitive edge in today's era. This course provides the foundation concepts of AI and ML. It covers topics such as Fundamentals of AI, Types of machine learning, Artificial Neural Networks (ANN) and Natural Language Processing (NLP). ANN and NLP is an integral part of the broader field of Artificial Intelligence (AI). This helps students to develop basic models of neural network to solve real world problems.",
+  
   "competency": "Apply Artificial Intelligence and Machine Learning concepts to solve real world problems.",
-  "courseOutcomes": [
-    {
-      "id": "CO1",
-      "description": "Understand fundamental principles of Artificial Intelligence"
-    },
-    {
-      "id": "CO2", 
-      "description": "Compare types of machine learning"
-    },
-    {
-      "id": "CO3",
-      "description": "Build a simple Neural Network model to solve real world problem"
-    },
-    {
-      "id": "CO4",
-      "description": "Apply data preprocessing on text/paragraph using NLTK library"
-    },
-    {
-      "id": "CO5",
-      "description": "Demonstrate word embedding techniques to develop real world NLP applications"
-    }
-  ],
+  
   "teachingExamScheme": {
     "teachingScheme": {
       "lecture": 3,
@@ -63,14 +44,38 @@
       "isTheory": true,
       "theoryExamDuration": "3 hours",
       "isPractical": true,
-      "practicalExamDuration": "2 hours",
+      "practicalExamDuration": "4 hours",
       "isFunctional": false,
       "isSemiPractical": false
     }
   },
+
+  "courseOutcomes": [
+    {
+      "id": "CO1",
+      "description": "Understand fundamental principles of Artificial Intelligence."
+    },
+    {
+      "id": "CO2",
+      "description": "Compare types of machine learning."
+    },
+    {
+      "id": "CO3",
+      "description": "Build a simple Neural Network model to solve real world problem."
+    },
+    {
+      "id": "CO4",
+      "description": "Apply data preprocessing on text/paragraph using NLTK library."
+    },
+    {
+      "id": "CO5",
+      "description": "Demonstrate word embedding techniques to develop real world NLP applications."
+    }
+  ],
+
   "underpinningTheory": [
     {
-      "unitNumber": "1",
+      "unitNumber": "I",
       "unitTitle": "Fundamentals of Artificial Intelligence (AI)",
       "unitOutcomes": [
         {
@@ -92,7 +97,7 @@
           "title": "Artificial Intelligence Introduction",
           "subtopics": [
             "Future of Artificial Intelligence",
-            "Definition of AI", 
+            "Definition of AI",
             "History and Types of AI",
             "AI ethics and limitations"
           ]
@@ -113,15 +118,16 @@
           "title": "AI applications in various industries",
           "subtopics": [
             "Healthcare applications",
-            "Finance applications", 
-            "Manufacturing applications"
+            "Finance applications",
+            "Manufacturing applications",
+            "Other industry applications"
           ]
         }
       ]
     },
     {
-      "unitNumber": "2",
-      "unitTitle": "Foundation of Machine Learning (ML)", 
+      "unitNumber": "II",
+      "unitTitle": "Foundation of Machine Learning (ML)",
       "unitOutcomes": [
         {
           "id": "2a",
@@ -132,7 +138,7 @@
           "description": "Describe different types of Machine learning"
         },
         {
-          "id": "2c", 
+          "id": "2c",
           "description": "Explain basic concepts of Reinforcement learning"
         },
         {
@@ -143,11 +149,10 @@
       "topics": [
         {
           "topicNumber": "2.1",
-          "title": "What is Machine Learning? Well-Posed learning Problem",
-          "subtopics": []
+          "title": "What is Machine Learning? Well-Posed learning Problem"
         },
         {
-          "topicNumber": "2.2", 
+          "topicNumber": "2.2",
           "title": "Types of Machine Learning",
           "subtopics": [
             "Supervised Learning",
@@ -159,7 +164,7 @@
           "topicNumber": "2.3",
           "title": "Reinforcement Learning",
           "subtopics": [
-            "Terms and Key features",
+            "Terms, Key features",
             "Approaches to implement reinforcement learning: Value based, Policy Based, Model based",
             "Elements of reinforcement learning: Policy, reward signal, value function, Model",
             "Types of reinforcement learning: Positive and Negative Comparison"
@@ -167,13 +172,12 @@
         },
         {
           "topicNumber": "2.4",
-          "title": "Comparison between Supervised, unsupervised and reinforcement learning",
-          "subtopics": []
+          "title": "Comparison between Supervised, unsupervised and reinforcement learning"
         }
       ]
     },
     {
-      "unitNumber": "3",
+      "unitNumber": "III",
       "unitTitle": "Foundation of Neural Networks",
       "unitOutcomes": [
         {
@@ -207,7 +211,7 @@
           "title": "Types of Activation Functions",
           "subtopics": [
             "ReLU",
-            "Sigmoid", 
+            "Sigmoid",
             "Hyperbolic Tangent Function"
           ]
         },
@@ -227,18 +231,17 @@
             "Number of layers",
             "Direction of signal flow",
             "Number of nodes in layers",
-            "Weight of interconnection between"
+            "Weight of interconnection between layers"
           ]
         },
         {
           "topicNumber": "3.5",
-          "title": "Back Propagation",
-          "subtopics": []
+          "title": "Back Propagation"
         }
       ]
     },
     {
-      "unitNumber": "4",
+      "unitNumber": "IV",
       "unitTitle": "Foundation of Natural Language Processing (NLP)",
       "unitOutcomes": [
         {
@@ -250,7 +253,7 @@
           "description": "Discuss components of NLP"
         },
         {
-          "id": "4c", 
+          "id": "4c",
           "description": "Explain phases of NLP"
         },
         {
@@ -278,11 +281,11 @@
         },
         {
           "topicNumber": "4.3",
-          "title": "Phases of NLP", 
+          "title": "Phases of NLP",
           "subtopics": [
             "Lexical Analysis",
             "Syntactic Analysis",
-            "Semantic Analysis", 
+            "Semantic Analysis",
             "Discourse Integration",
             "Pragmatic Analysis"
           ]
@@ -303,13 +306,12 @@
         },
         {
           "topicNumber": "4.5",
-          "title": "Types of Ambiguities in NLP",
-          "subtopics": []
+          "title": "Types of Ambiguities in NLP"
         }
       ]
     },
     {
-      "unitNumber": "5",
+      "unitNumber": "V",
       "unitTitle": "Word Embedding in Natural Language Processing",
       "unitOutcomes": [
         {
@@ -339,7 +341,8 @@
           "topicNumber": "5.2",
           "title": "Challenges with TF-IDF and BoW, Pre Trained word Embedding",
           "subtopics": [
-            "GloVe - Global Vector for word representation"
+            "Challenges with TF-IDF and BoW",
+            "GloVe: Global Vector for word representation"
           ]
         },
         {
@@ -347,7 +350,7 @@
           "title": "Applications of NLP",
           "subtopics": [
             "Question Answering",
-            "Spam Detection", 
+            "Spam Detection",
             "Sentiment analysis",
             "Machine Translation",
             "Spelling Correction",
@@ -357,50 +360,83 @@
       ]
     }
   ],
+
   "practicalExercises": [
     {
       "srNo": 1,
       "description": "Use Cancer Dataset for detecting whether the cancer cells in data are benign or malignant. The data contains 2 types of cancers: 1. benign cancer (B) and 2. malignant cancer (M). Use relevant ML techniques for the same.",
       "unitNo": "II",
-      "hours": 4,
-      "isCompulsory": true
+      "hours": 4
     },
     {
       "srNo": 2,
-      "description": "Implement following activation functions using python to build simple neural network: a. ReLU b. Sigmoid c. Tanh",
-      "unitNo": "III", 
-      "hours": 6,
-      "isCompulsory": true
+      "description": "Implement following activation functions using python to build simple neural network: a. ReLU, b. Sigmoid, c. Tanh",
+      "unitNo": "III",
+      "hours": 6
     },
     {
       "srNo": 3,
-      "description": "Implement following feed forward neural network using python programming: a. Single layer feed forward neural network. b. Multi-layer feed forward neural network.",
+      "description": "Implement following feed forward neural network using python programming: a. Single layer feed forward neural network, b. Multi-layer feed forward neural network",
       "unitNo": "III",
-      "hours": 4,
-      "isCompulsory": true
+      "hours": 4
     },
     {
       "srNo": 4,
-      "description": "Perform following data preprocessing on text/paragraph using NLTK library: a. Write a Python program to tokenize words, sentence wise. b. Write a python program that accepts the list of tokenized word and stems it into root word. c. Write a program in python to identify the part of speech for each word in the text. d. Write a Python NLTK program to remove stop words from a given text. e. Write a python program for identifying and correcting misspelled words in a given text, such as an essay or a letter.",
+      "description": "Perform following data preprocessing on text/paragraph using NLTK library: a. Write a Python program to tokenize words, sentence wise, b. Write a python program that accepts the list of tokenized word and stems it into root word, c. Write a program in python to identify the part of speech for each word in the text, d. Write a Python NLTK program to remove stop words from a given text, e. Write a python program for identifying and correcting misspelled words in a given text, such as an essay or a letter",
       "unitNo": "IV",
-      "hours": 6,
-      "isCompulsory": true
+      "hours": 6
     },
     {
       "srNo": 5,
-      "description": "Implement following Word embedding techniques in NLP. a. TFIDF- Term Frequency Inverse document Frequency b. BOW (Bag of Words) c. Word2Vec",
+      "description": "Implement following Word embedding techniques in NLP: a. TFIDF- Term Frequency Inverse document Frequency, b. BOW (Bag of Words), c. Word2Vec",
       "unitNo": "V",
-      "hours": 4,
-      "isCompulsory": true
+      "hours": 4
     },
     {
       "srNo": 6,
-      "description": "Implement Pre Trained word Embedding: GloVe Technique in NLP.",
+      "description": "Implement Pre Trained word Embedding: GloVe Technique in NLP",
       "unitNo": "V",
-      "hours": 4, 
-      "isCompulsory": true
+      "hours": 4
     }
   ],
+
+  "performanceIndicators": [
+    {
+      "indicator": "Applying accurate and effective preprocessing techniques to the dataset",
+      "weightage": 25
+    },
+    {
+      "indicator": "Correct implementation of AI models using suitable libraries or frameworks",
+      "weightage": 20
+    },
+    {
+      "indicator": "Fulfillment of specific requirements for the given task and appropriate handling of domain-specific challenges",
+      "weightage": 25
+    },
+    {
+      "indicator": "Use of relevant evaluation metrics for the given task",
+      "weightage": 10
+    },
+    {
+      "indicator": "Applying best practices and well structured documentation",
+      "weightage": 20
+    }
+  ],
+
+  "equipment": {
+    "hardware": [
+      "Computer system with operating system: Windows 7 or higher Ver., macOS, and Linux, with 4GB or higher RAM, Python versions: 2.7.X, 3.6.X"
+    ],
+    "software": [
+      "Python IDEs and Code Editors - Open Source: Anaconda Navigator"
+    ]
+  },
+
+  "affectiveDomainOutcomes": [
+    "Work as a data scientist",
+    "Follow ethical practices"
+  ],
+
   "specificationTable": [
     {
       "unitNo": "I",
@@ -410,7 +446,7 @@
       "understandLevel": 6,
       "applyLevel": 0,
       "analyzeLevel": 0,
-      "evaluateLevel": 0, 
+      "evaluateLevel": 0,
       "createLevel": 0,
       "totalMarks": 10
     },
@@ -427,7 +463,7 @@
       "totalMarks": 12
     },
     {
-      "unitNo": "III", 
+      "unitNo": "III",
       "unitTitle": "Foundation of Neural Networks",
       "teachingHours": 9,
       "rememberLevel": 4,
@@ -463,46 +499,14 @@
       "totalMarks": 16
     }
   ],
-  "performanceIndicators": [
-    {
-      "indicator": "Applying accurate and effective preprocessing techniques to the dataset",
-      "weightage": 25
-    },
-    {
-      "indicator": "Correct implementation of AI models using suitable libraries or frameworks",
-      "weightage": 20
-    },
-    {
-      "indicator": "Fulfillment of specific requirements for the given task and appropriate handling of domain-specific challenges",
-      "weightage": 25
-    },
-    {
-      "indicator": "Use of relevant evaluation metrics for the given task",
-      "weightage": 10
-    },
-    {
-      "indicator": "Applying best practices and well structured documentation",
-      "weightage": 20
-    }
-  ],
-  "equipment": {
-    "hardware": [
-      "Computer system with operating system: Windows 7 or higher Ver., macOS, and Linux, with 4GB or higher RAM, Python versions: 2.7.X, 3.6.X"
-    ],
-    "software": [
-      "Python IDEs and Code Editors - Open Source: Anaconda Navigator"
-    ]
-  },
-  "affectiveDomainOutcomes": [
-    "Work as a data scientist",
-    "Follow ethical practices"
-  ],
+
   "studentActivities": [
     "Explore different data repositories and register for ML based competitions on platforms like kaggle",
-    "Undertake micro-projects in teams", 
+    "Undertake micro-projects in teams",
     "Give a seminar on any relevant topics",
     "Collect data from snapchat/ facebook and do sentiment analysis using NLP"
   ],
+
   "instructionalStrategies": [
     "Massive open online courses (MOOCs) may be used to teach various topics/subtopics",
     "Guide student(s) in undertaking micro-projects",
@@ -511,6 +515,7 @@
     "With respect to section No.11, teachers need to ensure to create opportunities and provisions for co-curricular activities",
     "Guide students for open source python editors"
   ],
+
   "microProjects": [
     {
       "title": "Credit Scoring System",
@@ -525,35 +530,32 @@
       "description": "ChatBots, most tech companies today use Chatbots, which are conversational bots, to communicate with their consumers and handle issues. It is an excellent method for both customers and businesses to save time."
     }
   ],
+
   "learningResources": {
     "books": [
       {
         "srNo": 1,
         "title": "Machine Learning: Step-by-Step Guide To Implement Machine Learning Algorithms with Python",
-        "author": "Rudolph Russell", 
-        "publication": "Rudolph Russell Publications",
-        "isbn": ""
+        "author": "Rudolph Russell",
+        "publication": "Rudolph Russell Publications"
       },
       {
         "srNo": 2,
         "title": "Machine Learning",
-        "author": "Saikat Dull, S. Chandramouli",
-        "publication": "Das, Pearson",
-        "isbn": ""
+        "author": "Saikat Dull, S.Chjandramouli",
+        "publication": "Das, Pearson"
       },
       {
         "srNo": 3,
         "title": "Natural Language Processing with Python",
-        "author": "Steven Bird, Ewan Klein & Edward Loper",
-        "publication": "O'Reilly, 2009",
-        "isbn": ""
+        "author": "Steven Bird, Ewan klein & Edward Loper",
+        "publication": "O'Reilly, 2009"
       },
       {
         "srNo": 4,
         "title": "Speech and Language Processing",
         "author": "Daniel Jurafsky & James H. Martin",
-        "publication": "Second Edition, Prentice Hall, 2008",
-        "isbn": ""
+        "publication": "Second Edition, Prentice Hall, 2008"
       }
     ],
     "websites": [
@@ -564,7 +566,7 @@
       },
       {
         "title": "GeeksforGeeks - Natural Language Processing (NLP) Tutorial",
-        "url": "https://www.geeksforgeeks.org/natural-language-processing-nlp-tutorial/", 
+        "url": "https://www.geeksforgeeks.org/natural-language-processing-nlp-tutorial/",
         "type": "Learning Website"
       },
       {
@@ -575,17 +577,16 @@
       {
         "title": "NPTEL Online Courses - Machine Learning",
         "url": "https://onlinecourses.nptel.ac.in/noc19_cs56/preview",
-        "type": "Online Course"
+        "type": "MOOC"
       },
       {
-        "title": "NPTEL Online Courses - Deep Learning", 
+        "title": "NPTEL Online Courses - Deep Learning",
         "url": "https://onlinecourses.nptel.ac.in/noc20_cs29/preview",
-        "type": "Online Course"
+        "type": "MOOC"
       }
-    ],
-    "openSourceSoftware": [],
-    "mobileApps": []
+    ]
   },
+
   "competencyMapping": {
     "programOutcomes": [
       {
@@ -593,7 +594,7 @@
         "description": "Basic & Discipline specific knowledge"
       },
       {
-        "poNumber": "PO2", 
+        "poNumber": "PO2",
         "description": "Problem Analysis"
       },
       {
@@ -680,39 +681,35 @@
       }
     ]
   },
+
   "developmentCommittee": [
     {
       "name": "Ms. Rikita D. Parekh",
       "designation": "Lecturer - IT",
       "institute": "Government Polytechnic for Girls, Ahmedabad",
-      "contact": "",
       "email": "rikita.nagar@gmail.com"
     },
     {
       "name": "Dr. Lataben J. Gadhavi",
-      "designation": "Lecturer - IT", 
+      "designation": "Lecturer - IT",
       "institute": "Government Polytechnic, Gandhinagar",
-      "contact": "",
       "email": "latagpg@gmail.com"
     },
     {
       "name": "Dr. Esan P. Panchal",
       "designation": "Lecturer - IT",
-      "institute": "Government Polytechnic, Gandhinagar", 
-      "contact": "",
+      "institute": "Government Polytechnic, Gandhinagar",
       "email": "esan.gpg@gmail.com"
     }
   ],
+
   "metadata": {
     "syllabusFormat": "old",
     "syllabusUrl": "",
-    "remarks": "",
-    "createdAt": "",
-    "updatedAt": "",
-    "version": "COGC-2021",
-    "gtuSyllabusUrl": "",
+    "gtuSyllabusUrl": "http://syllabus.gtu.ac.in/",
     "curriculumVersion": "COGC-2021",
-    "id": "",
-    "subjectCode": "4351601"
+    "version": "1.0",
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
   }
 }
