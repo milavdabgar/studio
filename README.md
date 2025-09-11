@@ -69,6 +69,14 @@ The application is deployed using Docker with automated builds triggered by GitH
 - Content synchronization and validation
 - Health checks and rollback capabilities
 
+## Contributing
+
+- Read the Repository Guidelines in `AGENTS.md` for structure, commands, and standards.
+- See `CONTRIBUTING.md` for workflow, commit guidance, and the PR checklist.
+- Pull requests use an auto-applied template (`.github/pull_request_template.md`).
+- Open bugs and feature ideas via the issue templates in `.github/ISSUE_TEMPLATE/`.
+- Report security issues privately via GitHub Security Advisories.
+
 ## Recent Updates
 
 - ✅ Fixed blog post loading issue in production environment
