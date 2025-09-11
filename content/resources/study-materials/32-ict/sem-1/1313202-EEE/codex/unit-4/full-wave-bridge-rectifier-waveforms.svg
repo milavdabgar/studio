@@ -22,7 +22,7 @@
 
   <rect x="20" y="20" width="1160" height="720" rx="16" class="bg"/>
   <text x="40" y="60" class="h1">Full-Wave Bridge Rectifier — Conduction Paths and Waveforms</text>
-  <text x="40" y="88" class="t">Positive half-cycle: D1 & D2 conduct; Negative half-cycle: D3 & D4 conduct. Output across RL is full-wave rectified (2f ripple).</text>
+  <text x="40" y="88" class="t">Positive half-cycle: D1 &amp; D2 conduct; Negative half-cycle: D3 &amp; D4 conduct. Output across RL is full-wave rectified (2f ripple).</text>
 
   <!-- Left: schematic -->
   <rect x="40" y="120" width="520" height="600" rx="12" class="bg"/>
@@ -98,4 +98,3 @@
   <line x1="930" y1="420" x2="930" y2="360" class="wire dash" marker-end="url(#arrow-r)"/>
   <text x="940" y="360" class="t">With C filter → ripple↓, DC↑</text>
 </svg>
-

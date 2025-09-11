@@ -78,7 +78,7 @@
   <g transform="translate(740,120)">
     <!-- Panel 3: Reverse bias -->
     <rect x="0" y="0" width="320" height="520" rx="12" class="bg"/>
-    <text x="12" y="26" class="h2">Reverse bias (V < 0)</text>
+    <text x="12" y="26" class="h2">Reverse bias (V &lt; 0)</text>
     <rect x="135" y="60" width="50" height="400" class="dep" opacity="0.6"/>
     <text x="160" y="52" class="t" text-anchor="middle">W↑</text>
     <!-- Bands tilt upward left→right indicating increased barrier -->
@@ -97,4 +97,3 @@
 
   <text x="40" y="660" class="note">Ec: conduction band edge, Ev: valence band edge, Ef/Fp/Fn: (quasi-)Fermi levels, W: depletion width, q·Vbi: built-in potential energy barrier.</text>
 </svg>
-
