@@ -1,0 +1,258 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="sunGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#f1c40f;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f39c12;stop-opacity:1" />
+    </radialGradient>
+    <linearGradient id="windGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3498db;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="hydroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3498db;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="geoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bioGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#27ae60;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2ecc71;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="oceanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#16a085;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1abc9c;stop-opacity:1" />
+    </linearGradient>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+    </marker>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f8f9fa"/>
+  
+  <!-- Title -->
+  <text x="600" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2c3e50">
+    Classification of Green Energy Sources
+  </text>
+  
+  <!-- Main Classification -->
+  <g id="main-classification">
+    <text x="600" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#34495e">
+      Primary Renewable Energy Sources
+    </text>
+    
+    <!-- Central hub -->
+    <circle cx="600" cy="300" r="80" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="4"/>
+    <text x="600" y="295" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#2c3e50" font-weight="bold">GREEN</text>
+    <text x="600" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#2c3e50" font-weight="bold">ENERGY</text>
+    
+    <!-- Solar Energy -->
+    <g id="solar" transform="translate(300,150)">
+      <circle cx="0" cy="0" r="60" fill="url(#sunGrad)" stroke="#f39c12" stroke-width="3"/>
+      <!-- Sun rays -->
+      <g stroke="#f39c12" stroke-width="3" opacity="0.7">
+        <line x1="-75" y1="0" x2="-65" y2="0"/>
+        <line x1="65" y1="0" x2="75" y2="0"/>
+        <line x1="0" y1="-75" x2="0" y2="-65"/>
+        <line x1="0" y1="65" x2="0" y2="75"/>
+        <line x1="-53" y1="-53" x2="-47" y2="-47"/>
+        <line x1="47" y1="47" x2="53" y2="53"/>
+        <line x1="53" y1="-53" x2="47" y2="-47"/>
+        <line x1="-47" y1="47" x2="-53" y2="53"/>
+      </g>
+      <text x="0" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#f39c12" font-weight="bold">SOLAR ENERGY</text>
+      <text x="0" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#d68910">Photovoltaic &amp; Thermal</text>
+    </g>
+    
+    <!-- Wind Energy -->
+    <g id="wind" transform="translate(900,150)">
+      <circle cx="0" cy="0" r="60" fill="url(#windGrad)" stroke="#3498db" stroke-width="3"/>
+      <!-- Wind turbine -->
+      <g transform="scale(0.8)">
+        <rect x="-2" y="30" width="4" height="25" fill="white"/>
+        <g transform="rotate(45)">
+          <ellipse cx="0" cy="-18" rx="3" ry="20" fill="white" stroke="#2980b9" stroke-width="1"/>
+          <ellipse cx="-15" cy="9" rx="3" ry="20" fill="white" stroke="#2980b9" stroke-width="1" transform="rotate(120)"/>
+          <ellipse cx="15" cy="9" rx="3" ry="20" fill="white" stroke="#2980b9" stroke-width="1" transform="rotate(240)"/>
+        </g>
+        <circle cx="0" cy="0" r="3" fill="#34495e"/>
+      </g>
+      <text x="0" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#3498db" font-weight="bold">WIND ENERGY</text>
+      <text x="0" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#2980b9">Onshore &amp; Offshore</text>
+    </g>
+    
+    <!-- Hydroelectric -->
+    <g id="hydro" transform="translate(150,350)">
+      <circle cx="0" cy="0" r="60" fill="url(#hydroGrad)" stroke="#3498db" stroke-width="3"/>
+      <!-- Dam and water -->
+      <g transform="scale(0.7)">
+        <path d="M-30 20 Q0 -20 30 20 Q0 40 -30 20" fill="#2980b9" opacity="0.8"/>
+        <rect x="-35" y="15" width="70" height="25" fill="#7f8c8d" rx="5"/>
+        <path d="M-20 25 Q0 5 20 25 Q0 35 -20 25" fill="#3498db"/>
+      </g>
+      <text x="0" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#3498db" font-weight="bold">HYDRO POWER</text>
+      <text x="0" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#2980b9">Dams &amp; Run-of-river</text>
+    </g>
+    
+    <!-- Geothermal -->
+    <g id="geothermal" transform="translate(1050,350)">
+      <circle cx="0" cy="0" r="60" fill="url(#geoGrad)" stroke="#e74c3c" stroke-width="3"/>
+      <!-- Earth layers and heat -->
+      <g transform="scale(0.8)">
+        <circle cx="0" cy="0" r="25" fill="#c0392b"/>
+        <circle cx="0" cy="0" r="15" fill="#e74c3c"/>
+        <!-- Heat waves -->
+        <path d="M-5 -35 Q0 -30 5 -35 Q0 -25 -5 -35" fill="none" stroke="#f39c12" stroke-width="2"/>
+        <path d="M0 -35 Q5 -30 10 -35 Q5 -25 0 -35" fill="none" stroke="#f39c12" stroke-width="2"/>
+        <path d="M-10 -35 Q-5 -30 0 -35 Q-5 -25 -10 -35" fill="none" stroke="#f39c12" stroke-width="2"/>
+      </g>
+      <text x="0" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#e74c3c" font-weight="bold">GEOTHERMAL</text>
+      <text x="0" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#c0392b">Earth's Heat Energy</text>
+    </g>
+    
+    <!-- Biomass -->
+    <g id="biomass" transform="translate(300,450)">
+      <circle cx="0" cy="0" r="60" fill="url(#bioGrad)" stroke="#27ae60" stroke-width="3"/>
+      <!-- Plant/tree -->
+      <g transform="scale(0.7)">
+        <rect x="-3" y="10" width="6" height="30" fill="#8e44ad"/>
+        <circle cx="-10" cy="-5" r="12" fill="#27ae60"/>
+        <circle cx="10" cy="-5" r="12" fill="#27ae60"/>
+        <circle cx="0" cy="-15" r="15" fill="#27ae60"/>
+      </g>
+      <text x="0" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#27ae60" font-weight="bold">BIOMASS</text>
+      <text x="0" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#2ecc71">Organic Matter</text>
+    </g>
+    
+    <!-- Ocean Energy -->
+    <g id="ocean" transform="translate(900,450)">
+      <circle cx="0" cy="0" r="60" fill="url(#oceanGrad)" stroke="#16a085" stroke-width="3"/>
+      <!-- Waves -->
+      <g transform="scale(0.8)">
+        <path d="M-30 10 Q-20 0 -10 10 Q0 20 10 10 Q20 0 30 10" fill="none" stroke="white" stroke-width="4"/>
+        <path d="M-30 -10 Q-20 -20 -10 -10 Q0 0 10 -10 Q20 -20 30 -10" fill="none" stroke="white" stroke-width="4"/>
+        <path d="M-25 30 Q-15 20 -5 30 Q5 40 15 30 Q25 20 35 30" fill="none" stroke="white" stroke-width="3"/>
+      </g>
+      <text x="0" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#16a085" font-weight="bold">OCEAN ENERGY</text>
+      <text x="0" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1abc9c">Tidal &amp; Wave</text>
+    </g>
+    
+    <!-- Connection lines -->
+    <line x1="360" y1="210" x2="540" y2="260" stroke="#bdc3c7" stroke-width="3" stroke-dasharray="5,3"/>
+    <line x1="840" y1="210" x2="660" y2="260" stroke="#bdc3c7" stroke-width="3" stroke-dasharray="5,3"/>
+    <line x1="210" y1="350" x2="520" y2="320" stroke="#bdc3c7" stroke-width="3" stroke-dasharray="5,3"/>
+    <line x1="990" y1="350" x2="680" y2="320" stroke="#bdc3c7" stroke-width="3" stroke-dasharray="5,3"/>
+    <line x1="360" y1="390" x2="540" y2="340" stroke="#bdc3c7" stroke-width="3" stroke-dasharray="5,3"/>
+    <line x1="840" y1="390" x2="660" y2="340" stroke="#bdc3c7" stroke-width="3" stroke-dasharray="5,3"/>
+  </g>
+  
+  <!-- Detailed Sub-classifications -->
+  <g id="detailed-classification">
+    <text x="600" y="620" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2c3e50">
+      Detailed Sub-classifications
+    </text>
+    
+    <!-- Solar subcategories -->
+    <g transform="translate(50,650)">
+      <rect x="0" y="0" width="180" height="120" fill="#fff9e6" stroke="#f39c12" stroke-width="2" rx="8"/>
+      <text x="90" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#d68910" font-weight="bold">Solar Energy Types</text>
+      
+      <g transform="translate(10,30)">
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Photovoltaic (PV)</text>
+        <text x="0" y="30" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Silicon cells, Thin film</text>
+        <text x="0" y="45" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Solar Thermal</text>
+        <text x="0" y="60" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Water heating, Steam generation</text>
+        <text x="0" y="75" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Concentrated Solar Power</text>
+        <text x="0" y="90" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Mirrors, Parabolic collectors</text>
+      </g>
+    </g>
+    
+    <!-- Wind subcategories -->
+    <g transform="translate(250,650)">
+      <rect x="0" y="0" width="180" height="120" fill="#e8f4f8" stroke="#3498db" stroke-width="2" rx="8"/>
+      <text x="90" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#2980b9" font-weight="bold">Wind Energy Types</text>
+      
+      <g transform="translate(10,30)">
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Onshore Wind</text>
+        <text x="0" y="30" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Land-based turbines</text>
+        <text x="0" y="45" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Offshore Wind</text>
+        <text x="0" y="60" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Ocean-based turbines</text>
+        <text x="0" y="75" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Small Wind</text>
+        <text x="0" y="90" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Residential &amp; commercial</text>
+      </g>
+    </g>
+    
+    <!-- Hydro subcategories -->
+    <g transform="translate(450,650)">
+      <rect x="0" y="0" width="180" height="120" fill="#e8f4f8" stroke="#3498db" stroke-width="2" rx="8"/>
+      <text x="90" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#2980b9" font-weight="bold">Hydro Power Types</text>
+      
+      <g transform="translate(10,30)">
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Large Hydroelectric</text>
+        <text x="0" y="30" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Major dams, reservoirs</text>
+        <text x="0" y="45" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Small Hydro</text>
+        <text x="0" y="60" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Run-of-river systems</text>
+        <text x="0" y="75" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Pumped Storage</text>
+        <text x="0" y="90" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Energy storage systems</text>
+      </g>
+    </g>
+    
+    <!-- Geothermal subcategories -->
+    <g transform="translate(650,650)">
+      <rect x="0" y="0" width="180" height="120" fill="#fdeaea" stroke="#e74c3c" stroke-width="2" rx="8"/>
+      <text x="90" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#c0392b" font-weight="bold">Geothermal Types</text>
+      
+      <g transform="translate(10,30)">
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Dry Steam</text>
+        <text x="0" y="30" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Direct steam use</text>
+        <text x="0" y="45" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Flash Steam</text>
+        <text x="0" y="60" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Hot water conversion</text>
+        <text x="0" y="75" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Binary Cycle</text>
+        <text x="0" y="90" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Lower temperature resources</text>
+      </g>
+    </g>
+    
+    <!-- Biomass subcategories -->
+    <g transform="translate(850,650)">
+      <rect x="0" y="0" width="180" height="120" fill="#e8f5e8" stroke="#27ae60" stroke-width="2" rx="8"/>
+      <text x="90" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#1e8449" font-weight="bold">Biomass Types</text>
+      
+      <g transform="translate(10,30)">
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Wood &amp; Forest Residues</text>
+        <text x="0" y="30" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Pellets, chips, sawdust</text>
+        <text x="0" y="45" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Agricultural Waste</text>
+        <text x="0" y="60" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Crop residues, bagasse</text>
+        <text x="0" y="75" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Biogas &amp; Biofuels</text>
+        <text x="0" y="90" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Methane, ethanol, biodiesel</text>
+      </g>
+    </g>
+    
+    <!-- Ocean subcategories -->
+    <g transform="translate(1050,650)">
+      <rect x="0" y="0" width="130" height="120" fill="#e0f2f1" stroke="#16a085" stroke-width="2" rx="8"/>
+      <text x="65" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#0d7377" font-weight="bold">Ocean Types</text>
+      
+      <g transform="translate(10,30)">
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Tidal Energy</text>
+        <text x="0" y="30" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Tidal barrages</text>
+        <text x="0" y="45" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 Wave Energy</text>
+        <text x="0" y="60" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Wave converters</text>
+        <text x="0" y="75" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">🔸 OTEC</text>
+        <text x="0" y="90" font-family="Arial, sans-serif" font-size="11" fill="#666">  - Thermal gradients</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- Capacity and Potential -->
+  <g id="capacity-stats">
+    <rect x="50" y="550" width="1100" height="50" fill="#f4f6f7" stroke="#bdc3c7" stroke-width="2" rx="8"/>
+    <text x="600" y="570" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#2c3e50" font-weight="bold">
+      Global Renewable Energy Capacity (2023)
+    </text>
+    <text x="600" y="590" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">
+      Solar: 1,419 GW | Wind: 906 GW | Hydro: 1,392 GW | Geothermal: 15 GW | Biomass: 147 GW | Ocean: 1 GW
+    </text>
+  </g>
+</svg>
