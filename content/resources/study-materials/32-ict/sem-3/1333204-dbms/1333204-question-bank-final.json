@@ -32,7 +32,7 @@
       "examPeriod": "Summer-2024",
       "marks": 3,
       "mappedTopic": "1.1",
-      "mappingConfidence": 6.0,
+      "mappingConfidence": 10.5,
       "english": {
         "text": "Define: DBMS, Instance, Metadata",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -47,8 +47,8 @@
       "questionNumber": "1(b)",
       "examPeriod": "Summer-2024",
       "marks": 4,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.1",
+      "mappingConfidence": 4.0,
       "english": {
         "text": "Define and Explain with example: 1.Entity 2. Attribute",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -64,7 +64,7 @@
       "examPeriod": "Summer-2024",
       "marks": 7,
       "mappedTopic": "1.5",
-      "mappingConfidence": 5.0,
+      "mappingConfidence": 10.0,
       "english": {
         "text": "Write the full form of DBA. Explain the roles and responsibilities of DBA.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -80,7 +80,7 @@
       "examPeriod": "Summer-2024",
       "marks": 7,
       "mappedTopic": "1.9",
-      "mappingConfidence": 6.0,
+      "mappingConfidence": 10.5,
       "english": {
         "text": "Explain relational and network data models in detail.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -95,8 +95,8 @@
       "questionNumber": "2(a)",
       "examPeriod": "Summer-2024",
       "marks": 3,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.1",
+      "mappingConfidence": 4.0,
       "english": {
         "text": "Draw figure and Explain Generalization.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -112,7 +112,7 @@
       "examPeriod": "Summer-2024",
       "marks": 3,
       "mappedTopic": "2.1",
-      "mappingConfidence": 2.0,
+      "mappingConfidence": 5.5,
       "english": {
         "text": "Draw figure and Explain Specialization.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -128,7 +128,7 @@
       "examPeriod": "Summer-2024",
       "marks": 4,
       "mappedTopic": "2.3",
-      "mappingConfidence": 5.0,
+      "mappingConfidence": 10.0,
       "english": {
         "text": "Explain Primary Key and Foreign Key Constraints.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -143,8 +143,8 @@
       "questionNumber": "2(b) OR",
       "examPeriod": "Summer-2024",
       "marks": 4,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 3.0,
+      "mappedTopic": "2.1.1",
+      "mappingConfidence": 6.0,
       "english": {
         "text": "Explain single valued v/s multi-valued attributes with suitable examples.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -159,8 +159,8 @@
       "questionNumber": "2(c)",
       "examPeriod": "Summer-2024",
       "marks": 7,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.4",
+      "mappingConfidence": 5.0,
       "english": {
         "text": "Construct an E-R diagram for Hospital Management System.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -175,8 +175,8 @@
       "questionNumber": "2(c) OR",
       "examPeriod": "Summer-2024",
       "marks": 7,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.4",
+      "mappingConfidence": 5.0,
       "english": {
         "text": "Construct an E-R diagram for Banking Management System.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -191,8 +191,8 @@
       "questionNumber": "3(a)",
       "examPeriod": "Summer-2024",
       "marks": 3,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.7",
+      "mappingConfidence": 4.0,
       "english": {
         "text": "Explain WHERE and DESC clause with example.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -207,8 +207,8 @@
       "questionNumber": "3(a) OR",
       "examPeriod": "Summer-2024",
       "marks": 3,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "3.3.1",
+      "mappingConfidence": 4.2,
       "english": {
         "text": "Explain SELECT and DISTINCT clause with example.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -224,7 +224,7 @@
       "examPeriod": "Summer-2024",
       "marks": 4,
       "mappedTopic": "3.2",
-      "mappingConfidence": 9.0,
+      "mappingConfidence": 23.5,
       "english": {
         "text": "List DDL commands. Explain any two DDL commands with examples.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -240,7 +240,7 @@
       "examPeriod": "Summer-2024",
       "marks": 4,
       "mappedTopic": "3.3",
-      "mappingConfidence": 9.0,
+      "mappingConfidence": 23.5,
       "english": {
         "text": "List DML commands. Explain any two DML commands with examples.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -255,8 +255,8 @@
       "questionNumber": "3(c)",
       "examPeriod": "Summer-2024",
       "marks": 7,
-      "mappedTopic": "1.1",
-      "mappingConfidence": 1.0,
+      "mappedTopic": "3.3.1",
+      "mappingConfidence": 14.4,
       "english": {
         "text": "Perform the following Query on the table \"Company\" having the field's eno, ename, salary, dept in SQL.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -272,7 +272,7 @@
       "examPeriod": "Summer-2024",
       "marks": 7,
       "mappedTopic": "3.8",
-      "mappingConfidence": 6.0,
+      "mappingConfidence": 18.0,
       "english": {
         "text": "Write the Output of Following Query.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -288,7 +288,7 @@
       "examPeriod": "Summer-2024",
       "marks": 3,
       "mappedTopic": "3.1",
-      "mappingConfidence": 7.0,
+      "mappingConfidence": 16.0,
       "english": {
         "text": "List data types in SQL. Explain 1.VARCHAR() and 2.INT() data types with example.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -304,7 +304,7 @@
       "examPeriod": "Summer-2024",
       "marks": 3,
       "mappedTopic": "3.9",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 7.0,
       "english": {
         "text": "Explain commands: 1) To_Char() 2) To_Date()",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -320,7 +320,7 @@
       "examPeriod": "Summer-2024",
       "marks": 4,
       "mappedTopic": "4.3",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 13.8,
       "english": {
         "text": "Explain 2NF (Second Normal Form) with example and solution.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -336,7 +336,7 @@
       "examPeriod": "Summer-2024",
       "marks": 4,
       "mappedTopic": "2.3",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 7.5,
       "english": {
         "text": "Explain Full function dependency with example.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -352,7 +352,7 @@
       "examPeriod": "Summer-2024",
       "marks": 7,
       "mappedTopic": "2.1",
-      "mappingConfidence": 2.0,
+      "mappingConfidence": 5.5,
       "english": {
         "text": "Explain function dependency. Explain Partial function dependency with example.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -368,7 +368,7 @@
       "examPeriod": "Summer-2024",
       "marks": 7,
       "mappedTopic": "4.3",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 10.8,
       "english": {
         "text": "Define normalization. Explain 1NF (First Normal Form) with example and solution.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -383,8 +383,8 @@
       "questionNumber": "5(a)",
       "examPeriod": "Summer-2024",
       "marks": 3,
-      "mappedTopic": "3.16",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.7",
+      "mappingConfidence": 4.0,
       "english": {
         "text": "Explain the concept of Transaction with example.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -400,7 +400,7 @@
       "examPeriod": "Summer-2024",
       "marks": 3,
       "mappedTopic": "5.1",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 7.0,
       "english": {
         "text": "Explain the properties of Transaction with example.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -415,8 +415,8 @@
       "questionNumber": "5(b)",
       "examPeriod": "Summer-2024",
       "marks": 4,
-      "mappedTopic": "3.15",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "3.19",
+      "mappingConfidence": 11.5,
       "english": {
         "text": "Explain equi join with syntax and example.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -431,8 +431,8 @@
       "questionNumber": "5(b) OR",
       "examPeriod": "Summer-2024",
       "marks": 4,
-      "mappedTopic": "3.16",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.7",
+      "mappingConfidence": 4.0,
       "english": {
         "text": "Write the Queries using set operators to find following using given \"Faculty\" and \"CT\" tables.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -448,7 +448,7 @@
       "examPeriod": "Summer-2024",
       "marks": 7,
       "mappedTopic": "5.2",
-      "mappingConfidence": 6.0,
+      "mappingConfidence": 9.5,
       "english": {
         "text": "Explain Conflict Serializability in detail.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -464,7 +464,7 @@
       "examPeriod": "Summer-2024",
       "marks": 7,
       "mappedTopic": "5.2",
-      "mappingConfidence": 5.0,
+      "mappingConfidence": 8.0,
       "english": {
         "text": "Explain View Serializability in detail.",
         "sourceFile": "1333204-summer-2024-solution.md"
@@ -480,7 +480,7 @@
       "examPeriod": "Summer-2025",
       "marks": 3,
       "mappedTopic": "1.1",
-      "mappingConfidence": 5.0,
+      "mappingConfidence": 9.0,
       "english": {
         "text": "Write a short note: Data Dictionary",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -496,7 +496,7 @@
       "examPeriod": "Summer-2025",
       "marks": 4,
       "mappedTopic": "2.1",
-      "mappingConfidence": 6.0,
+      "mappingConfidence": 10.5,
       "english": {
         "text": "Define (i) E-R model (ii) Entity (iii) Entity set and (iv) attributes",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -512,7 +512,7 @@
       "examPeriod": "Summer-2025",
       "marks": 7,
       "mappedTopic": "1.1",
-      "mappingConfidence": 2.0,
+      "mappingConfidence": 4.5,
       "english": {
         "text": "Explain Advantages of DBMS",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -528,7 +528,7 @@
       "examPeriod": "Summer-2025",
       "marks": 7,
       "mappedTopic": "1.7",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 8.0,
       "english": {
         "text": "Explain Architecture of DBMS",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -541,7 +541,7 @@
       "examPeriod": "Summer-2025",
       "marks": 3,
       "mappedTopic": "2.3",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 7.5,
       "english": {
         "text": "Explain UNIQUE KEY and PRIMARY KEY",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -557,7 +557,7 @@
       "examPeriod": "Summer-2025",
       "marks": 3,
       "mappedTopic": "2.2",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 8.0,
       "english": {
         "text": "Explain Mapping Cardinality in ER diagram",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -569,8 +569,8 @@
       "questionNumber": "2(b)",
       "examPeriod": "Summer-2025",
       "marks": 4,
-      "mappedTopic": "2.1",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.4",
+      "mappingConfidence": 6.0,
       "english": {
         "text": "Write a short note on Participation of Entity in ER diagram",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -586,7 +586,7 @@
       "examPeriod": "Summer-2025",
       "marks": 4,
       "mappedTopic": "3.14",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 4.5,
       "english": {
         "text": "Explain Aggregation in E-R diagram",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -599,7 +599,7 @@
       "examPeriod": "Summer-2025",
       "marks": 7,
       "mappedTopic": "2.4",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 7.5,
       "english": {
         "text": "Describe Generalization concept in Detail for ER diagram",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -615,7 +615,7 @@
       "examPeriod": "Summer-2025",
       "marks": 7,
       "mappedTopic": "2.4",
-      "mappingConfidence": 5.0,
+      "mappingConfidence": 10.0,
       "english": {
         "text": "Draw ER diagram of Library Management system using Enhanced ER model",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -628,7 +628,7 @@
       "examPeriod": "Summer-2025",
       "marks": 3,
       "mappedTopic": "3.1",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 7.0,
       "english": {
         "text": "Explain SQL data types",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -643,8 +643,8 @@
       "questionNumber": "3(a) OR",
       "examPeriod": "Summer-2025",
       "marks": 3,
-      "mappedTopic": "3.4",
-      "mappingConfidence": 3.0,
+      "mappedTopic": "3.3",
+      "mappingConfidence": 7.0,
       "english": {
         "text": "Explain use of Grant and Revoke command with example",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -657,7 +657,7 @@
       "examPeriod": "Summer-2025",
       "marks": 4,
       "mappedTopic": "3.2",
-      "mappingConfidence": 2.0,
+      "mappingConfidence": 7.5,
       "english": {
         "text": "Compare DROP and TRUNCATE commands",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -673,7 +673,7 @@
       "examPeriod": "Summer-2025",
       "marks": 4,
       "mappedTopic": "3.3",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 11.0,
       "english": {
         "text": "Describe DML commands with Example",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -686,7 +686,7 @@
       "examPeriod": "Summer-2025",
       "marks": 7,
       "mappedTopic": "2.7",
-      "mappingConfidence": 2.0,
+      "mappingConfidence": 7.0,
       "english": {
         "text": "Consider a following Relational Schema and give Relational Algebra Expression for the following Queries",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -701,8 +701,8 @@
       "questionNumber": "3(c) OR",
       "examPeriod": "Summer-2025",
       "marks": 7,
-      "mappedTopic": "3.9",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.7",
+      "mappingConfidence": 4.0,
       "english": {
         "text": "List all Conversion function of DBMS and explain any three of them in detail",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -714,8 +714,8 @@
       "questionNumber": "4(a)",
       "examPeriod": "Summer-2025",
       "marks": 3,
-      "mappedTopic": "3.16",
-      "mappingConfidence": 3.0,
+      "mappedTopic": "3.20",
+      "mappingConfidence": 6.0,
       "english": {
         "text": "Write short note: Domain Integrity Constraint",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -731,7 +731,7 @@
       "examPeriod": "Summer-2025",
       "marks": 3,
       "mappedTopic": "2.3",
-      "mappingConfidence": 5.0,
+      "mappingConfidence": 10.0,
       "english": {
         "text": "Write short note: Referential integrity Constraints",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -744,7 +744,7 @@
       "examPeriod": "Summer-2025",
       "marks": 4,
       "mappedTopic": "3.19",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 14.0,
       "english": {
         "text": "List all JOIN in DBMS and explain any two",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -760,7 +760,7 @@
       "examPeriod": "Summer-2025",
       "marks": 4,
       "mappedTopic": "3.18",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 7.0,
       "english": {
         "text": "Explain union and intersection operations of relational algebra",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -773,7 +773,7 @@
       "examPeriod": "Summer-2025",
       "marks": 7,
       "mappedTopic": "4.2",
-      "mappingConfidence": 2.0,
+      "mappingConfidence": 5.5,
       "english": {
         "text": "Explain Concept of Functional Dependency in detail",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -789,7 +789,7 @@
       "examPeriod": "Summer-2025",
       "marks": 7,
       "mappedTopic": "1.1",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 6.5,
       "english": {
         "text": "Explain Concept of Normalization in DBMS in detail",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -801,8 +801,8 @@
       "questionNumber": "5(a)",
       "examPeriod": "Summer-2025",
       "marks": 3,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.7",
+      "mappingConfidence": 4.0,
       "english": {
         "text": "Describe Need of Normalization in DBMS",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -817,8 +817,8 @@
       "questionNumber": "5(a) OR",
       "examPeriod": "Summer-2025",
       "marks": 3,
-      "mappedTopic": "1.1",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "4.3",
+      "mappingConfidence": 6.6,
       "english": {
         "text": "Perform 2NF on any Database",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -831,7 +831,7 @@
       "examPeriod": "Summer-2025",
       "marks": 4,
       "mappedTopic": "5.1",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 8.5,
       "english": {
         "text": "Explain properties of Transaction in DBMS",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -846,8 +846,8 @@
       "questionNumber": "5(b) OR",
       "examPeriod": "Summer-2025",
       "marks": 4,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.7",
+      "mappingConfidence": 4.0,
       "english": {
         "text": "Explain States of Transaction",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -860,7 +860,7 @@
       "examPeriod": "Summer-2025",
       "marks": 7,
       "mappedTopic": "5.2",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 7.0,
       "english": {
         "text": "Explain View Serializability in detail",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -876,7 +876,7 @@
       "examPeriod": "Summer-2025",
       "marks": 7,
       "mappedTopic": "5.2",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 7.0,
       "english": {
         "text": "Explain Conflict Serializability in detail",
         "sourceFile": "1333204-summer-2025-solution.md"
@@ -889,7 +889,7 @@
       "examPeriod": "Winter-2023",
       "marks": 3,
       "mappedTopic": "1.1",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 8.0,
       "english": {
         "text": "Define: Field, Record, Metadata",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -905,7 +905,7 @@
       "examPeriod": "Winter-2023",
       "marks": 4,
       "mappedTopic": "2.1",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 8.0,
       "english": {
         "text": "Define (i) E-R model (ii) Entity (iii) Entity set and (iv) attributes",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -921,7 +921,7 @@
       "examPeriod": "Winter-2023",
       "marks": 7,
       "mappedTopic": "1.1",
-      "mappingConfidence": 2.0,
+      "mappingConfidence": 4.5,
       "english": {
         "text": "List the advantages and disadvantages of DBMS.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -937,7 +937,7 @@
       "examPeriod": "Winter-2023",
       "marks": 7,
       "mappedTopic": "1.5",
-      "mappingConfidence": 5.0,
+      "mappingConfidence": 10.0,
       "english": {
         "text": "Write the full form of DBA. Explain the roles and responsibilities of DBA.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -952,8 +952,8 @@
       "questionNumber": "2(a)",
       "examPeriod": "Winter-2023",
       "marks": 3,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 3.0,
+      "mappedTopic": "2.1.1",
+      "mappingConfidence": 6.0,
       "english": {
         "text": "Explain single valued v/s multi-valued attributes with suitable examples",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -968,8 +968,8 @@
       "questionNumber": "2(a) OR",
       "examPeriod": "Winter-2023",
       "marks": 3,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 3.0,
+      "mappedTopic": "2.6",
+      "mappingConfidence": 5.5,
       "english": {
         "text": "Explain specialization v/s generalization with suitable examples",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -984,8 +984,8 @@
       "questionNumber": "2(b)",
       "examPeriod": "Winter-2023",
       "marks": 4,
-      "mappedTopic": "2.1",
-      "mappingConfidence": 3.0,
+      "mappedTopic": "2.3",
+      "mappingConfidence": 7.5,
       "english": {
         "text": "Explain Key Constraints for E-R diagram",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1001,7 +1001,7 @@
       "examPeriod": "Winter-2023",
       "marks": 4,
       "mappedTopic": "2.4",
-      "mappingConfidence": 2.0,
+      "mappingConfidence": 6.0,
       "english": {
         "text": "Define Chasp trap. Explain when it occurs. Explain the solution for Chasp trap",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1016,8 +1016,8 @@
       "questionNumber": "2(c)",
       "examPeriod": "Winter-2023",
       "marks": 7,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.4",
+      "mappingConfidence": 5.0,
       "english": {
         "text": "Construct an E-R diagram for banking management system.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1032,8 +1032,8 @@
       "questionNumber": "2(c) OR",
       "examPeriod": "Winter-2023",
       "marks": 7,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.4",
+      "mappingConfidence": 5.0,
       "english": {
         "text": "Construct an E-R diagram for college management system.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1049,7 +1049,7 @@
       "examPeriod": "Winter-2023",
       "marks": 3,
       "mappedTopic": "3.11",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 5.0,
       "english": {
         "text": "Explain GROUP BY clause with example.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1065,7 +1065,7 @@
       "examPeriod": "Winter-2023",
       "marks": 3,
       "mappedTopic": "1.1",
-      "mappingConfidence": 2.0,
+      "mappingConfidence": 5.0,
       "english": {
         "text": "Explain GRANT command with syntax and example.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1081,7 +1081,7 @@
       "examPeriod": "Winter-2023",
       "marks": 4,
       "mappedTopic": "3.2",
-      "mappingConfidence": 9.0,
+      "mappingConfidence": 23.5,
       "english": {
         "text": "List Data Definition Language (DDL) commands. Explain any two DDL commands with examples.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1097,7 +1097,7 @@
       "examPeriod": "Winter-2023",
       "marks": 4,
       "mappedTopic": "3.2",
-      "mappingConfidence": 2.0,
+      "mappingConfidence": 7.0,
       "english": {
         "text": "Compare Truncate command and Drop command.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1112,8 +1112,8 @@
       "questionNumber": "3(c)",
       "examPeriod": "Winter-2023",
       "marks": 7,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "3.3.1",
+      "mappingConfidence": 12.6,
       "english": {
         "text": "Perform the following Query on the \"Students\" table having the field's enr_no, name, percent, branch in SQL.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1129,7 +1129,7 @@
       "examPeriod": "Winter-2023",
       "marks": 7,
       "mappedTopic": "3.8",
-      "mappingConfidence": 2.0,
+      "mappingConfidence": 6.0,
       "english": {
         "text": "Write the Output of Following Query.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1145,7 +1145,7 @@
       "examPeriod": "Winter-2023",
       "marks": 3,
       "mappedTopic": "3.1",
-      "mappingConfidence": 8.0,
+      "mappingConfidence": 19.0,
       "english": {
         "text": "List data types in SQL. Explain any two data types with example.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1161,7 +1161,7 @@
       "examPeriod": "Winter-2023",
       "marks": 3,
       "mappedTopic": "3.1",
-      "mappingConfidence": 2.0,
+      "mappingConfidence": 6.0,
       "english": {
         "text": "Explain commands: 1) To_Number() 2) To_Char()",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1176,8 +1176,8 @@
       "questionNumber": "4(b)",
       "examPeriod": "Winter-2023",
       "marks": 4,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 1.0,
+      "mappedTopic": "2.7",
+      "mappingConfidence": 4.0,
       "english": {
         "text": "Explain Full function dependency with example.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1193,7 +1193,7 @@
       "examPeriod": "Winter-2023",
       "marks": 4,
       "mappedTopic": "4.3",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 10.2,
       "english": {
         "text": "Explain 1NF (First Normal Form) with example and solution.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1209,7 +1209,7 @@
       "examPeriod": "Winter-2023",
       "marks": 7,
       "mappedTopic": "4.3",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 10.8,
       "english": {
         "text": "Define normalization. Explain 2NF (Second Normal Form) with example and solution.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1225,7 +1225,7 @@
       "examPeriod": "Winter-2023",
       "marks": 7,
       "mappedTopic": "4.2",
-      "mappingConfidence": 2.0,
+      "mappingConfidence": 5.5,
       "english": {
         "text": "Explain function dependency in SQL. Explain Partial function dependency with example.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1241,7 +1241,7 @@
       "examPeriod": "Winter-2023",
       "marks": 3,
       "mappedTopic": "5.1",
-      "mappingConfidence": 6.0,
+      "mappingConfidence": 11.0,
       "english": {
         "text": "Explain the properties of Transaction with example.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1256,8 +1256,8 @@
       "questionNumber": "5(a) OR",
       "examPeriod": "Winter-2023",
       "marks": 3,
-      "mappedTopic": "3.16",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.7",
+      "mappingConfidence": 4.0,
       "english": {
         "text": "Explain the concept of Transaction with example.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1272,8 +1272,8 @@
       "questionNumber": "5(b)",
       "examPeriod": "Winter-2023",
       "marks": 4,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.7",
+      "mappingConfidence": 4.0,
       "english": {
         "text": "Write the Queries using set operators to find following using given \"Student\" and \"CR\" (Class Representative) tables.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1288,8 +1288,8 @@
       "questionNumber": "5(b) OR",
       "examPeriod": "Winter-2023",
       "marks": 4,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "3.19",
+      "mappingConfidence": 9.0,
       "english": {
         "text": "Explain equi-join with syntax and example.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1305,7 +1305,7 @@
       "examPeriod": "Winter-2023",
       "marks": 7,
       "mappedTopic": "5.2",
-      "mappingConfidence": 5.0,
+      "mappingConfidence": 8.0,
       "english": {
         "text": "Explain Conflict Serializability in detail.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1321,7 +1321,7 @@
       "examPeriod": "Winter-2023",
       "marks": 7,
       "mappedTopic": "5.2",
-      "mappingConfidence": 5.0,
+      "mappingConfidence": 8.0,
       "english": {
         "text": "Explain View Serializability in detail.",
         "sourceFile": "1333204-winter-2023-solution.md"
@@ -1337,7 +1337,7 @@
       "examPeriod": "Winter-2024",
       "marks": 3,
       "mappedTopic": "1.1",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 6.0,
       "english": {
         "text": "Define: Field, Record, Metadata",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1353,7 +1353,7 @@
       "examPeriod": "Winter-2024",
       "marks": 4,
       "mappedTopic": "2.5",
-      "mappingConfidence": 6.0,
+      "mappingConfidence": 9.5,
       "english": {
         "text": "Define: strong and weak entity set.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1369,7 +1369,7 @@
       "examPeriod": "Winter-2024",
       "marks": 7,
       "mappedTopic": "1.7",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 9.5,
       "english": {
         "text": "Explain 3 Levels of Data Abstraction",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1385,7 +1385,7 @@
       "examPeriod": "Winter-2024",
       "marks": 7,
       "mappedTopic": "1.1",
-      "mappingConfidence": 2.0,
+      "mappingConfidence": 4.5,
       "english": {
         "text": "Explain advantages and disadvantages of DBMS.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1400,8 +1400,8 @@
       "questionNumber": "2(a)",
       "examPeriod": "Winter-2024",
       "marks": 3,
-      "mappedTopic": "3.15",
-      "mappingConfidence": 3.0,
+      "mappedTopic": "2.8",
+      "mappingConfidence": 7.7,
       "english": {
         "text": "Explain select operation in relational algebra with example",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1416,8 +1416,8 @@
       "questionNumber": "2(a) OR",
       "examPeriod": "Winter-2024",
       "marks": 3,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.8",
+      "mappingConfidence": 7.7,
       "english": {
         "text": "Explain union operation in relational algebra with example.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1433,7 +1433,7 @@
       "examPeriod": "Winter-2024",
       "marks": 4,
       "mappedTopic": "2.3",
-      "mappingConfidence": 7.0,
+      "mappingConfidence": 12.5,
       "english": {
         "text": "Define Primary, Foreign, Super, Candidate Keys in DBMS.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1448,8 +1448,8 @@
       "questionNumber": "2(b) OR",
       "examPeriod": "Winter-2024",
       "marks": 4,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.1.1",
+      "mappingConfidence": 7.8,
       "english": {
         "text": "Define Composite attribute and Multivalued attribute with example",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1464,8 +1464,8 @@
       "questionNumber": "2(c)",
       "examPeriod": "Winter-2024",
       "marks": 7,
-      "mappedTopic": "1.4",
-      "mappingConfidence": 1.0,
+      "mappedTopic": "2.4",
+      "mappingConfidence": 5.0,
       "english": {
         "text": "Draw E R Diagram of Library Management System.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1481,7 +1481,7 @@
       "examPeriod": "Winter-2024",
       "marks": 7,
       "mappedTopic": "2.4",
-      "mappingConfidence": 1.0,
+      "mappingConfidence": 5.0,
       "english": {
         "text": "Draw E R Diagram of College Management System.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1497,7 +1497,7 @@
       "examPeriod": "Winter-2024",
       "marks": 3,
       "mappedTopic": "3.1",
-      "mappingConfidence": 2.0,
+      "mappingConfidence": 4.5,
       "english": {
         "text": "List different data types in SQL and Explain in brief",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1513,7 +1513,7 @@
       "examPeriod": "Winter-2024",
       "marks": 3,
       "mappedTopic": "3.7",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 6.5,
       "english": {
         "text": "Explain any three Date Functions.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1529,7 +1529,7 @@
       "examPeriod": "Winter-2024",
       "marks": 4,
       "mappedTopic": "3.2",
-      "mappingConfidence": 6.0,
+      "mappingConfidence": 14.5,
       "english": {
         "text": "Explain any two DDL Commands with Syntax and Example",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1545,7 +1545,7 @@
       "examPeriod": "Winter-2024",
       "marks": 4,
       "mappedTopic": "3.3",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 11.0,
       "english": {
         "text": "Explain any two DML Commands with Syntax and Example",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1561,7 +1561,7 @@
       "examPeriod": "Winter-2024",
       "marks": 7,
       "mappedTopic": "3.8",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 12.0,
       "english": {
         "text": "Write the Output of Following Query.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1576,8 +1576,8 @@
       "questionNumber": "3(c) OR",
       "examPeriod": "Winter-2024",
       "marks": 7,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "3.2",
+      "mappingConfidence": 4.5,
       "english": {
         "text": "For the table: EMP(emp_no, emp_name, designation, salary, deptno), Write SQL commands for following operations.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1593,7 +1593,7 @@
       "examPeriod": "Winter-2024",
       "marks": 3,
       "mappedTopic": "3.11",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 5.0,
       "english": {
         "text": "List different aggregate functions and explain any one with syntax and example.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1609,7 +1609,7 @@
       "examPeriod": "Winter-2024",
       "marks": 3,
       "mappedTopic": "3.8",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 6.5,
       "english": {
         "text": "List different numeric functions and explain any one with syntax and example.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1624,8 +1624,8 @@
       "questionNumber": "4(b)",
       "examPeriod": "Winter-2024",
       "marks": 4,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "2.7",
+      "mappingConfidence": 4.0,
       "english": {
         "text": "Define the transaction with example.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1640,8 +1640,8 @@
       "questionNumber": "4(b) OR",
       "examPeriod": "Winter-2024",
       "marks": 4,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 3.0,
+      "mappedTopic": "5.1",
+      "mappingConfidence": 5.5,
       "english": {
         "text": "List various database operations of a transaction.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1657,7 +1657,7 @@
       "examPeriod": "Winter-2024",
       "marks": 7,
       "mappedTopic": "3.16",
-      "mappingConfidence": 5.0,
+      "mappingConfidence": 7.5,
       "english": {
         "text": "What is an Operator in SQL? Explain Arithmetic and Logical operators with Syntax and Example",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1673,7 +1673,7 @@
       "examPeriod": "Winter-2024",
       "marks": 7,
       "mappedTopic": "3.19",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 15.5,
       "english": {
         "text": "What is join? Explain different types of joins with syntax and example.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1688,8 +1688,8 @@
       "questionNumber": "5(a)",
       "examPeriod": "Winter-2024",
       "marks": 3,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "4.3",
+      "mappingConfidence": 4.8,
       "english": {
         "text": "Convert the customer relation into 1NF shown below.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1705,7 +1705,7 @@
       "examPeriod": "Winter-2024",
       "marks": 3,
       "mappedTopic": "4.2",
-      "mappingConfidence": 3.0,
+      "mappingConfidence": 5.0,
       "english": {
         "text": "Convert the Depositor_Account relation into 2NF shown below.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1721,7 +1721,7 @@
       "examPeriod": "Winter-2024",
       "marks": 4,
       "mappedTopic": "5.1",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 8.5,
       "english": {
         "text": "List and Explain ACID properties of transaction.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1737,7 +1737,7 @@
       "examPeriod": "Winter-2024",
       "marks": 4,
       "mappedTopic": "5.2",
-      "mappingConfidence": 5.0,
+      "mappingConfidence": 8.0,
       "english": {
         "text": "Explain conflict serializability.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1753,7 +1753,7 @@
       "examPeriod": "Winter-2024",
       "marks": 7,
       "mappedTopic": "4.2",
-      "mappingConfidence": 4.0,
+      "mappingConfidence": 8.0,
       "english": {
         "text": "List different types of functional dependencies and explain each using example.",
         "sourceFile": "1333204-winter-2024-solution.md"
@@ -1768,8 +1768,8 @@
       "questionNumber": "5(c) OR",
       "examPeriod": "Winter-2024",
       "marks": 7,
-      "mappedTopic": "3.14",
-      "mappingConfidence": 2.0,
+      "mappedTopic": "4.3",
+      "mappingConfidence": 11.4,
       "english": {
         "text": "Explain 3NF normalization with example",
         "sourceFile": "1333204-winter-2024-solution.md"

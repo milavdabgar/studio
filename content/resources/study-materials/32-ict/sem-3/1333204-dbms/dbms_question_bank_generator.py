@@ -43,88 +43,142 @@ class DBMSQuestionBankGenerator:
         print(f"✅ Loaded syllabus for: {self.syllabus_data['courseTitle']}")
         
     def create_keyword_mapping(self):
-        """Create comprehensive keyword mapping for DBMS subject."""
+        """Create comprehensive keyword mapping for DBMS subject with enhanced Gujarati terms."""
         self.keyword_mapping = {
             # Unit 1: Introduction to Database Systems
             "1.1": {
-                "keywords": ["data", "information", "database", "dbms", "database management system", "metadata", "data items", "fields", "records", "data dictionary", "definition", "difference between data and information"],
+                "keywords": ["data", "information", "database", "dbms", "database management system", "metadata", "data items", "fields", "records", "data dictionary", "definition", "difference between data and information",
+                           # Gujarati terms
+                           "ડેટા", "માહિતી", "ડેટાબેસ", "ડેટા મેનેજમેન્ટ સિસ્ટમ", "મેટાડેટા", "ફિલ્ડ", "રેકોર્ડ", "વ્યાખ્યા", "વ્યાખ્યાયિત કરો", "માહિતી અને ડેટા", "ડેટા ડિક્શનરી"],
                 "weight": 1.0
             },
             "1.2": {
-                "keywords": ["purpose", "database system", "advantages", "benefits", "why database", "database system purpose"],
+                "keywords": ["purpose", "database system", "advantages", "benefits", "why database", "database system purpose",
+                           # Gujarati terms
+                           "હેતુ", "ડેટાબેસ સિસ્ટમનો હેતુ", "ફાયદા", "લાભ", "શા માટે ડેટાબેસ"],
                 "weight": 1.0
             },
             "1.3": {
-                "keywords": ["file oriented", "file system", "database system", "comparison", "difference", "file vs database", "traditional file", "disadvantages of file"],
+                "keywords": ["file oriented", "file system", "database system", "comparison", "difference", "file vs database", "traditional file", "disadvantages of file",
+                           # Gujarati terms
+                           "ફાઇલ ઓરિએન્ટેડ", "ફાઇલ સિસ્ટમ", "ડેટાબેસ સિસ્ટમ", "તુલના", "તફાવત", "ફાઇલ વિ. ડેટાબેસ"],
                 "weight": 1.0
             },
             "1.4": {
-                "keywords": ["application", "dbms application", "uses", "database applications", "real world examples", "banking", "library", "hospital"],
+                "keywords": ["application", "dbms application", "uses", "database applications", "real world examples", "banking", "library", "hospital",
+                           # Gujarati terms
+                           "એપ્લિકેશન", "ઉપયોગ", "વાસ્તવિક ઉદાહરણ", "બેંકિંગ", "લાઇબ્રેરી", "હોસ્પિટલ"],
                 "weight": 1.0
             },
             "1.5": {
-                "keywords": ["dba", "database administrator", "roles", "responsibilities", "duties", "functions of dba"],
+                "keywords": ["dba", "database administrator", "roles", "responsibilities", "duties", "functions of dba",
+                           # Gujarati terms - Enhanced with the exact unmapped question patterns
+                           "DBA", "ડેટાબેસ એડમિનિસ્ટ્રેટર", "ભૂમિકા", "જવાબદારીઓ", "કર્તવ્યો", "પૂર્ણ નામ", "DBA નું પૂર્ણ નામ", "DBAની ભૂમિકા", "DBAની જવાબદારીઓ"],
                 "weight": 1.0
             },
             "1.6": {
-                "keywords": ["schema", "sub-schema", "instances", "database schema", "external schema", "conceptual schema", "internal schema"],
+                "keywords": ["schema", "sub-schema", "instances", "database schema", "external schema", "conceptual schema", "internal schema",
+                           # Gujarati terms
+                           "સ્કીમા", "સબ-સ્કીમા", "ઇન્સ્ટન્સ", "ઇન્સ્ટન્સીસ", "ડેટાબેસ સ્કીમા"],
                 "weight": 1.0
             },
             "1.7": {
-                "keywords": ["data abstraction", "abstraction levels", "internal level", "conceptual level", "external level", "view level", "logical level", "physical level"],
+                "keywords": ["data abstraction", "abstraction levels", "internal level", "conceptual level", "external level", "view level", "logical level", "physical level",
+                           # Gujarati terms
+                           "ડેટા એબ્સ્ટ્રેક્શન", "એબ્સ્ટ્રેક્શન સ્તર", "આંતરિક સ્તર", "કન્સેપ્ટુઅલ સ્તર", "એક્સટર્નલ સ્તર", "3 સ્તરો", "ત્રણ સ્તરો", "સ્તરો સમજાવો"],
                 "weight": 1.0
             },
             "1.8": {
-                "keywords": ["data independence", "logical independence", "physical independence", "independence levels"],
+                "keywords": ["data independence", "logical independence", "physical independence", "independence levels",
+                           # Gujarati terms
+                           "ડેટા ઇન્ડિપેન્ડન્સ", "સ્વતંત્રતા", "લોજિકલ ઇન્ડિપેન્ડન્સ", "ફિઝિકલ ઇન્ડિપેન્ડન્સ"],
                 "weight": 1.0
             },
             "1.9": {
-                "keywords": ["database architecture", "data models", "er model", "relational model", "object oriented", "network model", "hierarchical model", "database models"],
+                "keywords": ["database architecture", "data models", "er model", "relational model", "object oriented", "network model", "hierarchical model", "database models",
+                           # Gujarati terms - Enhanced with exact patterns from unmapped questions
+                           "આર્કિટેક્ચર", "ડેટા મોડેલ", "રીલેશનલ મોડેલ", "નેટવર્ક મોડેલ", "હાયરાર્કિકલ મોડેલ", "રીલેશનલ અને નેટવર્ક", "રીલેશનલ અને નેટવર્ક ડેટા મોડેલ", "તુલના"],
                 "weight": 1.0
             },
             
             # Unit 2: ER Model and Relational Algebra
             "2.1": {
-                "keywords": ["entity", "attributes", "relationship", "er concepts", "entity relationship", "participation", "recursive relationship", "degree", "er model", "entity set"],
+                "keywords": ["entity", "attributes", "relationship", "er concepts", "entity relationship", "participation", "recursive relationship", "degree", "er model", "entity set",
+                           # Gujarati terms
+                           "એન્ટિટી", "એટ્રિબ્યુટ", "સંબંધ", "ER કન્સેપ્ટ", "એન્ટિટી રિલેશનશિપ", "સહભાગીતા", "રિકર્સિવ સંબંધ"],
                 "weight": 1.0
             },
             "2.2": {
-                "keywords": ["mapping cardinality", "cardinality", "one to one", "one to many", "many to one", "many to many", "1:1", "1:N", "M:1", "M:N"],
+                "keywords": ["mapping cardinality", "cardinality", "one to one", "one to many", "many to one", "many to many", "1:1", "1:N", "M:1", "M:N",
+                           # Gujarati terms
+                           "કાર્ડિનાલિટી", "મેપિંગ કાર્ડિનાલિટી", "એક થી એક", "એક થી અનેક", "અનેક થી એક", "અનેક થી અનેક"],
                 "weight": 1.0
             },
             "2.3": {
-                "keywords": ["key", "primary key", "foreign key", "super key", "candidate key", "alternate key", "composite key", "keys in database"],
+                "keywords": ["key", "primary key", "foreign key", "super key", "candidate key", "alternate key", "composite key", "keys in database",
+                           # Gujarati terms
+                           "કી", "પ્રાઇમરી કી", "ફોરેન કી", "સુપર કી", "કેન્ડિડેટ કી", "વૈકલ્પિક કી", "કમ્પોઝિટ કી"],
                 "weight": 1.0
             },
             "2.4": {
-                "keywords": ["er diagram", "entity relationship diagram", "erd", "draw er diagram", "er model diagram", "entity diagram"],
+                "keywords": ["er diagram", "entity relationship diagram", "erd", "draw er diagram", "er model diagram", "entity diagram",
+                           # Gujarati terms
+                           "ER ડાયાગ્રામ", "એન્ટિટી રિલેશનશિપ ડાયાગ્રામ", "ER મોડેલ ડાયાગ્રામ"],
                 "weight": 1.0
             },
             "2.5": {
-                "keywords": ["weak entity", "weak entity set", "strong entity", "identifying relationship", "partial key", "weak entities"],
+                "keywords": ["weak entity", "weak entity set", "strong entity", "identifying relationship", "partial key", "weak entities",
+                           # Gujarati terms
+                           "વીક એન્ટિટી", "નબળું એન્ટિટી", "સ્ટ્રોંગ એન્ટિટી", "મજબૂત એન્ટિટી", "ઓળખાણ સંબંધ", "પાર્શિયલ કી"],
                 "weight": 1.0
             },
             "2.6": {
-                "keywords": ["enhanced er", "eer model", "subclass", "superclass", "generalization", "specialization", "aggregation", "inheritance", "isa relationship"],
+                "keywords": ["enhanced er", "eer model", "subclass", "superclass", "generalization", "specialization", "aggregation", "inheritance", "isa relationship",
+                           # Gujarati terms - Enhanced with exact pattern from unmapped question
+                           "એન્હાન્સ્ડ ER", "સબક્લાસ", "સુપરક્લાસ", "જનરલાઇઝેશન", "સ્પેશિયલાઇઝેશન", "એગ્રીગેશન", "Specialization", "વારસો", "ISA સંબંધ", "આકૃતિ સાથે"],
                 "weight": 1.0
             },
             "2.7": {
-                "keywords": ["converting er", "er to database", "er to relational", "mapping", "er diagram to tables", "relational schema"],
+                "keywords": ["converting er", "er to database", "er to relational", "mapping", "er diagram to tables", "relational schema",
+                           # Gujarati terms
+                           "ER કન્વર્ટિંગ", "ER થી ડેટાબેસ", "ER થી રિલેશનલ", "મેપિંગ", "ER ડાયાગ્રામ થી ટેબલ"],
                 "weight": 1.0
+            },
+            
+            # Enhanced attribute types mapping for missing questions
+            "2.1.1": {
+                "keywords": ["single valued", "multivalued", "attribute types", "composite attribute", "derived attribute", "simple attribute",
+                           # Gujarati terms - Enhanced with exact patterns from unmapped questions  
+                           "સિંગલ વેલ્યુડ", "મલ્ટીવેલ્યુડ", "એટ્રીબ્યુટ", "કંપોઝિટ એટ્રિબ્યુટ", "મલ્ટીવેલ્યુડ એટ્રિબ્યુટ", "સિંગલ વેલ્યુડ અને મલ્ટીવેલ્યુડ", "તફાવત", "ઉદાહરણ સાથે", "વચ્ચેનો તફાવત"],
+                "weight": 1.2
             },
             
             # Unit 3: Structured Query Language
             "3.1": {
-                "keywords": ["sql data types", "data types", "varchar", "number", "date", "char", "integer", "sql types"],
+                "keywords": ["sql data types", "data types", "varchar", "number", "date", "char", "integer", "sql types",
+                           # Gujarati terms
+                           "SQL ડેટા ટાઇપ", "ડેટા ટાઇપ", "VARCHAR", "NUMBER", "DATE", "CHAR", "INTEGER"],
                 "weight": 1.0
             },
             "3.2": {
-                "keywords": ["ddl", "data definition language", "create", "alter", "truncate", "drop", "create table", "alter table", "ddl commands"],
+                "keywords": ["ddl", "data definition language", "create", "alter", "truncate", "drop", "create table", "alter table", "ddl commands",
+                           # Gujarati terms - Enhanced with exact patterns from unmapped questions
+                           "DDL", "ડેટા ડેફિનિશન લેંગ્વેજ", "CREATE", "ALTER", "TRUNCATE", "DROP", "ટેબલ બનાવો", "DDL કમાન્ડ", "DDL કમાન્ડની યાદી", "કોઈ પણ ૨ DDL કમાન્ડ", "ઉદાહરણ સાથે", "સમજાવો"],
                 "weight": 1.0
             },
             "3.3": {
-                "keywords": ["dml", "data manipulation language", "insert", "select", "update", "delete", "dml commands", "insert statement", "update statement"],
+                "keywords": ["dml", "data manipulation language", "insert", "select", "update", "delete", "dml commands", "insert statement", "update statement",
+                           # Gujarati terms - Enhanced with exact patterns from unmapped questions
+                           "DML", "ડેટા મેનિપ્યુલેશન લેંગ્વેજ", "INSERT", "SELECT", "UPDATE", "DELETE", "DML કમાન્ડ", "DML કમાન્ડની યાદી", "કોઈ પણ ૨ DML કમાન્ડ", "ઉદાહરણ સાથે", "સમજાવો"],
                 "weight": 1.0
+            },
+            
+            # Enhanced SQL Query patterns for the many unmapped SELECT statements
+            "3.3.1": {
+                "keywords": ["select", "display", "show records", "table records", "all records", "duplicate", "distinct", "order by", "where", "condition",
+                           # Gujarati terms - Enhanced with exact patterns from unmapped SQL questions
+                           "ટેબલ", "રેકોર્ડ", "ડિસ્પ્લે કરો", "તમામ રેકોર્ડ", "ડુપ્લિકેટ", "ડુપ્લીકેટ વેલ્યુ", "સિવાય", "માત્ર", "ઉતરતા ક્રમમાં", "નાં ઉતરતા ક્રમમાં", "ક્રમમાં", "થી શરુ થતા", "થી શરૂ થતા", "શહેરમાં", "ન રહેતા", "હોય તેવા", "કરતા ઓછું", "પગાર", "ધરાવતા", "ડીલીટ કરો", "Company ટેબલ", "Students ટેબલ", "branch", "name", "ename", "dept", "બ્રાંચ", "વિદ્યાર્થી", "વિદ્યાર્થીઓના", "કર્મચારી", "કર્મચારીઓ", "કર્મચારીઓના", "કર્મચારીઓને", "નામ"],
+                "weight": 1.2
             },
             "3.4": {
                 "keywords": ["privilege", "grant", "revoke", "security", "user privileges", "access control", "dcl", "data control language"],
@@ -139,11 +193,15 @@ class DBMSQuestionBankGenerator:
                 "weight": 1.0
             },
             "3.7": {
-                "keywords": ["date functions", "add_months", "months_between", "round", "nextday", "truncate", "sysdate", "date arithmetic"],
+                "keywords": ["date functions", "add_months", "months_between", "round", "nextday", "truncate", "sysdate", "date arithmetic",
+                           # Gujarati terms - Enhanced with exact patterns from unmapped questions
+                           "ડેટ ફંક્શન", "કોઈ પણ ત્રણ ડેટ ફંક્શન", "SYSDATE", "ADD_MONTHS", "MONTHS_BETWEEN", "ROUND", "NEXTDAY", "TRUNCATE"],
                 "weight": 1.0
             },
             "3.8": {
-                "keywords": ["numeric functions", "character functions", "abs", "ceil", "power", "mod", "round", "trunc", "sqrt", "initcap", "lower", "upper", "ltrim", "rtrim", "replace", "substring", "instr"],
+                "keywords": ["numeric functions", "character functions", "abs", "ceil", "power", "mod", "round", "trunc", "sqrt", "initcap", "lower", "upper", "ltrim", "rtrim", "replace", "substring", "instr",
+                           # Gujarati terms
+                           "ન્યુમેરિક ફંક્શન", "કેરેક્ટર ફંક્શન", "ABS", "CEIL", "POWER", "MOD", "ROUND", "TRUNC", "SQRT", "INITCAP", "LOWER", "UPPER", "LTRIM", "RTRIM", "REPLACE", "SUBSTRING", "INSTR"],
                 "weight": 1.0
             },
             "3.9": {
@@ -183,7 +241,9 @@ class DBMSQuestionBankGenerator:
                 "weight": 1.0
             },
             "3.19": {
-                "keywords": ["joins", "join operations", "simple join", "equi join", "non equi join", "self join", "outer join", "inner join", "left join", "right join", "full join"],
+                "keywords": ["joins", "join operations", "simple join", "equi join", "non equi join", "self join", "outer join", "inner join", "left join", "right join", "full join",
+                           # Gujarati terms - Enhanced with exact patterns from unmapped questions
+                           "જોઇન", "જોઇન શું છે", "વિવિધ પ્રકાર ના જોઇન", "syntax", "ઉદાહરણ સાથે", "સમજાવો", "INNER JOIN", "OUTER JOIN", "LEFT JOIN", "RIGHT JOIN", "SELF JOIN"],
                 "weight": 1.0
             },
             "3.20": {
@@ -203,28 +263,52 @@ class DBMSQuestionBankGenerator:
                 "weight": 1.0
             },
             
-            # Unit 4: Normalization
+            # Unit 4: Normalization - Enhanced with exact patterns from unmapped questions
             "4.1": {
-                "keywords": ["normalization", "importance", "need for normalization", "database normalization", "why normalization"],
+                "keywords": ["normalization", "importance", "need for normalization", "database normalization", "why normalization",
+                           # Gujarati terms - Enhanced with exact patterns from unmapped questions
+                           "નોર્મલાઇઝેશન", "નોર્મલાઈઝેશન", "વ્યાખ્યા આપો", "વ્યાખ્યાયિત કરો", "ડેટાબેઝની રચના", "પ્રક્રિયા", "મોટા ટેબલ", "નાના ટેબલ", "વિભાજિત", "રિડન્ડન્સી", "ડિપેન્ડન્સી", "ઘટાડવા"],
                 "weight": 1.0
             },
             "4.2": {
-                "keywords": ["functional dependencies", "functional dependency", "fd", "partial dependency", "full dependency", "transitive dependency", "dependency types"],
+                "keywords": ["functional dependencies", "functional dependency", "fd", "partial dependency", "full dependency", "transitive dependency", "dependency types",
+                           # Gujarati terms
+                           "ફંક્શનલ ડિપેન્ડન્સી", "આંશિક નિર્ભરતા", "સંપૂર્ણ નિર્ભરતા", "ટ્રાન્ઝિટિવ નિર્ભરતા"],
                 "weight": 1.0
             },
             "4.3": {
-                "keywords": ["normal forms", "1nf", "2nf", "3nf", "first normal form", "second normal form", "third normal form", "normalization forms"],
-                "weight": 1.0
+                "keywords": ["normal forms", "1nf", "2nf", "3nf", "first normal form", "second normal form", "third normal form", "normalization forms",
+                           # Gujarati terms - Enhanced with exact patterns from unmapped questions
+                           "નોર્મલ ફોર્મ", "1NF", "2NF", "3NF", "ફર્સ્ટ નોર્મલ ફોર્મ", "સેકન્ડ નોર્મલ ફોર્મ", "થર્ડ નોર્મલ ફોર્મ", "NF (ફર્સ્ટ નોર્મલ ફોર્મ)", "NF (સેકન્ડ નોર્મલ ફોર્મ)", "ઉદાહરણ અને ઉકેલ", "ઉકેલ", "સાથે સમજાવો", "અલગ ટેબલ", "નોન-કી એટ્રિબ્યુટ", "કી પર આધારિત", "સંપૂર્ણપણે આધારિત"],
+                "weight": 1.2
             },
             
-            # Unit 5: Transaction Management
+            # Unit 5: Transaction Management - Enhanced with exact patterns from unmapped questions
             "5.1": {
-                "keywords": ["transaction", "transaction concepts", "properties", "acid", "atomicity", "consistency", "isolation", "durability", "transaction properties"],
+                "keywords": ["transaction", "transaction concepts", "properties", "acid", "atomicity", "consistency", "isolation", "durability", "transaction properties",
+                           # Gujarati terms - Enhanced with exact patterns from unmapped questions
+                           "ટ્રાન્સેક્શન", "ટ્રાન્સેક્શન ને", "ઉદાહરણ સાથે", "વ્યાખ્યાયિત કરો", "પ્રોપર્ટીઝ", "ACID", "એટોમિસિટી", "કન્સિસ્ટન્સી", "આઇસોલેશન", "ડ્યુરેબિલિટી", "Begin", "Read", "Write", "Commit", "Rollback", "Savepoint", "BRWCRS", "મેમરી ટ્રીક"],
                 "weight": 1.0
             },
             "5.2": {
-                "keywords": ["serializability", "conflict serializability", "view serializability", "concurrent transactions", "serializable", "schedule"],
+                "keywords": ["serializability", "conflict serializability", "view serializability", "concurrent transactions", "serializable", "schedule",
+                           # Gujarati terms and patterns for concurrent access
+                           "સીરિયલાઇઝેબિલિટી", "કોન્ફ્લિક્ટ સીરિયલાઇઝેબિલિટી", "વ્યૂ સીરિયલાઇઝેબિલિટી", "કોન્કરન્ટ ટ્રાન્સેક્શન", "Read-Write Analysis", "સમાનતા વિશ્લેષણ"],
                 "weight": 1.0
+            },
+            
+            # Additional specific patterns for SQL query output questions
+            "3.3.2": {
+                "keywords": ["query output", "output", "result", "આઉટપુટ", "નીચે ની ક્વેરી", "ક્વેરી નું આઉટપુટ", "લખો", "પરિણામ"],
+                "weight": 1.1
+            },
+            
+            # Additional specific patterns for relational algebra
+            "2.8": {
+                "keywords": ["relational algebra", "select operation", "union operation", "projection", "selection", "algebra operations",
+                           # Gujarati terms - Enhanced with exact patterns from unmapped questions  
+                           "રિલેશનલ એલ્જેબ્રા", "સિલેક્ટ ઓપરેશન", "યુનિયન ઓપરેશન", "પ્રોજેક્શન", "સિલેક્શન", "સમજાવો"],
+                "weight": 1.1
             }
         }
         
@@ -332,7 +416,7 @@ class DBMSQuestionBankGenerator:
         return questions
         
     def map_question_to_topic(self, question: Dict) -> Tuple[Optional[str], float]:
-        """Map a question to syllabus topic using keyword-based scoring."""
+        """Map a question to syllabus topic using enhanced keyword-based scoring with lower threshold for better coverage."""
         question_text = question['text'].lower()
         question_content = question.get('full_content', '').lower()
         combined_text = f"{question_text} {question_content}"
@@ -350,17 +434,21 @@ class DBMSQuestionBankGenerator:
                 # Exact phrase match gets higher score
                 if keyword_lower in combined_text:
                     if len(keyword_lower.split()) > 1:  # Multi-word keyword
-                        score += 2.0
-                        keyword_matches += 2
+                        score += 3.0  # Increased from 2.0
+                        keyword_matches += 3
                     else:
-                        score += 1.0
+                        score += 1.5  # Increased from 1.0
                         keyword_matches += 1
                 
                 # Word boundary matching for single words
                 elif len(keyword_lower.split()) == 1:
                     if re.search(r'\b' + re.escape(keyword_lower) + r'\b', combined_text):
-                        score += 0.8
+                        score += 1.2  # Increased from 0.8
                         keyword_matches += 1
+                
+                # Partial matching for Gujarati compound words (less strict)
+                elif any(word in combined_text for word in keyword_lower.split()):
+                    score += 0.5  # New: partial matching bonus
             
             # Apply topic weight
             final_score = score * topic_info['weight']
@@ -368,6 +456,18 @@ class DBMSQuestionBankGenerator:
             if final_score > best_score:
                 best_score = final_score
                 best_topic = topic_code
+        
+        # Lower threshold for acceptance - if no good match found, use the best available even if score is low
+        if best_topic is None and best_score == 0.0:
+            # Find any topic with even minimal keyword match
+            for topic_code, topic_info in self.keyword_mapping.items():
+                for keyword in topic_info['keywords']:
+                    if keyword.lower() in combined_text:
+                        best_topic = topic_code
+                        best_score = 0.3  # Minimal score for any match
+                        break
+                if best_topic:
+                    break
         
         return best_topic, best_score
         
