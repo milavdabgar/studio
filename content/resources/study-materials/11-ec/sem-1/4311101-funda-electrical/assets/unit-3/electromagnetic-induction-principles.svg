@@ -1,0 +1,309 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="magnetGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff4444;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ffaaaa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4444ff;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="fieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00aa00;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#00ff00;stop-opacity:0.1" />
+    </linearGradient>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+    </marker>
+    <marker id="fieldArrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#0066cc" />
+    </marker>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f8f9fa"/>
+  
+  <!-- Title -->
+  <text x="600" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2c3e50">
+    Electromagnetic Induction Principles
+  </text>
+  
+  <!-- Moving Conductor in Magnetic Field -->
+  <g id="moving-conductor">
+    <text x="150" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#34495e">
+      Moving Conductor
+    </text>
+    
+    <!-- Magnetic field lines -->
+    <g stroke="#0066cc" stroke-width="2" fill="none" opacity="0.6">
+      <path d="M50 100 Q150 120 250 100" marker-end="url(#fieldArrow)"/>
+      <path d="M50 120 Q150 140 250 120" marker-end="url(#fieldArrow)"/>
+      <path d="M50 140 Q150 160 250 140" marker-end="url(#fieldArrow)"/>
+      <path d="M50 160 Q150 180 250 160" marker-end="url(#fieldArrow)"/>
+      <path d="M50 180 Q150 200 250 180" marker-end="url(#fieldArrow)"/>
+    </g>
+    <text x="260" y="145" font-family="Arial, sans-serif" font-size="12" fill="#0066cc" font-weight="bold">B</text>
+    
+    <!-- Moving conductor -->
+    <rect x="140" y="90" width="8" height="120" fill="#ff6b35" rx="2"/>
+    <path d="M120 150 L140 150" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+    <text x="110" y="145" font-family="Arial, sans-serif" font-size="12" fill="#333" font-weight="bold">v</text>
+    
+    <!-- Induced EMF -->
+    <circle cx="145" cy="100" r="3" fill="#ff0000"/>
+    <circle cx="145" cy="200" r="3" fill="#0000ff"/>
+    <text x="155" y="105" font-family="Arial, sans-serif" font-size="12" fill="#ff0000">+</text>
+    <text x="155" y="205" font-family="Arial, sans-serif" font-size="12" fill="#0000ff">-</text>
+    <text x="160" y="155" font-family="Arial, sans-serif" font-size="12" fill="#333" font-weight="bold">EMF = BLv</text>
+  </g>
+  
+  <!-- Changing Flux Through Coil -->
+  <g id="flux-change">
+    <text x="450" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#34495e">
+      Changing Magnetic Flux
+    </text>
+    
+    <!-- Coil -->
+    <g transform="translate(400,120)">
+      <ellipse cx="50" cy="30" rx="45" ry="15" fill="none" stroke="#d35400" stroke-width="4"/>
+      <ellipse cx="50" cy="50" rx="45" ry="15" fill="none" stroke="#d35400" stroke-width="4"/>
+      <ellipse cx="50" cy="70" rx="45" ry="15" fill="none" stroke="#d35400" stroke-width="4"/>
+      <ellipse cx="50" cy="90" rx="45" ry="15" fill="none" stroke="#d35400" stroke-width="4"/>
+      
+      <!-- Terminals -->
+      <circle cx="10" cy="35" r="4" fill="#333"/>
+      <circle cx="90" cy="85" r="4" fill="#333"/>
+      <line x1="0" y1="35" x2="10" y2="35" stroke="#333" stroke-width="3"/>
+      <line x1="90" y1="85" x2="100" y2="85" stroke="#333" stroke-width="3"/>
+    </g>
+    
+    <!-- Changing magnetic field -->
+    <g transform="translate(430,110)" opacity="0.7">
+      <circle cx="20" cy="50" r="5" fill="#0066cc"/>
+      <text x="15" y="55" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">⊗</text>
+      <circle cx="30" cy="40" r="7" fill="none" stroke="#0066cc" stroke-width="2"/>
+      <circle cx="40" cy="60" r="9" fill="none" stroke="#0066cc" stroke-width="2"/>
+      <circle cx="50" cy="30" r="6" fill="#0066cc"/>
+      <text x="45" y="35" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">⊗</text>
+    </g>
+    
+    <!-- Flux equation -->
+    <text x="450" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#333" font-weight="bold">Φ = B·A·cos(θ)</text>
+    <text x="450" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">EMF = -dΦ/dt</text>
+  </g>
+  
+  <!-- Rotating Loop in Magnetic Field -->
+  <g id="rotating-loop">
+    <text x="750" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#34495e">
+      Rotating Loop
+    </text>
+    
+    <!-- Magnetic poles -->
+    <rect x="650" y="100" width="30" height="80" fill="url(#magnetGrad)" rx="5"/>
+    <rect x="820" y="100" width="30" height="80" fill="url(#magnetGrad)" rx="5"/>
+    <text x="665" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="bold">N</text>
+    <text x="835" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="bold">S</text>
+    
+    <!-- Rotating loop -->
+    <g transform="translate(750,140) rotate(30)">
+      <rect x="-40" y="-20" width="80" height="40" fill="none" stroke="#e74c3c" stroke-width="4" rx="5"/>
+      <circle cx="0" cy="0" r="5" fill="#333"/>
+    </g>
+    
+    <!-- Rotation arrow -->
+    <path d="M720 110 A30 30 0 0 1 780 110" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <text x="745" y="105" font-family="Arial, sans-serif" font-size="12" fill="#333" font-weight="bold">ω</text>
+    
+    <!-- Generated EMF waveform -->
+    <g transform="translate(680,200)">
+      <path d="M0 0 Q20 -30 40 0 Q60 30 80 0 Q100 -30 120 0" fill="none" stroke="#e74c3c" stroke-width="3"/>
+      <line x1="0" y1="0" x2="120" y2="0" stroke="#333" stroke-width="1"/>
+      <text x="130" y="5" font-family="Arial, sans-serif" font-size="12" fill="#333">e(t)</text>
+      <text x="60" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">AC Generation</text>
+    </g>
+  </g>
+  
+  <!-- Transformer Principle -->
+  <g id="transformer">
+    <text x="1050" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#34495e">
+      Transformer Action
+    </text>
+    
+    <!-- Core -->
+    <rect x="980" y="110" width="140" height="20" fill="#7f8c8d" rx="10"/>
+    <rect x="980" y="150" width="140" height="20" fill="#7f8c8d" rx="10"/>
+    
+    <!-- Primary coil -->
+    <g transform="translate(990,100)">
+      <ellipse cx="15" cy="35" rx="12" ry="8" fill="none" stroke="#3498db" stroke-width="3"/>
+      <ellipse cx="15" cy="50" rx="12" ry="8" fill="none" stroke="#3498db" stroke-width="3"/>
+      <ellipse cx="15" cy="65" rx="12" ry="8" fill="none" stroke="#3498db" stroke-width="3"/>
+      <text x="35" y="55" font-family="Arial, sans-serif" font-size="12" fill="#3498db" font-weight="bold">N₁</text>
+    </g>
+    
+    <!-- Secondary coil -->
+    <g transform="translate(1090,100)">
+      <ellipse cx="15" cy="35" rx="12" ry="8" fill="none" stroke="#e74c3c" stroke-width="3"/>
+      <ellipse cx="15" cy="50" rx="12" ry="8" fill="none" stroke="#e74c3c" stroke-width="3"/>
+      <ellipse cx="15" cy="65" rx="12" ry="8" fill="none" stroke="#e74c3c" stroke-width="3"/>
+      <ellipse cx="15" cy="80" rx="12" ry="8" fill="none" stroke="#e74c3c" stroke-width="3"/>
+      <text x="35" y="60" font-family="Arial, sans-serif" font-size="12" fill="#e74c3c" font-weight="bold">N₂</text>
+    </g>
+    
+    <!-- Magnetic flux -->
+    <g transform="translate(1020,120)" opacity="0.6">
+      <path d="M0 10 Q30 5 60 10 Q90 15 120 10" fill="none" stroke="#9b59b6" stroke-width="3" stroke-dasharray="5,3"/>
+      <text x="60" y="0" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#9b59b6" font-weight="bold">Φ</text>
+    </g>
+    
+    <!-- Equations -->
+    <text x="1050" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333" font-weight="bold">V₂/V₁ = N₂/N₁</text>
+    <text x="1050" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333" font-weight="bold">Mutual Induction</text>
+  </g>
+  
+  <!-- Eddy Currents -->
+  <g id="eddy-currents">
+    <text x="200" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#34495e">
+      Eddy Currents
+    </text>
+    
+    <!-- Conducting plate -->
+    <rect x="100" y="340" width="200" height="80" fill="#bdc3c7" stroke="#95a5a6" stroke-width="3" rx="5"/>
+    
+    <!-- Magnet above -->
+    <rect x="170" y="300" width="60" height="30" fill="url(#magnetGrad)" rx="5"/>
+    <text x="200" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">N S</text>
+    
+    <!-- Eddy current loops -->
+    <g transform="translate(150,370)" opacity="0.8">
+      <circle cx="0" cy="0" r="15" fill="none" stroke="#e74c3c" stroke-width="3"/>
+      <path d="M-10 0 L-5 -5 M-5 5 L-10 0" stroke="#e74c3c" stroke-width="2"/>
+      <circle cx="50" cy="0" r="15" fill="none" stroke="#e74c3c" stroke-width="3"/>
+      <path d="M60 0 L55 5 M55 -5 L60 0" stroke="#e74c3c" stroke-width="2"/>
+    </g>
+    
+    <!-- Heat generation -->
+    <g transform="translate(200,460)">
+      <path d="M-5 0 Q0 -10 5 0 Q0 10 -5 0" fill="#ff6b35" opacity="0.7"/>
+      <path d="M5 0 Q10 -10 15 0 Q10 10 5 0" fill="#ff6b35" opacity="0.7"/>
+      <path d="M-15 0 Q-10 -10 -5 0 Q-10 10 -15 0" fill="#ff6b35" opacity="0.7"/>
+      <text x="0" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#d35400" font-weight="bold">Heat Loss</text>
+    </g>
+  </g>
+  
+  <!-- Self-Induction -->
+  <g id="self-induction">
+    <text x="600" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#34495e">
+      Self-Induction
+    </text>
+    
+    <!-- Coil with changing current -->
+    <g transform="translate(550,340)">
+      <ellipse cx="50" cy="20" rx="35" ry="10" fill="none" stroke="#27ae60" stroke-width="4"/>
+      <ellipse cx="50" cy="35" rx="35" ry="10" fill="none" stroke="#27ae60" stroke-width="4"/>
+      <ellipse cx="50" cy="50" rx="35" ry="10" fill="none" stroke="#27ae60" stroke-width="4"/>
+      <ellipse cx="50" cy="65" rx="35" ry="10" fill="none" stroke="#27ae60" stroke-width="4"/>
+      <ellipse cx="50" cy="80" rx="35" ry="10" fill="none" stroke="#27ae60" stroke-width="4"/>
+    </g>
+    
+    <!-- Current change indication -->
+    <g transform="translate(520,380)">
+      <path d="M0 0 Q20 -15 40 0 Q60 15 80 0 Q100 -15 120 0" fill="none" stroke="#f39c12" stroke-width="3"/>
+      <text x="60" y="-25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#f39c12" font-weight="bold">di/dt</text>
+    </g>
+    
+    <!-- Self-induced EMF -->
+    <path d="M480 390 L520 390" stroke="#e74c3c" stroke-width="3" marker-end="url(#arrowhead)"/>
+    <text x="465" y="385" font-family="Arial, sans-serif" font-size="12" fill="#e74c3c" font-weight="bold">e = -L(di/dt)</text>
+    
+    <!-- Magnetic field lines -->
+    <g transform="translate(600,360)" opacity="0.5">
+      <ellipse cx="0" cy="0" rx="25" ry="15" fill="none" stroke="#9b59b6" stroke-width="2" stroke-dasharray="3,2"/>
+      <ellipse cx="0" cy="0" rx="35" ry="20" fill="none" stroke="#9b59b6" stroke-width="2" stroke-dasharray="3,2"/>
+      <ellipse cx="0" cy="0" rx="45" ry="25" fill="none" stroke="#9b59b6" stroke-width="2" stroke-dasharray="3,2"/>
+    </g>
+  </g>
+  
+  <!-- Applications -->
+  <g id="applications">
+    <text x="950" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#34495e">
+      Applications
+    </text>
+    
+    <!-- Generator icon -->
+    <g transform="translate(850,340)">
+      <circle cx="30" cy="30" r="25" fill="none" stroke="#3498db" stroke-width="3"/>
+      <rect x="20" y="20" width="20" height="20" fill="none" stroke="#e74c3c" stroke-width="2"/>
+      <text x="30" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333" font-weight="bold">Generator</text>
+    </g>
+    
+    <!-- Motor icon -->
+    <g transform="translate(950,340)">
+      <circle cx="30" cy="30" r="25" fill="none" stroke="#27ae60" stroke-width="3"/>
+      <circle cx="30" cy="30" r="8" fill="#27ae60"/>
+      <text x="30" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333" font-weight="bold">Motor</text>
+    </g>
+    
+    <!-- Transformer icon -->
+    <g transform="translate(1050,340)">
+      <rect x="15" y="20" width="8" height="20" fill="#f39c12"/>
+      <rect x="37" y="20" width="8" height="20" fill="#f39c12"/>
+      <ellipse cx="20" cy="30" rx="8" ry="5" fill="none" stroke="#3498db" stroke-width="2"/>
+      <ellipse cx="40" cy="30" rx="8" ry="5" fill="none" stroke="#e74c3c" stroke-width="2"/>
+      <text x="30" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333" font-weight="bold">Transformer</text>
+    </g>
+  </g>
+  
+  <!-- Key Principles Box -->
+  <g id="key-principles">
+    <rect x="50" y="520" width="1100" height="200" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2" rx="10"/>
+    <text x="600" y="550" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2c3e50">
+      Key Principles of Electromagnetic Induction
+    </text>
+    
+    <!-- Principle 1 -->
+    <g transform="translate(80,570)">
+      <circle cx="10" cy="10" r="8" fill="#3498db"/>
+      <text x="10" y="15" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">1</text>
+      <text x="30" y="15" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50" font-weight="bold">Moving conductor in magnetic field generates EMF</text>
+      <text x="30" y="35" font-family="Arial, sans-serif" font-size="12" fill="#7f8c8d">EMF = B × L × v (motional EMF)</text>
+    </g>
+    
+    <!-- Principle 2 -->
+    <g transform="translate(80,610)">
+      <circle cx="10" cy="10" r="8" fill="#e74c3c"/>
+      <text x="10" y="15" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">2</text>
+      <text x="30" y="15" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50" font-weight="bold">Changing magnetic flux induces EMF in closed loop</text>
+      <text x="30" y="35" font-family="Arial, sans-serif" font-size="12" fill="#7f8c8d">EMF = -dΦ/dt (Faraday's Law)</text>
+    </g>
+    
+    <!-- Principle 3 -->
+    <g transform="translate(80,650)">
+      <circle cx="10" cy="10" r="8" fill="#27ae60"/>
+      <text x="10" y="15" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">3</text>
+      <text x="30" y="15" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50" font-weight="bold">Self-induction opposes current changes</text>
+      <text x="30" y="35" font-family="Arial, sans-serif" font-size="12" fill="#7f8c8d">EMF = -L × (di/dt)</text>
+    </g>
+    
+    <!-- Principle 4 -->
+    <g transform="translate(580,570)">
+      <circle cx="10" cy="10" r="8" fill="#f39c12"/>
+      <text x="10" y="15" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">4</text>
+      <text x="30" y="15" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50" font-weight="bold">Mutual induction between coils enables transformers</text>
+      <text x="30" y="35" font-family="Arial, sans-serif" font-size="12" fill="#7f8c8d">V₂/V₁ = N₂/N₁</text>
+    </g>
+    
+    <!-- Principle 5 -->
+    <g transform="translate(580,610)">
+      <circle cx="10" cy="10" r="8" fill="#9b59b6"/>
+      <text x="10" y="15" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">5</text>
+      <text x="30" y="15" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50" font-weight="bold">Eddy currents cause energy losses in conductors</text>
+      <text x="30" y="35" font-family="Arial, sans-serif" font-size="12" fill="#7f8c8d">Minimized by lamination and high resistance</text>
+    </g>
+    
+    <!-- Principle 6 -->
+    <g transform="translate(580,650)">
+      <circle cx="10" cy="10" r="8" fill="#e67e22"/>
+      <text x="10" y="15" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">6</text>
+      <text x="30" y="15" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50" font-weight="bold">Foundation for AC generators, motors, and transformers</text>
+      <text x="30" y="35" font-family="Arial, sans-serif" font-size="12" fill="#7f8c8d">Converts mechanical ↔ electrical energy</text>
+    </g>
+  </g>
+</svg>
