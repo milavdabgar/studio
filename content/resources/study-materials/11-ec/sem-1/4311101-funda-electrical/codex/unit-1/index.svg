@@ -23,6 +23,8 @@
   <a xlink:href="dc-mesh-analysis-step.svg"><text x="320" y="190" class="t">Mesh analysis (steps)</text></a>
   <a xlink:href="nodal-matrix-solution.svg"><text x="320" y="220" class="t">Nodal matrix solution</text></a>
   <a xlink:href="mesh-numeric-panel.svg"><text x="320" y="250" class="t">Mesh numeric panel</text></a>
+  <a xlink:href="supernode-recipe.svg"><text x="320" y="280" class="t">Supernode recipe</text></a>
+  <a xlink:href="supermesh-recipe.svg"><text x="320" y="310" class="t">Supermesh recipe</text></a>
 
   <text x="600" y="60" class="h">Theorems</text>
   <a xlink:href="thevenin-norton-conversion.svg"><text x="600" y="100" class="t">Thevenin–Norton</text></a>
@@ -41,4 +43,10 @@
   <a xlink:href="dmm-burden-voltage.svg"><text x="40" y="490" class="t">DMM burden voltage</text></a>
   <a xlink:href="measurement-uncertainty-classes.svg"><text x="40" y="520" class="t">Uncertainty classes</text></a>
   <a xlink:href="dependent-source-models.svg"><text x="40" y="550" class="t">Dependent sources</text></a>
+  <a xlink:href="emf-vs-potential-difference.svg"><text x="320" y="340" class="t">EMF vs potential</text></a>
+  <a xlink:href="power-energy-units-meters.svg"><text x="320" y="370" class="t">Power/Energy units</text></a>
+  <a xlink:href="ohms-law-limitations.svg"><text x="320" y="400" class="t">Ohm's law limitations</text></a>
+  <a xlink:href="resistors-series-parallel-examples.svg"><text x="320" y="430" class="t">Series/parallel examples</text></a>
+  <a xlink:href="basic-components-overview.svg"><text x="320" y="460" class="t">Basic components (R/L/C)</text></a>
+  <a xlink:href="battery-ratings-series-parallel.svg"><text x="320" y="490" class="t">Battery ratings &amp; connections</text></a>
 </svg>

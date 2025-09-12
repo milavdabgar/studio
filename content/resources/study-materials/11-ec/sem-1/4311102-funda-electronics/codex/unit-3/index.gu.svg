@@ -20,6 +20,7 @@
   <a xlink:href="led-iv-curve.svg"><text x="320" y="100" class="t">એલઇડી I–V</text></a>
   <a xlink:href="led-series-resistor-calc.svg"><text x="320" y="130" class="t">શ્રેણી રેઝિસ્ટર ગણતરી</text></a>
   <a xlink:href="led-spectrum-approx.svg"><text x="320" y="160" class="t">સ્પેક્ટ્રમ (અંદાજ)</text></a>
+  <a xlink:href="multicolor-led-wiring.svg"><text x="320" y="190" class="t">મલ્ટીકલર LED વાયરિંગ</text></a>
 
   <text x="580" y="60" class="h">અન્ય ડાયોડ</text>
   <a xlink:href="schottky-vs-silicon-vi.svg"><text x="580" y="100" class="t">સ્કોટ્કી vs સિલિકોન</text></a>
@@ -27,5 +28,5 @@
   <a xlink:href="photodiode-modes.svg"><text x="580" y="160" class="t">ફોટોડાયોડ મોડ્સ</text></a>
   <a xlink:href="photodiode-iv-dark-vs-lit.svg"><text x="580" y="190" class="t">ફોટોડાયોડ I–V (અંધકાર/પ્રકાશ)</text></a>
   <a xlink:href="special-diodes-overview.svg"><text x="580" y="220" class="t">ચિહ્ન આવલોકન</text></a>
+  <a xlink:href="zener-regulator-design-numeric.svg"><text x="40" y="220" class="t">ઝીનર ડિઝાઇન (અંકિય)</text></a>
 </svg>
-

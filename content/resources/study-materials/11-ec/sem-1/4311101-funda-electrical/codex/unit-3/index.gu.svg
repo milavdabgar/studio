@@ -27,4 +27,7 @@
   <a xlink:href="eddy-currents-lamination.svg"><text x="680" y="130" class="t">એડી કરંટ &amp; લેમિનેશન</text></a>
   <a xlink:href="bh-hysteresis-qual.svg"><text x="680" y="160" class="t">B–H લૂપ (ગુણાત્મક)</text></a>
   <a xlink:href="hysteresis-materials-compare.svg"><text x="680" y="190" class="t">સામગ્રી તુલના</text></a>
+  <a xlink:href="dot-convention.svg"><text x="680" y="220" class="t">ડોટ કન્વેન્શન</text></a>
+  <a xlink:href="series-aiding-opposing-inductors.svg"><text x="680" y="250" class="t">સીરિઝ એઇડિંગ/ઓપોઝિંગ</text></a>
+  <a xlink:href="series-aiding-opposing-numeric.svg"><text x="680" y="280" class="t">એઇડિંગ/ઓપોઝિંગ (અંકિય)</text></a>
 </svg>

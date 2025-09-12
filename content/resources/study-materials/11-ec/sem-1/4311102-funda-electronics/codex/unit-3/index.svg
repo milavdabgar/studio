@@ -20,6 +20,7 @@
   <a xlink:href="led-iv-curve.svg"><text x="320" y="100" class="t">LED I–V</text></a>
   <a xlink:href="led-series-resistor-calc.svg"><text x="320" y="130" class="t">Series resistor calc</text></a>
   <a xlink:href="led-spectrum-approx.svg"><text x="320" y="160" class="t">Spectrum (approx)</text></a>
+  <a xlink:href="multicolor-led-wiring.svg"><text x="320" y="190" class="t">Multi‑color LED wiring</text></a>
 
   <text x="580" y="60" class="h">Other Diodes</text>
   <a xlink:href="schottky-vs-silicon-vi.svg"><text x="580" y="100" class="t">Schottky vs silicon</text></a>
@@ -27,5 +28,5 @@
   <a xlink:href="photodiode-modes.svg"><text x="580" y="160" class="t">Photodiode modes</text></a>
   <a xlink:href="photodiode-iv-dark-vs-lit.svg"><text x="580" y="190" class="t">Photodiode I–V (dark vs lit)</text></a>
   <a xlink:href="special-diodes-overview.svg"><text x="580" y="220" class="t">Symbol overview</text></a>
+  <a xlink:href="zener-regulator-design-numeric.svg"><text x="40" y="220" class="t">Zener design (numeric)</text></a>
 </svg>
-

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" role="img" aria-label="Full-wave center-tap rectifier PIV">
+  <title>Full‑Wave Center‑Tap — PIV</title>
+  <desc>Each diode sees PIV of 2V_m (twice the peak of half winding) in center‑tap configuration.</desc>
+  <defs>
+    <style>
+      .h { font: 18px sans-serif; font-weight: 700; fill: #111; }
+      .s { font: 14px sans-serif; fill: #374151; }
+      .box { fill: #f8fafc; stroke: #cbd5e1; }
+    </style>
+  </defs>
+  <rect x="20" y="20" width="860" height="480" rx="12" class="box"/>
+  <text x="40" y="60" class="h">PIV(CT FWR) = 2V_m</text>
+  <text x="40" y="90" class="s">પ્રત્યેક ડાયોડ પર 2V_m સુધીનું ઉલ્ટુ વોલ્ટેજ (અર્ધ વાઇન્ડિંગ પીકનું દગણ)</text>
+</svg>
+

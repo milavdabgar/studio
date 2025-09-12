@@ -45,5 +45,7 @@
   <a xlink:href="transistor-as-switch.svg"><text x="600" y="100" class="t">Transistor as switch</text></a>
   <a xlink:href="dmm-transistor-hfe-socket.svg"><text x="600" y="130" class="t">DMM hFE socket</text></a>
   <a xlink:href="ce-design-flow.svg"><text x="600" y="160" class="t">CE design flow</text></a>
+  <a xlink:href="ce-midband-gain-numeric.svg"><text x="600" y="190" class="t">CE midband gain (numeric)</text></a>
+  <a xlink:href="ce-bias-point-numeric.svg"><text x="600" y="220" class="t">CE bias point (numeric)</text></a>
+  <a xlink:href="transistor-switching-waveforms.svg"><text x="600" y="250" class="t">Switching waveforms</text></a>
 </svg>
-

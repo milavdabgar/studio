@@ -16,8 +16,10 @@
   <a xlink:href="full-wave-center-tap-rectifier.svg"><text x="40" y="160" class="t">Full-wave (center-tap)</text></a>
   <a xlink:href="bridge-rectifier.svg"><text x="40" y="190" class="t">Bridge rectifier</text></a>
   <a xlink:href="bridge-rectifier-piv.svg"><text x="40" y="220" class="t">Bridge PIV</text></a>
-  <a xlink:href="bridge-conduction-positive.svg"><text x="40" y="250" class="t">Bridge conduction (positive)</text></a>
-  <a xlink:href="bridge-conduction-negative.svg"><text x="40" y="280" class="t">Bridge conduction (negative)</text></a>
+  <a xlink:href="half-wave-piv.svg"><text x="40" y="250" class="t">HWR PIV</text></a>
+  <a xlink:href="full-wave-center-tap-piv.svg"><text x="40" y="280" class="t">Center‑tap PIV</text></a>
+  <a xlink:href="bridge-conduction-positive.svg"><text x="40" y="310" class="t">Bridge conduction (positive)</text></a>
+  <a xlink:href="bridge-conduction-negative.svg"><text x="40" y="340" class="t">Bridge conduction (negative)</text></a>
 
   <text x="420" y="60" class="h">Filters &amp; Ripple</text>
   <a xlink:href="shunt-capacitor-filter.svg"><text x="420" y="100" class="t">Shunt C filter</text></a>
@@ -44,5 +46,5 @@
 
   <text x="420" y="480" class="h">Design</text>
   <a xlink:href="rectifier-design-flow.svg"><text x="420" y="520" class="t">Rectifier design flow</text></a>
+  <a xlink:href="rectifier-ripple-sizing-numeric.svg"><text x="420" y="550" class="t">Ripple sizing (numeric)</text></a>
 </svg>
-

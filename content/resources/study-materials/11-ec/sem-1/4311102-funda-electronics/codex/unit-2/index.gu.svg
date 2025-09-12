@@ -16,8 +16,10 @@
   <a xlink:href="full-wave-center-tap-rectifier.svg"><text x="40" y="160" class="t">સંપૂર્ણ-તરંગ (સેન્ટર-ટૅપ)</text></a>
   <a xlink:href="bridge-rectifier.svg"><text x="40" y="190" class="t">બ્રિજ રેક્ટિફાયર</text></a>
   <a xlink:href="bridge-rectifier-piv.svg"><text x="40" y="220" class="t">બ્રિજ PIV</text></a>
-  <a xlink:href="bridge-conduction-positive.svg"><text x="40" y="250" class="t">બ્રિજ વાહક માર્ગ (ધન અર્ધ)</text></a>
-  <a xlink:href="bridge-conduction-negative.svg"><text x="40" y="280" class="t">બ્રિજ વાહક માર્ગ (ઋણ અર્ધ)</text></a>
+  <a xlink:href="half-wave-piv.svg"><text x="40" y="250" class="t">અર્ધ‑તરંગ PIV</text></a>
+  <a xlink:href="full-wave-center-tap-piv.svg"><text x="40" y="280" class="t">સેન્ટર‑ટૅપ PIV</text></a>
+  <a xlink:href="bridge-conduction-positive.svg"><text x="40" y="310" class="t">બ્રિજ વાહક માર્ગ (ધન અર્ધ)</text></a>
+  <a xlink:href="bridge-conduction-negative.svg"><text x="40" y="340" class="t">બ્રિજ વાહક માર્ગ (ઋણ અર્ધ)</text></a>
 
   <text x="420" y="60" class="h">ફિલ્ટર અને રિપલ</text>
   <a xlink:href="shunt-capacitor-filter.svg"><text x="420" y="100" class="t">શન્ટ C ફિલ્ટર</text></a>
@@ -44,5 +46,5 @@
 
   <text x="420" y="480" class="h">ડિઝાઇન</text>
   <a xlink:href="rectifier-design-flow.svg"><text x="420" y="520" class="t">રેક્ટિફાયર ડિઝાઇન પ્રવાહ</text></a>
+  <a xlink:href="rectifier-ripple-sizing-numeric.svg"><text x="420" y="550" class="t">રિપલ સાઇઝિંગ (અંકિય)</text></a>
 </svg>
-

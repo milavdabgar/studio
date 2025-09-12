@@ -17,7 +17,7 @@
   <a xlink:href="pv-iv-irradiance-temperature.svg"><text x="40" y="190" class="t">I–V વત્તા રેડિયન્સ/તાપમાન</text></a>
   <a xlink:href="pv-bypass-diode-effects.svg"><text x="40" y="220" class="t">બાયપાસ ડાયોડ અસર</text></a>
   <a xlink:href="pv-array-mismatch-cases.svg"><text x="40" y="250" class="t">મિસમૅચ કેસ</text></a>
-  <a xlink:href="mppt-po-flow.svg"><text x="40" y="280" class="t">MPPT (P&O) પ્રવાહ</text></a>
+  <a xlink:href="mppt-po-flow.svg"><text x="40" y="280" class="t">MPPT (P&amp;O) પ્રવાહ</text></a>
   <a xlink:href="pv-string-sizing-guardrails.svg"><text x="40" y="310" class="t">સ્ટ્રિંગ સાઇઝિંગ માર્ગદર્શિકા</text></a>
 
   <text x="360" y="60" class="h">પવન</text>
@@ -31,4 +31,3 @@
   <a xlink:href="net-metering-flow.svg"><text x="680" y="130" class="t">નેટ મિટરિંગ પ્રવાહ</text></a>
   <a xlink:href="green-energy-classification.svg"><text x="680" y="160" class="t">ગ્રીન ઉર્જા વર્ગીકરણ</text></a>
 </svg>
-

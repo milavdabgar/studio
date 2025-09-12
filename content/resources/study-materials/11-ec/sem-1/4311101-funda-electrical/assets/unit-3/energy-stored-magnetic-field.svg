@@ -1,347 +1,183 @@
 <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="coilGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#3498db;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1" />
-    </linearGradient>
-    <linearGradient id="coreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#95a5a6;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#7f8c8d;stop-opacity:1" />
-    </linearGradient>
-    <linearGradient id="energyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#f39c12;stop-opacity:0.8" />
-      <stop offset="100%" style="stop-color:#e67e22;stop-opacity:0.4" />
-    </linearGradient>
-    <linearGradient id="fieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#9b59b6;stop-opacity:0.6" />
-      <stop offset="100%" style="stop-color:#8e44ad;stop-opacity:0.3" />
-    </linearGradient>
-    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
-    </marker>
-    <marker id="fieldArrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="#9b59b6" />
-    </marker>
-  </defs>
-  
-  <!-- Background -->
-  <rect width="1200" height="800" fill="#f8f9fa"/>
-  
-  <!-- Title -->
-  <text x="600" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2c3e50">
-    Energy Stored in Magnetic Field
-  </text>
-  
-  <!-- Basic Concept -->
-  <g id="basic-concept">
-    <text x="300" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#34495e">
-      Energy Storage Mechanism
-    </text>
+    <style>
+      .title-text { font-family: 'Segoe UI', Arial, sans-serif; font-size: 24px; font-weight: bold; fill: #1e3a8a; }
+      .subtitle-text { font-family: 'Segoe UI', Arial, sans-serif; font-size: 18px; font-weight: 600; fill: #1e40af; }
+      .label-text { font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; font-weight: 500; fill: #374151; }
+      .value-text { font-family: 'Segoe UI', Arial, sans-serif; font-size: 12px; font-weight: 600; fill: #dc2626; }
+      .formula-text { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; font-weight: 500; fill: #059669; }
+      .energy-field { stroke: #7c3aed; fill: rgba(124, 58, 237, 0.2); stroke-width: 2; }
+      .magnetic-field { stroke: #2563eb; fill: none; stroke-width: 2; stroke-dasharray: 3,2; }
+      .current-flow { stroke: #dc2626; fill: #dc2626; stroke-width: 3; }
+      .inductor-coil { stroke: #4338ca; fill: none; stroke-width: 2; }
+    </style>
     
-    <!-- Inductor with magnetic field -->
-    <g transform="translate(150,90)">
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#374151" />
+    </marker>
+    
+    <marker id="current-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#dc2626" />
+    </marker>
+    
+    <marker id="field-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#2563eb" />
+    </marker>
+    
+    <radialGradient id="fieldGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:0.1" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f8fafc"/>
+
+  <!-- Main Title -->
+  <text x="600" y="30" text-anchor="middle" class="title-text">Energy Stored in Magnetic Field</text>
+  <text x="600" y="55" text-anchor="middle" class="subtitle-text">Magnetic Energy Storage in Inductors</text>
+
+  <!-- Main Formula -->
+  <g id="mainFormula" transform="translate(50, 100)">
+    <rect x="0" y="0" width="500" height="150" fill="#f0f9ff" stroke="#3b82f6" stroke-width="2" rx="8"/>
+    <text x="250" y="30" text-anchor="middle" class="subtitle-text">Fundamental Energy Formula</text>
+    
+    <text x="250" y="70" text-anchor="middle" class="title-text" style="font-size: 32px; fill: #dc2626;">U = ½Li²</text>
+    
+    <text x="50" y="100" class="formula-text">Where: U = Energy (Joules)</text>
+    <text x="50" y="120" class="formula-text">L = Inductance (Henry)</text>
+    <text x="50" y="135" class="formula-text">i = Current (Amperes)</text>
+    
+    <text x="300" y="100" class="formula-text">Alternative forms:</text>
+    <text x="300" y="120" class="formula-text">U = ½Φi (using flux)</text>
+    <text x="300" y="135" class="formula-text">U = B²V/2μ (field energy)</text>
+  </g>
+
+  <!-- Inductor Visualization -->
+  <g id="inductorViz" transform="translate(600, 100)">
+    <rect x="0" y="0" width="550" height="300" fill="#fef7cd" stroke="#f59e0b" stroke-width="2" rx="8"/>
+    <text x="275" y="30" text-anchor="middle" class="subtitle-text">Energy Storage in Inductor</text>
+    
+    <!-- Inductor with field -->
+    <g transform="translate(50, 50)">
       <!-- Core -->
-      <rect x="120" y="40" width="60" height="80" fill="url(#coreGrad)" rx="5"/>
-      <text x="150" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">CORE</text>
+      <rect x="150" y="40" width="150" height="30" fill="#6b7280" stroke="#374151" stroke-width="2" rx="5"/>
+      <text x="225" y="58" text-anchor="middle" class="formula-text" fill="white">Iron Core</text>
       
       <!-- Coil -->
-      <g transform="translate(80,50)">
-        <ellipse cx="20" cy="15" rx="25" ry="10" fill="none" stroke="url(#coilGrad)" stroke-width="4"/>
-        <ellipse cx="20" cy="25" rx="25" ry="10" fill="none" stroke="url(#coilGrad)" stroke-width="4"/>
-        <ellipse cx="20" cy="35" rx="25" ry="10" fill="none" stroke="url(#coilGrad)" stroke-width="4"/>
-        <ellipse cx="20" cy="45" rx="25" ry="10" fill="none" stroke="url(#coilGrad)" stroke-width="4"/>
-        <ellipse cx="20" cy="55" rx="25" ry="10" fill="none" stroke="url(#coilGrad)" stroke-width="4"/>
-        <text x="20" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#2980b9" font-weight="bold">L</text>
-      </g>
+      <ellipse cx="130" cy="55" rx="12" ry="18" class="inductor-coil"/>
+      <ellipse cx="320" cy="55" rx="12" ry="18" class="inductor-coil"/>
       
-      <g transform="translate(180,50)">
-        <ellipse cx="20" cy="15" rx="25" ry="10" fill="none" stroke="url(#coilGrad)" stroke-width="4"/>
-        <ellipse cx="20" cy="25" rx="25" ry="10" fill="none" stroke="url(#coilGrad)" stroke-width="4"/>
-        <ellipse cx="20" cy="35" rx="25" ry="10" fill="none" stroke="url(#coilGrad)" stroke-width="4"/>
-        <ellipse cx="20" cy="45" rx="25" ry="10" fill="none" stroke="url(#coilGrad)" stroke-width="4"/>
-        <ellipse cx="20" cy="55" rx="25" ry="10" fill="none" stroke="url(#coilGrad)" stroke-width="4"/>
-      </g>
+      <!-- Current -->
+      <line x1="100" y1="55" x2="80" y2="55" class="current-flow" marker-end="url(#current-arrow)"/>
+      <text x="70" y="50" class="formula-text">i</text>
       
-      <!-- Current indication -->
-      <g transform="translate(50,80)">
-        <circle cx="0" cy="0" r="15" fill="none" stroke="#e74c3c" stroke-width="3"/>
-        <text x="0" y="5" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#e74c3c" font-weight="bold">I</text>
-        <path d="M-25 0 L-15 0" stroke="#e74c3c" stroke-width="3" marker-end="url(#arrowhead)"/>
-      </g>
+      <!-- Magnetic field -->
+      <ellipse cx="225" cy="55" rx="80" ry="20" fill="url(#fieldGradient)" class="energy-field"/>
+      <path d="M 160,50 L 290,50" class="magnetic-field" marker-end="url(#field-arrow)"/>
+      <path d="M 160,55 L 290,55" class="magnetic-field" marker-end="url(#field-arrow)"/>
+      <path d="M 160,60 L 290,60" class="magnetic-field" marker-end="url(#field-arrow)"/>
       
-      <!-- Magnetic field lines -->
-      <g transform="translate(150,80)" opacity="0.7">
-        <ellipse cx="0" cy="0" rx="80" ry="25" fill="none" stroke="#9b59b6" stroke-width="3" stroke-dasharray="5,3"/>
-        <ellipse cx="0" cy="0" rx="100" ry="35" fill="none" stroke="#9b59b6" stroke-width="2" stroke-dasharray="5,3"/>
-        <ellipse cx="0" cy="0" rx="120" ry="45" fill="none" stroke="#9b59b6" stroke-width="2" stroke-dasharray="5,3"/>
-        
-        <!-- Field arrows -->
-        <path d="M-60 -15 L-40 -15" stroke="#9b59b6" stroke-width="2" marker-end="url(#fieldArrow)"/>
-        <path d="M40 15 L60 15" stroke="#9b59b6" stroke-width="2" marker-end="url(#fieldArrow)"/>
-        <text x="0" y="-60" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#9b59b6" font-weight="bold">Magnetic Field (B)</text>
-      </g>
+      <text x="225" y="45" text-anchor="middle" class="formula-text">Magnetic Field</text>
+      <text x="225" y="85" text-anchor="middle" class="formula-text">Energy Density: u = B²/2μ</text>
+    </g>
+    
+    <!-- Energy graph -->
+    <g transform="translate(80, 150)">
+      <text x="200" y="0" text-anchor="middle" class="label-text">Energy vs Current Relationship</text>
       
-      <!-- Energy indication -->
-      <g transform="translate(150,170)">
-        <ellipse cx="0" cy="0" rx="60" ry="20" fill="url(#energyGrad)" opacity="0.6"/>
-        <text x="0" y="5" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#e67e22" font-weight="bold">Energy = ½LI²</text>
-        <text x="0" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#d68910">Stored in Magnetic Field</text>
+      <!-- Axes -->
+      <line x1="50" y1="100" x2="350" y2="100" stroke="#374151" stroke-width="2" marker-end="url(#arrowhead)"/>
+      <line x1="50" y1="100" x2="50" y2="30" stroke="#374151" stroke-width="2" marker-end="url(#arrowhead)"/>
+      
+      <!-- Parabolic curve -->
+      <path d="M 50,100 Q 150,70 200,50 Q 250,35 350,20" stroke="#16a34a" stroke-width="4" fill="none"/>
+      
+      <text x="200" y="15" text-anchor="middle" class="value-text">U ∝ i²</text>
+      <text x="300" y="110" class="formula-text">Current (A)</text>
+      <g transform="rotate(-90 30 65)">
+        <text x="30" y="70" text-anchor="middle" class="formula-text">Energy (J)</text>
       </g>
     </g>
   </g>
-  
-  <!-- Energy Derivation -->
-  <g id="derivation">
-    <text x="700" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#34495e">
-      Energy Derivation
-    </text>
-    
-    <g transform="translate(550,90)">
-      <rect x="0" y="0" width="300" height="200" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2" rx="10"/>
-      <text x="150" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#2c3e50" font-weight="bold">
-        Mathematical Derivation
-      </text>
-      
-      <g transform="translate(20,40)">
-        <text x="0" y="20" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50" font-weight="bold">Step 1: Power input</text>
-        <text x="20" y="35" font-family="Arial, sans-serif" font-size="12" fill="#333">P = V × I = L(di/dt) × I</text>
-        
-        <text x="0" y="60" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50" font-weight="bold">Step 2: Energy element</text>
-        <text x="20" y="75" font-family="Arial, sans-serif" font-size="12" fill="#333">dW = P × dt = L × I × di</text>
-        
-        <text x="0" y="100" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50" font-weight="bold">Step 3: Integration</text>
-        <text x="20" y="115" font-family="Arial, sans-serif" font-size="12" fill="#333">W = ∫₀ᴵ L × i × di</text>
-        
-        <text x="0" y="140" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50" font-weight="bold">Step 4: Final result</text>
-        <text x="20" y="155" font-family="Arial, sans-serif" font-size="14" fill="#e74c3c" font-weight="bold">W = ½LI²</text>
-        <text x="20" y="175" font-family="Arial, sans-serif" font-size="12" fill="#666">(Joules)</text>
-      </g>
-    </g>
-  </g>
-  
-  <!-- Energy vs Current Graph -->
-  <g id="energy-graph">
-    <text x="300" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#34495e">
-      Energy vs Current Relationship
-    </text>
-    
-    <g transform="translate(150,340)">
-      <!-- Graph axes -->
-      <line x1="0" y1="120" x2="200" y2="120" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
-      <line x1="0" y1="120" x2="0" y2="0" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
-      
-      <!-- Labels -->
-      <text x="210" y="125" font-family="Arial, sans-serif" font-size="12" fill="#333">Current (I)</text>
-      <text x="-10" y="-10" font-family="Arial, sans-serif" font-size="12" fill="#333">W</text>
-      
-      <!-- Parabolic curve (W = ½LI²) -->
-      <path d="M0 120 Q50 105 100 60 Q150 15 200 0" fill="none" stroke="#e74c3c" stroke-width="4"/>
-      
-      <!-- Grid lines -->
-      <g opacity="0.3">
-        <line x1="50" y1="0" x2="50" y2="120" stroke="#bdc3c7"/>
-        <line x1="100" y1="0" x2="100" y2="120" stroke="#bdc3c7"/>
-        <line x1="150" y1="0" x2="150" y2="120" stroke="#bdc3c7"/>
-        <line x1="0" y1="30" x2="200" y2="30" stroke="#bdc3c7"/>
-        <line x1="0" y1="60" x2="200" y2="60" stroke="#bdc3c7"/>
-        <line x1="0" y1="90" x2="200" y2="90" stroke="#bdc3c7"/>
-      </g>
-      
-      <!-- Points on curve -->
-      <circle cx="50" cy="105" r="4" fill="#e74c3c"/>
-      <circle cx="100" cy="60" r="4" fill="#e74c3c"/>
-      <circle cx="150" cy="15" r="4" fill="#e74c3c"/>
-      
-      <!-- Annotations -->
-      <text x="60" y="100" font-family="Arial, sans-serif" font-size="10" fill="#e74c3c">W ∝ I²</text>
-      <text x="100" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">Quadratic Relationship</text>
-    </g>
-  </g>
-  
-  <!-- Energy Density -->
-  <g id="energy-density">
-    <text x="700" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#34495e">
-      Energy Density in Magnetic Field
-    </text>
-    
-    <g transform="translate(550,340)">
-      <rect x="0" y="0" width="300" height="160" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2" rx="8"/>
-      <text x="150" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="#2c3e50" font-weight="bold">
-        Magnetic Energy Density
-      </text>
-      
-      <g transform="translate(20,40)">
-        <text x="0" y="20" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50" font-weight="bold">Energy density (u):</text>
-        <text x="20" y="40" font-family="Arial, sans-serif" font-size="14" fill="#e74c3c" font-weight="bold">u = B²/(2μ) = ½μH²</text>
-        <text x="20" y="55" font-family="Arial, sans-serif" font-size="12" fill="#666">(Joules per cubic meter)</text>
-        
-        <text x="0" y="80" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50" font-weight="bold">Total energy:</text>
-        <text x="20" y="100" font-family="Arial, sans-serif" font-size="14" fill="#e74c3c" font-weight="bold">W = ∫ u dV = ∫ (B²/2μ) dV</text>
-        
-        <text x="0" y="125" font-family="Arial, sans-serif" font-size="12" fill="#666">Where: B = magnetic flux density</text>
-        <text x="60" y="140" font-family="Arial, sans-serif" font-size="12" fill="#666">H = magnetic field intensity</text>
-      </g>
-    </g>
-  </g>
-  
-  <!-- Practical Examples -->
-  <g id="examples">
-    <text x="200" y="530" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#34495e">
-      Practical Examples
-    </text>
-    
-    <!-- Example 1: Small inductor -->
-    <g transform="translate(50,550)">
-      <rect x="0" y="0" width="140" height="100" fill="#d5e8d4" stroke="#27ae60" stroke-width="2" rx="5"/>
-      <text x="70" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#1e8449" font-weight="bold">
-        Small Inductor
-      </text>
-      
-      <g transform="translate(10,30)">
-        <text x="0" y="15" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">L = 10 mH</text>
-        <text x="0" y="28" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">I = 1 A</text>
-        <text x="0" y="41" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">W = ½ × 0.01 × 1²</text>
-        <text x="0" y="54" font-family="Arial, sans-serif" font-size="12" fill="#e74c3c" font-weight="bold">W = 5 mJ</text>
-      </g>
-    </g>
-    
-    <!-- Example 2: Power inductor -->
-    <g transform="translate(210,550)">
-      <rect x="0" y="0" width="140" height="100" fill="#dbeafe" stroke="#3498db" stroke-width="2" rx="5"/>
-      <text x="70" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#1f4e79" font-weight="bold">
-        Power Inductor
-      </text>
-      
-      <g transform="translate(10,30)">
-        <text x="0" y="15" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">L = 100 mH</text>
-        <text x="0" y="28" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">I = 10 A</text>
-        <text x="0" y="41" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">W = ½ × 0.1 × 10²</text>
-        <text x="0" y="54" font-family="Arial, sans-serif" font-size="12" fill="#e74c3c" font-weight="bold">W = 5 J</text>
-      </g>
-    </g>
-    
-    <!-- Factors affecting energy storage -->
-    <g transform="translate(370,550)">
-      <rect x="0" y="0" width="200" height="100" fill="#fff3cd" stroke="#f39c12" stroke-width="2" rx="5"/>
-      <text x="100" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#b7950b" font-weight="bold">
-        Factors Affecting Energy
-      </text>
-      
-      <g transform="translate(10,30)">
-        <text x="0" y="15" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Inductance (L): Linear effect</text>
-        <text x="0" y="28" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Current (I): Quadratic effect</text>
-        <text x="0" y="41" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Core material: μ affects L</text>
-        <text x="0" y="54" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Geometry: N², A, length</text>
-      </g>
-    </g>
-  </g>
-  
+
   <!-- Applications -->
-  <g id="applications">
-    <text x="900" y="530" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#34495e">
-      Energy Storage Applications
-    </text>
+  <g id="applications" transform="translate(50, 450)">
+    <text x="550" y="0" text-anchor="middle" class="subtitle-text">Practical Applications</text>
     
-    <!-- Flyback converter -->
-    <g transform="translate(750,550)">
-      <rect x="0" y="0" width="120" height="80" fill="#f4ecf7" stroke="#8e44ad" stroke-width="2" rx="5"/>
-      <text x="60" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6c3483" font-weight="bold">
-        Flyback Converter
-      </text>
+    <rect x="0" y="20" width="1100" height="250" fill="white" stroke="#d1d5db" stroke-width="1" rx="5"/>
+    
+    <!-- SMES -->
+    <g transform="translate(50, 50)">
+      <text x="150" y="0" text-anchor="middle" class="label-text">SMES (Superconducting Magnetic Energy Storage)</text>
+      <rect x="0" y="10" width="300" height="80" fill="#f0fdf4" stroke="#16a34a" stroke-width="2" rx="3"/>
       
-      <!-- Simple flyback diagram -->
-      <g transform="translate(20,25)">
-        <ellipse cx="20" cy="15" rx="12" ry="6" fill="none" stroke="#8e44ad" stroke-width="2"/>
-        <ellipse cx="20" cy="22" rx="12" ry="6" fill="none" stroke="#8e44ad" stroke-width="2"/>
-        <rect x="30" y="10" width="8" height="18" fill="#7f8c8d" rx="1"/>
-        <ellipse cx="50" cy="15" rx="12" ry="6" fill="none" stroke="#e74c3c" stroke-width="2"/>
-        <ellipse cx="50" cy="22" rx="12" ry="6" fill="none" stroke="#e74c3c" stroke-width="2"/>
-        <text x="40" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">Energy transfer</text>
-      </g>
+      <ellipse cx="80" cy="50" rx="40" ry="25" class="inductor-coil" stroke="#16a34a" stroke-width="3"/>
+      <ellipse cx="80" cy="50" rx="25" ry="15" fill="url(#fieldGradient)"/>
+      <text x="80" y="55" text-anchor="middle" class="formula-text">Superconducting Coil</text>
+      
+      <text x="180" y="40" class="formula-text">• No resistance losses</text>
+      <text x="180" y="55" class="formula-text">• Rapid charge/discharge</text>
+      <text x="180" y="70" class="formula-text">• Grid stabilization</text>
+      
+      <text x="150" y="110" text-anchor="middle" class="formula-text">Energy: 1-10 MJ, Efficiency: >95%</text>
     </g>
     
-    <!-- Buck-boost converter -->
-    <g transform="translate(890,550)">
-      <rect x="0" y="0" width="120" height="80" fill="#fdeaea" stroke="#e74c3c" stroke-width="2" rx="5"/>
-      <text x="60" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#c0392b" font-weight="bold">
-        Buck-Boost
-      </text>
+    <!-- Switching regulators -->
+    <g transform="translate(400, 50)">
+      <text x="150" y="0" text-anchor="middle" class="label-text">Switching Power Supplies</text>
+      <rect x="0" y="10" width="300" height="80" fill="#fef7cd" stroke="#f59e0b" stroke-width="2" rx="3"/>
       
-      <!-- Simple buck-boost diagram -->
-      <g transform="translate(15,25)">
-        <ellipse cx="25" cy="15" rx="15" ry="6" fill="none" stroke="#e74c3c" stroke-width="2"/>
-        <ellipse cx="25" cy="22" rx="15" ry="6" fill="none" stroke="#e74c3c" stroke-width="2"/>
-        <ellipse cx="25" cy="29" rx="15" ry="6" fill="none" stroke="#e74c3c" stroke-width="2"/>
-        <rect x="45" y="20" width="20" height="10" fill="none" stroke="#27ae60" stroke-width="2" rx="2"/>
-        <text x="35" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">Energy buffer</text>
-      </g>
+      <!-- Simple inductor circuit -->
+      <ellipse cx="80" cy="50" rx="20" ry="12" class="inductor-coil" stroke="#f59e0b" stroke-width="3"/>
+      <text x="80" y="35" text-anchor="middle" class="formula-text">L</text>
+      
+      <!-- Switch -->
+      <rect x="120" y="45" width="15" height="10" fill="white" stroke="#374151" stroke-width="2"/>
+      <text x="127" y="52" text-anchor="middle" class="formula-text">S</text>
+      
+      <text x="180" y="40" class="formula-text">• Energy transfer</text>
+      <text x="180" y="55" class="formula-text">• Voltage regulation</text>
+      <text x="180" y="70" class="formula-text">• Continuous power</text>
+      
+      <text x="150" y="110" text-anchor="middle" class="formula-text">Typical: 1-100 μH, Energy: mJ range</text>
     </g>
     
-    <!-- Inductive heating -->
-    <g transform="translate(750,645)">
-      <rect x="0" y="0" width="120" height="80" fill="#d1ecf1" stroke="#17a2b8" stroke-width="2" rx="5"/>
-      <text x="60" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#0c5460" font-weight="bold">
-        Induction Heating
-      </text>
+    <!-- Electric vehicles -->
+    <g transform="translate(750, 50)">
+      <text x="150" y="0" text-anchor="middle" class="label-text">Electric Vehicle Systems</text>
+      <rect x="0" y="10" width="300" height="80" fill="#fdf2f8" stroke="#ec4899" stroke-width="2" rx="3"/>
       
-      <!-- Induction heating diagram -->
-      <g transform="translate(25,25)">
-        <circle cx="35" cy="18" r="15" fill="none" stroke="#17a2b8" stroke-width="2"/>
-        <circle cx="35" cy="18" r="8" fill="#ff6b35" opacity="0.6"/>
-        <ellipse cx="15" cy="18" rx="8" ry="15" fill="none" stroke="#17a2b8" stroke-width="2"/>
-        <text x="35" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">Heat generation</text>
-      </g>
+      <!-- Motor representation -->
+      <circle cx="80" cy="50" r="25" fill="none" stroke="#ec4899" stroke-width="3"/>
+      <ellipse cx="80" cy="50" rx="15" ry="8" class="inductor-coil"/>
+      <text x="80" y="55" text-anchor="middle" class="formula-text">Motor</text>
+      
+      <text x="180" y="40" class="formula-text">• Motor windings</text>
+      <text x="180" y="55" class="formula-text">• Regenerative braking</text>
+      <text x="180" y="70" class="formula-text">• Power management</text>
+      
+      <text x="150" y="110" text-anchor="middle" class="formula-text">High power inductors: kW-MW range</text>
     </g>
     
-    <!-- Motor starting -->
-    <g transform="translate(890,645)">
-      <rect x="0" y="0" width="120" height="80" fill="#d5f4e6" stroke="#28a745" stroke-width="2" rx="5"/>
-      <text x="60" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1e7e34" font-weight="bold">
-        Motor Starting
-      </text>
+    <!-- Numerical example -->
+    <g transform="translate(50, 160)">
+      <text x="500" y="0" text-anchor="middle" class="label-text">Numerical Example</text>
+      <rect x="0" y="10" width="1000" height="60" fill="#f8fafc" stroke="#6b7280" stroke-width="1" rx="3"/>
       
-      <!-- Motor starting diagram -->
-      <g transform="translate(30,25)">
-        <circle cx="30" cy="18" r="15" fill="none" stroke="#28a745" stroke-width="2"/>
-        <circle cx="30" cy="18" r="6" fill="#28a745"/>
-        <ellipse cx="10" cy="18" rx="8" ry="12" fill="none" stroke="#28a745" stroke-width="2"/>
-        <text x="30" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">Starting torque</text>
-      </g>
-    </g>
-  </g>
-  
-  <!-- Energy Comparison -->
-  <g id="comparison">
-    <rect x="600" y="550" width="130" height="175" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2" rx="8"/>
-    <text x="665" y="575" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50" font-weight="bold">
-      Energy Comparison
-    </text>
-    
-    <g transform="translate(610,585)">
-      <text x="0" y="15" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50" font-weight="bold">Magnetic vs Electric:</text>
+      <text x="20" y="30" class="label-text">Problem: Calculate energy stored in 50 mH inductor carrying 8 A current</text>
+      <text x="20" y="45" class="formula-text">Solution: U = ½Li² = ½ × 0.05 × (8)² = ½ × 0.05 × 64 = 1.6 J</text>
+      <text x="20" y="60" class="value-text">Answer: 1.6 Joules stored in magnetic field</text>
       
-      <text x="0" y="35" font-family="Arial, sans-serif" font-size="11" fill="#8e44ad">Magnetic:</text>
-      <text x="0" y="48" font-family="Arial, sans-serif" font-size="10" fill="#666">W = ½LI²</text>
-      <text x="0" y="60" font-family="Arial, sans-serif" font-size="10" fill="#666">u = B²/(2μ)</text>
-      
-      <text x="0" y="80" font-family="Arial, sans-serif" font-size="11" fill="#e74c3c">Electric:</text>
-      <text x="0" y="93" font-family="Arial, sans-serif" font-size="10" fill="#666">W = ½CV²</text>
-      <text x="0" y="105" font-family="Arial, sans-serif" font-size="10" fill="#666">u = ½εE²</text>
-      
-      <text x="0" y="125" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">Key Differences:</text>
-      <text x="0" y="138" font-family="Arial, sans-serif" font-size="10" fill="#666">• Current vs Voltage</text>
-      <text x="0" y="150" font-family="Arial, sans-serif" font-size="10" fill="#666">• Inductance vs Capacitance</text>
+      <text x="550" y="30" class="formula-text">If current increases to 16 A:</text>
+      <text x="550" y="45" class="formula-text">U = ½ × 0.05 × (16)² = 6.4 J</text>
+      <text x="550" y="60" class="value-text">Energy increases by factor of 4 (i² relationship)</text>
     </g>
   </g>
-  
-  <!-- Safety Note -->
-  <g id="safety">
-    <rect x="50" y="680" width="1100" height="50" fill="#fff3cd" stroke="#ffc107" stroke-width="2" rx="5"/>
-    <text x="600" y="700" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#856404">
-      ⚠️ Safety Note
-    </text>
-    <text x="600" y="720" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#856404">
-      Inductors store energy that can be released suddenly when current is interrupted. High voltage spikes can occur. Use flyback diodes and proper circuit protection.
-    </text>
+
+  <!-- Key points -->
+  <g id="keyPoints" transform="translate(50, 750)">
+    <text x="0" y="0" class="formula-text">Key Points: 1) Energy ∝ i² (quadratic relationship with current) 2) Energy stored in magnetic field, not electric</text>
+    <text x="0" y="20" class="formula-text">3) No energy loss in ideal inductors 4) Applications: SMES, power electronics, motor drives</text>
   </g>
 </svg>
