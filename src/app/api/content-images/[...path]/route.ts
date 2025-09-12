@@ -76,7 +76,7 @@ export async function GET(
       headers.set('Vary', 'Accept-Encoding');
     }
     
-    return new NextResponse(fileBuffer, {
+    return new NextResponse(fileBuffer as BodyInit, {
       headers,
     });
   } catch (error) {

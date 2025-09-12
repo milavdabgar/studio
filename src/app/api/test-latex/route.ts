@@ -71,7 +71,7 @@ Template System & ✓ Working & Medium \\\\
       // Clean up the file
       await fs.unlink(result.pdfPath);
       
-      return new NextResponse(pdfBuffer, {
+      return new NextResponse(pdfBuffer as BodyInit, {
         headers: {
           'Content-Type': 'application/pdf',
           'Content-Disposition': 'inline; filename="latex-test.pdf"',
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
       const pdfBuffer = await fs.readFile(result.pdfPath);
       await fs.unlink(result.pdfPath);
       
-      return new NextResponse(pdfBuffer, {
+      return new NextResponse(pdfBuffer as BodyInit, {
         headers: {
           'Content-Type': 'application/pdf',
           'Content-Disposition': `inline; filename="${filename}.pdf"`,

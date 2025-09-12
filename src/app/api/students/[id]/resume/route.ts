@@ -242,7 +242,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     // Create response with appropriate headers
-    const response = new NextResponse(content, {
+    const response = new NextResponse(content as BodyInit, {
       headers: {
         'Content-Type': contentType,
         'Content-Disposition': `attachment; filename="${filename}"`,
@@ -375,7 +375,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
 
     // Create response with appropriate headers
-    const response = new NextResponse(content, {
+    const response = new NextResponse(content as BodyInit, {
       headers: {
         'Content-Type': contentType,
         'Content-Disposition': `attachment; filename="${filename}"`,

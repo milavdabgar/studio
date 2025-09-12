@@ -27,7 +27,7 @@ const instituteSchema = new Schema<IInstitute>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       if (ret.id && typeof ret.id === 'string' && ret.id !== ret._id.toString()) {
         // Keep the custom id
@@ -61,7 +61,7 @@ const buildingSchema = new Schema<IBuilding>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -115,7 +115,7 @@ const roomSchema = new Schema<IRoom>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -171,7 +171,7 @@ const committeeSchema = new Schema<ICommittee>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -220,7 +220,7 @@ const academicTermSchema = new Schema<IAcademicTerm>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -356,7 +356,7 @@ const userSchema = new Schema<IUser>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -400,7 +400,7 @@ const roleSchema = new Schema<IRole>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -425,7 +425,7 @@ const permissionSchema = new Schema<IPermission>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
@@ -452,7 +452,7 @@ const departmentSchema = new Schema<IDepartment>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -499,7 +499,7 @@ const courseSchema = new Schema<ICourse>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -527,7 +527,7 @@ const batchSchema = new Schema<IBatch>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -571,7 +571,7 @@ const programSchema = new Schema<IProgram>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       if (ret.id && typeof ret.id === 'string' && ret.id !== ret._id.toString()) {
         // Keep the custom id
@@ -612,7 +612,7 @@ const curriculumSchema = new Schema<ICurriculum>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -703,7 +703,7 @@ const roomAllocationSchema = new Schema<IRoomAllocation>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -753,7 +753,7 @@ const examinationSchema = new Schema<IExamination>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1009,7 +1009,7 @@ const studentSchema = new Schema<IStudent>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1226,7 +1226,7 @@ const facultySchema = new Schema<IFaculty>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1289,7 +1289,7 @@ const facultyPreferenceSchema = new Schema<IFacultyPreference>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1339,7 +1339,7 @@ const projectTeamSchema = new Schema<IProjectTeam>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1397,7 +1397,7 @@ const projectEventSchema = new Schema<IProjectEvent>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1486,7 +1486,7 @@ const projectSchema = new Schema<IProject>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1537,7 +1537,7 @@ const assessmentSchema = new Schema<IAssessment>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1608,7 +1608,7 @@ const resultSchema = new Schema<IResult>({
   timestamps: false,
   _id: true, // Let MongoDB handle _id generation
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Keep _id as is for Results (compatibility with existing code)
       delete ret.__v;
       return ret;
@@ -1648,7 +1648,7 @@ const enrollmentSchema = new Schema<IEnrollment>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1697,7 +1697,7 @@ const courseOfferingSchema = new Schema<ICourseOffering>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1735,7 +1735,7 @@ const notificationSchema = new Schema<INotification>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1777,7 +1777,7 @@ const studentAssessmentScoreSchema = new Schema<IStudentAssessmentScore>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1816,7 +1816,7 @@ const courseMaterialSchema = new Schema<ICourseMaterial>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1853,7 +1853,7 @@ const attendanceRecordSchema = new Schema<IAttendanceRecord>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1910,7 +1910,7 @@ const timetableSchema = new Schema<ITimetable>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1947,7 +1947,7 @@ const projectLocationSchema = new Schema<IProjectLocation>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -2161,7 +2161,7 @@ const feedbackAnalysisSchema = new Schema<IFeedbackAnalysis>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
@@ -2365,7 +2365,7 @@ const allocationSessionSchema = new Schema<IAllocationSession>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
@@ -2419,7 +2419,7 @@ const courseAllocationSchema = new Schema<ICourseAllocation>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
@@ -2494,7 +2494,7 @@ const allocationConflictSchema = new Schema<IAllocationConflict>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;

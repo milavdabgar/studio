@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
         
         // Create response with PDF buffer
         const fileName = `${path.basename(contentPath, '.md')}.pdf`;
-        const response = new NextResponse(pdfBuffer);
+        const response = new NextResponse(pdfBuffer as BodyInit);
         response.headers.set('Content-Type', 'application/pdf');
         response.headers.set('Content-Disposition', `attachment; filename="${fileName}"`);
         

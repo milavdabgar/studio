@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     const { filename, contentType } = getFileDetails(baseFilename, format);
     
     // Create response
-    const response = new NextResponse(result);
+    const response = new NextResponse(result as BodyInit);
     response.headers.set('Content-Type', contentType);
     response.headers.set('Content-Disposition', `attachment; filename="${filename}"`);
     

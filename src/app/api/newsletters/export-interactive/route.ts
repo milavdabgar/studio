@@ -3227,7 +3227,7 @@ export async function POST(request: NextRequest) {
           const pdfBuffer = await generatePdfFromHtml(htmlContent);
           console.log('[Interactive Export] PDF generation successful');
 
-          return new NextResponse(pdfBuffer, {
+          return new NextResponse(pdfBuffer as BodyInit, {
             headers: {
               'Content-Type': 'application/pdf',
               'Content-Disposition': `attachment; filename="Spectrum-Interactive-Newsletter-${year}-${new Date().toISOString().split('T')[0]}.pdf"`,
@@ -3277,7 +3277,7 @@ export async function POST(request: NextRequest) {
 
           console.log(`[Interactive Export] ${format.toUpperCase()} generation successful`);
 
-          return new NextResponse(convertedContent, {
+          return new NextResponse(convertedContent as BodyInit, {
             headers: {
               'Content-Type': mimeType,
               'Content-Disposition': `attachment; filename="Spectrum-Interactive-Newsletter-${year}-${new Date().toISOString().split('T')[0]}.${format}"`,

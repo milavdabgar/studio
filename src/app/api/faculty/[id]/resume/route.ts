@@ -208,7 +208,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       'Expires': '0'
     };
 
-    return new NextResponse(content, { headers });
+    return new NextResponse(content as BodyInit, { headers });
 
   } catch (error) {
     console.error('Error generating faculty resume:', error);
@@ -312,7 +312,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       'Expires': '0'
     };
 
-    return new NextResponse(content, { headers });
+    return new NextResponse(content as BodyInit, { headers });
 
   } catch (error) {
     console.error('Error generating custom faculty resume:', error);

@@ -99,7 +99,7 @@ L.D College of Engineering, Gujarat Technological University | CGPA: 8.04/10
       const pdfBuffer = await fs.readFile(result.pdfPath);
       await fs.unlink(result.pdfPath);
       
-      return new NextResponse(pdfBuffer, {
+      return new NextResponse(pdfBuffer as BodyInit, {
         headers: {
           'Content-Type': 'application/pdf',
           'Content-Disposition': `inline; filename="cv_milav_${type}.pdf"`,

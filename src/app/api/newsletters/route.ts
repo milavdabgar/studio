@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
       });
     } else {
       // For binary formats (PDF, DOCX)
-      return new NextResponse(result, { 
+      return new NextResponse(result as BodyInit, { 
         status: 200,
         headers
       });

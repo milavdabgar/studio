@@ -247,7 +247,7 @@ export async function POST(request: NextRequest) {
           headers
         });
       } else {
-        return new NextResponse(result, { 
+        return new NextResponse(result as BodyInit, { 
           status: 200,
           headers
         });

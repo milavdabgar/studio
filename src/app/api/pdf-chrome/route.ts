@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Return PDF
-    const response = new NextResponse(pdfBuffer);
+    const response = new NextResponse(pdfBuffer as BodyInit);
     response.headers.set('Content-Type', 'application/pdf');
     response.headers.set('Content-Disposition', `attachment; filename="${slug.split('/').pop()}.pdf"`);
     

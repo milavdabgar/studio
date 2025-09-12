@@ -209,7 +209,7 @@ ${analysisResult.markdownReport}`;
       return NextResponse.json({ error: 'Invalid download type requested' }, { status: 400 });
     }
 
-    return new NextResponse(bufferContent, {
+    return new NextResponse(bufferContent as BodyInit, {
       status: 200,
       headers: {
         'Content-Type': contentType,

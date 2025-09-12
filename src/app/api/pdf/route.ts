@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Return the PDF as a downloadable file
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(pdfBuffer as BodyInit, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="${slug}.pdf"`,
@@ -115,7 +115,7 @@ export async function GET(request: NextRequest) {
         title: slug
     });
 
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(pdfBuffer as BodyInit, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="${slug}.pdf"`,

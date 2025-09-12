@@ -55,7 +55,7 @@ const userSchema = new Schema<IUser>({
 }, {
   timestamps: false, // We handle timestamps manually with ISO strings
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
@@ -94,7 +94,7 @@ const roleSchema = new Schema<IRole>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
@@ -118,7 +118,7 @@ const permissionSchema = new Schema<IPermission>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
@@ -144,7 +144,7 @@ const departmentSchema = new Schema<IDepartment>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
@@ -185,7 +185,7 @@ const courseSchema = new Schema<ICourse>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
@@ -211,7 +211,7 @@ const batchSchema = new Schema<IBatch>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
@@ -243,7 +243,7 @@ const programSchema = new Schema<IProgram>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;

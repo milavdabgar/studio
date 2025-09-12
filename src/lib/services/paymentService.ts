@@ -82,7 +82,7 @@ export class PaymentService {
 
   constructor(secretKey: string, options?: Stripe.StripeConfig) {
     this.stripe = new Stripe(secretKey, {
-      apiVersion: '2025-05-28.basil',
+      apiVersion: '2025-08-27.basil',
       ...options,
     });
   }
