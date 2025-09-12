@@ -1,0 +1,22 @@
+{
+  "name": "multi-ai-orchestrator",
+  "version": "1.0.0",
+  "description": "Autonomous Multi-AI Orchestration System",
+  "main": "orchestrator.js",
+  "scripts": {
+    "start": "node orchestrator.js",
+    "dev": "node --inspect orchestrator.js",
+    "test": "jest"
+  },
+  "keywords": ["ai", "orchestrator", "claude", "codex", "gemini", "automation"],
+  "author": "Multi-AI System",
+  "license": "MIT",
+  "dependencies": {
+    "uuid": "^9.0.0",
+    "chalk": "^4.1.2",
+    "inquirer": "^8.2.0"
+  },
+  "devDependencies": {
+    "jest": "^28.0.0"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "agents": {
+    "claude": {
+      "type": "super_agent",
+      "command": "claude",
+      "args": ["--print"],
+      "timeout": 300000,
+      "specialties": [
+        "task-planning",
+        "coordination",
+        "documentation",
+        "architecture",
+        "quality-assurance"
+      ],
+      "capabilities": {
+        "task_decomposition": true,
+        "agent_coordination": true,
+        "final_verification": true,
+        "decision_making": true
+      }
+    },
+    "codex": {
+      "type": "specialist_agent",
+      "command": "codex",
+      "args": ["exec"],
+      "timeout": 600000,
+      "specialties": [
+        "code-generation",
+        "implementation",
+        "refactoring",
+        "bug-fixing",
+        "file-organization"
+      ],
+      "capabilities": {
+        "code_implementation": true,
+        "file_manipulation": true,
+        "debugging": true,
+        "optimization": true
+      }
+    },
+    "gemini": {
+      "type": "specialist_agent", 
+      "command": "gemini",
+      "args": ["--prompt"],
+      "timeout": 300000,
+      "specialties": [
+        "code-review",
+        "testing",
+        "security-audit",
+        "performance-optimization",
+        "compliance-check"
+      ],
+      "capabilities": {
+        "code_review": true,
+        "test_generation": true,
+        "security_analysis": true,
+        "performance_analysis": true
+      }
+    }
+  },
+  "workflow": {
+    "max_parallel_tasks": 3,
+    "retry_attempts": 3,
+    "task_timeout": 1800000,
+    "inter_agent_timeout": 60000,
+    "quality_gates": {
+      "code_review_required": true,
+      "testing_required": true,
+      "final_verification": true
+    }
+  },
+  "communication": {
+    "message_retention": 100,
+    "conversation_timeout": 3600000,
+    "max_clarification_rounds": 5
+  }
+}
