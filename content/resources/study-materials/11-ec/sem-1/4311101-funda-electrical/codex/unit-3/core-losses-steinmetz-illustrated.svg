@@ -8,16 +8,28 @@
   <text x="40" y="60" class="h">Hysteresis loss (area of B–H loop)</text>
   <g transform="translate(40,80)">
     <rect x="0" y="0" width="520" height="240" rx="10" class="p"/>
-    <text x="16" y="26" class="s">W_h ∝ area(B–H); use grain‑oriented steel/ferrite to reduce</text>
-    <!-- simple B-H loop -->
-    <path d="M120,180 C160,80 260,80 300,180 C260,260 160,260 120,180 Z" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+    <text x="16" y="26" class="s">W_h ∝ area(B–H)</text>
+    <!-- Axes -->
+    <line x1="60" y1="190" x2="300" y2="190" stroke="#94a3b8"/>
+    <line x1="60" y1="190" x2="60" y2="60" stroke="#94a3b8"/>
+    <text x="308" y="194" class="s">H (A/m)</text>
+    <text x="48" y="64" class="s">B (T)</text>
+    <!-- B–H loop shaded -->
+    <path d="M90,180 C130,90 230,90 270,180 C230,250 130,250 90,180 Z" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
   </g>
-  <text x="620" y="60" class="h">Eddy current loss (f²B², lamination/μ)</text>
+  <text x="620" y="60" class="h">Eddy current loss (∝ f²B², lamination/ρ)</text>
   <g transform="translate(620,80)">
     <rect x="0" y="0" width="520" height="240" rx="10" class="p"/>
-    <text x="16" y="26" class="s">W_e ∝ f² B² t² / ρ; thinner laminations, higher ρ materials reduce loss</text>
-    <rect x="200" y="70" width="120" height="90" fill="#d1d5db" stroke="#6b7280"/>
-    <g fill="#ef4444"><circle cx="240" cy="100" r="5"/><circle cx="280" cy="120" r="5"/></g>
+    <text x="16" y="26" class="s">Thinner insulated laminations, higher ρ → lower loss</text>
+    <!-- Solid tile vs laminated tile compare -->
+    <rect x="180" y="70" width="60" height="90" fill="#9ca3af" stroke="#6b7280"/>
+    <g fill="#ef4444"><circle cx="210" cy="115" r="8" opacity="0.9"/></g>
+    <g stroke="#6b7280" fill="#d1d5db">
+      <rect x="260" y="70" width="60" height="18"/>
+      <rect x="260" y="92" width="60" height="18"/>
+      <rect x="260" y="114" width="60" height="18"/>
+    </g>
+    <g fill="#ef4444"><circle cx="290" cy="115" r="4"/></g>
   </g>
   <text x="40" y="360" class="h">Steinmetz equation (qualitative)</text>
   <g transform="translate(40,380)">
@@ -26,4 +38,3 @@
     <text x="16" y="60" class="s">Select material/lamination thickness for target f, B; balance hysteresis vs eddy losses</text>
   </g>
 </svg>
-

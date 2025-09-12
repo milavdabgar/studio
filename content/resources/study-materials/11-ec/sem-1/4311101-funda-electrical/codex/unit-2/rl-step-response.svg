@@ -17,18 +17,18 @@
   <g transform="translate(60,100)">
     <line x1="0" y1="0" x2="0" y2="180" class="axis"/>
     <line x1="0" y1="180" x2="820" y2="180" class="axis"/>
-    <path d="M0,180 C200,140 360,100 520,60 C680,30 820,20 820,20" class="i"/>
-    <text x="700" y="30" class="s">i(t)</text>
-    <path d="M0,20 C160,60 320,110 520,150 C680,170 820,175 820,175" class="vl"/>
+    <path d="M0,180 C180,140 320,110 460,80 C640,45 740,30 820,24" class="i"/>
+    <text x="760" y="36" class="s">i(t)</text>
+    <path d="M0,24 C160,60 320,110 520,150 C700,170 820,176 820,176" class="vl"/>
     <text x="90" y="40" class="s">v_L(t)</text>
-    <text x="10" y="200" class="s">0</text>
-    <text x="140" y="200" class="s">τ</text>
     <line x1="140" y1="180" x2="140" y2="0" class="axis"/>
-    <text x="280" y="200" class="s">2τ</text>
+    <text x="140" y="200" class="s">τ</text>
     <line x1="280" y1="180" x2="280" y2="0" class="axis"/>
+    <text x="280" y="200" class="s">2τ</text>
+    <line x1="0" y1="100" x2="820" y2="100" class="axis" stroke-dasharray="6 6"/>
+    <text x="10" y="96" class="s">i(τ) ≈ 0.63 I_final</text>
   </g>
   <g transform="translate(60,320)">
     <text x="0" y="0" class="s">i(t) = (V/R)(1 − e^{−t/τ});  v_L(t) = V e^{−t/τ};  τ = L/R</text>
   </g>
 </svg>
-

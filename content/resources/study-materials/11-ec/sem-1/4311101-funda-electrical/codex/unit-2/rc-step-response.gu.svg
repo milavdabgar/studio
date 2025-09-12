@@ -17,20 +17,20 @@
   <g transform="translate(60,100)">
     <line x1="0" y1="0" x2="0" y2="180" class="axis"/>
     <line x1="0" y1="180" x2="820" y2="180" class="axis"/>
-    <path d="M0,180 C200,140 360,100 540,60 C700,30 820,20 820,20" class="vc"/>
-    <text x="700" y="30" class="s">v_C(t)</text>
-    <path d="M0,20 C200,60 360,100 540,140 C680,165 820,175 820,175" class="i"/>
-    <text x="90" y="30" class="s">i(t)</text>
-    <text x="10" y="200" class="s">0</text>
-    <text x="140" y="200" class="s">τ</text>
+    <path d="M0,180 C180,140 320,110 460,80 C640,45 740,30 820,24" class="vc"/>
+    <text x="760" y="36" class="s">v_C(t)</text>
+    <path d="M0,24 C160,60 320,95 520,135 C680,165 820,176 820,176" class="i"/>
+    <text x="80" y="36" class="s">i(t)</text>
     <line x1="140" y1="180" x2="140" y2="0" class="axis"/>
-    <text x="280" y="200" class="s">2τ</text>
+    <text x="140" y="200" class="s">τ</text>
     <line x1="280" y1="180" x2="280" y2="0" class="axis"/>
-    <text x="420" y="200" class="s">3τ</text>
+    <text x="280" y="200" class="s">2τ</text>
     <line x1="420" y1="180" x2="420" y2="0" class="axis"/>
+    <text x="420" y="200" class="s">3τ</text>
+    <line x1="0" y1="100" x2="820" y2="100" class="axis" stroke-dasharray="6 6"/>
+    <text x="10" y="96" class="s">≈ 0.63 V</text>
   </g>
   <g transform="translate(60,320)">
     <text x="0" y="0" class="s">v_C(t) = V (1 − e^{−t/RC});  i(t) = (V/R) e^{−t/RC};  τ = RC</text>
   </g>
 </svg>
-

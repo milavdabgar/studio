@@ -14,7 +14,7 @@
   </defs>
 
   <rect x="20" y="20" width="940" height="520" rx="12" class="box"/>
-  <text x="40" y="60" class="h">સ્ટાર (Y)</text>
+  <text x="40" y="60" class="h">સ્ટાર (Y) — વોલ્ટેજ</text>
   <g transform="translate(40,90)">
     <line x1="160" y1="180" x2="160" y2="20" class="axis"/>
     <line x1="0" y1="180" x2="320" y2="180" class="axis"/>
@@ -27,7 +27,7 @@
     <text x="0" y="210" class="s">|V_L| = √3|V_ph|; I_L = I_ph</text>
   </g>
 
-  <text x="520" y="60" class="h">ડેલ્ટા (Δ)</text>
+  <text x="520" y="60" class="h">ડેલ્ટા (Δ) — કરંટ</text>
   <g transform="translate(520,90)">
     <line x1="160" y1="180" x2="160" y2="20" class="axis"/>
     <line x1="0" y1="180" x2="320" y2="180" class="axis"/>
@@ -40,4 +40,3 @@
     <text x="0" y="210" class="s">V_L = V_ph; |I_L| = √3|I_ph|</text>
   </g>
 </svg>
-
