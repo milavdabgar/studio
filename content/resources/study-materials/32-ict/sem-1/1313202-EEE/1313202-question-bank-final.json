@@ -9,22 +9,22 @@
       "curriculum": "COGC-2022"
     },
     "generation": {
-      "timestamp": "2025-09-11T13:26:00.346Z",
-      "version": "2.0.0",
-      "generator": "Enhanced EEE Question Bank Generator",
-      "methodology": "Advanced bilingual keyword mapping with contextual analysis",
-      "accuracy": "98.10%"
+      "timestamp": "2025-09-12T07:28:00.953025",
+      "version": "3.1.0",
+      "generator": "Perfect Mapping Enhancer v3.1",
+      "methodology": "Comprehensive bilingual keyword mapping with advanced scoring algorithms",
+      "accuracy": "100.00%"
     },
     "statistics": {
       "total": 105,
-      "mapped": 103,
-      "unmapped": 2,
+      "mapped": 105,
+      "unmapped": 0,
       "byUnit": {
-        "1": 62,
-        "2": 16,
-        "3": 7,
-        "4": 10,
-        "5": 8
+        "1": 30,
+        "2": 14,
+        "3": 26,
+        "4": 14,
+        "5": 21
       },
       "byLanguage": {
         "english": 60,
@@ -33,62 +33,62 @@
       "confidenceDistribution": {
         "100-109": 105
       },
-      "accuracy": "98.10"
+      "accuracy": "100.00"
     },
     "coverage": {
       "totalQuestions": 105,
-      "mappedQuestions": 103,
-      "mappingAccuracy": "98.10%",
+      "mappedQuestions": 105,
+      "mappingAccuracy": "100.00%",
       "languageDistribution": {
         "english": 60,
         "gujarati": 45
       },
       "unitDistribution": {
-        "1": 62,
-        "2": 16,
-        "3": 7,
-        "4": 10,
-        "5": 8
+        "1": 30,
+        "2": 14,
+        "3": 26,
+        "4": 14,
+        "5": 21
       },
       "confidenceDistribution": {
         "100-109": 105
       }
     },
-    "keywordCategories": 184,
-    "totalKeywords": 737
+    "keywordCategories": 5,
+    "totalKeywords": 431
   },
   "syllabus": {
     "units": [
       {
-        "unitNumber": "I",
+        "unitNumber": "1",
         "title": "Fundamentals of Electrical Circuits (D.C. & A.C.) and Network Theorems",
         "titleGujarati": "વિદ્યુત સર્કિટના મૂળભૂત તત્વો (ડી.સી. અને એ.સી.) અને નેટવર્ક થિયરમ્સ",
         "teachingHours": 14,
         "totalMarks": 18
       },
       {
-        "unitNumber": "II",
+        "unitNumber": "2",
         "title": "Semiconductor Theory",
         "titleGujarati": "સેમીકન્ડક્ટર સિદ્ધાંત",
         "teachingHours": 6,
         "totalMarks": 12
       },
       {
-        "unitNumber": "III",
+        "unitNumber": "3",
         "title": "PN Junction Diodes",
         "titleGujarati": "પી-એન જંક્શન ડાયોડ",
         "teachingHours": 6,
         "totalMarks": 12
       },
       {
-        "unitNumber": "IV",
+        "unitNumber": "4",
         "title": "PN Junction Diodes Applications",
         "titleGujarati": "પી-એન જંક્શન ડાયોડના ઉપયોગો",
         "teachingHours": 8,
         "totalMarks": 14
       },
       {
-        "unitNumber": "V",
+        "unitNumber": "5",
         "title": "Transistors",
         "titleGujarati": "ટ્રાન્ઝિસ્ટર",
         "teachingHours": 8,
@@ -169,7 +169,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "explain difference between active and passive network. voltage current power energy ac active ce source volt v"
+      "searchIndex": "explain difference between active and passive network. voltage current power energy ac active ce source volt v",
+      "unitNumber": 1,
+      "unitMappingConfidence": 5.376344086021505,
+      "allUnitScores": {
+        "1": 5.376344086021505,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 1.7316017316017316
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q1b",
@@ -243,7 +253,17 @@
       "topics": [
         "Kirchhoff's Laws"
       ],
-      "searchIndex": "state and explain kirchhoff's voltage law (kvl). voltage current kirchhoff kvl loop direct ce source graph volt"
+      "searchIndex": "state and explain kirchhoff's voltage law (kvl). voltage current kirchhoff kvl loop direct ce source graph volt",
+      "unitNumber": 1,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 3.4408602150537635,
+        "2": 0.0,
+        "3": 3.431372549019608,
+        "4": 2.6455026455026456,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q1c",
@@ -317,7 +337,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "define the following terms: (1) charge (2) current (3) potential (4) e.m.f. (5) inductance (6) capacitance (7) frequency. voltage current resistance power ohm's law semiconductor diode transistor frequency inductance"
+      "searchIndex": "define the following terms: (1) charge (2) current (3) potential (4) e.m.f. (5) inductance (6) capacitance (7) frequency. voltage current resistance power ohm's law semiconductor diode transistor frequency inductance",
+      "unitNumber": 1,
+      "unitMappingConfidence": 5.161290322580645,
+      "allUnitScores": {
+        "1": 5.161290322580645,
+        "2": 0.9803921568627451,
+        "3": 2.450980392156863,
+        "4": 1.5873015873015872,
+        "5": 1.2987012987012987
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q2a",
@@ -391,7 +421,17 @@
       "topics": [
         "Energy Band Theory"
       ],
-      "searchIndex": "draw and explain energy band diagrams for insulator, conductor and semiconductor. semiconductor energy conductor insulator electron valence conduction energy band ce graph"
+      "searchIndex": "draw and explain energy band diagrams for insulator, conductor and semiconductor. semiconductor energy conductor insulator electron valence conduction energy band ce graph",
+      "unitNumber": 2,
+      "unitMappingConfidence": 7.8431372549019605,
+      "allUnitScores": {
+        "1": 4.731182795698925,
+        "2": 7.8431372549019605,
+        "3": 0.0,
+        "4": 1.0582010582010581,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q2b",
@@ -465,7 +505,17 @@
       "topics": [
         "Maximum Power Transfer"
       ],
-      "searchIndex": "write statement of maximum power transfer theorem and reciprocity theorem. voltage current resistance power branch maximum power reciprocity ce source volt"
+      "searchIndex": "write statement of maximum power transfer theorem and reciprocity theorem. voltage current resistance power branch maximum power reciprocity ce source volt",
+      "unitNumber": 1,
+      "unitMappingConfidence": 7.311827956989248,
+      "allUnitScores": {
+        "1": 7.311827956989248,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q2c",
@@ -539,7 +589,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "explain the formation and conduction of n-type materials. current power semiconductor charge energy ac rms active power active reactive power"
+      "searchIndex": "explain the formation and conduction of n-type materials. current power semiconductor charge energy ac rms active power active reactive power",
+      "unitNumber": 2,
+      "unitMappingConfidence": 6.372549019607843,
+      "allUnitScores": {
+        "1": 0.6451612903225806,
+        "2": 6.372549019607843,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q3a",
@@ -613,7 +673,17 @@
       "topics": [
         "Photodiode"
       ],
-      "searchIndex": "draw the symbol of photodiode and state its application. current diode photodiode ce volt v a w h f"
+      "searchIndex": "draw the symbol of photodiode and state its application. current diode photodiode ce volt v a w h f",
+      "unitNumber": 3,
+      "unitMappingConfidence": 5.392156862745098,
+      "allUnitScores": {
+        "1": 0.43010752688172044,
+        "2": 0.0,
+        "3": 5.392156862745098,
+        "4": 1.0582010582010581,
+        "5": 1.2987012987012987
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q3b",
@@ -687,7 +757,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "write a short note on led. power semiconductor diode energy conductor electron hole p-n junction junction forward bias"
+      "searchIndex": "write a short note on led. power semiconductor diode energy conductor electron hole p-n junction junction forward bias",
+      "unitNumber": 3,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 0.43010752688172044,
+        "2": 0.0,
+        "3": 1.9607843137254901,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q3c",
@@ -761,7 +841,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "draw and explain vi characteristic of pn junction diode. voltage current resistance power semiconductor diode charge node ac direct"
+      "searchIndex": "draw and explain vi characteristic of pn junction diode. voltage current resistance power semiconductor diode charge node ac direct",
+      "unitNumber": 3,
+      "unitMappingConfidence": 7.8431372549019605,
+      "allUnitScores": {
+        "1": 0.21505376344086022,
+        "2": 0.49019607843137253,
+        "3": 7.8431372549019605,
+        "4": 0.0,
+        "5": 2.1645021645021645
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q4a",
@@ -835,7 +925,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "define: (1) ripple frequency (2) ripple factor (3) piv of a diode. voltage diode rectifier frequency ac dc rms peak breakdown ripple"
+      "searchIndex": "define: (1) ripple frequency (2) ripple factor (3) piv of a diode. voltage diode rectifier frequency ac dc rms peak breakdown ripple",
+      "unitNumber": 4,
+      "unitMappingConfidence": 6.349206349206349,
+      "allUnitScores": {
+        "1": 2.1505376344086025,
+        "2": 0.0,
+        "3": 3.431372549019608,
+        "4": 6.349206349206349,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q4b",
@@ -910,7 +1010,17 @@
         "Full Wave Rectifier",
         "Bridge Rectifier"
       ],
-      "searchIndex": "give comparison between full wave rectifier with two diodes and full wave bridge rectifier. diode rectifier ac full wave bridge transformer ripple piv efficiency ce"
+      "searchIndex": "give comparison between full wave rectifier with two diodes and full wave bridge rectifier. diode rectifier ac full wave bridge transformer ripple piv efficiency ce",
+      "unitNumber": 4,
+      "unitMappingConfidence": 6.349206349206349,
+      "allUnitScores": {
+        "1": 1.7204301075268817,
+        "2": 0.0,
+        "3": 0.9803921568627451,
+        "4": 6.349206349206349,
+        "5": 1.2987012987012987
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q4c",
@@ -984,7 +1094,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "explain zener diode as voltage regulator. voltage current power diode rectifier charge series ac direct dc"
+      "searchIndex": "explain zener diode as voltage regulator. voltage current power diode rectifier charge series ac direct dc",
+      "unitNumber": 3,
+      "unitMappingConfidence": 9.803921568627452,
+      "allUnitScores": {
+        "1": 1.935483870967742,
+        "2": 0.0,
+        "3": 9.803921568627452,
+        "4": 3.7037037037037033,
+        "5": 1.7316017316017316
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q5a",
@@ -1058,7 +1178,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "explain causes of electronic waste. ac electron ce electronic waste v a w h f c"
+      "searchIndex": "explain causes of electronic waste. ac electron ce electronic waste v a w h f c",
+      "unitNumber": 5,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.9803921568627451,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 2.5974025974025974
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q5b",
@@ -1132,7 +1262,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "compare pnp and npn transistors. current transistor frequency electron hole majority carrier npn pnp emitter"
+      "searchIndex": "compare pnp and npn transistors. current transistor frequency electron hole majority carrier npn pnp emitter",
+      "unitNumber": 5,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.49019607843137253,
+        "4": 0.0,
+        "5": 4.761904761904762
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q5c",
@@ -1206,7 +1346,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "draw the symbol, explain the construction and working of mosfet. voltage current power transistor phase impedance ac dc insulator electron"
+      "searchIndex": "draw the symbol, explain the construction and working of mosfet. voltage current power transistor phase impedance ac dc insulator electron",
+      "unitNumber": 5,
+      "unitMappingConfidence": 5.627705627705628,
+      "allUnitScores": {
+        "1": 0.43010752688172044,
+        "2": 0.0,
+        "3": 4.411764705882353,
+        "4": 0.0,
+        "5": 5.627705627705628
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q1અ",
@@ -1280,7 +1430,18 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "એક્ટિવ અને પેસિવ નેટવર્ક નો તફાવત સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ પાવર ઊર્જા એક્ટિવ સ્ત્રોત c સર્કિટ નેટવર્ક"
+      "searchIndex": "એક્ટિવ અને પેસિવ નેટવર્ક નો તફાવત સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ પાવર ઊર્જા એક્ટિવ સ્ત્રોત c સર્કિટ નેટવર્ક",
+      "unitNumber": 1,
+      "unitMappingConfidence": 85.0,
+      "allUnitScores": {
+        "1": 0.6451612903225806,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 1.2987012987012987
+      },
+      "mapped": true,
+      "mappingMethod": "specific_pattern"
     },
     {
       "id": "1313202-1313-winter-q1બ",
@@ -1354,7 +1515,17 @@
       "topics": [
         "Kirchhoff's Laws"
       ],
-      "searchIndex": "કિર્ચોફનો વોલ્ટેજનો નિયમ જણાવો અને સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ કિર્ચોફ kvl લૂપ બંધ લૂપ સરવાળો બંધ વધારો"
+      "searchIndex": "કિર્ચોફનો વોલ્ટેજનો નિયમ જણાવો અને સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ કિર્ચોફ kvl લૂપ બંધ લૂપ સરવાળો બંધ વધારો",
+      "unitNumber": 1,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 2.795698924731183,
+        "2": 0.0,
+        "3": 0.9803921568627451,
+        "4": 1.0582010582010581,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q1ક",
@@ -1428,7 +1599,18 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "વ્યાખ્યા આપો: (1) ચાર્જ (2) કરંટ (3) પોટેન્શિયલ (4) e.m.f. (5) ઇન્ડક્ટન્સ (6) કેપેસિટન્સ (7) આવૃત્તિ. વોલ્ટેજ વોલ્ટ પોટેન્શિયલ કરંટ પ્રવાહ એમ્પિયર અવરોધ ઓહમ પાવર ઊર્જા"
+      "searchIndex": "વ્યાખ્યા આપો: (1) ચાર્જ (2) કરંટ (3) પોટેન્શિયલ (4) e.m.f. (5) ઇન્ડક્ટન્સ (6) કેપેસિટન્સ (7) આવૃત્તિ. વોલ્ટેજ વોલ્ટ પોટેન્શિયલ કરંટ પ્રવાહ એમ્પિયર અવરોધ ઓહમ પાવર ઊર્જા",
+      "unitNumber": 1,
+      "unitMappingConfidence": 85.0,
+      "allUnitScores": {
+        "1": 3.4408602150537635,
+        "2": 0.9803921568627451,
+        "3": 2.450980392156863,
+        "4": 1.5873015873015872,
+        "5": 0.8658008658008658
+      },
+      "mapped": true,
+      "mappingMethod": "specific_pattern"
     },
     {
       "id": "1313202-1313-winter-q2અ",
@@ -1502,7 +1684,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "વાહક, અવાહક અને અર્ધવાહક નો એનર્જી બેન્ડ ની આકૃતિ દોરી સમજાવો. ઊર્જા semiconductor અર્ધવાહક conductor વાહક insulator અવાહક ઇલેક્ટ્રોન valence વેલેન્સ"
+      "searchIndex": "વાહક, અવાહક અને અર્ધવાહક નો એનર્જી બેન્ડ ની આકૃતિ દોરી સમજાવો. ઊર્જા semiconductor અર્ધવાહક conductor વાહક insulator અવાહક ઇલેક્ટ્રોન valence વેલેન્સ",
+      "unitNumber": 2,
+      "unitMappingConfidence": 7.352941176470589,
+      "allUnitScores": {
+        "1": 2.1505376344086025,
+        "2": 7.352941176470589,
+        "3": 0.0,
+        "4": 1.5873015873015872,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q2બ",
@@ -1576,7 +1768,17 @@
       "topics": [
         "Maximum Power Transfer"
       ],
-      "searchIndex": "maximum power transfer theorem અને reciprocity theorem નું સ્ટેટમેન્ટ લખો. વોલ્ટેજ વોલ્ટ કરંટ અવરોધ power પાવર maximum power મહત્તમ પાવર મેક્સિમમ પાવર reciprocity"
+      "searchIndex": "maximum power transfer theorem અને reciprocity theorem નું સ્ટેટમેન્ટ લખો. વોલ્ટેજ વોલ્ટ કરંટ અવરોધ power પાવર maximum power મહત્તમ પાવર મેક્સિમમ પાવર reciprocity",
+      "unitNumber": 1,
+      "unitMappingConfidence": 7.311827956989248,
+      "allUnitScores": {
+        "1": 7.311827956989248,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q2ક",
@@ -1650,7 +1852,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "n-type મટીરીઅલ ની રચના અને તેનું કંડક્શન સમજાવો. વોલ્ટ કરંટ પ્રવાહ એમ્પિયર power પાવર વોટ ઊર્જા semiconductor ચાર્જ"
+      "searchIndex": "n-type મટીરીઅલ ની રચના અને તેનું કંડક્શન સમજાવો. વોલ્ટ કરંટ પ્રવાહ એમ્પિયર power પાવર વોટ ઊર્જા semiconductor ચાર્જ",
+      "unitNumber": 2,
+      "unitMappingConfidence": 7.8431372549019605,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 7.8431372549019605,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q3અ",
@@ -1694,7 +1906,18 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "ફોટોડિઓડનું પ્રતીક દોરો અને તેનો ઉપયોગ જણાવો. વોલ્ટ કરંટ આકૃતિ a"
+      "searchIndex": "ફોટોડિઓડનું પ્રતીક દોરો અને તેનો ઉપયોગ જણાવો. વોલ્ટ કરંટ આકૃતિ a",
+      "unitNumber": 3,
+      "unitMappingConfidence": 85.0,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 2.941176470588235,
+        "4": 1.0582010582010581,
+        "5": 1.2987012987012987
+      },
+      "mapped": true,
+      "mappingMethod": "specific_pattern"
     },
     {
       "id": "1313202-1313-winter-q3બ",
@@ -1768,7 +1991,17 @@
       "topics": [
         "Light Emitting Diode"
       ],
-      "searchIndex": "led પર ટૂંકી નોંધ લખો. પાવર ઊર્જા ડાયોડ કાર્ય જંક્શન કન્ડક્ટર ઇલેક્ટ્રોન હોલ ફોરવર્ડ બાયસ led"
+      "searchIndex": "led પર ટૂંકી નોંધ લખો. પાવર ઊર્જા ડાયોડ કાર્ય જંક્શન કન્ડક્ટર ઇલેક્ટ્રોન હોલ ફોરવર્ડ બાયસ led",
+      "unitNumber": 3,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 1.2903225806451613,
+        "2": 0.0,
+        "3": 1.9607843137254901,
+        "4": 2.1164021164021163,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q3ક",
@@ -1842,7 +2075,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "pn જંક્શન ડાયોડની vi લાક્ષણિકતા દોરીને સમજાવો. voltage વોલ્ટેજ વોલ્ટ પોટેન્શિયલ current કરંટ પ્રવાહ અવરોધ પાવર ડાયોડ"
+      "searchIndex": "pn જંક્શન ડાયોડની vi લાક્ષણિકતા દોરીને સમજાવો. voltage વોલ્ટેજ વોલ્ટ પોટેન્શિયલ current કરંટ પ્રવાહ અવરોધ પાવર ડાયોડ",
+      "unitNumber": 3,
+      "unitMappingConfidence": 7.8431372549019605,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.49019607843137253,
+        "3": 7.8431372549019605,
+        "4": 0.0,
+        "5": 2.1645021645021645
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q4અ",
@@ -1916,7 +2159,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "વ્યાખ્યા આપો (1) રીપપલ આવૃત્તિ (2) રીપપલ ફેક્ટર (3) ડાયોડ નો piv. વોલ્ટેજ વોલ્ટ diode ડાયોડ રેક્ટિફાયર આવૃત્તિ ac dc rms પીક"
+      "searchIndex": "વ્યાખ્યા આપો (1) રીપપલ આવૃત્તિ (2) રીપપલ ફેક્ટર (3) ડાયોડ નો piv. વોલ્ટેજ વોલ્ટ diode ડાયોડ રેક્ટિફાયર આવૃત્તિ ac dc rms પીક",
+      "unitNumber": 4,
+      "unitMappingConfidence": 6.349206349206349,
+      "allUnitScores": {
+        "1": 1.0752688172043012,
+        "2": 0.0,
+        "3": 3.431372549019608,
+        "4": 6.349206349206349,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q4બ",
@@ -1991,7 +2244,17 @@
         "Full Wave Rectifier",
         "Bridge Rectifier"
       ],
-      "searchIndex": "બે ડાયોડ ફુલ વેવ રેક્ટિફાયર અને બ્રિજ રેક્ટિફાયર નો તફાવત આપો. ડાયોડ રેક્ટિફાયર કાર્ય ફુલ વેવ બ્રિજ સેન્ટર ટેપ ટ્રાન્સફોર્મર piv કાર્યક્ષમતા કાર્યક્ષમ"
+      "searchIndex": "બે ડાયોડ ફુલ વેવ રેક્ટિફાયર અને બ્રિજ રેક્ટિફાયર નો તફાવત આપો. ડાયોડ રેક્ટિફાયર કાર્ય ફુલ વેવ બ્રિજ સેન્ટર ટેપ ટ્રાન્સફોર્મર piv કાર્યક્ષમતા કાર્યક્ષમ",
+      "unitNumber": 4,
+      "unitMappingConfidence": 6.349206349206349,
+      "allUnitScores": {
+        "1": 0.6451612903225806,
+        "2": 2.941176470588235,
+        "3": 3.431372549019608,
+        "4": 6.349206349206349,
+        "5": 0.8658008658008658
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q4ક",
@@ -2065,7 +2328,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "ઝેનર ડાયોડને વોલ્ટેજ રેગ્યુલેટર તરીકે સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ પાવર diode ડાયોડ rectifier રેક્ટિફાયર કેપેસિટર ચાર્જ"
+      "searchIndex": "ઝેનર ડાયોડને વોલ્ટેજ રેગ્યુલેટર તરીકે સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ પાવર diode ડાયોડ rectifier રેક્ટિફાયર કેપેસિટર ચાર્જ",
+      "unitNumber": 3,
+      "unitMappingConfidence": 5.88235294117647,
+      "allUnitScores": {
+        "1": 1.0752688172043012,
+        "2": 0.0,
+        "3": 5.88235294117647,
+        "4": 3.7037037037037033,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q5અ",
@@ -2099,7 +2372,18 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "ઇલેક્ટ્રોનિક કચરાના કારણો સમજાવો. આગળ ઇલેક્ટ્રોન"
+      "searchIndex": "ઇલેક્ટ્રોનિક કચરાના કારણો સમજાવો. આગળ ઇલેક્ટ્રોન",
+      "unitNumber": 5,
+      "unitMappingConfidence": 85.0,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.9803921568627451,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.8658008658008658
+      },
+      "mapped": true,
+      "mappingMethod": "specific_pattern"
     },
     {
       "id": "1313202-1313-winter-q5બ",
@@ -2173,7 +2457,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "pnp અને npn ટ્રાન્ઝિસ્ટરની સરખામણી કરો. કરંટ પ્રવાહ ટ્રાન્ઝિસ્ટર ફ્રિક્વન્સી ઇલેક્ટ્રોન હોલ મેજોરિટી કેરિયર npn નેગેટિવ-પોઝિટિવ-નેગેટિવ"
+      "searchIndex": "pnp અને npn ટ્રાન્ઝિસ્ટરની સરખામણી કરો. કરંટ પ્રવાહ ટ્રાન્ઝિસ્ટર ફ્રિક્વન્સી ઇલેક્ટ્રોન હોલ મેજોરિટી કેરિયર npn નેગેટિવ-પોઝિટિવ-નેગેટિવ",
+      "unitNumber": 5,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.49019607843137253,
+        "4": 0.0,
+        "5": 4.761904761904762
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q5ક",
@@ -2247,7 +2541,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "પ્રતીક દોરો, mosfet નું બાંધકામ અને કાર્ય સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ પ્રવાહ પાવર ટ્રાન્ઝિસ્ટર ફેઝ કાર્ય બરાબર dc"
+      "searchIndex": "પ્રતીક દોરો, mosfet નું બાંધકામ અને કાર્ય સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ પ્રવાહ પાવર ટ્રાન્ઝિસ્ટર ફેઝ કાર્ય બરાબર dc",
+      "unitNumber": 5,
+      "unitMappingConfidence": 6.493506493506493,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 5.392156862745098,
+        "4": 1.5873015873015872,
+        "5": 6.493506493506493
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q1a",
@@ -2321,7 +2625,18 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "define: 1. node, 2. loop, 3. branch node branch loop ce v a w h f c"
+      "searchIndex": "define: 1. node, 2. loop, 3. branch node branch loop ce v a w h f c",
+      "unitNumber": 1,
+      "unitMappingConfidence": 85.0,
+      "allUnitScores": {
+        "1": 1.935483870967742,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true,
+      "mappingMethod": "specific_pattern"
     },
     {
       "id": "1313202-1313-summer-q1b",
@@ -2396,7 +2711,17 @@
         "Superposition Theorem",
         "Maximum Power Transfer"
       ],
-      "searchIndex": "write statement of superposition theorem and maximum power transfer theorem. voltage current resistance power impedance superposition maximum power ac ce source"
+      "searchIndex": "write statement of superposition theorem and maximum power transfer theorem. voltage current resistance power impedance superposition maximum power ac ce source",
+      "unitNumber": 1,
+      "unitMappingConfidence": 7.311827956989248,
+      "allUnitScores": {
+        "1": 7.311827956989248,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q1c",
@@ -2470,7 +2795,17 @@
       "topics": [
         "Kirchhoff's Laws"
       ],
-      "searchIndex": "explain kirchhoff's voltage law and kirchhoff's current law. voltage current resistance kirchhoff kvl kcl charge energy node loop"
+      "searchIndex": "explain kirchhoff's voltage law and kirchhoff's current law. voltage current resistance kirchhoff kvl kcl charge energy node loop",
+      "unitNumber": 1,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 3.4408602150537635,
+        "2": 0.0,
+        "3": 4.901960784313726,
+        "4": 2.6455026455026456,
+        "5": 0.8658008658008658
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q2a",
@@ -2544,7 +2879,17 @@
       "topics": [
         "Ohm's Law"
       ],
-      "searchIndex": "state limitations of ohm's law. ohm's law diode transistor frequency v a ohm w h f"
+      "searchIndex": "state limitations of ohm's law. ohm's law diode transistor frequency v a ohm w h f",
+      "unitNumber": 1,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 1.5053763440860215,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q2b",
@@ -2618,7 +2963,17 @@
       "topics": [
         "Semiconductor Doping"
       ],
-      "searchIndex": "define: 1. doping, 2. intrinsic semiconductor, 3. extrinsic semiconductor, 4. dopant semiconductor conductor atom electron hole doping intrinsic extrinsic dopant ce"
+      "searchIndex": "define: 1. doping, 2. intrinsic semiconductor, 3. extrinsic semiconductor, 4. dopant semiconductor conductor atom electron hole doping intrinsic extrinsic dopant ce",
+      "unitNumber": 2,
+      "unitMappingConfidence": 8.333333333333332,
+      "allUnitScores": {
+        "1": 1.5053763440860215,
+        "2": 8.333333333333332,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q2c",
@@ -2692,7 +3047,17 @@
       "topics": [
         "P-type Semiconductor"
       ],
-      "searchIndex": "define trivalent material and give examples of it. explain formation of p-type semiconductor with the help of proper diagram. resistance semiconductor charge energy ac conductor atom electron hole valence"
+      "searchIndex": "define trivalent material and give examples of it. explain formation of p-type semiconductor with the help of proper diagram. resistance semiconductor charge energy ac conductor atom electron hole valence",
+      "unitNumber": 2,
+      "unitMappingConfidence": 10.784313725490197,
+      "allUnitScores": {
+        "1": 5.806451612903226,
+        "2": 10.784313725490197,
+        "3": 0.49019607843137253,
+        "4": 2.6455026455026456,
+        "5": 0.4329004329004329
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q3a",
@@ -2766,7 +3131,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "define: 1. depletion region, 2. knee voltage, 3. breakdown voltage in accordance of diode. voltage current diode charge ac direct conduction carrier p-n junction junction"
+      "searchIndex": "define: 1. depletion region, 2. knee voltage, 3. breakdown voltage in accordance of diode. voltage current diode charge ac direct conduction carrier p-n junction junction",
+      "unitNumber": 3,
+      "unitMappingConfidence": 12.254901960784313,
+      "allUnitScores": {
+        "1": 1.2903225806451613,
+        "2": 0.0,
+        "3": 12.254901960784313,
+        "4": 2.6455026455026456,
+        "5": 2.1645021645021645
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q3b",
@@ -2840,7 +3215,17 @@
       "topics": [
         "Diode Characteristics"
       ],
-      "searchIndex": "explain v-i characteristics of p-n junction diode with necessary graph. voltage current diode ac p-n junction junction forward bias reverse bias knee voltage breakdown"
+      "searchIndex": "explain v-i characteristics of p-n junction diode with necessary graph. voltage current diode ac p-n junction junction forward bias reverse bias knee voltage breakdown",
+      "unitNumber": 3,
+      "unitMappingConfidence": 6.862745098039216,
+      "allUnitScores": {
+        "1": 0.21505376344086022,
+        "2": 0.0,
+        "3": 6.862745098039216,
+        "4": 0.0,
+        "5": 1.2987012987012987
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q3c",
@@ -2914,7 +3299,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "draw characteristic of varactor diode. explain working of varactor diode with diagram and write its application. voltage current કરંટ diode frequency capacitance phase જંક્શન loop ac"
+      "searchIndex": "draw characteristic of varactor diode. explain working of varactor diode with diagram and write its application. voltage current કરંટ diode frequency capacitance phase જંક્શન loop ac",
+      "unitNumber": 3,
+      "unitMappingConfidence": 9.803921568627452,
+      "allUnitScores": {
+        "1": 1.7204301075268817,
+        "2": 0.9803921568627451,
+        "3": 9.803921568627452,
+        "4": 2.6455026455026456,
+        "5": 2.5974025974025974
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q4a",
@@ -2988,7 +3383,17 @@
       "topics": [
         "Half Wave Rectifier"
       ],
-      "searchIndex": "explain working of half wave rectifier with circuit diagram. current diode rectifier frequency phase ac half wave ripple piv efficiency"
+      "searchIndex": "explain working of half wave rectifier with circuit diagram. current diode rectifier frequency phase ac half wave ripple piv efficiency",
+      "unitNumber": 4,
+      "unitMappingConfidence": 7.936507936507936,
+      "allUnitScores": {
+        "1": 4.086021505376344,
+        "2": 0.9803921568627451,
+        "3": 1.4705882352941175,
+        "4": 7.936507936507936,
+        "5": 1.2987012987012987
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q4b",
@@ -3062,7 +3467,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "explain zener diode as a voltage regulator. voltage current power diode series ac breakdown zener regulation regulator"
+      "searchIndex": "explain zener diode as a voltage regulator. voltage current power diode series ac breakdown zener regulation regulator",
+      "unitNumber": 3,
+      "unitMappingConfidence": 9.803921568627452,
+      "allUnitScores": {
+        "1": 1.935483870967742,
+        "2": 0.0,
+        "3": 9.803921568627452,
+        "4": 3.7037037037037033,
+        "5": 1.7316017316017316
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q4c",
@@ -3136,7 +3551,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "write need of rectifier. explain bridge wave rectifier with circuit diagram and draw its input and output waveform. voltage current power diode rectifier frequency charge ac direct dc"
+      "searchIndex": "write need of rectifier. explain bridge wave rectifier with circuit diagram and draw its input and output waveform. voltage current power diode rectifier frequency charge ac direct dc",
+      "unitNumber": 4,
+      "unitMappingConfidence": 14.285714285714285,
+      "allUnitScores": {
+        "1": 3.655913978494624,
+        "2": 0.9803921568627451,
+        "3": 0.0,
+        "4": 14.285714285714285,
+        "5": 2.5974025974025974
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q5a",
@@ -3210,7 +3635,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "explain working of pnp transistor with the necessary diagram. current transistor hole majority carrier junction forward bias reverse bias pnp emitter"
+      "searchIndex": "explain working of pnp transistor with the necessary diagram. current transistor hole majority carrier junction forward bias reverse bias pnp emitter",
+      "unitNumber": 5,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 1.0752688172043012,
+        "2": 0.9803921568627451,
+        "3": 1.9607843137254901,
+        "4": 1.5873015873015872,
+        "5": 4.329004329004329
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q5b",
@@ -3284,7 +3719,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "explain working of n-channel jfet with diagram. voltage resistance charge electron n-type p-type carrier pn junction junction depletion"
+      "searchIndex": "explain working of n-channel jfet with diagram. voltage resistance charge electron n-type p-type carrier pn junction junction depletion",
+      "unitNumber": 5,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 1.0752688172043012,
+        "2": 0.9803921568627451,
+        "3": 1.4705882352941175,
+        "4": 1.5873015873015872,
+        "5": 4.761904761904762
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q5c",
@@ -3358,7 +3803,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "compare bjt and jfet voltage current resistance power transistor impedance charge ac direct active"
+      "searchIndex": "compare bjt and jfet voltage current resistance power transistor impedance charge ac direct active",
+      "unitNumber": 5,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 4.329004329004329
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q1અ",
@@ -3432,7 +3887,18 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "વ્યાખ્યા આપો: 1. નોડ, 2. લૂપ, 3. બ્રાંચ નોડ બિંદુ જોડ બ્રાંચ માર્ગ loop લૂપ બંધ માર્ગ બંધ v"
+      "searchIndex": "વ્યાખ્યા આપો: 1. નોડ, 2. લૂપ, 3. બ્રાંચ નોડ બિંદુ જોડ બ્રાંચ માર્ગ loop લૂપ બંધ માર્ગ બંધ v",
+      "unitNumber": 1,
+      "unitMappingConfidence": 85.0,
+      "allUnitScores": {
+        "1": 2.3655913978494625,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true,
+      "mappingMethod": "specific_pattern"
     },
     {
       "id": "1313202-1313-summer-q1બ",
@@ -3507,7 +3973,17 @@
         "Superposition Theorem",
         "Maximum Power Transfer"
       ],
-      "searchIndex": "superposition થીયરમ અને maximum power transfer થીયરમ નું સ્ટેટમેંટ લખો. વોલ્ટેજ વોલ્ટ કરંટ power પાવર કાર્ય superposition સરવાળો maximum power મહત્તમ પાવર"
+      "searchIndex": "superposition થીયરમ અને maximum power transfer થીયરમ નું સ્ટેટમેંટ લખો. વોલ્ટેજ વોલ્ટ કરંટ power પાવર કાર્ય superposition સરવાળો maximum power મહત્તમ પાવર",
+      "unitNumber": 1,
+      "unitMappingConfidence": 5.591397849462366,
+      "allUnitScores": {
+        "1": 5.591397849462366,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q1ક",
@@ -3581,7 +4057,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "કિરચોફનો વોલ્ટેજ નો નિયમ અને કિરચોફનો કરંટનો નિયમ સમજાવો. voltage વોલ્ટેજ વોલ્ટ current કરંટ રેસિસ્ટન્સ ઊર્જા kvl kcl ચાર્જ"
+      "searchIndex": "કિરચોફનો વોલ્ટેજ નો નિયમ અને કિરચોફનો કરંટનો નિયમ સમજાવો. voltage વોલ્ટેજ વોલ્ટ current કરંટ રેસિસ્ટન્સ ઊર્જા kvl kcl ચાર્જ",
+      "unitNumber": 1,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 3.4408602150537635,
+        "2": 0.0,
+        "3": 4.411764705882353,
+        "4": 2.6455026455026456,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q2અ",
@@ -3655,7 +4141,17 @@
       "topics": [
         "Ohm's Law"
       ],
-      "searchIndex": "ohm's law ની મર્યાદાઓ જણાવો. ohm's law ડાયોડ ટ્રાન્ઝિસ્ટર ફ્રિક્વન્સી મર્યાદા a ohm w h s"
+      "searchIndex": "ohm's law ની મર્યાદાઓ જણાવો. ohm's law ડાયોડ ટ્રાન્ઝિસ્ટર ફ્રિક્વન્સી મર્યાદા a ohm w h s",
+      "unitNumber": 1,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 0.8602150537634409,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q2બ",
@@ -3729,7 +4225,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "વ્યાખ્યા આપો: 1. ડોપીંગ, 2. ઈંટ્રાસીક સેમીકંડક્ટર, 3. એક્સ્ટ્રાસીક સેમીકંડક્ટર, 4. ડોપંટ પરમાણુ ઇલેક્ટ્રોન હોલ ડોપિંગ શુદ્ધ એક્સટ્રિન્સિક અશુદ્ધ ડોપ કરેલ ડોપન્ટ અશુદ્ધિ"
+      "searchIndex": "વ્યાખ્યા આપો: 1. ડોપીંગ, 2. ઈંટ્રાસીક સેમીકંડક્ટર, 3. એક્સ્ટ્રાસીક સેમીકંડક્ટર, 4. ડોપંટ પરમાણુ ઇલેક્ટ્રોન હોલ ડોપિંગ શુદ્ધ એક્સટ્રિન્સિક અશુદ્ધ ડોપ કરેલ ડોપન્ટ અશુદ્ધિ",
+      "unitNumber": 2,
+      "unitMappingConfidence": 5.88235294117647,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 5.88235294117647,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q2ક",
@@ -3803,7 +4309,17 @@
       "topics": [
         "P-type Semiconductor"
       ],
-      "searchIndex": "ટ્રાયવેલેંટ મટીરીયલ ની વ્યાખ્યા આપો અને તેના ઉદાહરણ આપો. p-type સેમીકંડક્ટરની રચના જરુરી આકૃતિ સાથે સમજાવો. રેસિસ્ટન્સ ઊર્જા ચાર્જ મેશ કન્ડક્ટર એટમ ઇલેક્ટ્રોન હોલ પોઝિટિવ ચાર્જ વેલેન્સ"
+      "searchIndex": "ટ્રાયવેલેંટ મટીરીયલ ની વ્યાખ્યા આપો અને તેના ઉદાહરણ આપો. p-type સેમીકંડક્ટરની રચના જરુરી આકૃતિ સાથે સમજાવો. રેસિસ્ટન્સ ઊર્જા ચાર્જ મેશ કન્ડક્ટર એટમ ઇલેક્ટ્રોન હોલ પોઝિટિવ ચાર્જ વેલેન્સ",
+      "unitNumber": 2,
+      "unitMappingConfidence": 6.372549019607843,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 6.372549019607843,
+        "3": 0.0,
+        "4": 1.5873015873015872,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q3અ",
@@ -3877,7 +4393,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "ડાયોડની સાપેક્ષમાં 1. ડીપ્લીશન રીજીયન, 2. ની વોલ્ટેજ, અને 3. બ્રેકડાઉન વોલ્ટેજની વ્યાખ્યા આપો વોલ્ટેજ વોલ્ટ કરંટ ડાયોડ ચાર્જ જંક્શન કન્ડક્શન વહન કેરિયર બ્રેકડાઉન"
+      "searchIndex": "ડાયોડની સાપેક્ષમાં 1. ડીપ્લીશન રીજીયન, 2. ની વોલ્ટેજ, અને 3. બ્રેકડાઉન વોલ્ટેજની વ્યાખ્યા આપો વોલ્ટેજ વોલ્ટ કરંટ ડાયોડ ચાર્જ જંક્શન કન્ડક્શન વહન કેરિયર બ્રેકડાઉન",
+      "unitNumber": 3,
+      "unitMappingConfidence": 9.803921568627452,
+      "allUnitScores": {
+        "1": 1.0752688172043012,
+        "2": 0.0,
+        "3": 9.803921568627452,
+        "4": 2.6455026455026456,
+        "5": 1.2987012987012987
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q3બ",
@@ -3951,7 +4477,17 @@
       "topics": [
         "Diode Characteristics"
       ],
-      "searchIndex": "p-n જંક્શન ડાયોડ ની v-i લાક્ષણિકતા જરુરી ગ્રાફ સાથે સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ ડાયોડ જંક્શન ફોરવર્ડ બાયસ રિવર્સ બાયસ breakdown બ્રેકડાઉન લીકેજ"
+      "searchIndex": "p-n જંક્શન ડાયોડ ની v-i લાક્ષણિકતા જરુરી ગ્રાફ સાથે સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ ડાયોડ જંક્શન ફોરવર્ડ બાયસ રિવર્સ બાયસ breakdown બ્રેકડાઉન લીકેજ",
+      "unitNumber": 3,
+      "unitMappingConfidence": 7.8431372549019605,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 7.8431372549019605,
+        "4": 0.0,
+        "5": 1.2987012987012987
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q3ક",
@@ -4025,7 +4561,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "varactor ડાયોડ ની લાક્ષણિકતા દોરો. varactor ડાયોડની કાર્યપધ્ધતિ આકૃતિ સાથે સમજાવો અને તેની એપ્લીકેશન લખો. વોલ્ટેજ વોલ્ટ current કરંટ ડાયોડ ફ્રિક્વન્સી capacitance કેપેસિટન્સ ફેઝ કાર્ય"
+      "searchIndex": "varactor ડાયોડ ની લાક્ષણિકતા દોરો. varactor ડાયોડની કાર્યપધ્ધતિ આકૃતિ સાથે સમજાવો અને તેની એપ્લીકેશન લખો. વોલ્ટેજ વોલ્ટ current કરંટ ડાયોડ ફ્રિક્વન્સી capacitance કેપેસિટન્સ ફેઝ કાર્ય",
+      "unitNumber": 3,
+      "unitMappingConfidence": 11.27450980392157,
+      "allUnitScores": {
+        "1": 0.21505376344086022,
+        "2": 0.0,
+        "3": 11.27450980392157,
+        "4": 4.232804232804233,
+        "5": 3.463203463203463
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q4અ",
@@ -4099,7 +4645,17 @@
       "topics": [
         "Half Wave Rectifier"
       ],
-      "searchIndex": "half wave rectifier સકીટ ડાયાગ્રામ સાથે સમજાવો. કરંટ ડાયોડ rectifier ફ્રિક્વન્સી ફેઝ ac half wave piv ગેટ ઇનપુટ"
+      "searchIndex": "half wave rectifier સકીટ ડાયાગ્રામ સાથે સમજાવો. કરંટ ડાયોડ rectifier ફ્રિક્વન્સી ફેઝ ac half wave piv ગેટ ઇનપુટ",
+      "unitNumber": 4,
+      "unitMappingConfidence": 6.349206349206349,
+      "allUnitScores": {
+        "1": 1.0752688172043012,
+        "2": 0.9803921568627451,
+        "3": 0.0,
+        "4": 6.349206349206349,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q4બ",
@@ -4173,7 +4729,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "zener ડાયોડને વોલ્ટેજ રેગ્યુલેટર તરીકે સમજાવો. voltage વોલ્ટેજ વોલ્ટ કરંટ પાવર ડાયોડ કાર્ય સીરીઝ બ્રેકડાઉન zener"
+      "searchIndex": "zener ડાયોડને વોલ્ટેજ રેગ્યુલેટર તરીકે સમજાવો. voltage વોલ્ટેજ વોલ્ટ કરંટ પાવર ડાયોડ કાર્ય સીરીઝ બ્રેકડાઉન zener",
+      "unitNumber": 3,
+      "unitMappingConfidence": 5.88235294117647,
+      "allUnitScores": {
+        "1": 1.0752688172043012,
+        "2": 0.0,
+        "3": 5.88235294117647,
+        "4": 4.761904761904762,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q4ક",
@@ -4247,7 +4813,17 @@
       "topics": [
         "Bridge Rectifier"
       ],
-      "searchIndex": "rectifier ની જરૂરીયાત લખો. bridge wave rectifier સકીટ ડાયાગ્રામ સાથે સમજાવો અને તેના ઈનપુટ અને આઉટપુટ ના વેવફોર્મ દોરો. વોલ્ટેજ વોલ્ટ કરંટ પાવર ડાયોડ rectifier રેક્ટિફાયર ફ્રિક્વન્સી કેપેસિટર ચાર્જ"
+      "searchIndex": "rectifier ની જરૂરીયાત લખો. bridge wave rectifier સકીટ ડાયાગ્રામ સાથે સમજાવો અને તેના ઈનપુટ અને આઉટપુટ ના વેવફોર્મ દોરો. વોલ્ટેજ વોલ્ટ કરંટ પાવર ડાયોડ rectifier રેક્ટિફાયર ફ્રિક્વન્સી કેપેસિટર ચાર્જ",
+      "unitNumber": 4,
+      "unitMappingConfidence": 12.16931216931217,
+      "allUnitScores": {
+        "1": 1.5053763440860215,
+        "2": 0.9803921568627451,
+        "3": 0.0,
+        "4": 12.16931216931217,
+        "5": 1.2987012987012987
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q5અ",
@@ -4321,7 +4897,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "pnp transistor ની કાર્યપધ્ધતિ જરુરી આકૃતિ સાથે સમજાવો. કરંટ transistor કાર્ય જંક્શન હોલ મેજોરિટી કેરિયર ફોરવર્ડ બાયસ રિવર્સ બાયસ pnp"
+      "searchIndex": "pnp transistor ની કાર્યપધ્ધતિ જરુરી આકૃતિ સાથે સમજાવો. કરંટ transistor કાર્ય જંક્શન હોલ મેજોરિટી કેરિયર ફોરવર્ડ બાયસ રિવર્સ બાયસ pnp",
+      "unitNumber": 5,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 2.941176470588235,
+        "4": 2.6455026455026456,
+        "5": 4.761904761904762
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q5બ",
@@ -4395,7 +4981,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "n-channel jfet ની કાર્યપધ્ધતિ આકૃતિ સાથે સમજાવો. વોલ્ટેજ વોલ્ટ રેસિસ્ટન્સ ચાર્જ કાર્ય જંક્શન મેશ ઇલેક્ટ્રોન કેરિયર junction"
+      "searchIndex": "n-channel jfet ની કાર્યપધ્ધતિ આકૃતિ સાથે સમજાવો. વોલ્ટેજ વોલ્ટ રેસિસ્ટન્સ ચાર્જ કાર્ય જંક્શન મેશ ઇલેક્ટ્રોન કેરિયર junction",
+      "unitNumber": 5,
+      "unitMappingConfidence": 5.627705627705628,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 2.450980392156863,
+        "4": 2.6455026455026456,
+        "5": 5.627705627705628
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q5ક",
@@ -4469,7 +5065,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "bjt અને jfet ની સરખામણી કરો. voltage વોલ્ટેજ વોલ્ટ current કરંટ પાવર transistor ટ્રાન્ઝિસ્ટર ઇમ્પીડન્સ ચાર્જ"
+      "searchIndex": "bjt અને jfet ની સરખામણી કરો. voltage વોલ્ટેજ વોલ્ટ current કરંટ પાવર transistor ટ્રાન્ઝિસ્ટર ઇમ્પીડન્સ ચાર્જ",
+      "unitNumber": 5,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 4.329004329004329
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q1a",
@@ -4543,7 +5149,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "explain difference between active and passive network. power transistor energy ac active ce source v amp a"
+      "searchIndex": "explain difference between active and passive network. power transistor energy ac active ce source v amp a",
+      "unitNumber": 1,
+      "unitMappingConfidence": 5.376344086021505,
+      "allUnitScores": {
+        "1": 5.376344086021505,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 1.7316017316017316
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q1b",
@@ -4617,7 +5233,17 @@
       "topics": [
         "Kirchhoff's Laws"
       ],
-      "searchIndex": "state and explain kirchhoff's voltage law (kvl). voltage kirchhoff kvl energy loop graph volt v a w"
+      "searchIndex": "state and explain kirchhoff's voltage law (kvl). voltage kirchhoff kvl energy loop graph volt v a w",
+      "unitNumber": 1,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 3.4408602150537635,
+        "2": 0.0,
+        "3": 3.431372549019608,
+        "4": 2.6455026455026456,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q1c",
@@ -4691,7 +5317,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "define the following terms: (1) charge (2) current (3) potential (4) e.m.f. (5) inductance (6) capacitance (7) frequency. voltage current resistance power ohm's law semiconductor diode transistor frequency inductance"
+      "searchIndex": "define the following terms: (1) charge (2) current (3) potential (4) e.m.f. (5) inductance (6) capacitance (7) frequency. voltage current resistance power ohm's law semiconductor diode transistor frequency inductance",
+      "unitNumber": 1,
+      "unitMappingConfidence": 5.161290322580645,
+      "allUnitScores": {
+        "1": 5.161290322580645,
+        "2": 0.9803921568627451,
+        "3": 2.450980392156863,
+        "4": 1.5873015873015872,
+        "5": 1.2987012987012987
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q2a",
@@ -4765,7 +5401,17 @@
       "topics": [
         "Energy Band Theory"
       ],
-      "searchIndex": "draw and explain energy band diagrams for insulator, conductor and semiconductor. semiconductor energy conductor insulator electron valence conduction energy band ce graph"
+      "searchIndex": "draw and explain energy band diagrams for insulator, conductor and semiconductor. semiconductor energy conductor insulator electron valence conduction energy band ce graph",
+      "unitNumber": 2,
+      "unitMappingConfidence": 7.8431372549019605,
+      "allUnitScores": {
+        "1": 4.731182795698925,
+        "2": 7.8431372549019605,
+        "3": 0.0,
+        "4": 1.0582010582010581,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q2b",
@@ -4839,7 +5485,17 @@
       "topics": [
         "Maximum Power Transfer"
       ],
-      "searchIndex": "write statement of maximum power transfer theorem and reciprocity theorem. current resistance power maximum power reciprocity ce source v a w"
+      "searchIndex": "write statement of maximum power transfer theorem and reciprocity theorem. current resistance power maximum power reciprocity ce source v a w",
+      "unitNumber": 1,
+      "unitMappingConfidence": 7.311827956989248,
+      "allUnitScores": {
+        "1": 7.311827956989248,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q2c",
@@ -4913,7 +5569,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "explain the formation and conduction of n-type materials. power semiconductor charge energy ac rms active power active reactive power reactive"
+      "searchIndex": "explain the formation and conduction of n-type materials. power semiconductor charge energy ac rms active power active reactive power reactive",
+      "unitNumber": 2,
+      "unitMappingConfidence": 6.372549019607843,
+      "allUnitScores": {
+        "1": 0.6451612903225806,
+        "2": 6.372549019607843,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q3a",
@@ -4987,7 +5653,17 @@
       "topics": [
         "Photodiode"
       ],
-      "searchIndex": "draw the symbol of photodiode and state it's application. current diode photodiode ce a w h f c s"
+      "searchIndex": "draw the symbol of photodiode and state it's application. current diode photodiode ce a w h f c s",
+      "unitNumber": 3,
+      "unitMappingConfidence": 5.88235294117647,
+      "allUnitScores": {
+        "1": 3.655913978494624,
+        "2": 1.4705882352941175,
+        "3": 5.88235294117647,
+        "4": 2.1164021164021163,
+        "5": 1.7316017316017316
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q3b",
@@ -5061,7 +5737,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "write a short note on led. voltage power diode energy ac electron hole doping p-n junction junction"
+      "searchIndex": "write a short note on led. voltage power diode energy ac electron hole doping p-n junction junction",
+      "unitNumber": 3,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 0.43010752688172044,
+        "2": 0.0,
+        "3": 1.9607843137254901,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q3c",
@@ -5135,7 +5821,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "draw and explain vi characteristic of pn junction diode. voltage current resistance power diode rectifier charge node ac dc"
+      "searchIndex": "draw and explain vi characteristic of pn junction diode. voltage current resistance power diode rectifier charge node ac dc",
+      "unitNumber": 3,
+      "unitMappingConfidence": 7.8431372549019605,
+      "allUnitScores": {
+        "1": 0.21505376344086022,
+        "2": 0.49019607843137253,
+        "3": 7.8431372549019605,
+        "4": 0.0,
+        "5": 2.1645021645021645
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q4a",
@@ -5209,7 +5905,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "define: (1) ripple frequency (2) ripple factor (3) piv of a diode. voltage diode rectifier frequency ac dc rms peak breakdown ripple"
+      "searchIndex": "define: (1) ripple frequency (2) ripple factor (3) piv of a diode. voltage diode rectifier frequency ac dc rms peak breakdown ripple",
+      "unitNumber": 4,
+      "unitMappingConfidence": 6.349206349206349,
+      "allUnitScores": {
+        "1": 2.1505376344086025,
+        "2": 0.0,
+        "3": 3.431372549019608,
+        "4": 6.349206349206349,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q4b",
@@ -5284,7 +5990,17 @@
         "Full Wave Rectifier",
         "Bridge Rectifier"
       ],
-      "searchIndex": "give comparison between full wave rectifier with two diodes and full wave bridge rectifier. voltage diode rectifier ac dc full wave bridge center tap transformer ripple"
+      "searchIndex": "give comparison between full wave rectifier with two diodes and full wave bridge rectifier. voltage diode rectifier ac dc full wave bridge center tap transformer ripple",
+      "unitNumber": 4,
+      "unitMappingConfidence": 6.349206349206349,
+      "allUnitScores": {
+        "1": 1.7204301075268817,
+        "2": 0.0,
+        "3": 0.9803921568627451,
+        "4": 6.349206349206349,
+        "5": 1.2987012987012987
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q4c",
@@ -5358,7 +6074,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "explain zener diode as voltage regulator. voltage current power diode rectifier frequency charge series ac direct"
+      "searchIndex": "explain zener diode as voltage regulator. voltage current power diode rectifier frequency charge series ac direct",
+      "unitNumber": 3,
+      "unitMappingConfidence": 9.803921568627452,
+      "allUnitScores": {
+        "1": 1.935483870967742,
+        "2": 0.0,
+        "3": 9.803921568627452,
+        "4": 3.7037037037037033,
+        "5": 1.7316017316017316
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q5a",
@@ -5432,7 +6158,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "explain causes of electronic waste. ac leading electron reference ce electronic waste v a w h"
+      "searchIndex": "explain causes of electronic waste. ac leading electron reference ce electronic waste v a w h",
+      "unitNumber": 5,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.9803921568627451,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 2.5974025974025974
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q5b",
@@ -5506,7 +6242,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "compare pnp and npn transistors. current transistor electron hole majority carrier npn pnp emitter collector"
+      "searchIndex": "compare pnp and npn transistors. current transistor electron hole majority carrier npn pnp emitter collector",
+      "unitNumber": 5,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.49019607843137253,
+        "4": 0.0,
+        "5": 4.761904761904762
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-winter-q5c",
@@ -5580,7 +6326,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "draw the symbol, explain the construction and working of mosfet. voltage current resistance power kirchhoff semiconductor phase impedance ac dc"
+      "searchIndex": "draw the symbol, explain the construction and working of mosfet. voltage current resistance power kirchhoff semiconductor phase impedance ac dc",
+      "unitNumber": 5,
+      "unitMappingConfidence": 5.627705627705628,
+      "allUnitScores": {
+        "1": 0.43010752688172044,
+        "2": 0.0,
+        "3": 4.411764705882353,
+        "4": 0.0,
+        "5": 5.627705627705628
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q1a",
@@ -5654,7 +6410,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "find mesh currents in following circuit. current kvl loop mesh equation solve v a ω w"
+      "searchIndex": "find mesh currents in following circuit. current kvl loop mesh equation solve v a ω w",
+      "unitNumber": 1,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 3.4408602150537635,
+        "2": 0.0,
+        "3": 0.9803921568627451,
+        "4": 1.5873015873015872,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q1b",
@@ -5728,7 +6494,17 @@
       "topics": [
         "Kirchhoff's Laws"
       ],
-      "searchIndex": "state and explain kirchhoff's voltage law (kvl) with the help of diagram. voltage kirchhoff kvl energy loop ac gain ce source solve"
+      "searchIndex": "state and explain kirchhoff's voltage law (kvl) with the help of diagram. voltage kirchhoff kvl energy loop ac gain ce source solve",
+      "unitNumber": 1,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 4.086021505376344,
+        "2": 0.9803921568627451,
+        "3": 3.431372549019608,
+        "4": 4.232804232804233,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q1c",
@@ -5802,7 +6578,17 @@
       "topics": [
         "Superposition Theorem"
       ],
-      "searchIndex": "state and explain superposition theorem. voltage current resistance power impedance superposition thevenin maximum power series equivalent"
+      "searchIndex": "state and explain superposition theorem. voltage current resistance power impedance superposition thevenin maximum power series equivalent",
+      "unitNumber": 1,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 3.870967741935484,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q2a",
@@ -5876,7 +6662,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "give comparison of trivalent, tetravalent and pentavalent materials. semiconductor charge conductor electron hole valence doping n-type p-type trivalent"
+      "searchIndex": "give comparison of trivalent, tetravalent and pentavalent materials. semiconductor charge conductor electron hole valence doping n-type p-type trivalent",
+      "unitNumber": 2,
+      "unitMappingConfidence": 5.88235294117647,
+      "allUnitScores": {
+        "1": 0.6451612903225806,
+        "2": 5.88235294117647,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 1.2987012987012987
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q2b",
@@ -5950,7 +6746,17 @@
       "topics": [
         "Kirchhoff's Laws"
       ],
-      "searchIndex": "state and explain kirchhoff's current law (kcl) with the help of diagram. current kirchhoff kcl charge node parallel base equation graph v"
+      "searchIndex": "state and explain kirchhoff's current law (kcl) with the help of diagram. current kirchhoff kcl charge node parallel base equation graph v",
+      "unitNumber": 1,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 4.086021505376344,
+        "2": 0.9803921568627451,
+        "3": 2.450980392156863,
+        "4": 1.5873015873015872,
+        "5": 0.8658008658008658
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q2c",
@@ -6024,7 +6830,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "define: extrinsic semiconductor. explain formation of n-type semiconductor with the help of diagram. current resistance kvl semiconductor capacitance charge energy ac direct dc"
+      "searchIndex": "define: extrinsic semiconductor. explain formation of n-type semiconductor with the help of diagram. current resistance kvl semiconductor capacitance charge energy ac direct dc",
+      "unitNumber": 2,
+      "unitMappingConfidence": 8.333333333333332,
+      "allUnitScores": {
+        "1": 2.1505376344086025,
+        "2": 8.333333333333332,
+        "3": 0.0,
+        "4": 1.5873015873015872,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q3a",
@@ -6098,7 +6914,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "define forbidden energy gap. how does it occur? what is its magnitude for ge and si? semiconductor energy ac rms conductor atom electron valence conduction forbidden"
+      "searchIndex": "define forbidden energy gap. how does it occur? what is its magnitude for ge and si? semiconductor energy ac rms conductor atom electron valence conduction forbidden",
+      "unitNumber": 1,
+      "unitMappingConfidence": 7.526881720430108,
+      "allUnitScores": {
+        "1": 7.526881720430108,
+        "2": 6.372549019607843,
+        "3": 1.9607843137254901,
+        "4": 2.6455026455026456,
+        "5": 2.1645021645021645
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q3b",
@@ -6172,7 +6998,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "(i) knee voltage (ii) reverse saturation current (iii) reverse breakdown voltage (iv) peak inverse voltage (piv) voltage current diode rectifier direct peak minority carrier reverse bias knee voltage"
+      "searchIndex": "(i) knee voltage (ii) reverse saturation current (iii) reverse breakdown voltage (iv) peak inverse voltage (piv) voltage current diode rectifier direct peak minority carrier reverse bias knee voltage",
+      "unitNumber": 3,
+      "unitMappingConfidence": 9.803921568627452,
+      "allUnitScores": {
+        "1": 3.4408602150537635,
+        "2": 0.9803921568627451,
+        "3": 9.803921568627452,
+        "4": 3.1746031746031744,
+        "5": 2.5974025974025974
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q3c",
@@ -6246,7 +7082,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "explain construction, working and characteristics of laser diode and write its applications. voltage current semiconductor diode phase energy parallel ac direct active"
+      "searchIndex": "explain construction, working and characteristics of laser diode and write its applications. voltage current semiconductor diode phase energy parallel ac direct active",
+      "unitNumber": 3,
+      "unitMappingConfidence": 8.823529411764707,
+      "allUnitScores": {
+        "1": 1.2903225806451613,
+        "2": 0.0,
+        "3": 8.823529411764707,
+        "4": 1.5873015873015872,
+        "5": 3.463203463203463
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q4a",
@@ -6320,7 +7166,17 @@
       "topics": [
         "Voltage Regulation"
       ],
-      "searchIndex": "(i) rectifier efficiency (η) (ii) ripple factor (γ) (iii) voltage regulation voltage power rectifier ac dc rms ripple efficiency regulation input"
+      "searchIndex": "(i) rectifier efficiency (η) (ii) ripple factor (γ) (iii) voltage regulation voltage power rectifier ac dc rms ripple efficiency regulation input",
+      "unitNumber": 4,
+      "unitMappingConfidence": 10.582010582010582,
+      "allUnitScores": {
+        "1": 2.5806451612903225,
+        "2": 0.0,
+        "3": 3.431372549019608,
+        "4": 10.582010582010582,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q4b",
@@ -6394,7 +7250,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "explain zener diode as a voltage regulator. voltage current power diode maximum power series parallel ac breakdown zener"
+      "searchIndex": "explain zener diode as a voltage regulator. voltage current power diode maximum power series parallel ac breakdown zener",
+      "unitNumber": 3,
+      "unitMappingConfidence": 9.803921568627452,
+      "allUnitScores": {
+        "1": 1.935483870967742,
+        "2": 0.0,
+        "3": 9.803921568627452,
+        "4": 3.7037037037037033,
+        "5": 1.7316017316017316
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q4c",
@@ -6468,7 +7334,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "explain full wave bridge rectifier with circuit diagram and input-output waveform. voltage current power diode rectifier frequency charge energy ac direct"
+      "searchIndex": "explain full wave bridge rectifier with circuit diagram and input-output waveform. voltage current power diode rectifier frequency charge energy ac direct",
+      "unitNumber": 4,
+      "unitMappingConfidence": 12.698412698412698,
+      "allUnitScores": {
+        "1": 3.655913978494624,
+        "2": 0.9803921568627451,
+        "3": 0.0,
+        "4": 12.698412698412698,
+        "5": 2.5974025974025974
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q5a",
@@ -6542,7 +7418,17 @@
       "topics": [
         "Field Effect Transistor"
       ],
-      "searchIndex": "(i) pnp transistor (ii) n channel jfet (iii) n channel enhancement mode mosfet voltage transistor ac characteristic pnp emitter ce fet jfet mosfet"
+      "searchIndex": "(i) pnp transistor (ii) n channel jfet (iii) n channel enhancement mode mosfet voltage transistor ac characteristic pnp emitter ce fet jfet mosfet",
+      "unitNumber": 5,
+      "unitMappingConfidence": 9.090909090909092,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.49019607843137253,
+        "4": 0.0,
+        "5": 9.090909090909092
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q5b",
@@ -6616,7 +7502,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "explain working of npn transistor with diagram. current resistance transistor electron n-type p-type junction forward bias reverse bias npn"
+      "searchIndex": "explain working of npn transistor with diagram. current resistance transistor electron n-type p-type junction forward bias reverse bias npn",
+      "unitNumber": 5,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 1.0752688172043012,
+        "2": 0.9803921568627451,
+        "3": 1.9607843137254901,
+        "4": 1.5873015873015872,
+        "5": 3.896103896103896
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q5c",
@@ -6690,7 +7586,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "draw and explain common emitter (ce) transistor with its input output characteristic. voltage current resistance power kirchhoff semiconductor transistor capacitance impedance ac"
+      "searchIndex": "draw and explain common emitter (ce) transistor with its input output characteristic. voltage current resistance power kirchhoff semiconductor transistor capacitance impedance ac",
+      "unitNumber": 5,
+      "unitMappingConfidence": 9.956709956709958,
+      "allUnitScores": {
+        "1": 1.7204301075268817,
+        "2": 0.49019607843137253,
+        "3": 1.9607843137254901,
+        "4": 4.761904761904762,
+        "5": 9.956709956709958
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q1અ",
@@ -6764,7 +7670,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "નીચેની સર્કિટમાં મેશ કરંટ શોધો. કરંટ kvl લૂપ મેશ ઘડિયાળ સરળીકરણ સમીકરણ આકૃતિ v a"
+      "searchIndex": "નીચેની સર્કિટમાં મેશ કરંટ શોધો. કરંટ kvl લૂપ મેશ ઘડિયાળ સરળીકરણ સમીકરણ આકૃતિ v a",
+      "unitNumber": 1,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 2.5806451612903225,
+        "2": 0.0,
+        "3": 2.450980392156863,
+        "4": 1.0582010582010581,
+        "5": 0.8658008658008658
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q1બ",
@@ -6838,7 +7754,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "કીચોફનો વોલ્ટેજ (kvl) નો નિયમ લખો અને ડાયાગ્રામ દોરી સમજાવો. વોલ્ટેજ વોલ્ટ ઊર્જા kvl લૂપ બંધ લૂપ સરવાળો મુખ્ય બંધ ગેટ"
+      "searchIndex": "કીચોફનો વોલ્ટેજ (kvl) નો નિયમ લખો અને ડાયાગ્રામ દોરી સમજાવો. વોલ્ટેજ વોલ્ટ ઊર્જા kvl લૂપ બંધ લૂપ સરવાળો મુખ્ય બંધ ગેટ",
+      "unitNumber": 1,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 3.225806451612903,
+        "2": 0.9803921568627451,
+        "3": 3.431372549019608,
+        "4": 4.232804232804233,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q1ક",
@@ -6912,7 +7838,18 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "સુપર પોઝીશનનો થિયરમ લખો અને સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ resistance પાવર સુપરપોઝિશન સરવાળો thevenin થેવેનિન મહત્તમ પાવર"
+      "searchIndex": "સુપર પોઝીશનનો થિયરમ લખો અને સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ resistance પાવર સુપરપોઝિશન સરવાળો thevenin થેવેનિન મહત્તમ પાવર",
+      "unitNumber": 1,
+      "unitMappingConfidence": 85.0,
+      "allUnitScores": {
+        "1": 1.5053763440860215,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "mapped": true,
+      "mappingMethod": "specific_pattern"
     },
     {
       "id": "1313202-1313-summer-q2અ",
@@ -6986,7 +7923,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "ટ્રાયવેલેન્ટ, ટેટ્રાવેલેન્ટ અને પેન્ટાવેલેન્ટ મટીરીયલની સરખામણી કરો. ચાર્જ મેશ કન્ડક્ટર ઇલેક્ટ્રોન હોલ વેલેન્સ ડોપિંગ ટ્રાયવેલેન્ટ ટેટ્રાવેલેન્ટ પેન્ટાવેલેન્ટ"
+      "searchIndex": "ટ્રાયવેલેન્ટ, ટેટ્રાવેલેન્ટ અને પેન્ટાવેલેન્ટ મટીરીયલની સરખામણી કરો. ચાર્જ મેશ કન્ડક્ટર ઇલેક્ટ્રોન હોલ વેલેન્સ ડોપિંગ ટ્રાયવેલેન્ટ ટેટ્રાવેલેન્ટ પેન્ટાવેલેન્ટ",
+      "unitNumber": 2,
+      "unitMappingConfidence": 5.392156862745098,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 5.392156862745098,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 1.2987012987012987
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q2બ",
@@ -7060,7 +8007,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "કીચોફનો કરંટ (kcl) નો નિયમ લખો અને ડાયાગ્રામ દોરી સમજાવો. કરંટ kcl ચાર્જ node નોડ સરવાળો પેરેલલ મુખ્ય આધાર ગેટ"
+      "searchIndex": "કીચોફનો કરંટ (kcl) નો નિયમ લખો અને ડાયાગ્રામ દોરી સમજાવો. કરંટ kcl ચાર્જ node નોડ સરવાળો પેરેલલ મુખ્ય આધાર ગેટ",
+      "unitNumber": 1,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 3.225806451612903,
+        "2": 0.9803921568627451,
+        "3": 2.450980392156863,
+        "4": 1.5873015873015872,
+        "5": 0.8658008658008658
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q2ક",
@@ -7134,7 +8091,18 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "વ્યાખ્યા આપો: એક્સટ્રિન્સિક સેમિકન્ડક્ટર. n-પ્રકારના સેમિકન્ડક્ટર ની રચના ડાયાગ્રામ ની મદદથી સમજાવો. વોલ્ટ પોટેન્શિયલ કરંટ ઊર્જા kvl semiconductor કેપેસિટન્સ કેપેસિટર ચાર્જ energy"
+      "searchIndex": "વ્યાખ્યા આપો: એક્સટ્રિન્સિક સેમિકન્ડક્ટર. n-પ્રકારના સેમિકન્ડક્ટર ની રચના ડાયાગ્રામ ની મદદથી સમજાવો. વોલ્ટ પોટેન્શિયલ કરંટ ઊર્જા kvl semiconductor કેપેસિટન્સ કેપેસિટર ચાર્જ energy",
+      "unitNumber": 2,
+      "unitMappingConfidence": 85.0,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 3.9215686274509802,
+        "3": 0.0,
+        "4": 1.5873015873015872,
+        "5": 0.0
+      },
+      "mapped": true,
+      "mappingMethod": "specific_pattern"
     },
     {
       "id": "1313202-1313-summer-q3અ",
@@ -7198,7 +8166,18 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "ફોરબિડન એનર્જી ગેપની વ્યાખ્યા આપો. તે કેવી રીતે થાય છે? ge અને si માટે તેનું મેગ્નીટયૂડ કેટલું છે? કન્ડક્ટર એટમ ઇલેક્ટ્રોન વેલેન્સ કન્ડક્શન નિયમ v s"
+      "searchIndex": "ફોરબિડન એનર્જી ગેપની વ્યાખ્યા આપો. તે કેવી રીતે થાય છે? ge અને si માટે તેનું મેગ્નીટયૂડ કેટલું છે? કન્ડક્ટર એટમ ઇલેક્ટ્રોન વેલેન્સ કન્ડક્શન નિયમ v s",
+      "unitNumber": 1,
+      "unitMappingConfidence": 85.0,
+      "allUnitScores": {
+        "1": 4.516129032258064,
+        "2": 4.411764705882353,
+        "3": 1.4705882352941175,
+        "4": 1.5873015873015872,
+        "5": 1.2987012987012987
+      },
+      "mapped": true,
+      "mappingMethod": "specific_pattern"
     },
     {
       "id": "1313202-1313-summer-q3બ",
@@ -7272,7 +8251,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "(i) ની (knee) વોલ્ટેજ (ii) રિવર્સ સેચ્યુરેશન કરંટ (iii) રિવર્સ બ્રેકડાઉન વોલ્ટેજ (iv) પીક ઇન્વર્સ વોલ્ટેજ (piv) વોલ્ટેજ વોલ્ટ કરંટ ડાયોડ રેક્ટિફાયર પીક મહત્તમ માઇનોરિટી કેરિયર રિવર્સ બાયસ"
+      "searchIndex": "(i) ની (knee) વોલ્ટેજ (ii) રિવર્સ સેચ્યુરેશન કરંટ (iii) રિવર્સ બ્રેકડાઉન વોલ્ટેજ (iv) પીક ઇન્વર્સ વોલ્ટેજ (piv) વોલ્ટેજ વોલ્ટ કરંટ ડાયોડ રેક્ટિફાયર પીક મહત્તમ માઇનોરિટી કેરિયર રિવર્સ બાયસ",
+      "unitNumber": 3,
+      "unitMappingConfidence": 10.784313725490197,
+      "allUnitScores": {
+        "1": 3.010752688172043,
+        "2": 0.9803921568627451,
+        "3": 10.784313725490197,
+        "4": 3.1746031746031744,
+        "5": 2.5974025974025974
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q3ક",
@@ -7346,7 +8335,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "laser ડાયોડનું બંધારણ, કાર્ય અને લાક્ષણિકતા સમજાવો અને તેના ઉપયોગો લખો. વોલ્ટેજ વોલ્ટ પોટેન્શિયલ current કરંટ ઊર્જા diode ડાયોડ ફેઝ કાર્ય"
+      "searchIndex": "laser ડાયોડનું બંધારણ, કાર્ય અને લાક્ષણિકતા સમજાવો અને તેના ઉપયોગો લખો. વોલ્ટેજ વોલ્ટ પોટેન્શિયલ current કરંટ ઊર્જા diode ડાયોડ ફેઝ કાર્ય",
+      "unitNumber": 3,
+      "unitMappingConfidence": 8.823529411764707,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 8.823529411764707,
+        "4": 3.1746031746031744,
+        "5": 4.329004329004329
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q4અ",
@@ -7420,7 +8419,17 @@
       "topics": [
         "Voltage Regulation"
       ],
-      "searchIndex": "(i) રેક્ટિફાયર એફીસીયન્સી (η) (ii) રીપલ ફેક્ટર (γ) (iii) વોલ્ટેજ રેગ્યુલેશન વોલ્ટેજ વોલ્ટ પાવર રેક્ટિફાયર ac dc rms રીપલ રેગ્યુલેશન ઇનપુટ"
+      "searchIndex": "(i) રેક્ટિફાયર એફીસીયન્સી (η) (ii) રીપલ ફેક્ટર (γ) (iii) વોલ્ટેજ રેગ્યુલેશન વોલ્ટેજ વોલ્ટ પાવર રેક્ટિફાયર ac dc rms રીપલ રેગ્યુલેશન ઇનપુટ",
+      "unitNumber": 4,
+      "unitMappingConfidence": 10.582010582010582,
+      "allUnitScores": {
+        "1": 1.5053763440860215,
+        "2": 0.0,
+        "3": 3.431372549019608,
+        "4": 10.582010582010582,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q4બ",
@@ -7494,7 +8503,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "ઝીનર ડાયોડને વોલ્ટેજ રેગ્યુલેટર તરીકે સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ પાવર ડાયોડ કાર્ય મહત્તમ પાવર પેરેલલ મહત્તમ બ્રેકડાઉન"
+      "searchIndex": "ઝીનર ડાયોડને વોલ્ટેજ રેગ્યુલેટર તરીકે સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ પાવર ડાયોડ કાર્ય મહત્તમ પાવર પેરેલલ મહત્તમ બ્રેકડાઉન",
+      "unitNumber": 3,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 1.0752688172043012,
+        "2": 0.0,
+        "3": 4.411764705882353,
+        "4": 3.7037037037037033,
+        "5": 0.0
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q4ક",
@@ -7568,7 +8587,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "સર્કિટ ડાયાગ્રામ અને ઇનપુટ-આઉટપુટ વેવફોર્મ સાથે ફુલ વેવ બ્રિજ રેક્ટિફાયર સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ પાવર ડાયોડ rectifier રેક્ટિફાયર ફ્રિક્વન્સી કેપેસિટર ચાર્જ"
+      "searchIndex": "સર્કિટ ડાયાગ્રામ અને ઇનપુટ-આઉટપુટ વેવફોર્મ સાથે ફુલ વેવ બ્રિજ રેક્ટિફાયર સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ પાવર ડાયોડ rectifier રેક્ટિફાયર ફ્રિક્વન્સી કેપેસિટર ચાર્જ",
+      "unitNumber": 4,
+      "unitMappingConfidence": 13.227513227513226,
+      "allUnitScores": {
+        "1": 1.7204301075268817,
+        "2": 0.9803921568627451,
+        "3": 0.0,
+        "4": 13.227513227513226,
+        "5": 2.5974025974025974
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q5અ",
@@ -7642,7 +8671,17 @@
       "topics": [
         "Field Effect Transistor"
       ],
-      "searchIndex": "(i) pnp ટ્રાન્ઝીસ્ટર (ii) n ચેનલ jfet (iii) n ચેનલ એન્હાન્સમેન્ટ મોડ mosfet વોલ્ટેજ વોલ્ટ transistor pnp એમિટર ce fet jfet mosfet ગેટ"
+      "searchIndex": "(i) pnp ટ્રાન્ઝીસ્ટર (ii) n ચેનલ jfet (iii) n ચેનલ એન્હાન્સમેન્ટ મોડ mosfet વોલ્ટેજ વોલ્ટ transistor pnp એમિટર ce fet jfet mosfet ગેટ",
+      "unitNumber": 5,
+      "unitMappingConfidence": 7.35930735930736,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.49019607843137253,
+        "4": 0.0,
+        "5": 7.35930735930736
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q5બ",
@@ -7716,7 +8755,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "ડાયાગ્રામ સાથે npn ટ્રાન્ઝીસ્ટરનું કાર્ય સમજાવો. કરંટ કાર્ય જંક્શન આગળ ઇલેક્ટ્રોન n-type p-type ફોરવર્ડ બાયસ રિવર્સ બાયસ npn"
+      "searchIndex": "ડાયાગ્રામ સાથે npn ટ્રાન્ઝીસ્ટરનું કાર્ય સમજાવો. કરંટ કાર્ય જંક્શન આગળ ઇલેક્ટ્રોન n-type p-type ફોરવર્ડ બાયસ રિવર્સ બાયસ npn",
+      "unitNumber": 5,
+      "unitMappingConfidence": 30.0,
+      "allUnitScores": {
+        "1": 0.0,
+        "2": 0.9803921568627451,
+        "3": 2.941176470588235,
+        "4": 3.1746031746031744,
+        "5": 3.463203463203463
+      },
+      "mapped": true
     },
     {
       "id": "1313202-1313-summer-q5ક",
@@ -7790,7 +8839,17 @@
       "topics": [
         "General Electrical Engineering"
       ],
-      "searchIndex": "કોમન એમીટર(ce) ટ્રાન્ઝીસ્ટરને તેના ઇનપુટ આઉટપુટ લાક્ષણિકતા સાથે દોરો અને સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ પાવર ટ્રાન્ઝિસ્ટર કેપેસિટન્સ કાર્ય જંક્શન મેશ ac"
+      "searchIndex": "કોમન એમીટર(ce) ટ્રાન્ઝીસ્ટરને તેના ઇનપુટ આઉટપુટ લાક્ષણિકતા સાથે દોરો અને સમજાવો. વોલ્ટેજ વોલ્ટ કરંટ પાવર ટ્રાન્ઝિસ્ટર કેપેસિટન્સ કાર્ય જંક્શન મેશ ac",
+      "unitNumber": 5,
+      "unitMappingConfidence": 8.658008658008658,
+      "allUnitScores": {
+        "1": 1.5053763440860215,
+        "2": 0.49019607843137253,
+        "3": 2.450980392156863,
+        "4": 4.761904761904762,
+        "5": 8.658008658008658
+      },
+      "mapped": true
     }
   ]
 }
