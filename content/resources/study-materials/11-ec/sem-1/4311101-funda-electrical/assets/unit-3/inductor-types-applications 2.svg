@@ -23,8 +23,8 @@
   <rect width="1200" height="800" fill="#f8fafc"/>
 
   <!-- Main Title -->
-  <text x="600" y="30" text-anchor="middle" class="title-text">Types of Inductors &amp; Their Applications</text>
-  <text x="600" y="55" text-anchor="middle" class="subtitle-text">Core Material Classification &amp; Usage</text>
+  <text x="600" y="30" text-anchor="middle" class="title-text">Types of Inductors &amp;amp; Their Applications</text>
+  <text x="600" y="55" text-anchor="middle" class="subtitle-text">Core Material Classification &amp;amp; Usage</text>
 
   <!-- Air Core Inductors -->
   <g id="airCoreSection" transform="translate(50, 100)">
@@ -212,7 +212,7 @@
   <g id="selectionGuide" transform="translate(50, 680)">
     <text x="550" y="0" text-anchor="middle" class="subtitle-text">Selection Guidelines</text>
     <text x="0" y="25" class="formula-text">1. High Frequency (>1MHz): Choose Air Core or Ferrite - minimal losses at high frequencies</text>
-    <text x="0" y="45" class="formula-text">2. High Inductance (&gt;1H): Choose Iron Core - high permeability for large inductance values</text>
+    <text x="0" y="45" class="formula-text">2. High Inductance (&amp;gt;1H): Choose Iron Core - high permeability for large inductance values</text>
     <text x="0" y="65" class="formula-text">3. Space Constrained: Choose Toroidal - compact design with good performance</text>
     <text x="0" y="85" class="formula-text">4. Low EMI Required: Choose Toroidal - closed magnetic path reduces electromagnetic interference</text>
   </g>

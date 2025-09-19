@@ -25,7 +25,7 @@
   
   <!-- Title -->
   <text x="600" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2c3e50">
-    Faraday's &amp; Lenz's Laws, Fleming's Rules
+    Faraday's &amp;amp; Lenz's Laws, Fleming's Rules
   </text>
   
   <!-- Faraday's Law -->

@@ -51,7 +51,7 @@
   <rect width="1200" height="900" fill="#f8fafc"/>
 
   <!-- Main Title -->
-  <text x="600" y="30" text-anchor="middle" class="title-text">Faraday's Law &amp; Lenz Law</text>
+  <text x="600" y="30" text-anchor="middle" class="title-text">Faraday's Law &amp;amp; Lenz Law</text>
   <text x="600" y="55" text-anchor="middle" class="subtitle-text">Electromagnetic Induction Principles</text>
 
   <!-- Faraday's Law Section -->
@@ -211,7 +211,7 @@
 
   <!-- Applications and Examples -->
   <g id="applicationsSection" transform="translate(50, 490)">
-    <text x="550" y="20" text-anchor="middle" class="subtitle-text">Applications &amp; Practical Examples</text>
+    <text x="550" y="20" text-anchor="middle" class="subtitle-text">Applications &amp;amp; Practical Examples</text>
     
     <rect x="0" y="40" width="1100" height="320" fill="white" stroke="#d1d5db" stroke-width="1" rx="8"/>
     

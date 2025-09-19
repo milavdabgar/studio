@@ -39,8 +39,8 @@
   <rect width="1200" height="900" fill="#f8fafc"/>
 
   <!-- Main Title -->
-  <text x="600" y="30" text-anchor="middle" class="title-text">Electrical Measurements &amp; Instrumentation</text>
-  <text x="600" y="55" text-anchor="middle" class="subtitle-text">Practical Laboratory Techniques &amp; Equipment</text>
+  <text x="600" y="30" text-anchor="middle" class="title-text">Electrical Measurements &amp;amp; Instrumentation</text>
+  <text x="600" y="55" text-anchor="middle" class="subtitle-text">Practical Laboratory Techniques &amp;amp; Equipment</text>
 
   <!-- Multimeter Section -->
   <g id="multimeterSection" transform="translate(50, 80)">
@@ -175,7 +175,7 @@
   <!-- Power Meter Section -->
   <g id="powerMeterSection" transform="translate(50, 360)">
     <rect x="0" y="0" width="500" height="200" fill="#fdf2f8" stroke="#ec4899" stroke-width="2" rx="8"/>
-    <text x="250" y="25" text-anchor="middle" class="subtitle-text" fill="#ec4899">Power &amp; Energy Measurement</text>
+    <text x="250" y="25" text-anchor="middle" class="subtitle-text" fill="#ec4899">Power &amp;amp; Energy Measurement</text>
     
     <!-- Wattmeter -->
     <g id="wattmeter" transform="translate(50, 50)">
@@ -297,7 +297,7 @@
   <!-- Safety and Best Practices -->
   <g id="safetySection" transform="translate(50, 580)">
     <rect x="0" y="0" width="1100" height="150" fill="#fef2f2" stroke="#dc2626" stroke-width="2" rx="8"/>
-    <text x="550" y="25" text-anchor="middle" class="subtitle-text" fill="#dc2626">Safety Practices &amp; Best Practices</text>
+    <text x="550" y="25" text-anchor="middle" class="subtitle-text" fill="#dc2626">Safety Practices &amp;amp; Best Practices</text>
     
     <!-- Safety guidelines -->
     <g transform="translate(50, 50)">
@@ -332,19 +332,19 @@
     <g transform="translate(50, 50)">
       <text x="0" y="0" class="label-text">DC Measurements:</text>
       <text x="0" y="18" class="formula-text">• Verify Ohm's law using DMM</text>
-      <text x="0" y="33" class="formula-text">• Kirchhoff's current &amp; voltage law verification</text>
+      <text x="0" y="33" class="formula-text">• Kirchhoff's current &amp;amp; voltage law verification</text>
       <text x="0" y="48" class="formula-text">• Series/parallel resistance measurement</text>
-      <text x="0" y="63" class="formula-text">• Battery voltage &amp; capacity testing</text>
+      <text x="0" y="63" class="formula-text">• Battery voltage &amp;amp; capacity testing</text>
       
       <text x="300" y="0" class="label-text">AC Measurements:</text>
-      <text x="300" y="18" class="formula-text">• Single-phase power &amp; power factor</text>
-      <text x="300" y="33" class="formula-text">• 3-phase voltage &amp; current relationships</text>
-      <text x="300" y="48" class="formula-text">• Star &amp; Delta connection verification</text>
+      <text x="300" y="18" class="formula-text">• Single-phase power &amp;amp; power factor</text>
+      <text x="300" y="33" class="formula-text">• 3-phase voltage &amp;amp; current relationships</text>
+      <text x="300" y="48" class="formula-text">• Star &amp;amp; Delta connection verification</text>
       <text x="300" y="63" class="formula-text">• Power consumption using energy meters</text>
       
       <text x="650" y="0" class="label-text">Advanced Measurements:</text>
       <text x="650" y="18" class="formula-text">• Electromagnetic induction demonstration</text>
-      <text x="650" y="33" class="formula-text">• Inductor identification &amp; testing</text>
+      <text x="650" y="33" class="formula-text">• Inductor identification &amp;amp; testing</text>
       <text x="650" y="48" class="formula-text">• Solar/Wind system component testing</text>
       <text x="650" y="63" class="formula-text">• Clamp meter for non-invasive measurements</text>
     </g>

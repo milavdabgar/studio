@@ -47,7 +47,7 @@
   <rect width="1200" height="900" fill="#f8fafc"/>
 
   <!-- Main Title -->
-  <text x="600" y="30" text-anchor="middle" class="title-text">Self-Inductance &amp; Mutual Inductance</text>
+  <text x="600" y="30" text-anchor="middle" class="title-text">Self-Inductance &amp;amp; Mutual Inductance</text>
   <text x="600" y="55" text-anchor="middle" class="subtitle-text">Electromagnetic Induction Phenomena</text>
 
   <!-- Self-Inductance Section -->
@@ -263,7 +263,7 @@
 
   <!-- Factors Affecting Inductance -->
   <g id="factorsSection" transform="translate(50, 490)">
-    <text x="550" y="20" text-anchor="middle" class="subtitle-text">Factors Affecting Inductance &amp; Applications</text>
+    <text x="550" y="20" text-anchor="middle" class="subtitle-text">Factors Affecting Inductance &amp;amp; Applications</text>
     
     <rect x="0" y="40" width="1100" height="300" fill="white" stroke="#d1d5db" stroke-width="1" rx="8"/>
     
@@ -361,7 +361,7 @@
         
         <!-- Relative position -->
         <g id="positionEffect" transform="translate(0, 70)">
-          <text x="0" y="15" class="formula-text">2. Relative position &amp; orientation:</text>
+          <text x="0" y="15" class="formula-text">2. Relative position &amp;amp; orientation:</text>
           <text x="20" y="30" class="formula-text">Maximum when coaxial</text>
           
           <!-- Position visualization -->

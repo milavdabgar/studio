@@ -29,7 +29,7 @@
   <rect width="1200" height="800" fill="#F8FAFC"/>
   
   <!-- Title -->
-  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">Voltage, Current & Resistance Relationship - Ohm's Law</text>
+  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">Voltage, Current &amp; Resistance Relationship - Ohm's Law</text>
   
   <!-- Ohm's Law Triangle -->
   <g transform="translate(100,100)">

@@ -192,7 +192,7 @@
     <text x="275" y="25" text-anchor="middle" class="subtitle-text">Key Applications</text>
     
     <g transform="translate(50, 50)">
-      <text x="0" y="0" class="label-text">Generators &amp; Motors:</text>
+      <text x="0" y="0" class="label-text">Generators &amp;amp; Motors:</text>
       <text x="0" y="20" class="formula-text">• AC/DC generators (motional EMF)</text>
       <text x="0" y="35" class="formula-text">• Induction motors (rotating fields)</text>
       

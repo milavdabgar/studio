@@ -375,7 +375,7 @@
       <text x="140" y="25" text-anchor="middle" class="label-text" fill="#8b5cf6">Induction Principles</text>
       <text x="20" y="50" class="formula-text">• Faraday's Law: ε = -N(dΦ/dt)</text>
       <text x="20" y="70" class="formula-text">• Lenz Law: Opposition to change</text>
-      <text x="20" y="90" class="formula-text">• Self & Mutual inductance</text>
+      <text x="20" y="90" class="formula-text">• Self &amp; Mutual inductance</text>
       <text x="20" y="110" class="formula-text">• Energy storage: U = ½Li²</text>
     </g>
     

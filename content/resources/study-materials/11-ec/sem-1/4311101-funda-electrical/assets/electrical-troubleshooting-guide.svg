@@ -32,7 +32,7 @@
 
   <!-- Main Title -->
   <text x="700" y="35" text-anchor="middle" class="title-text">Electrical Systems Troubleshooting Guide</text>
-  <text x="700" y="65" text-anchor="middle" class="subtitle-text">Common Problems, Diagnosis &amp; Solutions</text>
+  <text x="700" y="65" text-anchor="middle" class="subtitle-text">Common Problems, Diagnosis &amp;amp; Solutions</text>
 
   <!-- DC Circuit Problems -->
   <g id="dcProblems" transform="translate(50, 90)">
@@ -206,7 +206,7 @@
   <!-- Measurement Problems -->
   <g id="measurementProblems" transform="translate(50, 390)">
     <rect x="0" y="0" width="650" height="220" fill="#f0f9ff" stroke="#3b82f6" stroke-width="2" rx="8"/>
-    <text x="325" y="25" text-anchor="middle" class="subtitle-text" fill="#3b82f6">MEASUREMENT &amp; INSTRUMENTATION PROBLEMS</text>
+    <text x="325" y="25" text-anchor="middle" class="subtitle-text" fill="#3b82f6">MEASUREMENT &amp;amp; INSTRUMENTATION PROBLEMS</text>
     
     <!-- Problem 1: Incorrect Readings -->
     <g id="measureProblem1" transform="translate(20, 50)">
@@ -331,7 +331,7 @@
     
     <!-- Tools and Techniques -->
     <g id="toolsTechniques" transform="translate(100, 180)">
-      <text x="500" y="0" text-anchor="middle" class="label-text">Common Tools &amp; Techniques</text>
+      <text x="500" y="0" text-anchor="middle" class="label-text">Common Tools &amp;amp; Techniques</text>
       
       <g transform="translate(0, 20)">
         <text x="0" y="0" class="formula-text">Visual Inspection:</text>

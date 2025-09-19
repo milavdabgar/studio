@@ -32,7 +32,7 @@
   <rect width="1200" height="800" fill="#F8FAFC"/>
   
   <!-- Title -->
-  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">Power Triangle & Power Factor Concepts</text>
+  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">Power Triangle &amp; Power Factor Concepts</text>
   
   <!-- AC Power Fundamentals -->
   <g transform="translate(50,80)">
@@ -192,7 +192,7 @@
           <path d="M -20,0 Q -15,-8 -10,0 Q -5,8 0,0 Q 5,-8 10,0 Q 15,8 20,0"/>
         </g>
         <text x="0" y="-25" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#1E40AF">Energy Storage</text>
-        <text x="0" y="-15" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#1E40AF">& Release</text>
+        <text x="0" y="-15" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#1E40AF">&amp; Release</text>
       </g>
       
       <text x="100" y="95" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E40AF">Q = VI sin φ (VAR)</text>

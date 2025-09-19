@@ -32,7 +32,7 @@
   <rect width="1200" height="800" fill="#F8FAFC"/>
   
   <!-- Title -->
-  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">Series & Parallel Network Analysis</text>
+  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">Series &amp; Parallel Network Analysis</text>
   
   <!-- Series Circuit Section -->
   <g transform="translate(50,80)">

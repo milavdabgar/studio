@@ -33,7 +33,7 @@
   <rect width="1200" height="800" fill="#F8FAFC"/>
   
   <!-- Title -->
-  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">Basic Electrical Quantities & Definitions</text>
+  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">Basic Electrical Quantities &amp; Definitions</text>
   
   <!-- Electric Charge Section -->
   <g transform="translate(50,80)">

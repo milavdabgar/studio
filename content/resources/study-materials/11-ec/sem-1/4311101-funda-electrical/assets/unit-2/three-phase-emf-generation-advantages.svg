@@ -36,7 +36,7 @@
   <rect width="1200" height="800" fill="#F8FAFC"/>
   
   <!-- Title -->
-  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">Three-Phase EMF Generation & Advantages</text>
+  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">Three-Phase EMF Generation &amp; Advantages</text>
   
   <!-- Three-Phase Generator Construction -->
   <g transform="translate(50,80)">
@@ -338,7 +338,7 @@
       <rect x="0" y="0" width="150" height="70" fill="#F3E8FF" stroke="#8B5CF6" stroke-width="1" rx="5"/>
       <text x="75" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1E293B">Voltage Options</text>
       <text x="10" y="35" font-family="Arial, sans-serif" font-size="10" fill="#374151">• Two voltage levels</text>
-      <text x="10" y="48" font-family="Arial, sans-serif" font-size="10" fill="#374151">• Line & phase voltage</text>
+      <text x="10" y="48" font-family="Arial, sans-serif" font-size="10" fill="#374151">• Line &amp; phase voltage</text>
       <text x="10" y="61" font-family="Arial, sans-serif" font-size="10" fill="#374151">• Flexible applications</text>
     </g>
     
@@ -356,9 +356,9 @@
   <g transform="translate(50,760)">
     <text x="0" y="0" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1E293B">Applications:</text>
     <g font-family="Arial, sans-serif" font-size="12" fill="#374151">
-      <text x="120" y="0">• Power transmission & distribution</text>
-      <text x="380" y="0">• Industrial motors & machinery</text>
-      <text x="650" y="0">• Large heating & welding equipment</text>
+      <text x="120" y="0">• Power transmission &amp; distribution</text>
+      <text x="380" y="0">• Industrial motors &amp; machinery</text>
+      <text x="650" y="0">• Large heating &amp; welding equipment</text>
       <text x="950" y="0">• Power factor improvement</text>
     </g>
     <text x="0" y="25" font-family="Arial, sans-serif" font-size="12" fill="#6B7280">Standard frequencies: 50Hz (India, Europe) | 60Hz (USA, Canada)</text>

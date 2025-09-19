@@ -69,7 +69,7 @@
       Solar Energy
     </text>
     <text x="0" y="90" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">
-      Photovoltaic & Thermal
+      Photovoltaic &amp; Thermal
     </text>
   </g>
 
@@ -90,7 +90,7 @@
       Wind Energy
     </text>
     <text x="0" y="90" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">
-      Onshore & Offshore
+      Onshore &amp; Offshore
     </text>
   </g>
 
@@ -107,7 +107,7 @@
       Hydro Power
     </text>
     <text x="0" y="90" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">
-      Dams & Run-of-river
+      Dams &amp; Run-of-river
     </text>
   </g>
 
@@ -162,7 +162,7 @@
       Ocean Energy
     </text>
     <text x="0" y="90" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">
-      Tidal & Wave
+      Tidal &amp; Wave
     </text>
   </g>
 
@@ -236,7 +236,7 @@
           • Small Wind
         </text>
         <text x="5" y="84" font-family="Arial, sans-serif" font-size="10" fill="#666">
-          Residential & commercial
+          Residential &amp; commercial
         </text>
       </g>
     </g>
@@ -308,7 +308,7 @@
       
       <g transform="translate(10, 25)">
         <text x="0" y="15" font-family="Arial, sans-serif" font-size="12" fill="#333" font-weight="bold">
-          • Wood & Residues
+          • Wood &amp; Residues
         </text>
         <text x="5" y="28" font-family="Arial, sans-serif" font-size="10" fill="#666">
           Pellets, chips, sawdust
@@ -320,7 +320,7 @@
           Crop residues, bagasse
         </text>
         <text x="0" y="71" font-family="Arial, sans-serif" font-size="12" fill="#333" font-weight="bold">
-          • Biogas & Biofuels
+          • Biogas &amp; Biofuels
         </text>
         <text x="5" y="84" font-family="Arial, sans-serif" font-size="10" fill="#666">
           Methane, ethanol
@@ -378,10 +378,10 @@
           <tspan font-weight="bold" fill="#388E3C">Biomass:</tspan> 147 GW (4%)
         </text>
         <text x="220" y="30" font-family="Arial, sans-serif" font-size="12" fill="#333">
-          <tspan font-weight="bold" fill="#D84315">Geothermal:</tspan> 15 GW (&lt;1%)
+          <tspan font-weight="bold" fill="#D84315">Geothermal:</tspan> 15 GW (&amp;lt;1%)
         </text>
         <text x="220" y="45" font-family="Arial, sans-serif" font-size="12" fill="#333">
-          <tspan font-weight="bold" fill="#0097A7">Ocean:</tspan> 1 GW (&lt;1%)
+          <tspan font-weight="bold" fill="#0097A7">Ocean:</tspan> 1 GW (&amp;lt;1%)
         </text>
 
         <text x="220" y="70" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#7B1FA2">

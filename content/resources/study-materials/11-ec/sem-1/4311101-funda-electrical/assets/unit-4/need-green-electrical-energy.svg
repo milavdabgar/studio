@@ -66,13 +66,13 @@
       <circle cx="8" cy="8" r="6" fill="#F44336"/>
       <text x="8" y="12" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">1</text>
       <text x="25" y="12" font-family="Arial, sans-serif" font-size="13" fill="#333" font-weight="bold">
-        CO₂ Emissions & Climate Change
+        CO₂ Emissions &amp; Climate Change
       </text>
 
       <circle cx="8" cy="28" r="6" fill="#F44336"/>
       <text x="8" y="32" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">2</text>
       <text x="25" y="32" font-family="Arial, sans-serif" font-size="13" fill="#333" font-weight="bold">
-        Air & Water Pollution
+        Air &amp; Water Pollution
       </text>
 
       <circle cx="8" cy="48" r="6" fill="#F44336"/>
@@ -206,10 +206,10 @@
           • Manufacturing jobs
         </text>
         <text x="0" y="28" font-family="Arial, sans-serif" font-size="11" fill="#333">
-          • Installation & maintenance
+          • Installation &amp; maintenance
         </text>
         <text x="0" y="41" font-family="Arial, sans-serif" font-size="11" fill="#333">
-          • Research & development
+          • Research &amp; development
         </text>
         <text x="0" y="54" font-family="Arial, sans-serif" font-size="11" fill="#333">
           • Grid modernization
@@ -340,11 +340,11 @@
       </g>
     </g>
 
-    <!-- AI & IoT -->
+    <!-- AI &amp; IoT -->
     <g transform="translate(590, 40)">
       <rect x="0" y="0" width="160" height="80" rx="5" fill="white" stroke="#795548" stroke-width="2"/>
       <text x="80" y="18" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#795548">
-        AI & IoT
+        AI &amp; IoT
       </text>
       
       <g transform="translate(10, 25)">

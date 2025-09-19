@@ -37,7 +37,7 @@
   <rect width="1200" height="800" fill="#F8FAFC"/>
   
   <!-- Title -->
-  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">AC Parameters: RMS, Average, Peak & Form Factor</text>
+  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">AC Parameters: RMS, Average, Peak &amp; Form Factor</text>
   
   <!-- Main AC Waveform with Parameters -->
   <g transform="translate(50,80)">
@@ -215,7 +215,7 @@
   <!-- Form Factor and Crest Factor -->
   <g transform="translate(850,400)">
     <rect x="0" y="0" width="300" height="180" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2" rx="10"/>
-    <text x="150" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1E293B">Form & Crest Factors</text>
+    <text x="150" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1E293B">Form &amp; Crest Factors</text>
     
     <!-- Factor definitions -->
     <g font-family="Arial, sans-serif" fill="#1E293B">
