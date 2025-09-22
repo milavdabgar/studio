@@ -13,11 +13,11 @@
   <text x="40" y="60" class="h1">Formatting with Meaning</text>
   <g transform="translate(80,120)">
     <rect x="0" y="0" width="480" height="560" rx="12" class="box"/>
-    <text x="16" y="40" class="t">Visual: &lt;b>, <i>, <u></text>
-    <text x="16" y="70" class="t">Semantic: &lt;strong>, <em>, <mark></text>
-    <text x="16" y="100" class="t">Code: &lt;code>, <pre>, <kbd></text>
-    <text x="16" y="130" class="t">Quotes: &lt;q>, <blockquote>, cite</text>
-    <text x="16" y="160" class="t">Lists: &lt;ul>, <ol>, <dl></text>
+    <text x="16" y="40" class="t">Visual: &lt;b&gt;, &lt;i&gt;, &lt;u&gt;</text>
+    <text x="16" y="70" class="t">Semantic: &lt;strong&gt;, &lt;em&gt;, &lt;mark&gt;</text>
+    <text x="16" y="100" class="t">Code: &lt;code&gt;, &lt;pre&gt;, &lt;kbd&gt;</text>
+    <text x="16" y="130" class="t">Quotes: &lt;q&gt;, &lt;blockquote&gt;, &lt;cite&gt;</text>
+    <text x="16" y="160" class="t">Lists: &lt;ul&gt;, &lt;ol&gt;, &lt;dl&gt;</text>
   </g>
 </svg>
 
