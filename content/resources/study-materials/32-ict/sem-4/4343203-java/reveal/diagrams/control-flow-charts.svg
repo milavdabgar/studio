@@ -223,8 +223,8 @@
     <text x="690" y="395" font-family="Arial, sans-serif" font-size="10" fill="#333">2. Unary: ++, --, +, -, !</text>
     <text x="690" y="410" font-family="Arial, sans-serif" font-size="10" fill="#333">3. Multiplicative: *, /, %</text>
     <text x="690" y="425" font-family="Arial, sans-serif" font-size="10" fill="#333">4. Additive: +, -</text>
-    <text x="690" y="440" font-family="Arial, sans-serif" font-size="10" fill="#333">5. Shift: &lt;<, >>, >>></text>
-    <text x="690" y="455" font-family="Arial, sans-serif" font-size="10" fill="#333">6. Relational: &lt;, >, <=, >=</text>
+    <text x="690" y="440" font-family="Arial, sans-serif" font-size="10" fill="#333">5. Shift: &lt;&lt;, &gt;&gt;, &gt;&gt;&gt;</text>
+    <text x="690" y="455" font-family="Arial, sans-serif" font-size="10" fill="#333">6. Relational: &lt;, &gt;, &lt;=, &gt;=</text>
     <text x="690" y="470" font-family="Arial, sans-serif" font-size="10" fill="#333">7. Equality: ==, !=</text>
     <text x="690" y="485" font-family="Arial, sans-serif" font-size="10" fill="#333">8. Bitwise: &amp;, ^, |</text>
     <text x="690" y="500" font-family="Arial, sans-serif" font-size="10" fill="#333">9. Logical: &amp;&amp;, ||</text>
