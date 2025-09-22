@@ -15,7 +15,7 @@
   <g transform="translate(80,120)">
     <rect x="0" y="0" width="480" height="560" rx="12" class="box"/>
     <text x="16" y="40" class="t">Arithmetic: + − * / % **</text>
-    <text x="16" y="70" class="t">Comparison: > < >= <= == != === !==</text>
+    <text x="16" y="70" class="t">Comparison: &gt; &lt; &gt;= &lt;= == != === !==</text>
     <text x="16" y="100" class="t">Logical: &amp;&amp; || !</text>
     <text x="16" y="130" class="t">Assignment: =, +=, −=, …</text>
     <text x="16" y="160" class="t">Ternary: cond ? a : b</text>

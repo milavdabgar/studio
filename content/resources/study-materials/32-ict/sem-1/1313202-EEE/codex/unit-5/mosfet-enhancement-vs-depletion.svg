@@ -51,7 +51,7 @@
     <text x="230" y="214" class="t">Gate</text>
     <text x="112" y="336" class="t">Source</text>
     <text x="372" y="336" class="t">Drain</text>
-    <text x="140" y="420" class="t">V<tspan baseline-shift="sub">GS</tspan><0 pinches channel; V<tspan baseline-shift="sub">GS</tspan>>0 enhances</text>
+    <text x="140" y="420" class="t">V<tspan baseline-shift="sub">GS</tspan>&lt;0 pinches channel; V<tspan baseline-shift="sub">GS</tspan>&gt;0 enhances</text>
   </g>
 
 </svg>

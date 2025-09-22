@@ -23,7 +23,7 @@
 
     <rect x="320" y="0" width="240" height="80" rx="10" class="box"/>
     <text x="336" y="32" class="t">HTML elements</text>
-    <text x="336" y="56" class="t"><audio>, <video>, <track></text>
+    <text x="336" y="56" class="t">&lt;audio&gt;, &lt;video&gt;, &lt;track&gt;</text>
     <line x1="560" y1="40" x2="640" y2="40" class="arrow"/>
 
     <rect x="640" y="0" width="240" height="80" rx="10" class="box"/>
@@ -32,7 +32,7 @@
     <line x1="880" y1="40" x2="960" y2="40" class="arrow"/>
 
     <rect x="960" y="0" width="200" height="80" rx="10" class="box"/>
-    <text x="976" y="46" class="t">Captions via <track kind="captions"></text>
+    <text x="976" y="46" class="t">Captions via &lt;track kind="captions"&gt;</text>
   </g>
 </svg>
 
