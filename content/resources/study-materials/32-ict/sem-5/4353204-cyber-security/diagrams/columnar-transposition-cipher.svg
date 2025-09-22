@@ -11,7 +11,7 @@
   <!-- Step 1: Choose a keyword -->
   <rect x="50" y="100" width="700" height="80" rx="10" fill="#e6f7ff" stroke="#0099cc" stroke-width="2"/>
   <text x="70" y="130" font-family="Arial" font-size="18" font-weight="bold" fill="#0066cc">Step 1: Choose a keyword</text>
-  <text x="70" y="160" font-family="Arial" font-size="16" fill="#333">Keyword: &lt;/text>
+  <text x="70" y="160" font-family="Arial" font-size="16" fill="#333">Keyword:</text>
   <text x="150" y="160" font-family="Courier New" font-size="20" font-weight="bold" fill="#0066cc">ZEBRA</text>
   
   <!-- Step 2: Number the columns -->
@@ -34,7 +34,7 @@
   <!-- Step 3: Write plaintext into grid -->
   <rect x="50" y="300" width="700" height="200" rx="10" fill="#e6fff2" stroke="#00cc99" stroke-width="2"/>
   <text x="70" y="330" font-family="Arial" font-size="18" font-weight="bold" fill="#009973">Step 3: Write plaintext into grid under columns</text>
-  <text x="70" y="360" font-family="Arial" font-size="16" fill="#333">Plaintext: &lt;/text>
+  <text x="70" y="360" font-family="Arial" font-size="16" fill="#333">Plaintext:</text>
   <text x="150" y="360" font-family="Courier New" font-size="18" font-weight="bold" fill="#009973">HELLO</text>
   
   <!-- Grid -->
@@ -68,7 +68,7 @@
   
   <!-- Final ciphertext -->
   <rect x="100" y="600" width="600" height="60" rx="10" fill="#ffffff" stroke="#333" stroke-width="2"/>
-  <text x="400" y="630" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">Ciphertext: &lt;/text>
+  <text x="400" y="630" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">Ciphertext:</text>
   <text x="500" y="630" font-family="Courier New" font-size="20" font-weight="bold" fill="#cc0000">LEOHL</text>
   <text x="400" y="650" font-family="Arial" font-size="14" text-anchor="middle" font-style="italic" fill="#666">(Read column 1, then 2, then 3, then 4, then 5)</text>
 </svg>
