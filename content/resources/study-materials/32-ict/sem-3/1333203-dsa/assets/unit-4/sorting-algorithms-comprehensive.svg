@@ -404,7 +404,7 @@
     <text x="40" y="265" class="code" fill="#ecf0f1">pivot = arr[high]</text>
     <text x="40" y="285" class="code" fill="#ecf0f1">i = low - 1</text>
     <text x="40" y="305" class="code" fill="#ecf0f1">for j in range(low, high):</text>
-    <text x="60" y="325" class="code" fill="#ecf0f1">if arr[j] <= pivot:</text>
+    <text x="60" y="325" class="code" fill="#ecf0f1">if arr[j] &lt;= pivot:</text>
   </g>
 
   <!-- Comparison Table -->

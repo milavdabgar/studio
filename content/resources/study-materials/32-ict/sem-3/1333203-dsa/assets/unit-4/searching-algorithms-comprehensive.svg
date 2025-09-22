@@ -327,7 +327,7 @@
     <text x="40" y="155" class="code" fill="#ecf0f1">"""</text>
     <text x="40" y="175" class="code" fill="#ecf0f1">left, right = 0, len(arr) - 1</text>
 
-    <text x="40" y="205" class="code" fill="#ecf0f1">while left <= right:</text>
+    <text x="40" y="205" class="code" fill="#ecf0f1">while left &lt;= right:</text>
     <text x="60" y="225" class="code" fill="#ecf0f1">mid = (left + right) // 2</text>
 
     <text x="60" y="255" class="code" fill="#ecf0f1">if arr[mid] == target:</text>
