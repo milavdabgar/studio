@@ -51,13 +51,13 @@
 
     <!-- V_R along current -->
     <line x1="260" y1="420" x2="380" y2="420" class="phasor"/>
-    <text x="370" y="440" class="t">V<tspan baseline-shift="sub">R</tspan></text>
+    <text x="370" y="440" class="t">V_tspan baseline-shift="sub"R</tspan></text>
     <!-- V_L upward -->
     <line x1="380" y1="420" x2="380" y2="300" class="phasor"/>
-    <text x="388" y="320" class="t">V<tspan baseline-shift="sub">L</tspan></text>
+    <text x="388" y="320" class="t">V_tspan baseline-shift="sub"L</tspan></text>
     <!-- V_C downward -->
     <line x1="380" y1="420" x2="380" y2="480" class="phasor2"/>
-    <text x="388" y="472" class="t">V<tspan baseline-shift="sub">C</tspan></text>
+    <text x="388" y="472" class="t">V_tspan baseline-shift="sub"C</tspan></text>
     <!-- V vector resultant -->
     <line x1="260" y1="420" x2="420" y2="340" class="phasor"/>
     <text x="422" y="340" class="t">V</text>

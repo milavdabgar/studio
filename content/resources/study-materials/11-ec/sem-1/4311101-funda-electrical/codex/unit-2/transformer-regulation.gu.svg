@@ -29,13 +29,13 @@
     <line x1="0" y1="0" x2="320" y2="0" class="axis"/>
     <line x1="0" y1="0" x2="0" y2="-220" class="axis"/>
     <line x1="0" y1="0" x2="240" y2="0" class="line blue"/>
-    <text x="245" y="-6" class="s label">V<tspan baseline-shift="sub">nl</tspan> ≈ E<tspan baseline-shift="sub">2</tspan></text>
+    <text x="245" y="-6" class="s label">V_tspan baseline-shift="sub"nl</tspan> ≈ E<tspan baseline-shift="sub">2</tspan></text>
     <line x1="0" y1="0" x2="200" y2="80" class="line green"/>
-    <text x="200" y="100" class="s label">I<tspan baseline-shift="sub">2</tspan> (લેગ)</text>
+    <text x="200" y="100" class="s label">I_tspan baseline-shift="sub"2</tspan> (લેગ)</text>
     <line x1="200" y1="80" x2="240" y2="0" class="aux red"/>
-    <text x="205" y="60" class="s">ΔV ≈ I<tspan baseline-shift="sub">2</tspan>(R<tspan baseline-shift="sub">eq</tspan> + jX<tspan baseline-shift="sub">eq</tspan>)</text>
+    <text x="205" y="60" class="s">ΔV ≈ I_tspan baseline-shift="sub"2</tspan>(R<tspan baseline-shift="sub">eq</tspan> + jX<tspan baseline-shift="sub">eq</tspan>)</text>
     <line x1="0" y1="0" x2="210" y2="20" class="line"/>
-    <text x="215" y="30" class="s label">V<tspan baseline-shift="sub">fl</tspan></text>
+    <text x="215" y="30" class="s label">V_tspan baseline-shift="sub"fl</tspan></text>
   </g>
 
   <g transform="translate(720,220)">
@@ -59,7 +59,7 @@
     <line x1="252" y1="0" x2="340" y2="0" class="line"/>
     <line x1="340" y1="0" x2="340" y2="-40" class="line"/>
     <line x1="340" y1="-40" x2="420" y2="-40" class="line"/>
-    <text x="420" y="-44" class="s">લોડ (V<tspan baseline-shift="sub">2</tspan>)</text>
+    <text x="420" y="-44" class="s">લોડ (V_tspan baseline-shift="sub"2</tspan>)</text>
   </g>
 </svg>
 

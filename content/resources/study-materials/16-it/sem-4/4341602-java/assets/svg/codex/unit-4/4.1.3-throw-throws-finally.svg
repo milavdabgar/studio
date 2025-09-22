@@ -18,7 +18,7 @@
     <text class="ph" x="24" y="40">throw / throws</text>
     <g transform="translate(24,70)">
       <rect class="box" x="0" y="0" width="452" height="120"/>
-      <text class="code" x="16" y="36">if (x &lt; 0) throw new IllegalArgumentException();</text>
+      <text class="code" x="16" y="36">if (x < 0) throw new IllegalArgumentException();</text>
       <text class="code" x="16" y="64">void f() throws IOException { ... }</text>
     </g>
     <text class="t" x="24" y="230">Declare checked exceptions with throws</text>

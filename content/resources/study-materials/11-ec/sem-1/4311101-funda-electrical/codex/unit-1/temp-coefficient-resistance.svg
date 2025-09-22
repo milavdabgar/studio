@@ -15,7 +15,7 @@
   <text x="105" y="55" class="label">Resistance (Ω)</text>
   <!-- Metals: positive tempco -->
   <path d="M120 360 L 300 320 L 500 260 L 760 180" class="met"/>
-  <text x="560" y="220" class="label">Metal (α &gt; 0)</text>
+  <text x="560" y="220" class="label">Metal (α > 0)</text>
   <!-- NTC: negative tempco -->
   <path d="M120 160 L 300 200 L 500 260 L 760 320" class="ntc"/>
   <text x="180" y="180" class="label">NTC (α &lt; 0)</text>

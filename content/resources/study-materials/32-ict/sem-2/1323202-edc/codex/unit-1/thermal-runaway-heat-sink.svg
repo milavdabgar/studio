@@ -19,13 +19,13 @@
     <rect x="0" y="0" width="480" height="520" rx="12" class="box"/>
     <text x="16" y="40" class="t">Positive feedback loop</text>
     <rect x="20" y="80" width="180" height="50" rx="8" class="box"/>
-    <text x="28" y="110" class="t">I<tspan baseline-shift="sub">C</tspan> ↑ (power ↑)</text>
+    <text x="28" y="110" class="t">I_tspan baseline-shift="sub"C</tspan> ↑ (power ↑)</text>
     <line x1="200" y1="105" x2="240" y2="105" class="arrow"/>
     <rect x="240" y="80" width="180" height="50" rx="8" class="box"/>
     <text x="250" y="110" class="t">T<tspan baseline-shift="sub">j</tspan> ↑ (β ↑)</text>
     <line x1="330" y1="130" x2="330" y2="170" class="arrow"/>
     <rect x="240" y="170" width="180" height="50" rx="8" class="box"/>
-    <text x="248" y="200" class="t">I<tspan baseline-shift="sub">C</tspan> ↑ further</text>
+    <text x="248" y="200" class="t">I_tspan baseline-shift="sub"C</tspan> ↑ further</text>
   </g>
   <g transform="translate(600,120)">
     <rect x="0" y="0" width="420" height="520" rx="12" class="box"/>

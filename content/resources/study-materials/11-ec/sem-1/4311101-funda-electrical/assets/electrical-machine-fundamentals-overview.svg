@@ -72,7 +72,7 @@
           <ellipse cx="20" cy="45" rx="15" ry="8" fill="none" stroke="#ff9800" stroke-width="2"/>
 
           <!-- EMF indication -->
-          <text x="45" y="32" font-family="Arial, sans-serif" font-size="10" fill="#e74c3c">µ</text>
+          <text x="45" y="32" font-family="Arial, sans-serif" font-size="10" fill="#e74c3c"></text>
         </g>
 
         <!-- Magnetic flux lines -->
@@ -85,10 +85,10 @@
 
       <g transform="translate(200,25)">
         <text x="0" y="15" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#8e44ad">Mathematical Expression:</text>
-        <text x="0" y="35" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">µ = -N(d¶/dt)</text>
-        <text x="0" y="50" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">where: µ = induced EMF (V)</text>
+        <text x="0" y="35" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50"> = -N(d/dt)</text>
+        <text x="0" y="50" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">where:  = induced EMF (V)</text>
         <text x="15" y="62" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">N = number of turns</text>
-        <text x="15" y="74" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">¶ = magnetic flux (Wb)</text>
+        <text x="15" y="74" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50"> = magnetic flux (Wb)</text>
         <text x="15" y="86" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">t = time (s)</text>
       </g>
     </g>
@@ -102,18 +102,18 @@
         <!-- Magnetic field (into page) -->
         <g>
           <circle cx="20" cy="20" r="2" fill="none" stroke="#3498db" stroke-width="1"/>
-          <text x="20" y="23" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db">◊</text>
+          <text x="20" y="23" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db"></text>
           <circle cx="40" cy="20" r="2" fill="none" stroke="#3498db" stroke-width="1"/>
-          <text x="40" y="23" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db">◊</text>
+          <text x="40" y="23" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db"></text>
           <circle cx="60" cy="20" r="2" fill="none" stroke="#3498db" stroke-width="1"/>
-          <text x="60" y="23" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db">◊</text>
+          <text x="60" y="23" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db"></text>
 
           <circle cx="20" cy="40" r="2" fill="none" stroke="#3498db" stroke-width="1"/>
-          <text x="20" y="43" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db">◊</text>
+          <text x="20" y="43" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db"></text>
           <circle cx="40" cy="40" r="2" fill="none" stroke="#3498db" stroke-width="1"/>
-          <text x="40" y="43" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db">◊</text>
+          <text x="40" y="43" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db"></text>
           <circle cx="60" cy="40" r="2" fill="none" stroke="#3498db" stroke-width="1"/>
-          <text x="60" y="43" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db">◊</text>
+          <text x="60" y="43" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db"></text>
         </g>
 
         <!-- Current carrying conductor -->
@@ -146,18 +146,18 @@
         <!-- Magnetic field (into page) -->
         <g>
           <circle cx="20" cy="20" r="2" fill="none" stroke="#3498db" stroke-width="1"/>
-          <text x="20" y="23" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db">◊</text>
+          <text x="20" y="23" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db"></text>
           <circle cx="40" cy="20" r="2" fill="none" stroke="#3498db" stroke-width="1"/>
-          <text x="40" y="23" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db">◊</text>
+          <text x="40" y="23" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db"></text>
           <circle cx="60" cy="20" r="2" fill="none" stroke="#3498db" stroke-width="1"/>
-          <text x="60" y="23" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db">◊</text>
+          <text x="60" y="23" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db"></text>
 
           <circle cx="20" cy="40" r="2" fill="none" stroke="#3498db" stroke-width="1"/>
-          <text x="20" y="43" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db">◊</text>
+          <text x="20" y="43" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db"></text>
           <circle cx="40" cy="40" r="2" fill="none" stroke="#3498db" stroke-width="1"/>
-          <text x="40" y="43" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db">◊</text>
+          <text x="40" y="43" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db"></text>
           <circle cx="60" cy="40" r="2" fill="none" stroke="#3498db" stroke-width="1"/>
-          <text x="60" y="43" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db">◊</text>
+          <text x="60" y="43" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#3498db"></text>
         </g>
 
         <!-- Moving conductor -->
@@ -168,15 +168,15 @@
         <text x="50" y="0" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#27ae60">v</text>
 
         <!-- EMF indication -->
-        <text x="45" y="32" font-family="Arial, sans-serif" font-size="8" fill="#e74c3c">µ</text>
+        <text x="45" y="32" font-family="Arial, sans-serif" font-size="8" fill="#e74c3c"></text>
 
         <text x="0" y="70" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">EMF induced by motion</text>
       </g>
 
       <g transform="translate(150,25)">
         <text x="0" y="15" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#8e44ad">Mathematical Expression:</text>
-        <text x="0" y="35" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">µ = BLv</text>
-        <text x="0" y="50" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">where: µ = induced EMF (V)</text>
+        <text x="0" y="35" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50"> = BLv</text>
+        <text x="0" y="50" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">where:  = induced EMF (V)</text>
         <text x="15" y="62" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">B = magnetic flux density (T)</text>
         <text x="15" y="74" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">L = conductor length (m)</text>
         <text x="15" y="86" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">v = velocity (m/s)</text>
@@ -363,7 +363,7 @@
 
         <!-- Rotation arrow -->
         <path d="M75,40 A20,20 0 0,1 85,65" fill="none" stroke="#27ae60" stroke-width="2" marker-end="url(#arrow)"/>
-        <text x="85" y="55" font-family="Arial, sans-serif" font-size="8" fill="#27ae60">…</text>
+        <text x="85" y="55" font-family="Arial, sans-serif" font-size="8" fill="#27ae60"></text>
       </g>
 
       <!-- Specifications -->
@@ -463,8 +463,8 @@
           <!-- Primary terminals -->
           <line x1="5" y1="10" x2="0" y2="10" stroke="#e74c3c" stroke-width="2"/>
           <line x1="5" y1="50" x2="0" y2="50" stroke="#e74c3c" stroke-width="2"/>
-          <text x="-5" y="8" font-family="Arial, sans-serif" font-size="8" fill="#e74c3c">VÅ</text>
-          <text x="-15" y="30" font-family="Arial, sans-serif" font-size="8" fill="#e74c3c">NÅ</text>
+          <text x="-5" y="8" font-family="Arial, sans-serif" font-size="8" fill="#e74c3c">V</text>
+          <text x="-15" y="30" font-family="Arial, sans-serif" font-size="8" fill="#e74c3c">N</text>
         </g>
 
         <!-- Secondary winding -->
@@ -476,8 +476,8 @@
           <!-- Secondary terminals -->
           <line x1="25" y1="10" x2="30" y2="10" stroke="#3498db" stroke-width="2"/>
           <line x1="25" y1="30" x2="30" y2="30" stroke="#3498db" stroke-width="2"/>
-          <text x="32" y="8" font-family="Arial, sans-serif" font-size="8" fill="#3498db">VÇ</text>
-          <text x="32" y="25" font-family="Arial, sans-serif" font-size="8" fill="#3498db">NÇ</text>
+          <text x="32" y="8" font-family="Arial, sans-serif" font-size="8" fill="#3498db">V</text>
+          <text x="32" y="25" font-family="Arial, sans-serif" font-size="8" fill="#3498db">N</text>
         </g>
 
         <!-- Magnetic flux lines -->
@@ -493,10 +493,10 @@
       <g transform="translate(180,25)">
         <text x="0" y="15" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#f39c12">Fundamental Equations:</text>
 
-        <text x="0" y="35" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">Turns Ratio: a = NÅ/NÇ</text>
-        <text x="0" y="50" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">Voltage: VÅ/VÇ = NÅ/NÇ = a</text>
-        <text x="0" y="65" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">Current: IÅ/IÇ = NÇ/NÅ = 1/a</text>
-        <text x="0" y="80" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">Power: PÅ = PÇ (ideal)</text>
+        <text x="0" y="35" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">Turns Ratio: a = N/N</text>
+        <text x="0" y="50" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">Voltage: V/V = N/N = a</text>
+        <text x="0" y="65" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">Current: I/I = N/N = 1/a</text>
+        <text x="0" y="80" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">Power: P = P (ideal)</text>
 
         <text x="0" y="105" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#f39c12">Key Properties:</text>
         <text x="5" y="120" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">" Voltage transformation</text>
@@ -556,18 +556,18 @@
 
         <text x="0" y="70" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#f39c12">Connections:</text>
         <text x="5" y="85" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">" Y-Y (Wye-Wye)</text>
-        <text x="5" y="97" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">" î-î (Delta-Delta)</text>
-        <text x="5" y="109" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">" Y-î (Wye-Delta)</text>
-        <text x="5" y="121" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">" î-Y (Delta-Wye)</text>
+        <text x="5" y="97" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">" - (Delta-Delta)</text>
+        <text x="5" y="109" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">" Y- (Wye-Delta)</text>
+        <text x="5" y="121" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">" -Y (Delta-Wye)</text>
       </g>
 
       <!-- Connection advantages -->
       <g transform="translate(150,25)">
         <text x="0" y="15" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#f39c12">Connection Features:</text>
         <text x="5" y="32" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">Y-Y: Neutral available, unbalanced loads</text>
-        <text x="5" y="44" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">î-î: No neutral, balanced operation</text>
-        <text x="5" y="56" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">Y-î: Step-up applications</text>
-        <text x="5" y="68" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">î-Y: Step-down applications</text>
+        <text x="5" y="44" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">-: No neutral, balanced operation</text>
+        <text x="5" y="56" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">Y-: Step-up applications</text>
+        <text x="5" y="68" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">-Y: Step-down applications</text>
 
         <text x="0" y="90" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#f39c12">Ratings:</text>
         <text x="5" y="105" font-family="Arial, sans-serif" font-size="9" fill="#2c3e50">" Power: Few kVA to 1000+ MVA</text>
@@ -720,7 +720,7 @@
 
       <g transform="translate(0,35)">
         <text x="0" y="15" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#e74c3c">Types of Losses:</text>
-        <text x="5" y="28" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">" Copper losses (I≤R)</text>
+        <text x="5" y="28" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">" Copper losses (IR)</text>
         <text x="5" y="38" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">" Core losses (hysteresis + eddy)</text>
         <text x="5" y="48" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">" Mechanical losses (friction + windage)</text>
         <text x="5" y="58" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">" Stray load losses</text>
@@ -853,7 +853,7 @@
       <!-- Trend 1 -->
       <g>
         <circle cx="50" cy="20" r="15" fill="#4caf50"/>
-        <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">=</text>
+        <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">=</text>
         <text x="50" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#e65100">Electrification</text>
         <text x="50" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">Transportation,</text>
         <text x="50" y="68" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">heating, industry</text>
@@ -862,7 +862,7 @@
       <!-- Trend 2 -->
       <g transform="translate(200,0)">
         <circle cx="50" cy="20" r="15" fill="#2196f3"/>
-        <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">>‡</text>
+        <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">></text>
         <text x="50" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#e65100">AI Integration</text>
         <text x="50" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">Smart control,</text>
         <text x="50" y="68" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">predictive maintenance</text>
@@ -871,7 +871,7 @@
       <!-- Trend 3 -->
       <g transform="translate(400,0)">
         <circle cx="50" cy="20" r="15" fill="#ff5722"/>
-        <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">°</text>
+        <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold"  fill="white"><</text>
         <text x="50" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#e65100">Wide Bandgap</text>
         <text x="50" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">SiC/GaN power</text>
         <text x="50" y="68" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">electronics</text>
@@ -880,7 +880,7 @@
       <!-- Trend 4 -->
       <g transform="translate(600,0)">
         <circle cx="50" cy="20" r="15" fill="#9c27b0"/>
-        <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white"><</text>
+        <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold"  fill="white"><</text>
         <text x="50" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#e65100">IoT Connectivity</text>
         <text x="50" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">Remote monitoring,</text>
         <text x="50" y="68" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">cloud integration</text>
@@ -898,7 +898,7 @@
       <!-- Trend 6 -->
       <g transform="translate(1000,0)">
         <circle cx="50" cy="20" r="15" fill="#795548"/>
-        <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">{</text>
+        <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white"></text>
         <text x="50" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#e65100">Circular Economy</text>
         <text x="50" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">Sustainable design,</text>
         <text x="50" y="68" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">material recovery</text>
@@ -907,7 +907,7 @@
       <!-- Trend 7 -->
       <g transform="translate(1200,0)">
         <circle cx="50" cy="20" r="15" fill="#ff9800"/>
-        <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white"><Ì</text>
+        <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold"  fill="white"><</text>
         <text x="50" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#e65100">Industry 4.0</text>
         <text x="50" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">Digital factories,</text>
         <text x="50" y="68" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#2c3e50">smart manufacturing</text>

@@ -16,8 +16,8 @@
   <!-- Nodes V1 and V2 with voltage source between -->
   <circle cx="360" cy="200" r="5" fill="#111"/>
   <circle cx="600" cy="200" r="5" fill="#111"/>
-  <text x="350" y="180" class="t">V<tspan baseline-shift="sub">1</tspan></text>
-  <text x="590" y="180" class="t">V<tspan baseline-shift="sub">2</tspan></text>
+  <text x="350" y="180" class="t">V_tspan baseline-shift="sub"1</tspan></text>
+  <text x="590" y="180" class="t">V_tspan baseline-shift="sub"2</tspan></text>
   <!-- Resistors to ground -->
   <polyline points="360,200 380,180 400,220 420,180 440,220 460,200" class="w"/>
   <text x="395" y="176" class="t">R1</text>
@@ -33,12 +33,12 @@
   <line x1="530" y1="200" x2="600" y2="200" class="w"/>
   <circle cx="480" cy="200" r="24" fill="none" stroke="#111" stroke-width="2"/>
   <line x1="480" y1="184" x2="480" y2="216" class="w"/>
-  <text x="470" y="240" class="t">V<tspan baseline-shift="sub">s</tspan></text>
+  <text x="470" y="240" class="t">V_tspan baseline-shift="sub"s</tspan></text>
   <!-- Supernode boundary -->
   <rect x="330" y="160" width="300" height="120" rx="12" class="aux"/>
   <text x="340" y="160" class="t">Supernode</text>
   <text x="64" y="360" class="h">Equations</text>
   <text x="64" y="392" class="t">KCL (around supernode): currents via R1 and R2 to ground and any side branches = 0</text>
-  <text x="64" y="424" class="t">Constraint: V1 − V2 = V<tspan baseline-shift="sub">s</tspan></text>
+  <text x="64" y="424" class="t">Constraint: V1 − V2 = V_tspan baseline-shift="sub"s</tspan></text>
 </svg>
 

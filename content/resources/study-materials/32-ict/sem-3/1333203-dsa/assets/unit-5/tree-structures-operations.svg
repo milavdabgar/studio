@@ -129,7 +129,7 @@
 
       <text x="20" y="25" class="text" font-weight="bold">Binary Tree Rules:</text>
       <text x="30" y="45" class="text">• Each node has at most 2 children (left and right)</text>
-      <text x="30" y="65" class="text">• Left subtree values &lt; parent &lt; right subtree values (for BST)</text>
+      <text x="30" y="65" class="text">• Left subtree values < parent < right subtree values (for BST)</text>
       <text x="30" y="85" class="text">• Maximum nodes at level i = 2^i</text>
       <text x="30" y="105" class="text">• Maximum nodes in tree of height h = 2^(h+1) - 1</text>
     </g>
@@ -296,7 +296,7 @@
     <g transform="translate(0, 40)">
       <rect x="0" y="0" width="800" height="80" fill="#e74c3c" stroke="#c0392b" stroke-width="2" rx="5"/>
       <text x="20" y="25" class="text" font-weight="bold" fill="white">BST Property:</text>
-      <text x="20" y="45" class="text" fill="white">• Left subtree values &lt; root value &lt; right subtree values</text>
+      <text x="20" y="45" class="text" fill="white">• Left subtree values < root value < right subtree values</text>
       <text x="20" y="65" class="text" fill="white">• This property applies recursively to all subtrees</text>
     </g>
 
@@ -341,11 +341,11 @@
         <line x1="220" y1="95" x2="250" y2="118" stroke="#2c3e50" stroke-width="2"/>
 
         <!-- BST Property Annotations -->
-        <text x="0" y="85" class="small-text" fill="#27ae60">&lt; 50</text>
+        <text x="0" y="85" class="small-text" fill="#27ae60">< 50</text>
         <text x="270" y="85" class="small-text" fill="#27ae60">> 50</text>
-        <text x="30" y="135" class="small-text" fill="#f39c12">&lt; 30</text>
+        <text x="30" y="135" class="small-text" fill="#f39c12">< 30</text>
         <text x="130" y="135" class="small-text" fill="#f39c12">> 30</text>
-        <text x="170" y="135" class="small-text" fill="#f39c12">&lt; 70</text>
+        <text x="170" y="135" class="small-text" fill="#f39c12">< 70</text>
         <text x="270" y="135" class="small-text" fill="#f39c12">> 70</text>
       </g>
 
@@ -391,7 +391,7 @@
     <text x="20" y="315" class="code" fill="#3498db">def search(root, key):</text>
     <text x="40" y="335" class="code" fill="#ecf0f1">if not root or root.data == key:</text>
     <text x="60" y="355" class="code" fill="#27ae60">return root</text>
-    <text x="40" y="375" class="code" fill="#ecf0f1">if key &lt; root.data:</text>
+    <text x="40" y="375" class="code" fill="#ecf0f1">if key < root.data:</text>
   </g>
 
   <!-- Tree Applications -->

@@ -18,10 +18,10 @@
 
   <g transform="translate(80,140)">
     <rect x="0" y="0" width="520" height="560" rx="12" class="box"/>
-    <text x="16" y="40" class="t">&lt;form action="/submit" method="post"&gt;</text>
-    <text x="16" y="70" class="t">&lt;label for="email"&gt;Email&lt;/label&gt; &lt;input id="email" name="email" type="email" required&gt;</text>
-    <text x="16" y="100" class="t">&lt;label for="age"&gt;Age&lt;/label&gt; &lt;input id="age" name="age" type="number" min="0" max="120"&gt;</text>
-    <text x="16" y="130" class="t">&lt;button type="submit"&gt;Submit&lt;/button&gt;</text>
+    <text x="16" y="40" class="t"><form action="/submit" method="post"></text>
+    <text x="16" y="70" class="t"><label for="email">Email</label> <input id="email" name="email" type="email" required></text>
+    <text x="16" y="100" class="t"><label for="age">Age</label> <input id="age" name="age" type="number" min="0" max="120"></text>
+    <text x="16" y="130" class="t"><button type="submit">Submit</button></text>
   </g>
 
   <g transform="translate(660,140)">

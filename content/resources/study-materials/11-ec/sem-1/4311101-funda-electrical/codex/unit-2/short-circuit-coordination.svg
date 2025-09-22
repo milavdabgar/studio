@@ -28,7 +28,7 @@
     <rect x="0" y="0" width="560" height="280" rx="10" class="note"/>
     <text x="16" y="34" class="t">Downstream MCCB (LV)</text>
     <text x="16" y="66" class="s">• Thermal setting: ≥ 1.25 × I_fl (allow normal overload)</text>
-    <text x="16" y="94" class="s">• Magnetic (instantaneous): above inrush/starting but &lt; upstream device</text>
+    <text x="16" y="94" class="s">• Magnetic (instantaneous): above inrush/starting but < upstream device</text>
     <text x="16" y="122" class="s">• Breaking capacity Icu ≥ local I_sc (e.g., 15 kA @ 415 V)</text>
     <text x="16" y="150" class="s">• Ensure cable withstand (I²t) &amp; selectivity with upstream</text>
   </g>

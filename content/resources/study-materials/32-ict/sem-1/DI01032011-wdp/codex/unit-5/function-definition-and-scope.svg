@@ -18,7 +18,7 @@
     <text x="16" y="80" class="t">Parameters: a, b</text>
     <text x="16" y="110" class="t">Local scope: variables declared with let/const inside</text>
     <text x="16" y="140" class="t">Return value: result of computation</text>
-    <text x="16" y="170" class="t">Arrow functions: const add = (a,b) =&gt; a + b;</text>
+    <text x="16" y="170" class="t">Arrow functions: const add = (a,b) => a + b;</text>
   </g>
 </svg>
 

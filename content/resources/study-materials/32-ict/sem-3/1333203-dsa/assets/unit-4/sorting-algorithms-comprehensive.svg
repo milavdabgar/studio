@@ -214,7 +214,7 @@
     <text x="40" y="185" class="code" fill="#ecf0f1">for i in range(n):</text>
     <text x="60" y="205" class="code" fill="#ecf0f1">min_idx = i</text>
     <text x="60" y="225" class="code" fill="#ecf0f1">for j in range(i + 1, n):</text>
-    <text x="80" y="245" class="code" fill="#ecf0f1">if arr[j] &lt; arr[min_idx]:</text>
+    <text x="80" y="245" class="code" fill="#ecf0f1">if arr[j] < arr[min_idx]:</text>
     <text x="100" y="265" class="code" fill="#ecf0f1">min_idx = j</text>
     <text x="60" y="285" class="code" fill="#e74c3c">arr[i], arr[min_idx] = arr[min_idx], arr[i]</text>
   </g>
@@ -272,7 +272,7 @@
           <text x="140" y="17" text-anchor="middle" class="small-text">6</text>
           <text x="180" y="17" text-anchor="middle" class="small-text">1</text>
 
-          <text x="220" y="12" class="small-text">2 &lt; 5, shift 5 right and insert 2</text>
+          <text x="220" y="12" class="small-text">2 < 5, shift 5 right and insert 2</text>
         </g>
 
         <!-- After insertion -->
@@ -395,7 +395,7 @@
     <text x="40" y="95" class="code" fill="#ecf0f1">Quick Sort Algorithm</text>
     <text x="40" y="115" class="code" fill="#ecf0f1">Average: O(n log n), Worst: O(n²)</text>
     <text x="40" y="135" class="code" fill="#ecf0f1">"""</text>
-    <text x="40" y="155" class="code" fill="#ecf0f1">if low &lt; high:</text>
+    <text x="40" y="155" class="code" fill="#ecf0f1">if low < high:</text>
     <text x="60" y="175" class="code" fill="#ecf0f1">pi = partition(arr, low, high)</text>
     <text x="60" y="195" class="code" fill="#ecf0f1">quick_sort(arr, low, pi - 1)</text>
     <text x="60" y="215" class="code" fill="#ecf0f1">quick_sort(arr, pi + 1, high)</text>
@@ -404,7 +404,7 @@
     <text x="40" y="265" class="code" fill="#ecf0f1">pivot = arr[high]</text>
     <text x="40" y="285" class="code" fill="#ecf0f1">i = low - 1</text>
     <text x="40" y="305" class="code" fill="#ecf0f1">for j in range(low, high):</text>
-    <text x="60" y="325" class="code" fill="#ecf0f1">if arr[j] &lt;= pivot:</text>
+    <text x="60" y="325" class="code" fill="#ecf0f1">if arr[j] <= pivot:</text>
   </g>
 
   <!-- Comparison Table -->

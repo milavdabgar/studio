@@ -35,7 +35,7 @@
     <g transform="translate(24,200)">
       <rect class="box" x="0" y="0" width="450" height="120"/>
       <text class="code" x="16" y="36">Runnable r = () -> System.out.println("Hi");</text>
-      <text class="code" x="16" y="64">list.stream().filter(x -> x &gt; 0).toList();</text>
+      <text class="code" x="16" y="64">list.stream().filter(x -> x > 0).toList();</text>
     </g>
   </g>
 </svg>

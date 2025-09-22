@@ -16,9 +16,9 @@
   <rect x="64" y="140" width="1056" height="60" class="row"/>
   <text x="80" y="176" class="t">PF = 1.0 → W1 = W2 = P/2 (both positive)</text>
   <rect x="64" y="220" width="1056" height="60" class="row"/>
-  <text x="80" y="256" class="t">PF ≈ 0.5 → W1 &gt; 0, W2 &gt; 0, unequal</text>
+  <text x="80" y="256" class="t">PF ≈ 0.5 → W1 > 0, W2 > 0, unequal</text>
   <rect x="64" y="300" width="1056" height="60" class="row"/>
-  <text x="80" y="336" class="t">PF &lt; 0.5 → one wattmeter negative (swap leads to read magnitude)</text>
+  <text x="80" y="336" class="t">PF < 0.5 → one wattmeter negative (swap leads to read magnitude)</text>
   <rect x="64" y="380" width="1056" height="60" class="row"/>
   <text x="80" y="416" class="t">PF → 0 → W1 ≈ −W2 (sum tends to zero)</text>
 </svg>

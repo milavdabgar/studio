@@ -18,6 +18,6 @@
   <!-- Reverse breakdown region -->
   <path d="M120 360 C 100 360, 90 360, 80 360" class="curve"/>
   <path d="M120 360 C 100 360, 90 340, 88 300 C 86 260, 88 200, 90 180" class="curve"/>
-  <text x="92" y="175" class="label">Breakdown (V<tspan baseline-shift="sub">Z</tspan>)</text>
+  <text x="92" y="175" class="label">Breakdown (V_tspan baseline-shift="sub"Z</tspan>)</text>
 </svg>
 

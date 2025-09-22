@@ -133,7 +133,7 @@
   <text x="730" y="390" class="code-text">  void update(String message);</text>
   <text x="730" y="405" class="code-text">}</text>
   <text x="730" y="420" class="code-text">class Subject {</text>
-  <text x="730" y="435" class="code-text">  List&lt;Observer&gt; observers = new ArrayList&lt;&gt;();</text>
+  <text x="730" y="435" class="code-text">  List<Observer> observers = new ArrayList<>();</text>
   <text x="730" y="450" class="code-text">  void addObserver(Observer o) {</text>
   <text x="730" y="465" class="code-text">    observers.add(o);</text>
   <text x="730" y="480" class="code-text">  }</text>

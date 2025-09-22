@@ -6,6 +6,6 @@
   <rect width="1200" height="600" class="bg"/>
   <rect x="0" y="0" width="1200" height="70" class="hdr"/>
   <text x="40" y="44" class="ttl">CompletableFuture basics</text>
-  <g transform="translate(60,120)"><rect class="card" x="0" y="0" width="1080" height="380"/><text class="ph" x="24" y="40">Examples</text><text class="code" x="24" y="80">CompletableFuture.supplyAsync(() -&gt; compute())</text><text class="code" x="24" y="112">.thenApply(x -&gt; transform(x))</text><text class="code" x="24" y="144">.thenAccept(System.out::println);</text></g>
+  <g transform="translate(60,120)"><rect class="card" x="0" y="0" width="1080" height="380"/><text class="ph" x="24" y="40">Examples</text><text class="code" x="24" y="80">CompletableFuture.supplyAsync(() -> compute())</text><text class="code" x="24" y="112">.thenApply(x -> transform(x))</text><text class="code" x="24" y="144">.thenAccept(System.out::println);</text></g>
 </svg>
 

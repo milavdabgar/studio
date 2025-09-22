@@ -1,44 +1,44 @@
-<svg viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">>
   <defs>
     <linearGradient id="topologyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1" />
     </linearGradient>
-    <linearGradient id="deviceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="deviceGrad" x1="0%" y1="0%" x2="100%" y2="100%">>
       <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#E65100;stop-opacity:1" />
     </linearGradient>
-    <linearGradient id="osiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="osiGrad" x1="0%" y1="0%" x2="100%" y2="100%">>
       <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#0D47A1;stop-opacity:1" />
     </linearGradient>
-  </defs>
+  </defs>>
 
   <!-- Background -->
   <rect width="1000" height="800" fill="#F8F9FA"/>
 
   <!-- Title -->
   <text x="500" y="40" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#2C3E50">
-    Network Topologies & Devices
+    Network Topologies &amp; Devices
   </text>
-  <text x="500" y="70" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666">
+  <text x="500" y="70" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666">>
     Computer network structures and networking devices
   </text>
 
-  <!-- Network Topologies Section -->
+  <!-- Network Topologies Section -->>
   <g transform="translate(50, 100)">
     <rect x="0" y="0" width="600" height="320" rx="15" fill="#E8F5E8" stroke="#4CAF50" stroke-width="3"/>
     <text x="300" y="25" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#4CAF50">
       Network Topologies
     </text>
 
-    <!-- Bus Topology -->
+    <!-- Bus Topology -->>
     <g transform="translate(30, 50)">
       <rect x="0" y="0" width="160" height="100" rx="8" fill="white" stroke="#4CAF50" stroke-width="2"/>
       <text x="80" y="18" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#4CAF50">
         Bus Topology
       </text>
-      <!-- Bus diagram -->
+      <!-- Bus diagram -->>
       <line x1="20" y1="40" x2="140" y2="40" stroke="#4CAF50" stroke-width="3"/>
       <circle cx="40" cy="30" r="4" fill="#4CAF50"/>
       <circle cx="80" cy="30" r="4" fill="#4CAF50"/>
@@ -49,13 +49,13 @@
       <text x="80" y="60" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">
         Single cable backbone
       </text>
-      <text x="80" y="75" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">
+      <text x="80" y="75" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">>
         ✓ Simple, Cost-effective
       </text>
-      <text x="80" y="88" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">
+      <text x="80" y="88" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">>
         ✗ Single point of failure
       </text>
-    </g>
+    </g>>
 
     <!-- Star Topology -->
     <g transform="translate(210, 50)">
@@ -63,7 +63,7 @@
       <text x="80" y="18" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#4CAF50">
         Star Topology
       </text>
-      <!-- Star diagram -->
+      <!-- Star diagram -->>
       <circle cx="80" cy="50" r="6" fill="#4CAF50"/>
       <circle cx="60" cy="30" r="4" fill="#4CAF50"/>
       <circle cx="100" cy="30" r="4" fill="#4CAF50"/>
@@ -76,10 +76,10 @@
       <text x="80" y="85" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">
         ✓ Easy to manage
       </text>
-      <text x="80" y="98" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">
+      <text x="80" y="98" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">>
         ✗ Hub failure affects all
       </text>
-    </g>
+    </g>>
 
     <!-- Ring Topology -->
     <g transform="translate(390, 50)">
@@ -87,7 +87,7 @@
       <text x="80" y="18" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#4CAF50">
         Ring Topology
       </text>
-      <!-- Ring diagram -->
+      <!-- Ring diagram -->>
       <circle cx="80" cy="50" r="20" fill="none" stroke="#4CAF50" stroke-width="3"/>
       <circle cx="80" cy="30" r="4" fill="#4CAF50"/>
       <circle cx="100" cy="50" r="4" fill="#4CAF50"/>
@@ -96,10 +96,10 @@
       <text x="80" y="85" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">
         ✓ Equal access for all
       </text>
-      <text x="80" y="98" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">
+      <text x="80" y="98" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">>
         ✗ Break affects entire ring
       </text>
-    </g>
+    </g>>
 
     <!-- Mesh Topology -->
     <g transform="translate(120, 170)">
@@ -107,7 +107,7 @@
       <text x="80" y="18" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#4CAF50">
         Mesh Topology
       </text>
-      <!-- Mesh diagram -->
+      <!-- Mesh diagram -->>
       <circle cx="60" cy="35" r="4" fill="#4CAF50"/>
       <circle cx="100" cy="35" r="4" fill="#4CAF50"/>
       <circle cx="60" cy="65" r="4" fill="#4CAF50"/>
@@ -121,10 +121,10 @@
       <text x="80" y="85" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">
         ✓ High reliability
       </text>
-      <text x="80" y="98" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">
+      <text x="80" y="98" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">>
         ✗ Expensive, complex
       </text>
-    </g>
+    </g>>
 
     <!-- Hybrid Topology -->
     <g transform="translate(300, 170)">
@@ -132,7 +132,7 @@
       <text x="80" y="18" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#4CAF50">
         Hybrid Topology
       </text>
-      <!-- Hybrid diagram -->
+      <!-- Hybrid diagram -->>
       <!-- Star section -->
       <circle cx="60" cy="40" r="4" fill="#4CAF50"/>
       <circle cx="50" cy="50" r="3" fill="#4CAF50"/>
@@ -150,32 +150,32 @@
       <text x="80" y="75" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">
         ✓ Flexible design
       </text>
-      <text x="80" y="88" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">
+      <text x="80" y="88" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">>
         ✓ Combines advantages
       </text>
-    </g>
+    </g>>
   </g>
 
-  <!-- Networking Devices Section -->
+  <!-- Networking Devices Section -->>
   <g transform="translate(670, 100)">
     <rect x="0" y="0" width="280" height="320" rx="15" fill="#FFF3E0" stroke="#FF9800" stroke-width="3"/>
     <text x="140" y="25" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#FF9800">
       Networking Devices
     </text>
 
-    <!-- Hub -->
+    <!-- Hub -->>
     <g transform="translate(20, 50)">
       <rect x="0" y="0" width="110" height="60" rx="8" fill="white" stroke="#FF9800" stroke-width="2"/>
       <text x="55" y="18" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#FF9800">
         Hub
       </text>
-      <text x="55" y="35" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">
+      <text x="55" y="35" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">>
         Physical Layer
       </text>
-      <text x="55" y="48" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">
+      <text x="55" y="48" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">>
         Repeats signal to all ports
       </text>
-    </g>
+    </g>>
 
     <!-- Switch -->
     <g transform="translate(150, 50)">
@@ -183,13 +183,13 @@
       <text x="55" y="18" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#FF9800">
         Switch
       </text>
-      <text x="55" y="35" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">
+      <text x="55" y="35" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">>
         Data Link Layer
       </text>
-      <text x="55" y="48" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">
+      <text x="55" y="48" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">>
         MAC address learning
       </text>
-    </g>
+    </g>>
 
     <!-- Router -->
     <g transform="translate(85, 130)">
@@ -197,13 +197,13 @@
       <text x="55" y="18" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#FF9800">
         Router
       </text>
-      <text x="55" y="35" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">
+      <text x="55" y="35" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666">>
         Network Layer
       </text>
-      <text x="55" y="48" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">
+      <text x="55" y="48" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">>
         Routes between networks
       </text>
-    </g>
+    </g>>
 
     <!-- Device Functions -->
     <g transform="translate(20, 210)">
@@ -211,24 +211,24 @@
         Device Functions
       </text>
       
-      <g transform="translate(0, 25)">
+      <g transform="translate(0, 25)">>
         <text x="0" y="15" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF9800">Bridge:</text>
-        <text x="50" y="15" font-family="Arial, sans-serif" font-size="10" fill="#666">Connects LAN segments</text>
+        <text x="50" y="15" font-family="Arial, sans-serif" font-size="10" fill="#666">>Connects LAN segments</text>
         
-        <text x="0" y="30" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF9800">Gateway:</text>
-        <text x="50" y="30" font-family="Arial, sans-serif" font-size="10" fill="#666">Protocol conversion</text>
+        <text x="0" y="30" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF9800">>Gateway:</text>
+        <text x="50" y="30" font-family="Arial, sans-serif" font-size="10" fill="#666">>Protocol conversion</text>
         
-        <text x="0" y="45" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF9800">Modem:</text>
-        <text x="50" y="45" font-family="Arial, sans-serif" font-size="10" fill="#666">Analog-digital conversion</text>
+        <text x="0" y="45" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF9800">>Modem:</text>
+        <text x="50" y="45" font-family="Arial, sans-serif" font-size="10" fill="#666">>Analog-digital conversion</text>
         
-        <text x="0" y="60" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF9800">Repeater:</text>
-        <text x="50" y="60" font-family="Arial, sans-serif" font-size="10" fill="#666">Signal amplification</text>
+        <text x="0" y="60" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF9800">>Repeater:</text>
+        <text x="50" y="60" font-family="Arial, sans-serif" font-size="10" fill="#666">>Signal amplification</text>
         
-        <text x="0" y="75" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF9800">NIC:</text>
-        <text x="50" y="75" font-family="Arial, sans-serif" font-size="10" fill="#666">Network interface card</text>
-      </g>
+        <text x="0" y="75" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF9800">>NIC:</text>
+        <text x="50" y="75" font-family="Arial, sans-serif" font-size="10" fill="#666">>Network interface card</text>
+      </g>>
     </g>
-  </g>
+  </g>>
 
   <!-- Network Types -->
   <g transform="translate(50, 440)">
@@ -237,19 +237,19 @@
       Types of Networks
     </text>
 
-    <!-- LAN -->
+    <!-- LAN -->>
     <g transform="translate(80, 50)">
       <rect x="0" y="0" width="200" height="60" rx="8" fill="white" stroke="#2196F3" stroke-width="2"/>
       <text x="100" y="18" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#2196F3">
         LAN (Local Area Network)
       </text>
-      <text x="100" y="35" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">
+      <text x="100" y="35" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">>
         Coverage: Building/Campus
       </text>
-      <text x="100" y="50" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">
+      <text x="100" y="50" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">>
         Speed: High (Mbps to Gbps)
       </text>
-    </g>
+    </g>>
 
     <!-- MAN -->
     <g transform="translate(300, 50)">
@@ -257,13 +257,13 @@
       <text x="100" y="18" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#2196F3">
         MAN (Metropolitan Area Network)
       </text>
-      <text x="100" y="35" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">
+      <text x="100" y="35" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">>
         Coverage: City/Metropolitan area
       </text>
-      <text x="100" y="50" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">
+      <text x="100" y="50" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">>
         Speed: Medium to High
       </text>
-    </g>
+    </g>>
 
     <!-- WAN -->
     <g transform="translate(520, 50)">
@@ -271,73 +271,73 @@
       <text x="100" y="18" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#2196F3">
         WAN (Wide Area Network)
       </text>
-      <text x="100" y="35" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">
+      <text x="100" y="35" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">>
         Coverage: Countries/Continents
       </text>
-      <text x="100" y="50" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">
+      <text x="100" y="50" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">>
         Speed: Variable, often slower
       </text>
-    </g>
+    </g>>
   </g>
 
-  <!-- OSI Model Reference -->
+  <!-- OSI Model Reference -->>
   <g transform="translate(50, 580)">
     <rect x="0" y="0" width="900" height="160" rx="15" fill="#F3E5F5" stroke="#9C27B0" stroke-width="3"/>
     <text x="450" y="25" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#9C27B0">
       OSI Model Layers
     </text>
 
-    <!-- Layer boxes -->
+    <!-- Layer boxes -->>
     <g transform="translate(100, 50)">
       <!-- Application Layer -->
       <g transform="translate(0, 0)">
         <rect x="0" y="0" width="100" height="25" rx="3" fill="white" stroke="#9C27B0" stroke-width="1"/>
         <text x="50" y="17" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#9C27B0">7. Application</text>
-      </g>
+      </g>>
 
       <!-- Presentation Layer -->
       <g transform="translate(120, 0)">
         <rect x="0" y="0" width="100" height="25" rx="3" fill="white" stroke="#9C27B0" stroke-width="1"/>
         <text x="50" y="17" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#9C27B0">6. Presentation</text>
-      </g>
+      </g>>
 
       <!-- Session Layer -->
       <g transform="translate(240, 0)">
         <rect x="0" y="0" width="100" height="25" rx="3" fill="white" stroke="#9C27B0" stroke-width="1"/>
         <text x="50" y="17" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#9C27B0">5. Session</text>
-      </g>
+      </g>>
 
       <!-- Transport Layer -->
       <g transform="translate(360, 0)">
         <rect x="0" y="0" width="100" height="25" rx="3" fill="white" stroke="#9C27B0" stroke-width="1"/>
         <text x="50" y="17" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#9C27B0">4. Transport</text>
-      </g>
+      </g>>
 
       <!-- Network Layer -->
       <g transform="translate(480, 0)">
         <rect x="0" y="0" width="100" height="25" rx="3" fill="white" stroke="#9C27B0" stroke-width="1"/>
         <text x="50" y="17" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#9C27B0">3. Network</text>
-      </g>
+      </g>>
 
       <!-- Data Link Layer -->
       <g transform="translate(600, 0)">
         <rect x="0" y="0" width="100" height="25" rx="3" fill="white" stroke="#9C27B0" stroke-width="1"/>
         <text x="50" y="17" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#9C27B0">2. Data Link</text>
-      </g>
+      </g>>
 
       <!-- Physical Layer -->
       <g transform="translate(720, 0)">
         <rect x="0" y="0" width="100" height="25" rx="3" fill="white" stroke="#9C27B0" stroke-width="1"/>
         <text x="50" y="17" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#9C27B0">1. Physical</text>
-      </g>
+      </g>>
     </g>
 
-    <!-- Layer Functions -->
+    <!-- Layer Functions -->>
     <g transform="translate(50, 90)">
       <text x="0" y="15" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#9C27B0">Key Functions by Layer:</text>
-      <text x="0" y="30" font-family="Arial, sans-serif" font-size="10" fill="#666">Physical: Bits transmission • Data Link: Frame delivery • Network: Routing</text>
-      <text x="0" y="45" font-family="Arial, sans-serif" font-size="10" fill="#666">Transport: End-to-end delivery • Session: Dialog management • Presentation: Data formatting</text>
-      <text x="0" y="60" font-family="Arial, sans-serif" font-size="10" fill="#666">Application: Network services to applications</text>
-    </g>
+      <text x="0" y="30" font-family="Arial, sans-serif" font-size="10" fill="#666">>Physical: Bits transmission • Data Link: Frame delivery • Network: Routing</text>
+      <text x="0" y="45" font-family="Arial, sans-serif" font-size="10" fill="#666">>Transport: End-to-end delivery • Session: Dialog management • Presentation: Data formatting</text>
+      <text x="0" y="60" font-family="Arial, sans-serif" font-size="10" fill="#666">>Application: Network services to applications</text>
+    </g>>
   </g>
 </svg>

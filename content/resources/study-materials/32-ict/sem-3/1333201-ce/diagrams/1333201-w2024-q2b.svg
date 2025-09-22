@@ -169,7 +169,7 @@
       <rect x="0" y="0" width="400" height="120" fill="#fff3e0" stroke="#ff9800" stroke-width="2" rx="5"/>
       <text x="200" y="20" class="label" fill="#e65100">Design Conditions</text>
       <text x="10" y="40" class="description">Time Constant: RC >> 1/fc (carrier frequency)</text>
-      <text x="10" y="55" class="description">But: RC &lt;&lt; 1/fm (modulating frequency)</text>
+      <text x="10" y="55" class="description">But: RC << 1/fm (modulating frequency)</text>
       <text x="10" y="70" class="description">Diode: Silicon (0.7V) or Germanium (0.3V)</text>
       <text x="10" y="85" class="description">Load: High impedance to minimize loading</text>
       <text x="10" y="100" class="description">Capacitor: Low leakage, stable value</text>

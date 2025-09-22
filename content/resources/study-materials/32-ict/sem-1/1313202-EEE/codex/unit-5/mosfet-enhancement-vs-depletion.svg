@@ -32,7 +32,7 @@
     <text x="230" y="214" class="t">Gate</text>
     <text x="112" y="336" class="t">Source</text>
     <text x="372" y="336" class="t">Drain</text>
-    <text x="140" y="420" class="t">At V<tspan baseline-shift="sub">GS</tspan>&gt;V<tspan baseline-shift="sub">T</tspan>, inversion channel forms</text>
+    <text x="140" y="420" class="t">At V_tspan baseline-shift="sub"GS</tspan>>V_tspan baseline-shift="sub"T</tspan>, inversion channel forms</text>
   </g>
 
   <!-- Depletion mode -->
@@ -43,7 +43,7 @@
     <text x="220" y="292" class="t">P-substrate</text>
     <!-- Preformed channel -->
     <rect x="180" y="320" width="160" height="20" class="n"/>
-    <text x="200" y="352" class="t">N-channel exists at V<tspan baseline-shift="sub">GS</tspan>=0</text>
+    <text x="200" y="352" class="t">N-channel exists at V_tspan baseline-shift="sub"GS</tspan>=0</text>
     <rect x="140" y="280" width="40" height="40" class="n"/>
     <rect x="340" y="280" width="40" height="40" class="n"/>
     <rect x="120" y="260" width="280" height="20" class="ox"/>
@@ -51,7 +51,7 @@
     <text x="230" y="214" class="t">Gate</text>
     <text x="112" y="336" class="t">Source</text>
     <text x="372" y="336" class="t">Drain</text>
-    <text x="140" y="420" class="t">V<tspan baseline-shift="sub">GS</tspan>&lt;0 pinches channel; V<tspan baseline-shift="sub">GS</tspan>&gt;0 enhances</text>
+    <text x="140" y="420" class="t">V_tspan baseline-shift="sub"GS</tspan><0 pinches channel; V_tspan baseline-shift="sub"GS</tspan>>0 enhances</text>
   </g>
 
 </svg>

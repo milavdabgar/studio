@@ -16,9 +16,9 @@
   <rect x="64" y="140" width="1056" height="60" class="row"/>
   <text x="80" y="176" class="t">PF = 1.0 → W1 = W2 = P/2 (બન્ને પોઝિટિવ)</text>
   <rect x="64" y="220" width="1056" height="60" class="row"/>
-  <text x="80" y="256" class="t">PF ≈ 0.5 → W1 &gt; 0, W2 &gt; 0, અસમાન</text>
+  <text x="80" y="256" class="t">PF ≈ 0.5 → W1 > 0, W2 > 0, અસમાન</text>
   <rect x="64" y="300" width="1056" height="60" class="row"/>
-  <text x="80" y="336" class="t">PF &lt; 0.5 → એક વોટમીટર નેગેટિવ (મેગ્નિટ્યુડ માટે લીડ્સ સ્વેપ કરો)</text>
+  <text x="80" y="336" class="t">PF < 0.5 → એક વોટમીટર નેગેટિવ (મેગ્નિટ્યુડ માટે લીડ્સ સ્વેપ કરો)</text>
   <rect x="64" y="380" width="1056" height="60" class="row"/>
   <text x="80" y="416" class="t">PF → 0 → W1 ≈ −W2 (સમ કુલ શૂન્ય તરફ)</text>
 </svg>

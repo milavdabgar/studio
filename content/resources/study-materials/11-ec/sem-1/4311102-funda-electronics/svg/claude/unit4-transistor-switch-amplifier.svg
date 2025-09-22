@@ -103,7 +103,7 @@
     </g>
     
     <g transform="translate(0, 105)" font-family="Arial, sans-serif" font-size="10" fill="#666">
-      <text x="0" y="0" text-anchor="middle">• IB &gt; IB(sat)</text>
+      <text x="0" y="0" text-anchor="middle">• IB > IB(sat)</text>
       <text x="0" y="12" text-anchor="middle">• IC = IC(sat)</text>
       <text x="0" y="24" text-anchor="middle">• VCE ≈ 0.2V</text>
       <text x="0" y="36" text-anchor="middle">• LED ON</text>

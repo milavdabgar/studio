@@ -9,9 +9,9 @@
       .box { fill: #f8fafc; stroke: #cbd5e1; }
     </style>
   </defs>
-  <text x="40" y="40" class="t">Given: V<tspan baseline-shift="sub">s(rms)</tspan> = 12 V, V<tspan baseline-shift="sub">m</tspan> ≈ 16.97 V, diode drop ≈ 0.7 V (×2 in bridge)</text>
+  <text x="40" y="40" class="t">Given: V_tspan baseline-shift="sub"s(rms)</tspan> = 12 V, V_tspan baseline-shift="sub"m</tspan> ≈ 16.97 V, diode drop ≈ 0.7 V (×2 in bridge)</text>
   <rect x="40" y="60" width="480" height="120" rx="10" class="box"/>
-  <text x="50" y="90" class="t">V<tspan baseline-shift="sub">DC</tspan> ≈ 2V<tspan baseline-shift="sub">m</tspan>/π ≈ 10.8 V (ideal, CT). Bridge ≈ 10.1 V (2× drops)</text>
+  <text x="50" y="90" class="t">V_tspan baseline-shift="sub"DC</tspan> ≈ 2V_tspan baseline-shift="sub"m</tspan>/π ≈ 10.8 V (ideal, CT). Bridge ≈ 10.1 V (2× drops)</text>
   <text x="50" y="115" class="t">Ripple factor r ≈ 0.482 (no filter)</text>
   <text x="50" y="140" class="t">Efficiency η ≈ 81.2%</text>
 

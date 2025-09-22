@@ -40,7 +40,7 @@
   <text class="label" x="780" y="150">Iteration</text>
   <g transform="translate(760,180)">
     <rect class="box" x="0" y="0" width="520" height="120"/>
-    <text class="code" x="20" y="50">for (int i = 0; i &lt; a.length; i++) { use(a[i]); }</text>
+    <text class="code" x="20" y="50">for (int i = 0; i < a.length; i++) { use(a[i]); }</text>
     <text class="code" x="20" y="90">for (int v : a) { use(v); }</text>
   </g>
 </svg>

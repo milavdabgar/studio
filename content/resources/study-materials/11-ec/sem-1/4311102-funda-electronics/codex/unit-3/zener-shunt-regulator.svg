@@ -8,7 +8,7 @@
     </style>
   </defs>
   <!-- Input Vin -->
-  <text x="40" y="90" class="t">V<tspan baseline-shift="sub">in</tspan></text>
+  <text x="40" y="90" class="t">V_tspan baseline-shift="sub"in</tspan></text>
   <line x1="80" y1="80" x2="820" y2="80" class="w"/>
 
   <!-- Series resistor Rs -->
@@ -36,6 +36,6 @@
   <text x="540" y="50" class="t">R<tspan baseline-shift="sub">L</tspan></text>
 
   <!-- Labels -->
-  <text x="310" y="110" class="t">V<tspan baseline-shift="sub">out</tspan> ≈ V<tspan baseline-shift="sub">Z</tspan></text>
+  <text x="310" y="110" class="t">V_tspan baseline-shift="sub"out</tspan> ≈ V_tspan baseline-shift="sub"Z</tspan></text>
 </svg>
 

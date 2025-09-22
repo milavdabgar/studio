@@ -24,7 +24,7 @@
   <text x="270" y="358" class="t" text-anchor="middle">Measure V, I → P'</text>
   <line x1="380" y1="350" x2="520" y2="350" class="arr"/>
   <rect x="520" y="320" width="280" height="60" rx="8" class="box"/>
-  <text x="660" y="358" class="t" text-anchor="middle">If ΔP = P' − P &gt; 0 → keep direction</text>
+  <text x="660" y="358" class="t" text-anchor="middle">If ΔP = P' − P > 0 → keep direction</text>
   <line x1="660" y1="380" x2="660" y2="420" class="arr"/>
   <rect x="520" y="420" width="280" height="60" rx="8" class="box"/>
   <text x="660" y="458" class="t" text-anchor="middle">Else reverse perturb sign</text>

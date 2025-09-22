@@ -22,9 +22,9 @@
     <rect x="0" y="0" width="520" height="620" rx="12" class="box"/>
     <text x="16" y="36" class="t">Operators</text>
     <text x="16" y="66" class="t">Arithmetic: + − * / %</text>
-    <text x="16" y="96" class="t">Relational: &gt; &lt; &gt;= &lt;= == !=</text>
+    <text x="16" y="96" class="t">Relational: > < >= <= == !=</text>
     <text x="16" y="126" class="t">Logical: &amp;&amp; || !</text>
-    <text x="16" y="156" class="t">Bitwise: &amp; | ^ ~ &lt;&lt; &gt;&gt; &gt;&gt;&gt;</text>
+    <text x="16" y="156" class="t">Bitwise: &amp; | ^ ~ << >> >>></text>
   </g>
 </svg>
 

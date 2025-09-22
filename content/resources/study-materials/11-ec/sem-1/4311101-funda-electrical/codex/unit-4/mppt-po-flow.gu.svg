@@ -15,7 +15,7 @@
   <rect x="64" y="96" width="520" height="260" class="blk"/>
   <text x="80" y="130" class="t">1) V અથવા I પર્ટર્બ કરો</text>
   <text x="80" y="160" class="t">2) P = V·I માપો</text>
-  <text x="80" y="190" class="t">3) ΔP&gt;0 → એ જ દિશા; ΔP&lt;0 → દિશા બદલો</text>
+  <text x="80" y="190" class="t">3) ΔP>0 → એ જ દિશા; ΔP_0 → દિશા બદલો</text
   <text x="80" y="220" class="t">4) પુનરાવર્તન કરો → MPP નજીક</text>
 </svg>
 

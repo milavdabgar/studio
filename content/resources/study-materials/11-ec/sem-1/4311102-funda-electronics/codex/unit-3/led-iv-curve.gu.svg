@@ -15,6 +15,6 @@
   <!-- Threshold then exponential rise -->
   <path d="M120 355 L 360 352 C 370 352, 380 352, 390 350 C 410 345, 430 330, 460 300 C 500 260, 560 200, 720 120" class="curve"/>
   <circle cx="390" cy="350" r="4" fill="#ef4444"/>
-  <text x="400" y="345" class="label">V<tspan baseline-shift="sub">F</tspan> (threshold)</text>
+  <text x="400" y="345" class="label">V_tspan baseline-shift="sub"F</tspan> (threshold)</text>
 </svg>
 

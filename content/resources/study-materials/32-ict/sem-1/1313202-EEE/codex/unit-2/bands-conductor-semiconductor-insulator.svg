@@ -48,7 +48,7 @@
     <line x1="40" y1="180" x2="280" y2="420" class="gap"/>
     <text x="44" y="96" class="t">Ec</text>
     <text x="44" y="516" class="t">Ev</text>
-    <text x="60" y="300" class="t">Large Eg (&gt; 5 eV)</text>
+    <text x="60" y="300" class="t">Large Eg (> 5 eV)</text>
   </g>
 </svg>
 

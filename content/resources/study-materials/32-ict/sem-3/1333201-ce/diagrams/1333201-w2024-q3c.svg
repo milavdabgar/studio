@@ -252,7 +252,7 @@
     <text x="400" y="50" class="label" font-weight="bold" font-size="14">fs ≥ 2fm (Nyquist Rate)</text>
     <text x="50" y="70" class="description">• Sampling frequency must be at least twice the highest frequency component</text>
     <text x="50" y="85" class="description">• Ensures perfect reconstruction of the original signal from samples</text>
-    <text x="50" y="100" class="description">• If fs &lt; 2fm, aliasing occurs (frequency folding)</text>
+    <text x="50" y="100" class="description">• If fs < 2fm, aliasing occurs (frequency folding)</text>
 
     <text x="450" y="70" class="description">• Nyquist frequency: fN = fs/2 (highest frequency that can be sampled)</text>
     <text x="450" y="85" class="description">• Anti-aliasing filters used to limit signal bandwidth before sampling</text>

@@ -176,7 +176,7 @@
       <text x="0" y="15" font-family="Arial, sans-serif" font-size="10" fill="#333">• Low gain (0-3 dBi)</text>
       <text x="150" y="15" font-family="Arial, sans-serif" font-size="10" fill="#333">• Omnidirectional pattern</text>
       <text x="300" y="15" font-family="Arial, sans-serif" font-size="10" fill="#333">• Compact size</text>
-      <text x="0" y="28" font-family="Arial, sans-serif" font-size="10" fill="#333">• Low height (&lt;2m)</text>
+      <text x="0" y="28" font-family="Arial, sans-serif" font-size="10" fill="#333">• Low height (<2m)</text>
       <text x="150" y="28" font-family="Arial, sans-serif" font-size="10" fill="#333">• Integrated design</text>
       <text x="300" y="28" font-family="Arial, sans-serif" font-size="10" fill="#333">• Cost effective</text>
     </g>

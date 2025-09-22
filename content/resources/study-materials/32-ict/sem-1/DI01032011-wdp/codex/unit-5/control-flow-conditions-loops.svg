@@ -18,9 +18,9 @@
   <text x="40" y="60" class="h1">Conditions and Loops</text>
   <g transform="translate(80,120)">
     <rect x="0" y="0" width="480" height="560" rx="12" class="box"/>
-    <text x="16" y="40" class="mono">if (x &gt; 0) { ... } else { ... }</text>
+    <text x="16" y="40" class="mono">if (x > 0) { ... } else { ... }</text>
     <text x="16" y="70" class="mono">switch (k) { case 1: ...; default: ... }</text>
-    <text x="16" y="100" class="mono">for (let i=0; i&lt;n; i++) { ... }</text>
+    <text x="16" y="100" class="mono">for (let i=0; i<n; i++) { ... }</text>
     <text x="16" y="130" class="mono">while (cond) { ... }</text>
     <text x="16" y="160" class="mono">do { ... } while (cond)</text>
   </g>

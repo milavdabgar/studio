@@ -223,7 +223,7 @@
         <text x="260" y="20" text-anchor="middle" class="text">13</text>
         <text x="300" y="20" text-anchor="middle" class="text">15</text>
 
-        <text x="330" y="15" class="small-text">7 &lt; 9, search left half</text>
+        <text x="330" y="15" class="small-text">7 < 9, search left half</text>
         <text x="330" y="30" class="small-text">right = mid - 1 = 2</text>
       </g>
 
@@ -327,12 +327,12 @@
     <text x="40" y="155" class="code" fill="#ecf0f1">"""</text>
     <text x="40" y="175" class="code" fill="#ecf0f1">left, right = 0, len(arr) - 1</text>
 
-    <text x="40" y="205" class="code" fill="#ecf0f1">while left &lt;= right:</text>
+    <text x="40" y="205" class="code" fill="#ecf0f1">while left <= right:</text>
     <text x="60" y="225" class="code" fill="#ecf0f1">mid = (left + right) // 2</text>
 
     <text x="60" y="255" class="code" fill="#ecf0f1">if arr[mid] == target:</text>
     <text x="80" y="275" class="code" fill="#27ae60">return mid  # Found</text>
-    <text x="60" y="295" class="code" fill="#ecf0f1">elif arr[mid] &lt; target:</text>
+    <text x="60" y="295" class="code" fill="#ecf0f1">elif arr[mid] < target:</text>
     <text x="80" y="315" class="code" fill="#ecf0f1">left = mid + 1  # Search right</text>
     <text x="60" y="335" class="code" fill="#ecf0f1">else:</text>
     <text x="80" y="355" class="code" fill="#ecf0f1">right = mid - 1  # Search left</text>

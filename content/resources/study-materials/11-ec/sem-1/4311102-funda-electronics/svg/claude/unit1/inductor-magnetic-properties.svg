@@ -1,12 +1,12 @@
-<svg viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">>
   <!-- Title -->
   <text x="500" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#333">Inductor Core Materials &amp; Magnetic Properties</text>
   
-  <!-- Core Material Properties -->
+  <!-- Core Material Properties -->>
   <rect x="50" y="60" width="900" height="200" rx="10" fill="#f8f9fa" stroke="#333" stroke-width="2"/>
   <text x="500" y="85" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">Core Material Properties</text>
   
-  <!-- Air Core -->
+  <!-- Air Core -->>
   <g transform="translate(100, 110)">
     <circle cx="50" cy="50" r="30" fill="#f0f8ff" stroke="#87ceeb" stroke-width="2"/>
     <circle cx="45" cy="45" r="2" fill="#87ceeb"/>
@@ -21,10 +21,10 @@
     <path d="M 20 60 Q 35 45 50 60 Q 65 75 80 60" stroke="#4169e1" stroke-width="1" fill="none" stroke-dasharray="2,2"/>
     
     <text x="50" y="95" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Air Core</text>
-    <text x="50" y="110" text-anchor="middle" font-size="10" fill="#666">μᵣ = 1.0</text>
-    <text x="50" y="122" text-anchor="middle" font-size="10" fill="#666">No saturation</text>
-    <text x="50" y="134" text-anchor="middle" font-size="10" fill="#666">Linear B-H</text>
-  </g>
+    <text x="50" y="110" text-anchor="middle" font-size="10" fill="#666">>μ = 1.0</text>
+    <text x="50" y="122" text-anchor="middle" font-size="10" fill="#666">>No saturation</text>
+    <text x="50" y="134" text-anchor="middle" font-size="10" fill="#666">>Linear B-H</text>
+  </g>>
   
   <!-- Iron Core -->
   <g transform="translate(250, 110)">
@@ -40,10 +40,10 @@
     <path d="M 20 60 Q 35 45 50 60 Q 65 75 80 60" stroke="#ff0000" stroke-width="3" fill="none"/>
     
     <text x="50" y="95" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Iron Core</text>
-    <text x="50" y="110" text-anchor="middle" font-size="10" fill="#666">μᵣ = 2000-5000</text>
-    <text x="50" y="122" text-anchor="middle" font-size="10" fill="#666">Saturates easily</text>
-    <text x="50" y="134" text-anchor="middle" font-size="10" fill="#666">High losses</text>
-  </g>
+    <text x="50" y="110" text-anchor="middle" font-size="10" fill="#666">>μ = 2000-5000</text>
+    <text x="50" y="122" text-anchor="middle" font-size="10" fill="#666">>Saturates easily</text>
+    <text x="50" y="134" text-anchor="middle" font-size="10" fill="#666">>High losses</text>
+  </g>>
   
   <!-- Ferrite Core -->
   <g transform="translate(400, 110)">
@@ -60,10 +60,10 @@
     <path d="M 20 60 Q 35 45 50 60 Q 65 75 80 60" stroke="#8a2be2" stroke-width="2" fill="none"/>
     
     <text x="50" y="95" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Ferrite Core</text>
-    <text x="50" y="110" text-anchor="middle" font-size="10" fill="#666">μᵣ = 50-3000</text>
-    <text x="50" y="122" text-anchor="middle" font-size="10" fill="#666">Low losses</text>
-    <text x="50" y="134" text-anchor="middle" font-size="10" fill="#666">High frequency</text>
-  </g>
+    <text x="50" y="110" text-anchor="middle" font-size="10" fill="#666">>μ = 50-3000</text>
+    <text x="50" y="122" text-anchor="middle" font-size="10" fill="#666">>Low losses</text>
+    <text x="50" y="134" text-anchor="middle" font-size="10" fill="#666">>High frequency</text>
+  </g>>
   
   <!-- Powdered Iron -->
   <g transform="translate(550, 110)">
@@ -82,10 +82,10 @@
     <path d="M 20 60 Q 35 45 50 60 Q 65 75 80 60" stroke="#d2691e" stroke-width="2" fill="none" stroke-dasharray="3,1"/>
     
     <text x="50" y="95" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Powdered Iron</text>
-    <text x="50" y="110" text-anchor="middle" font-size="10" fill="#666">μᵣ = 10-100</text>
-    <text x="50" y="122" text-anchor="middle" font-size="10" fill="#666">Distributed gap</text>
-    <text x="50" y="134" text-anchor="middle" font-size="10" fill="#666">RF applications</text>
-  </g>
+    <text x="50" y="110" text-anchor="middle" font-size="10" fill="#666">>μ = 10-100</text>
+    <text x="50" y="122" text-anchor="middle" font-size="10" fill="#666">>Distributed gap</text>
+    <text x="50" y="134" text-anchor="middle" font-size="10" fill="#666">>RF applications</text>
+  </g>>
   
   <!-- Laminated Silicon Steel -->
   <g transform="translate(700, 110)">
@@ -104,16 +104,16 @@
     <path d="M 20 60 Q 35 45 50 60 Q 65 75 80 60" stroke="#ff6347" stroke-width="2.5" fill="none"/>
     
     <text x="50" y="95" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Silicon Steel</text>
-    <text x="50" y="110" text-anchor="middle" font-size="10" fill="#666">μᵣ = 4000-8000</text>
-    <text x="50" y="122" text-anchor="middle" font-size="10" fill="#666">Low eddy losses</text>
-    <text x="50" y="134" text-anchor="middle" font-size="10" fill="#666">50/60 Hz</text>
-  </g>
+    <text x="50" y="110" text-anchor="middle" font-size="10" fill="#666">>μ = 4000-8000</text>
+    <text x="50" y="122" text-anchor="middle" font-size="10" fill="#666">>Low eddy losses</text>
+    <text x="50" y="134" text-anchor="middle" font-size="10" fill="#666">>50/60 Hz</text>
+  </g>>
   
   <!-- B-H Curves -->
   <rect x="50" y="290" width="430" height="250" rx="10" fill="#e8f5e8" stroke="#28a745" stroke-width="2"/>
   <text x="265" y="315" text-anchor="middle" font-size="16" font-weight="bold" fill="#155724">Magnetic B-H Characteristics</text>
   
-  <g transform="translate(100, 340)">
+  <g transform="translate(100, 340)">>
     <!-- Coordinate system -->
     <line x1="0" y1="150" x2="300" y2="150" stroke="#333" stroke-width="2"/>
     <line x1="150" y1="0" x2="150" y2="200" stroke="#333" stroke-width="2"/>
@@ -132,38 +132,38 @@
     
     <!-- Labels -->
     <text x="310" y="155" font-size="12" fill="#333">H (A/m)</text>
-    <text x="155" y="15" font-size="12" fill="#333">B (T)</text>
+    <text x="155" y="15" font-size="12" fill="#333">>B (T)</text>
     
-    <!-- Saturation points -->
+    <!-- Saturation points -->>
     <circle cx="200" cy="147" r="3" fill="#ff0000"/>
     <text x="205" y="142" font-size="10" fill="#ff0000">Bsat</text>
     
-    <!-- Legend -->
+    <!-- Legend -->>
     <rect x="10" y="10" width="120" height="80" fill="#fff" stroke="#ddd" stroke-width="1" rx="3"/>
     <line x1="20" y1="25" x2="35" y2="25" stroke="#4169e1" stroke-width="3"/>
     <text x="40" y="29" font-size="10" fill="#333">Air (linear)</text>
     
-    <line x1="20" y1="40" x2="35" y2="40" stroke="#ff0000" stroke-width="3"/>
+    <line x1="20" y1="40" x2="35" y2="40" stroke="#ff0000" stroke-width="3"/>>
     <text x="40" y="44" font-size="10" fill="#333">Iron (saturating)</text>
     
-    <line x1="20" y1="55" x2="35" y2="55" stroke="#8a2be2" stroke-width="3"/>
+    <line x1="20" y1="55" x2="35" y2="55" stroke="#8a2be2" stroke-width="3"/>>
     <text x="40" y="59" font-size="10" fill="#333">Ferrite</text>
     
-    <line x1="20" y1="70" x2="35" y2="70" stroke="#dc3545" stroke-width="2"/>
+    <line x1="20" y1="70" x2="35" y2="70" stroke="#dc3545" stroke-width="2"/>>
     <text x="40" y="74" font-size="10" fill="#333">Hysteresis</text>
     
-    <text x="150" y="215" text-anchor="middle" font-size="12" fill="#155724" font-weight="bold">L = μN²A/l = μ₀μᵣN²A/l</text>
-  </g>
+    <text x="150" y="215" text-anchor="middle" font-size="12" fill="#155724" font-weight="bold">>L = μN²A/l = μ₀μN²A/l</text>
+  </g>>
   
-  <!-- Core Shapes & Applications -->
+  <!-- Core Shapes &amp; Applications -->
   <rect x="520" y="290" width="430" height="250" rx="10" fill="#e3f2fd" stroke="#2196f3" stroke-width="2"/>
-  <text x="735" y="315" text-anchor="middle" font-size="16" font-weight="bold" fill="#0d47a1">Core Shapes & Applications</text>
+  <text x="735" y="315" text-anchor="middle" font-size="16" font-weight="bold" fill="#0d47a1">Core Shapes &amp; Applications</text>
   
-  <!-- Toroidal -->
+  <!-- Toroidal -->>
   <g transform="translate(550, 340)">
     <text x="50" y="0" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Toroidal</text>
     
-    <ellipse cx="50" cy="30" rx="25" ry="20" fill="none" stroke="#4b0082" stroke-width="3"/>
+    <ellipse cx="50" cy="30" rx="25" ry="20" fill="none" stroke="#4b0082" stroke-width="3"/>>
     <ellipse cx="50" cy="30" rx="12" ry="10" fill="none" stroke="#4b0082" stroke-width="3"/>
     
     <!-- Windings -->
@@ -172,15 +172,15 @@
     <path d="M 30 35 Q 40 30 50 40 Q 60 50 70 45" fill="none" stroke="#ff6b35" stroke-width="2"/>
     
     <text x="50" y="70" text-anchor="middle" font-size="10" fill="#666">• Closed flux path</text>
-    <text x="50" y="82" text-anchor="middle" font-size="10" fill="#666">• Low EMI</text>
-    <text x="50" y="94" text-anchor="middle" font-size="10" fill="#666">• High efficiency</text>
-  </g>
+    <text x="50" y="82" text-anchor="middle" font-size="10" fill="#666">>• Low EMI</text>
+    <text x="50" y="94" text-anchor="middle" font-size="10" fill="#666">>• High efficiency</text>
+  </g>>
   
   <!-- E-Core -->
   <g transform="translate(650, 340)">
     <text x="50" y="0" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">E-Core</text>
     
-    <!-- E-core shape -->
+    <!-- E-core shape -->>
     <path d="M 30 15 L 70 15 L 70 20 L 60 20 L 60 25 L 70 25 L 70 30 L 60 30 L 60 35 L 70 35 L 70 40 L 60 40 L 60 45 L 70 45 L 70 50 L 30 50 L 30 45 L 40 45 L 40 40 L 30 40 L 30 35 L 40 35 L 40 30 L 30 30 L 30 25 L 40 25 L 40 20 L 30 20 Z" 
           fill="#4b0082" stroke="#333" stroke-width="1"/>
     
@@ -192,15 +192,15 @@
     <ellipse cx="50" cy="32.5" rx="5" ry="8" fill="none" stroke="#ff6b35" stroke-width="2"/>
     
     <text x="50" y="75" text-anchor="middle" font-size="10" fill="#666">• Easy winding</text>
-    <text x="50" y="87" text-anchor="middle" font-size="10" fill="#666">• Transformers</text>
-    <text x="50" y="99" text-anchor="middle" font-size="10" fill="#666">• Power supplies</text>
-  </g>
+    <text x="50" y="87" text-anchor="middle" font-size="10" fill="#666">>• Transformers</text>
+    <text x="50" y="99" text-anchor="middle" font-size="10" fill="#666">>• Power supplies</text>
+  </g>>
   
   <!-- Pot Core -->
   <g transform="translate(750, 340)">
     <text x="50" y="0" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Pot Core</text>
     
-    <!-- Pot core cross-section -->
+    <!-- Pot core cross-section -->>
     <ellipse cx="50" cy="35" rx="25" ry="20" fill="#4b0082" stroke="#333" stroke-width="2"/>
     <ellipse cx="50" cy="35" rx="15" ry="12" fill="#f5f5dc"/>
     
@@ -213,15 +213,15 @@
     <path d="M 40 40 Q 45 35 50 40 Q 55 45 60 40" fill="none" stroke="#ff6b35" stroke-width="2"/>
     
     <text x="50" y="70" text-anchor="middle" font-size="10" fill="#666">• Magnetic shielding</text>
-    <text x="50" y="82" text-anchor="middle" font-size="10" fill="#666">• Compact</text>
-    <text x="50" y="94" text-anchor="middle" font-size="10" fill="#666">• High inductance</text>
-  </g>
+    <text x="50" y="82" text-anchor="middle" font-size="10" fill="#666">>• Compact</text>
+    <text x="50" y="94" text-anchor="middle" font-size="10" fill="#666">>• High inductance</text>
+  </g>>
   
   <!-- Rod Core -->
   <g transform="translate(550, 450)">
     <text x="60" y="0" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Rod/Bar Core</text>
     
-    <!-- Rod core -->
+    <!-- Rod core -->>
     <rect x="20" y="25" width="80" height="8" rx="4" fill="#4b0082" stroke="#333" stroke-width="2"/>
     
     <!-- Windings -->
@@ -231,14 +231,14 @@
           fill="none" stroke="#ff6b35" stroke-width="2"/>
     
     <text x="60" y="60" text-anchor="middle" font-size="10" fill="#666">• Open flux path</text>
-    <text x="60" y="72" text-anchor="middle" font-size="10" fill="#666">• Antenna coils</text>
-  </g>
+    <text x="60" y="72" text-anchor="middle" font-size="10" fill="#666">>• Antenna coils</text>
+  </g>>
   
   <!-- Air Gap Effect -->
   <g transform="translate(700, 450)">
     <text x="60" y="0" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Air Gap Effect</text>
     
-    <!-- Core with air gap -->
+    <!-- Core with air gap -->>
     <rect x="20" y="25" width="35" height="15" fill="#4b0082" stroke="#333" stroke-width="2"/>
     <rect x="65" y="25" width="35" height="15" fill="#4b0082" stroke="#333" stroke-width="2"/>
     
@@ -246,35 +246,35 @@
     <rect x="55" y="25" width="10" height="15" fill="#f0f8ff" stroke="#87ceeb" stroke-width="1" stroke-dasharray="2,2"/>
     <text x="60" y="47" text-anchor="middle" font-size="8" fill="#333">gap</text>
     
-    <!-- Field lines bowing out -->
+    <!-- Field lines bowing out -->>
     <path d="M 45 20 Q 60 10 75 20" stroke="#ff0000" stroke-width="2" fill="none"/>
     <path d="M 45 32.5 Q 60 32.5 75 32.5" stroke="#ff0000" stroke-width="2" fill="none"/>
     <path d="M 45 45 Q 60 55 75 45" stroke="#ff0000" stroke-width="2" fill="none"/>
     
     <text x="60" y="70" text-anchor="middle" font-size="10" fill="#666">• Prevents saturation</text>
-    <text x="60" y="82" text-anchor="middle" font-size="10" fill="#666">• Linear response</text>
-  </g>
+    <text x="60" y="82" text-anchor="middle" font-size="10" fill="#666">>• Linear response</text>
+  </g>>
   
   <!-- Core Selection Guide -->
   <g transform="translate(50, 570)">
     <rect x="0" y="0" width="900" height="80" fill="#fff3e0" stroke="#ff9800" stroke-width="2" rx="5"/>
     <text x="450" y="20" text-anchor="middle" font-size="16" font-weight="bold" fill="#f57c00">Core Material Selection Guide</text>
     
-    <g transform="translate(50, 35)">
+    <g transform="translate(50, 35)">>
       <text x="0" y="0" font-size="12" font-weight="bold" fill="#d84315">Audio (20Hz-20kHz):</text>
-      <text x="0" y="15" font-size="10" fill="#333">Laminated silicon steel, high permeability</text>
+      <text x="0" y="15" font-size="10" fill="#333">>Laminated silicon steel, high permeability</text>
       
-      <text x="200" y="0" font-size="12" font-weight="bold" fill="#d84315">Power (50/60Hz):</text>
-      <text x="200" y="15" font-size="10" fill="#333">Silicon steel, grain-oriented</text>
+      <text x="200" y="0" font-size="12" font-weight="bold" fill="#d84315">>Power (50/60Hz):</text>
+      <text x="200" y="15" font-size="10" fill="#333">>Silicon steel, grain-oriented</text>
       
-      <text x="400" y="0" font-size="12" font-weight="bold" fill="#d84315">RF (MHz):</text>
-      <text x="400" y="15" font-size="10" fill="#333">Air core, powdered iron</text>
+      <text x="400" y="0" font-size="12" font-weight="bold" fill="#d84315">>RF (MHz):</text>
+      <text x="400" y="15" font-size="10" fill="#333">>Air core, powdered iron</text>
       
-      <text x="550" y="0" font-size="12" font-weight="bold" fill="#d84315">Switching (kHz):</text>
-      <text x="550" y="15" font-size="10" fill="#333">Ferrite, low loss</text>
+      <text x="550" y="0" font-size="12" font-weight="bold" fill="#d84315">>Switching (kHz):</text>
+      <text x="550" y="15" font-size="10" fill="#333">>Ferrite, low loss</text>
       
-      <text x="50" y="35" font-size="11" fill="#666">Temperature rating: Curie temperature limits operation</text>
-      <text x="400" y="35" font-size="11" fill="#666">Cost: Air < Powdered Iron < Ferrite < Silicon Steel</text>
+      <text x="50" y="35" font-size="11" fill="#666">>Temperature rating: Curie temperature limits operation</text>
+      <text x="400" y="35" font-size="11" fill="#666">Cost: Air < Powdered Iron < Ferrite < Silicon Steel</text>>
     </g>
-  </g>
+  </g>>
 </svg>

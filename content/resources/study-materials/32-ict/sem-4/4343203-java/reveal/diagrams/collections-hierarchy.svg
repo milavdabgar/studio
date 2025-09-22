@@ -19,27 +19,27 @@
   
   <!-- Collection Interface (Root) -->
   <rect x="375" y="50" width="150" height="30" fill="#3498db" class="interface-box"/>
-  <text x="450" y="70" text-anchor="middle" class="interface-text">Collection&lt;E&gt;</text>
+  <text x="450" y="70" text-anchor="middle" class="interface-text">Collection<E></text>
   
   <!-- List Interface -->
   <rect x="50" y="130" width="120" height="30" fill="#e74c3c" class="interface-box"/>
-  <text x="110" y="150" text-anchor="middle" class="interface-text">List&lt;E&gt;</text>
+  <text x="110" y="150" text-anchor="middle" class="interface-text">List<E></text>
   
   <!-- Set Interface -->
   <rect x="220" y="130" width="120" height="30" fill="#f39c12" class="interface-box"/>
-  <text x="280" y="150" text-anchor="middle" class="interface-text">Set&lt;E&gt;</text>
+  <text x="280" y="150" text-anchor="middle" class="interface-text">Set<E></text>
   
   <!-- Queue Interface -->
   <rect x="390" y="130" width="120" height="30" fill="#27ae60" class="interface-box"/>
-  <text x="450" y="150" text-anchor="middle" class="interface-text">Queue&lt;E&gt;</text>
+  <text x="450" y="150" text-anchor="middle" class="interface-text">Queue<E></text>
   
   <!-- Deque Interface -->
   <rect x="560" y="130" width="120" height="30" fill="#9b59b6" class="interface-box"/>
-  <text x="620" y="150" text-anchor="middle" class="interface-text">Deque&lt;E&gt;</text>
+  <text x="620" y="150" text-anchor="middle" class="interface-text">Deque<E></text>
   
   <!-- Map Interface (separate hierarchy) -->
   <rect x="730" y="130" width="120" height="30" fill="#e67e22" class="interface-box"/>
-  <text x="790" y="150" text-anchor="middle" class="interface-text">Map&lt;K,V&gt;</text>
+  <text x="790" y="150" text-anchor="middle" class="interface-text">Map<K,V></text>
   
   <!-- List Implementations -->
   <rect x="20" y="220" width="80" height="25" fill="#ecf0f1" class="class-box"/>
@@ -69,11 +69,11 @@
   
   <!-- SortedSet Interface -->
   <rect x="220" y="180" width="120" height="25" fill="#d35400" class="interface-box"/>
-  <text x="280" y="197" text-anchor="middle" class="interface-text">SortedSet&lt;E&gt;</text>
+  <text x="280" y="197" text-anchor="middle" class="interface-text">SortedSet<E></text>
   
   <!-- NavigableSet Interface -->
   <rect x="220" y="200" width="120" height="15" fill="#c0392b" class="interface-box"/>
-  <text x="280" y="210" text-anchor="middle" class="interface-text" font-size="10">NavigableSet&lt;E&gt;</text>
+  <text x="280" y="210" text-anchor="middle" class="interface-text" font-size="10">NavigableSet<E></text>
   
   <!-- Queue Implementations -->
   <rect x="360" y="220" width="80" height="25" fill="#ecf0f1" class="class-box"/>
@@ -104,11 +104,11 @@
   
   <!-- SortedMap Interface -->
   <rect x="730" y="180" width="120" height="25" fill="#d35400" class="interface-box"/>
-  <text x="790" y="197" text-anchor="middle" class="interface-text">SortedMap&lt;K,V&gt;</text>
+  <text x="790" y="197" text-anchor="middle" class="interface-text">SortedMap<K,V></text>
   
   <!-- NavigableMap Interface -->
   <rect x="730" y="200" width="120" height="15" fill="#c0392b" class="interface-box"/>
-  <text x="790" y="210" text-anchor="middle" class="interface-text" font-size="10">NavigableMap&lt;K,V&gt;</text>
+  <text x="790" y="210" text-anchor="middle" class="interface-text" font-size="10">NavigableMap<K,V></text>
   
   <!-- Connection Lines -->
   <!-- Collection to interfaces -->

@@ -27,8 +27,8 @@
     <text class="ph" x="24" y="40">Uncaught handler</text>
     <g transform="translate(24,70)">
       <rect class="box" x="0" y="0" width="452" height="140"/>
-      <text class="code" x="16" y="36">Thread.setDefaultUncaughtExceptionHandler((t,e) -&gt; log(e));</text>
-      <text class="code" x="16" y="64">t.setUncaughtExceptionHandler((th,e) -&gt; handle(e));</text>
+      <text class="code" x="16" y="36">Thread.setDefaultUncaughtExceptionHandler((t,e) -> log(e));</text>
+      <text class="code" x="16" y="64">t.setUncaughtExceptionHandler((th,e) -> handle(e));</text>
     </g>
     <text class="t" x="24" y="250">Prefer executors + futures for task errors</text>
   </g>

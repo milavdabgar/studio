@@ -16,9 +16,9 @@
   <text x="430" y="360" class="t">I</text>
   <!-- V components -->
   <line x1="120" y1="360" x2="420" y2="300" class="v"/>
-  <text x="430" y="300" class="t">V<tspan baseline-shift="sub">L</tspan> − V<tspan baseline-shift="sub">C</tspan></text>
+  <text x="430" y="300" class="t">V_tspan baseline-shift="sub"L</tspan> − V_tspan baseline-shift="sub"C</tspan></text>
   <line x1="120" y1="360" x2="420" y2="240" class="v"/>
   <text x="430" y="240" class="t">V (resultant)</text>
-  <text x="600" y="120" class="t">At resonance: V<tspan baseline-shift="sub">L</tspan> ≈ V<tspan baseline-shift="sub">C</tspan></text>
+  <text x="600" y="120" class="t">At resonance: V_tspan baseline-shift="sub"L</tspan> ≈ V_tspan baseline-shift="sub"C</tspan></text>
 </svg>
 

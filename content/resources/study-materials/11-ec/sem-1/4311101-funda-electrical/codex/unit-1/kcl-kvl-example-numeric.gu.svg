@@ -24,5 +24,5 @@
   <line x1="100" y1="220" x2="100" y2="140" class="w"/>
   <text x="80" y="130" class="t">10 V</text>
   <text x="60" y="300" class="t">I = 10V / (2k + 3k) = 2 mA</text>
-  <text x="60" y="330" class="t">V&lt;R1&gt; = 4 V, V&lt;R2&gt; = 6 V (KVL check)</text>
+  <text x="60" y="330" class="t">V_R1 = 4 V, V_R2 = 6 V (KVL check)</text>
 </svg>

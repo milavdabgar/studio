@@ -96,7 +96,7 @@
   <!-- Undersampling (fs = 8 Hz < 2fm) -->
   <g transform="translate(50, 230)">
     <text x="0" y="0" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#e74c3c">
-      Undersampling: fs = 8 Hz &lt; 2fm (Aliasing!)
+      Undersampling: fs = 8 Hz < 2fm (Aliasing!)
     </text>
     
     <!-- Time axis -->

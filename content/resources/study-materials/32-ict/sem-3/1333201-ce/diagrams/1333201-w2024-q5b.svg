@@ -64,7 +64,7 @@
       <text x="250" y="55" class="label" fill="#1976d2">Dielectric Substrate</text>
       <text x="450" y="45" class="axis">εr = 2.2-10</text>
       <text x="450" y="57" class="axis">h = 0.8-6mm</text>
-      <text x="450" y="69" class="axis">tan δ &lt; 0.01</text>
+      <text x="450" y="69" class="axis">tan δ < 0.01</text>
     </g>
 
     <!-- Patch (top) -->

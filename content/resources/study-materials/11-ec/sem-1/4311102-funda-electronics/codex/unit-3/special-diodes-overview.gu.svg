@@ -24,7 +24,7 @@
   <polygon points="380,80 420,100 380,120" fill="none" stroke="#111" stroke-width="2"/>
   <line x1="420" y1="80" x2="420" y2="120" class="w"/>
   <line x1="420" y1="100" x2="480" y2="100" class="w"/>
-  <text x="328" y="135" class="t">Low V<tspan baseline-shift="sub">F</tspan>, fast</text>
+  <text x="328" y="135" class="t">Low V_tspan baseline-shift="sub"F</tspan>, fast</text>
 
   <!-- વારેક્ટર -->
   <text x="580" y="70" class="h">વારેક્ટર</text>
@@ -32,7 +32,7 @@
   <line x1="660" y1="80" x2="660" y2="120" class="w"/>
   <line x1="680" y1="80" x2="680" y2="120" class="w"/>
   <line x1="700" y1="100" x2="760" y2="100" class="w"/>
-  <text x="590" y="135" class="t">C varies with V<tspan baseline-shift="sub">R</tspan></text>
+  <text x="590" y="135" class="t">C varies with V_tspan baseline-shift="sub"R</tspan></text>
 
   <!-- ફોટોડાયોડ -->
   <text x="60" y="220" class="h">ફોટોડાયોડ</text>

@@ -8,8 +8,8 @@
   <text x="40" y="44" class="ttl">Functional interfaces and lambda</text>
   <g transform="translate(60,120)"><rect class="card" x="0" y="0" width="1080" height="320"/>
     <text class="ph" x="24" y="40">Examples</text>
-    <text class="code" x="24" y="80">Runnable r = () -&gt; System.out.println("Hi");</text>
-    <text class="code" x="24" y="112">Comparator&lt;String&gt; c = (a,b) -&gt; a.compareToIgnoreCase(b);</text>
+    <text class="code" x="24" y="80">Runnable r = () -> System.out.println("Hi");</text>
+    <text class="code" x="24" y="112">Comparator<String> c = (a,b) -> a.compareToIgnoreCase(b);</text>
   </g>
 </svg>
 

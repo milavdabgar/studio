@@ -9,7 +9,7 @@
   </defs>
   <!-- Source -->
   <line x1="80" y1="150" x2="180" y2="150" class="w"/>
-  <text x="80" y="130" class="t">V<tspan baseline-shift="sub">S</tspan></text>
+  <text x="80" y="130" class="t">V_tspan baseline-shift="sub"S</tspan></text>
   <!-- પ્રતિરોધક -->
   <polyline points="180,150 200,130 220,170 240,130 260,170 280,130 300,150" class="w"/>
   <text x="220" y="120" class="t">R</text>
@@ -21,8 +21,8 @@
   <line x1="330" y1="105" x2="360" y2="120" class="w"/>
   <polygon points="360,120 354,110 371,114" fill="#111"/>
   <line x1="340" y1="150" x2="420" y2="150" class="w"/>
-  <text x="320" y="190" class="t">V<tspan baseline-shift="sub">F</tspan>, I<tspan baseline-shift="sub">એલઇડી</tspan></text>
+  <text x="320" y="190" class="t">V_tspan baseline-shift="sub"F</tspan>, I_tspan baseline-shift="sub"એલઇડી</tspan></text>
 
-  <text x="60" y="240" class="t">R = (V<tspan baseline-shift="sub">S</tspan> − V<tspan baseline-shift="sub">F</tspan>) / I<tspan baseline-shift="sub">એલઇડી</tspan></text>
+  <text x="60" y="240" class="t">R = (V_tspan baseline-shift="sub"S</tspan> − V_tspan baseline-shift="sub"F</tspan>) / I_tspan baseline-shift="sub"એલઇડી</tspan></text>
 </svg>
 

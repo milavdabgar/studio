@@ -147,7 +147,7 @@
   <text x="320" y="480" text-anchor="middle" fill="#2c3e50" font-family="Arial, sans-serif" font-size="9">half-cycles of AM signal</text>
 
   <text x="510" y="465" text-anchor="middle" fill="#2c3e50" font-family="Arial, sans-serif" font-size="9">Forward voltage drop</text>
-  <text x="510" y="480" text-anchor="middle" fill="#2c3e50" font-family="Arial, sans-serif" font-size="9">should be &lt;&lt; signal</text>
+  <text x="510" y="480" text-anchor="middle" fill="#2c3e50" font-family="Arial, sans-serif" font-size="9">should be << signal</text>
 
   <text x="665" y="470" text-anchor="middle" fill="#7f8c8d" font-family="Arial, sans-serif" font-size="9">N/A</text>
 
@@ -183,7 +183,7 @@
   <text x="510" y="545" text-anchor="middle" fill="#2c3e50" font-family="Arial, sans-serif" font-size="9">Provides proper</text>
   <text x="510" y="555" text-anchor="middle" fill="#2c3e50" font-family="Arial, sans-serif" font-size="9">discharge rate</text>
 
-  <text x="665" y="550" text-anchor="middle" fill="#e74c3c" font-family="Arial, sans-serif" font-size="9" font-weight="bold">RC &lt;&lt; 1/fm</text>
+  <text x="665" y="550" text-anchor="middle" fill="#e74c3c" font-family="Arial, sans-serif" font-size="9" font-weight="bold">RC << 1/fm</text>
 
   <!-- Critical Design Condition -->
   <rect x="250" y="280" width="300" height="60" fill="#ffffcc" stroke="#f39c12" stroke-width="2" rx="5">
@@ -193,7 +193,7 @@
     Critical Design Condition
   </text>
   <text x="400" y="318" text-anchor="middle" fill="#d35400" font-family="Arial, sans-serif" font-size="14" font-weight="bold">
-    1/fm &lt;&lt; RC &lt;&lt; 1/fc
+    1/fm << RC << 1/fc
   </text>
   <text x="400" y="335" text-anchor="middle" fill="#8e44ad" font-family="Arial, sans-serif" font-size="10">
     Ensures proper envelope tracking without carrier ripple

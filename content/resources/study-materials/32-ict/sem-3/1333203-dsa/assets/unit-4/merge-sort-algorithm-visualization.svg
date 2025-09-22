@@ -185,7 +185,7 @@
           <rect x="95" y="0" width="25" height="18" fill="#27ae60" stroke="#229954" stroke-width="2"/>
           <text x="82" y="13" text-anchor="middle" class="small-text" fill="white">27</text>
           <text x="107" y="13" text-anchor="middle" class="small-text" fill="white">38</text>
-          <text x="82" y="35" text-anchor="middle" class="small-text">Compare: 27 &lt; 38</text>
+          <text x="82" y="35" text-anchor="middle" class="small-text">Compare: 27 < 38</text>
         </g>
 
         <g transform="translate(200, 10)">
@@ -201,7 +201,7 @@
           <rect x="95" y="0" width="25" height="18" fill="#27ae60" stroke="#229954" stroke-width="2"/>
           <text x="82" y="13" text-anchor="middle" class="small-text" fill="white">3</text>
           <text x="107" y="13" text-anchor="middle" class="small-text" fill="white">43</text>
-          <text x="82" y="35" text-anchor="middle" class="small-text">Compare: 3 &lt; 43</text>
+          <text x="82" y="35" text-anchor="middle" class="small-text">Compare: 3 < 43</text>
         </g>
       </g>
 
@@ -314,7 +314,7 @@
     <text x="40" y="95" class="code" fill="#ecf0f1">Merge Sort Algorithm</text>
     <text x="40" y="115" class="code" fill="#ecf0f1">Time: O(n log n), Space: O(n)</text>
     <text x="40" y="135" class="code" fill="#ecf0f1">"""</text>
-    <text x="40" y="155" class="code" fill="#ecf0f1">if len(arr) &lt;= 1:</text>
+    <text x="40" y="155" class="code" fill="#ecf0f1">if len(arr) <= 1:</text>
     <text x="60" y="175" class="code" fill="#27ae60">return arr</text>
 
     <text x="40" y="205" class="code" fill="#f39c12"># Divide</text>
@@ -329,8 +329,8 @@
     <text x="40" y="365" class="code" fill="#ecf0f1">result = []</text>
     <text x="40" y="385" class="code" fill="#ecf0f1">i = j = 0</text>
 
-    <text x="40" y="415" class="code" fill="#ecf0f1">while i &lt; len(left) and j &lt; len(right):</text>
-    <text x="60" y="435" class="code" fill="#ecf0f1">if left[i] &lt;= right[j]:</text>
+    <text x="40" y="415" class="code" fill="#ecf0f1">while i < len(left) and j < len(right):</text>
+    <text x="60" y="435" class="code" fill="#ecf0f1">if left[i] <= right[j]:</text>
     <text x="80" y="455" class="code" fill="#ecf0f1">result.append(left[i])</text>
     <text x="80" y="475" class="code" fill="#ecf0f1">i += 1</text>
   </g>

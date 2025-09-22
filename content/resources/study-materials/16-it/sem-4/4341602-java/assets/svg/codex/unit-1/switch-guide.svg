@@ -13,7 +13,7 @@
     <text class="label" x="24" y="82">Classic</text>
     <text class="code" x="24" y="110">switch(x){ case A: ... break; case B: ... break; default: ... }</text>
     <text class="label" x="24" y="160">Enhanced (arrow)</text>
-    <text class="code" x="24" y="188">var y = switch(x){ case A -&gt; 1; case B -&gt; 2; default -&gt; 0; };</text>
+    <text class="code" x="24" y="188">var y = switch(x){ case A -> 1; case B -> 2; default -> 0; };</text>
     <text class="label" x="24" y="238">Notes</text>
     <text class="code" x="24" y="266">• Cases must be constant expressions; fall‑through only with classic</text>
     <text class="code" x="24" y="294">• Enhanced form can return a value and is exhaustive</text>

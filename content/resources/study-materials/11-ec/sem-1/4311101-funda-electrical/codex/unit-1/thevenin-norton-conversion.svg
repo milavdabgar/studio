@@ -10,7 +10,7 @@
   </defs>
   <!-- Thevenin -->
   <rect x="60" y="60" width="360" height="260" rx="10" class="box"/>
-  <text x="80" y="100" class="t">Thevenin: V<tspan baseline-shift="sub">TH</tspan> in series with R<tspan baseline-shift="sub">TH</tspan></text>
+  <text x="80" y="100" class="t">Thevenin: V_tspan baseline-shift="sub"TH</tspan> in series with R<tspan baseline-shift="sub">TH</tspan></text>
   <line x1="80" y1="160" x2="140" y2="160" class="w"/>
   <line x1="140" y1="140" x2="140" y2="180" class="w"/>
   <line x1="160" y1="140" x2="160" y2="180" class="w"/>
@@ -22,7 +22,7 @@
 
   <!-- Norton -->
   <rect x="520" y="60" width="360" height="260" rx="10" class="box"/>
-  <text x="540" y="100" class="t">Norton: I<tspan baseline-shift="sub">N</tspan> in parallel with R<tspan baseline-shift="sub">N</tspan></text>
+  <text x="540" y="100" class="t">Norton: I_tspan baseline-shift="sub"N</tspan> in parallel with R<tspan baseline-shift="sub">N</tspan></text>
   <line x1="540" y1="160" x2="600" y2="160" class="w"/>
   <circle cx="600" cy="160" r="12" fill="none" stroke="#111" stroke-width="2"/>
   <line x1="600" y1="148" x2="600" y2="172" class="w"/>
@@ -34,6 +34,6 @@
   <line x1="720" y1="160" x2="720" y2="220" class="w"/>
   <text x="720" y="160" class="t">B</text>
 
-  <text x="420" y="200" class="t">V<tspan baseline-shift="sub">TH</tspan> = I<tspan baseline-shift="sub">N</tspan> · R<tspan baseline-shift="sub">TH</tspan>, R<tspan baseline-shift="sub">N</tspan> = R<tspan baseline-shift="sub">TH</tspan></text>
+  <text x="420" y="200" class="t">V_tspan baseline-shift="sub"TH</tspan> = I_tspan baseline-shift="sub"N</tspan> · R<tspan baseline-shift="sub">TH</tspan>, R<tspan baseline-shift="sub">N</tspan> = R<tspan baseline-shift="sub">TH</tspan></text>
 </svg>
 
