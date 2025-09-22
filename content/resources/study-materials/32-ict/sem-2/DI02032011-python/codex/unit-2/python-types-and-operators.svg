@@ -15,14 +15,14 @@
   <g transform="translate(60,120)">
     <rect x="0" y="0" width="500" height="560" rx="12" class="box"/>
     <text x="16" y="40" class="t">Types: int, float, bool, str, list, tuple, set, dict</text>
-    <text x="16" y="70" class="mono">type(3.0) → <class 'float'></text>
+    <text x="16" y="70" class="mono">type(3.0) → &lt;class 'float'&gt;</text>
     <text x="16" y="96" class="mono">isinstance(True, bool) → True</text>
   </g>
   <g transform="translate(600,120)">
     <rect x="0" y="0" width="540" height="560" rx="12" class="box"/>
     <text x="16" y="40" class="t">Operators</text>
     <text x="16" y="70" class="t">Arithmetic: + − * / % ** //</text>
-    <text x="16" y="100" class="t">Comparison: > < >= <= == != ===</text>
+    <text x="16" y="100" class="t">Comparison: &gt; &lt; &gt;= &lt;= == != ===</text>
     <text x="16" y="130" class="t">Logical: and, or, not</text>
   </g>
 </svg>

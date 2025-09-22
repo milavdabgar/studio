@@ -175,7 +175,7 @@
       </text>
       
       <text x="90" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#e74c3c">
-        1/ωm &lt; RC < 1/ωc
+        1/ωm &lt; RC &lt; 1/ωc
       </text>
       
       <g font-family="Arial, sans-serif" font-size="9" fill="#34495e">

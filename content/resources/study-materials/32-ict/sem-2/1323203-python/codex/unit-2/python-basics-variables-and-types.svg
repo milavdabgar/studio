@@ -19,7 +19,7 @@
     <text x="16" y="110" class="t">Assignment binds names to objects</text>
     <text x="16" y="140" class="mono">x = 42   s = "hello"   pi = 3.14</text>
     <text x="16" y="180" class="t">Types: int, float, bool, str, list, tuple, set, dict</text>
-    <text x="16" y="210" class="mono">type(x) → <class 'int'></text>
+    <text x="16" y="210" class="mono">type(x) → &lt;class 'int'&gt;</text>
   </g>
   <g transform="translate(620,120)">
     <rect x="0" y="0" width="500" height="560" rx="12" class="box"/>
