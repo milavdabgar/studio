@@ -169,10 +169,10 @@
   <g id="verification">
     <rect x="500" y="580" width="300" height="100" fill="#ecf0f1" stroke="#95a5a6" stroke-width="2" rx="10"/>
     <text x="650" y="600" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2c3e50">Solution Verification</text>
-    <text x="520" y="620" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">> Check units and magnitude reasonableness</text>
-    <text x="520" y="635" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">> Verify Kirchhoff's laws are satisfied</text>
-    <text x="520" y="650" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">> Check power balance (Pin = Pout + Ploss)</text>
-    <text x="520" y="665" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">> Compare with simulation/measurement if available</text>
+    <text x="520" y="620" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">> Check units and magnitude reasonableness</text>
+    <text x="520" y="635" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">> Verify Kirchhoff's laws are satisfied</text>
+    <text x="520" y="650" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">> Check power balance (Pin = Pout + Ploss)</text>
+    <text x="520" y="665" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">> Compare with simulation/measurement if available</text>
   </g>>
 
   <!-- Special Analysis Techniques -->

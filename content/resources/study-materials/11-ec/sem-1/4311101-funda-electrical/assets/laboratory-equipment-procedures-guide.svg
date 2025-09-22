@@ -207,8 +207,8 @@
     <text x="420" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#3498db">Equipment Usage Guidelines</text>
     
     <text x="100" y="310" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#2c3e50">>Pre-use Checklist:</text>
-    <text x="110" y="325" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">> Verify power ratings and connections</text>
-    <text x="110" y="337" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">> Check calibration dates and accuracy</text>
+    <text x="110" y="325" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">> Verify power ratings and connections</text>
+    <text x="110" y="337" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">> Check calibration dates and accuracy</text>
     
     <text x="400" y="310" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#2c3e50">>Safety Precautions:</text>
     <text x="410" y="325" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">> Never exceed maximum input ratings</text>
