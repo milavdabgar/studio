@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="980" height="440" viewBox="0 0 980 440" role="img" aria-label="Ripple contours vs capacitance and load current">
-  <title>Ripple Contours: ΔV = I_subL</sub> / (f<sub>r</sub> · C)</title>
+  <title>Ripple Contours: ΔV = I<sub>L</sub> / (f<sub>r</sub> · C)</title>
   <defs>
     <style>
       .axis { stroke: #111; stroke-width: 2; }

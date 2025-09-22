@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="980" height="420" viewBox="0 0 980 420" role="img" aria-label="રિપલ voltage vs load current plot">
-  <title>રિપલ vs લોડ કરંટ (ΔV ∝ I_subL</sub>)</title>
+  <title>રિપલ vs લોડ કરંટ (ΔV ∝ I<sub>L</sub>)</title>
   <defs>
     <style>
       .axis { stroke: #111; stroke-width: 2; }
