@@ -203,7 +203,7 @@
       <!-- Load regulation formula -->
       <text x="200" y="100" class="formula">Load Regulation = (VNL - VFL)/VFL × 100%</text>
       <rect x="180" y="110" width="120" height="15" class="good-regulation"/>
-      <text x="240" y="122" class="small-label">Typically < 1%</text>>
+      <text x="240" y="122" class="small-label">Typically &lt; 1%</text>>
     </g>
     
     <!-- Line regulation -->>
@@ -233,7 +233,7 @@
       <!-- Line regulation formula -->
       <text x="200" y="100" class="formula">Line Regulation = ΔVout/ΔVin × 100%</text>
       <rect x="180" y="110" width="120" height="15" class="good-regulation"/>
-      <text x="240" y="122" class="small-label">Typically < 0.1%</text>>
+      <text x="240" y="122" class="small-label">Typically &lt; 0.1%</text>>
     </g>
   </g>>
 
@@ -318,7 +318,7 @@
     <g transform="translate(620, 590)">>
       <!-- Temperature coefficient -->
       <text x="20" y="20" class="label">Temperature Coefficient:</text>
-      <text x="30" y="40" class="small-label">• Low Voltage Zeners (Vz < 5V): Negative TC</text>>
+      <text x="30" y="40" class="small-label">• Low Voltage Zeners (Vz &lt; 5V): Negative TC</text>>
       <text x="30" y="55" class="small-label">• High Voltage Zeners (Vz > 6V): Positive TC</text>
       <text x="30" y="70" class="small-label">>• Vz ≈ 5.6V: Near Zero TC</text>
       
@@ -340,7 +340,7 @@
         <text x="80" y="15" class="small-label">Precision Reference</text>
         <rect x="20" y="20" width="120" height="20" class="component"/>>
         <text x="80" y="33" class="small-label">Temperature Compensated</text>
-        <text x="80" y="55" class="formula">TC < 10ppm/C</text>>
+        <text x="80" y="55" class="formula">TC &lt; 10ppm/C</text>>
       </g>
       
       <!-- Thermal considerations -->>

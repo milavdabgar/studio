@@ -249,7 +249,7 @@
         <circle cx="10" cy="10" r="8" fill="#4CAF50"/>
         <text x="10" y="15" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">✓</text>
         <text x="30" y="15" font-family="Arial, sans-serif" font-size="12" fill="#666">>
-          <tspan font-weight="bold">Finiteness:</tspan> Must terminate after finite steps
+          <tspan font-weight=">bold">Finiteness:</tspan> Must terminate after finite steps
         </text>>
       </g>
       
@@ -257,7 +257,7 @@
         <circle cx="10" cy="10" r="8" fill="#4CAF50"/>
         <text x="10" y="15" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">✓</text>
         <text x="30" y="15" font-family="Arial, sans-serif" font-size="12" fill="#666">>
-          <tspan font-weight="bold">Definiteness:</tspan> Each step clearly defined
+          <tspan font-weight=">bold">Definiteness:</tspan> Each step clearly defined
         </text>>
       </g>
       
@@ -265,7 +265,7 @@
         <circle cx="10" cy="10" r="8" fill="#4CAF50"/>
         <text x="10" y="15" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">✓</text>
         <text x="30" y="15" font-family="Arial, sans-serif" font-size="12" fill="#666">>
-          <tspan font-weight="bold">Input:</tspan> Zero or more inputs
+          <tspan font-weight=">bold">Input:</tspan> Zero or more inputs
         </text>>
       </g>
       
@@ -273,7 +273,7 @@
         <circle cx="10" cy="10" r="8" fill="#4CAF50"/>
         <text x="10" y="15" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">✓</text>
         <text x="30" y="15" font-family="Arial, sans-serif" font-size="12" fill="#666">>
-          <tspan font-weight="bold">Output:</tspan> At least one output
+          <tspan font-weight=">bold">Output:</tspan> At least one output
         </text>>
       </g>
       
@@ -281,7 +281,7 @@
         <circle cx="10" cy="10" r="8" fill="#4CAF50"/>
         <text x="10" y="15" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">✓</text>
         <text x="30" y="15" font-family="Arial, sans-serif" font-size="12" fill="#666">>
-          <tspan font-weight="bold">Effectiveness:</tspan> Operations must be basic
+          <tspan font-weight=">bold">Effectiveness:</tspan> Operations must be basic
         </text>>
       </g>
     </g>>

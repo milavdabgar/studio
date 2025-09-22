@@ -11,7 +11,7 @@
   </defs>
   <rect x="32" y="32" width="1216" height="656" rx="12" class="box"/>
   <text x="64" y="80" class="h">Power in Load</text>
-  <text x="64" y="112" class="t">P(R<tspan baseline-shift="sub">L</tspan>) = V_tspan baseline-shift="sub"th</tspan><tspan dy="-6">2</tspan> · R<tspan baseline-shift="sub">L</tspan> / (R<tspan baseline-shift="sub">th</tspan> + R<tspan baseline-shift="sub">L</tspan>)<tspan dy="-6">2</tspan></text>
+  <text x="64" y="112" class="t">P(R<tspan baseline-shift="sub">L</tspan>) = V<tspan baseline-shift="sub">th</tspan><tspan dy="-6">2</tspan> · R<tspan baseline-shift="sub">L</tspan> / (R<tspan baseline-shift="sub">th</tspan> + R<tspan baseline-shift="sub">L</tspan>)<tspan dy="-6">2</tspan></text>
   <text x="64" y="160" class="h">Differentiate</text>
   <text x="64" y="192" class="t">dP/dR<tspan baseline-shift="sub">L</tspan> = 0 → (R<tspan baseline-shift="sub">th</tspan> − R<tspan baseline-shift="sub">L</tspan>) / (R<tspan baseline-shift="sub">th</tspan> + R<tspan baseline-shift="sub">L</tspan>)<tspan dy="-6">3</tspan> = 0</text>
   <text x="64" y="240" class="h">Result</text>

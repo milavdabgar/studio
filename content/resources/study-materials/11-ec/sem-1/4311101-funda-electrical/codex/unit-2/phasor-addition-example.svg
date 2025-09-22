@@ -18,10 +18,10 @@
   <line x1="200" y1="560" x2="900" y2="560" class="axis"/>
   <line x1="200" y1="640" x2="200" y2="200" class="axis"/>
   <line x1="200" y1="560" x2="600" y2="560" class="vr"/>
-  <text x="610" y="560" class="t">V_tspan baseline-shift="sub"R</tspan></text>
+  <text x="610" y="560" class="t">V<tspan baseline-shift="sub">R</tspan></text>
   <line x1="200" y1="560" x2="200" y2="360" class="vl"/>
-  <text x="210" y="360" class="t">V_tspan baseline-shift="sub"L</tspan></text>
+  <text x="210" y="360" class="t">V<tspan baseline-shift="sub">L</tspan></text>
   <line x1="200" y1="560" x2="600" y2="360" class="vs"/>
-  <text x="610" y="360" class="t">V_tspan baseline-shift="sub"S</tspan> = √(V_tspan baseline-shift="sub"R</tspan><tspan dy="-6">2</tspan> + V_tspan baseline-shift="sub"L</tspan><tspan dy="-6">2</tspan>)</text>
+  <text x="610" y="360" class="t">V<tspan baseline-shift="sub">S</tspan> = √(V<tspan baseline-shift="sub">R</tspan><tspan dy="-6">2</tspan> + V<tspan baseline-shift="sub">L</tspan><tspan dy="-6">2</tspan>)</text>
 </svg>
 

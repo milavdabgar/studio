@@ -26,6 +26,6 @@
   <line x1="400" y1="120" x2="400" y2="210" class="w"/>
   <line x1="400" y1="210" x2="60" y2="210" class="w"/>
   <line x1="60" y1="210" x2="60" y2="120" class="w"/>
-  <text x="480" y="120" class="t">I_tspan baseline-shift="sub"before</tspan> > I_tspan baseline-shift="sub"after</tspan></text>
+  <text x="480" y="120" class="t">I<tspan baseline-shift="sub">before</tspan> > I<tspan baseline-shift="sub">after</tspan></text>
 </svg>
 

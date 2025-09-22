@@ -18,8 +18,8 @@
   <!-- Secondary coil -->
   <path d="M720 200 q20 20 0 40 q20 20 0 40 q20 20 0 40 q20 20 0 40 q20 20 0 40" class="w"/>
   <!-- Labels -->
-  <text x="480" y="190" class="t">N<tspan baseline-shift="sub">1</tspan>, V_tspan baseline-shift="sub"1</tspan>, I_tspan baseline-shift="sub"1</tspan></text>
-  <text x="900" y="190" class="t">N<tspan baseline-shift="sub">2</tspan>, V_tspan baseline-shift="sub"2</tspan>, I_tspan baseline-shift="sub"2</tspan></text>
+  <text x="480" y="190" class="t">N<tspan baseline-shift="sub">1</tspan>, V<tspan baseline-shift="sub">1</tspan>, I<tspan baseline-shift="sub">1</tspan></text>
+  <text x="900" y="190" class="t">N<tspan baseline-shift="sub">2</tspan>, V<tspan baseline-shift="sub">2</tspan>, I<tspan baseline-shift="sub">2</tspan></text>
   <text x="64" y="520" class="t">V1/V2 = N1/N2; I1/I2 = N2/N1; P1 ≈ P2 (ideal)</text>
 </svg>
 

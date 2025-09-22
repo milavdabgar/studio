@@ -43,7 +43,7 @@
     <g transform="translate(400, 120)">
       <text x="100" y="20" class="label">Consequences:</text>
       <text x="100" y="40" class="condition">If f_s ≥ 2f_max: Perfect reconstruction possible</text>
-      <text x="100" y="60" class="condition">If f_s < 2f_max: Aliasing occurs</text>
+      <text x="100" y="60" class="condition">If f_s &lt; 2f_max: Aliasing occurs</text>
       <text x="100" y="80" class="condition">Aliasing = High frequencies appear as low frequencies</text>
       <text x="100" y="100" class="condition">Aliasing distortion cannot be removed after sampling</text>
     </g>
@@ -117,7 +117,7 @@
 
   <!-- Aliasing Example -->
   <g transform="translate(50, 420)">
-    <text x="200" y="20" class="subtitle">Aliasing (f_s < 2f_max)</text>
+    <text x="200" y="20" class="subtitle">Aliasing (f_s &lt; 2f_max)</text>
 
     <!-- Original high frequency signal -->
     <g transform="translate(0, 40)">

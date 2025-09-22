@@ -13,8 +13,8 @@
   <rect x="32" y="32" width="1216" height="656" rx="12" class="box"/>
   <text x="64" y="80" class="h">સ્ટાઇનમેઝ રિલેશન્સ</text>
   <rect x="64" y="96" width="1152" height="120" class="row"/>
-  <text x="80" y="136" class="t">હિસ્ટેરિસિસ: P_tspan baseline-shift="sub"હ</tspan> = k<tspan baseline-shift="sub">હ</tspan> · f · B<tspan baseline-shift="sub">n</tspan> (n≈1.6–2.5)</text>
-  <text x="80" y="168" class="t">એડી: P_tspan baseline-shift="sub"e</tspan> = k<tspan baseline-shift="sub">e</tspan> · f<tspan dy="-6">2</tspan> · B<tspan dy="-6">2</tspan></text>
+  <text x="80" y="136" class="t">હિસ્ટેરિસિસ: P<tspan baseline-shift="sub">હ</tspan> = k<tspan baseline-shift="sub">હ</tspan> · f · B<tspan baseline-shift="sub">n</tspan> (n≈1.6–2.5)</text>
+  <text x="80" y="168" class="t">એડી: P<tspan baseline-shift="sub">e</tspan> = k<tspan baseline-shift="sub">e</tspan> · f<tspan dy="-6">2</tspan> · B<tspan dy="-6">2</tspan></text>
   <text x="64" y="240" class="h">ઘટાડવાના ઉપાય</text>
   <rect x="64" y="256" width="1152" height="140" class="row"/>
   <text x="80" y="290" class="t">• એડી લોસ ઘટાડવા લેમિનેટેડ અથવા ફેરાઇટ કોર વાપરો</text>

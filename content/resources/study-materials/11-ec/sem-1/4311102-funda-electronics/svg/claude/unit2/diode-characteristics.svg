@@ -114,7 +114,7 @@
     <line x1="205" y1="60" x2="205" y2="45" stroke="#333" stroke-width="2"/>
     <line x1="50" y1="45" x2="205" y2="45" stroke="#333" stroke-width="2"/>
     
-    <text x="130" y="105" text-anchor="middle" font-size="12" fill="#721c24">V < 0.7V</text>>
+    <text x="130" y="105" text-anchor="middle" font-size="12" fill="#721c24">V &lt; 0.7V</text>>
     <text x="130" y="120" text-anchor="middle" font-size="12" fill="#721c24">No current</text>
   </g>>
   

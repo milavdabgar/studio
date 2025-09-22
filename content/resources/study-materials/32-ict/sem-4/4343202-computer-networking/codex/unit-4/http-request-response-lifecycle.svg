@@ -79,7 +79,7 @@
   <!-- Caching Behavior -->>
   <rect class="cache" x="60" y="500" width="500" height="120" />
   <text class="lab" x="72" y="524">Freshness &amp; Validation</text>
-  <text class="txt" x="72" y="548">>Fresh if age < max-age (or unexpired Expires). Otherwise, revalidate with If-None-Match/If-Modified-Since.</text>
+  <text class="txt" x="72" y="548">>Fresh if age &lt; max-age (or unexpired Expires). Otherwise, revalidate with If-None-Match/If-Modified-Since.</text>
   <text class="txt" x="72" y="572">>Private/public controls shared caches; no-store prevents caching; must-revalidate enforces validators.</text>
 
   <rect class="box" x="640" y="500" width="500" height="140" />>

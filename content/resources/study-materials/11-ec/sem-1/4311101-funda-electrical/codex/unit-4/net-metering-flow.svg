@@ -28,6 +28,6 @@
   <line x1="920" y1="240" x2="1080" y2="240" class="arr"/>
   <rect x="1080" y="200" width="120" height="80" rx="8" class="blk"/>
   <text x="1140" y="245" class="t" text-anchor="middle">Grid</text>
-  <text x="120" y="420" class="t">Exports when PV > Load; imports when PV < Load; billing on net energy.</text>
+  <text x="120" y="420" class="t">Exports when PV > Load; imports when PV &lt; Load; billing on net energy.</text>
 </svg>
 

@@ -48,7 +48,7 @@
     <rect x="50" y="90" width="300" height="180" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2" rx="5"/>
     <text x="200" y="115" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#2c3e50">BST Properties</text>
     
-    <text x="70" y="140" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">• Left subtree values < Root value</text>
+    <text x="70" y="140" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">• Left subtree values &lt; Root value</text>
     <text x="70" y="158" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">• Right subtree values > Root value</text>
     <text x="70" y="176" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">• Both subtrees are also BSTs</text>
     <text x="70" y="194" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">• No duplicate values allowed</text>
@@ -56,7 +56,7 @@
     
     <!-- Example arrows -->
     <polygon points="320,140 340,140 330,150" fill="#e74c3c"/>
-    <text x="345" y="145" font-family="Arial, sans-serif" font-size="10" fill="#e74c3c">30 < 50</text>
+    <text x="345" y="145" font-family="Arial, sans-serif" font-size="10" fill="#e74c3c">30 &lt; 50</text>
     
     <polygon points="320,160 340,160 330,150" fill="#27ae60"/>
     <text x="345" y="165" font-family="Arial, sans-serif" font-size="10" fill="#27ae60">70 > 50</text>
@@ -70,7 +70,7 @@
     <rect x="50" y="320" width="200" height="100" fill="#d5f4e6" stroke="#27ae60" stroke-width="2" rx="5"/>
     <text x="150" y="340" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#27ae60">Steps:</text>
     <text x="60" y="360" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">1. Start at root (50)</text>
-    <text x="60" y="375" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">2. 45 < 50, go left (30)</text>
+    <text x="60" y="375" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">2. 45 &lt; 50, go left (30)</text>
     <text x="60" y="390" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">3. 45 > 30, go right (40)</text>
     <text x="60" y="405" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">4. 45 > 40, insert as right child</text>
     

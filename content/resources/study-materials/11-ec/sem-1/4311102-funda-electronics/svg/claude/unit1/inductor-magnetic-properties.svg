@@ -274,7 +274,7 @@
       <text x="550" y="15" font-size="10" fill="#333">>Ferrite, low loss</text>
       
       <text x="50" y="35" font-size="11" fill="#666">>Temperature rating: Curie temperature limits operation</text>
-      <text x="400" y="35" font-size="11" fill="#666">Cost: Air < Powdered Iron < Ferrite < Silicon Steel</text>>
+      <text x="400" y="35" font-size="11" fill="#666">Cost: Air &lt; Powdered Iron &lt; Ferrite &lt; Silicon Steel</text>>
     </g>
   </g>>
 </svg>

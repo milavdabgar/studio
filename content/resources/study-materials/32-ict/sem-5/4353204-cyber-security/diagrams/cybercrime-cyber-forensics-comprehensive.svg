@@ -293,13 +293,13 @@
   <rect x="50" y="790" width="1300" height="120" fill="#FFF3E0" stroke="#FF9800" stroke-width="3" rx="15"/>
   <text x="700" y="820" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#333">Cybercrime Impact &amp; Trends</text>
   
-  <text x="70" y="850" font-family="Arial, sans-serif" font-size="14" fill="#333">📊 <tspan font-weight="bold">Global Cost:</tspan> Cybercrime causes over $6 trillion in annual damages worldwide</text>
-  <text x="70" y="870" font-family="Arial, sans-serif" font-size="14" fill="#333">⚡ <tspan font-weight="bold">Attack Frequency:</tspan> A cyberattack occurs every 39 seconds on average</text>
-  <text x="70" y="890" font-family="Arial, sans-serif" font-size="14" fill="#333">🔒 <tspan font-weight="bold">Ransomware:</tspan> 95% of successful cyber attacks are due to human error</text>
+  <text x="70" y="850" font-family="Arial, sans-serif" font-size="14" fill="#333">📊 <tspan font-weight=">bold">Global Cost:</tspan> Cybercrime causes over $6 trillion in annual damages worldwide</text>
+  <text x="70" y="870" font-family="Arial, sans-serif" font-size="14" fill="#333">⚡ <tspan font-weight=">bold">Attack Frequency:</tspan> A cyberattack occurs every 39 seconds on average</text>
+  <text x="70" y="890" font-family="Arial, sans-serif" font-size="14" fill="#333">🔒 <tspan font-weight=">bold">Ransomware:</tspan> 95% of successful cyber attacks are due to human error</text>
   
-  <text x="720" y="850" font-family="Arial, sans-serif" font-size="14" fill="#333">📱 <tspan font-weight="bold">Mobile Threats:</tspan> 50% increase in mobile malware attacks year-over-year</text>
-  <text x="720" y="870" font-family="Arial, sans-serif" font-size="14" fill="#333">🌐 <tspan font-weight="bold">IoT Vulnerabilities:</tspan> 75 billion connected devices by 2025</text>
-  <text x="720" y="890" font-family="Arial, sans-serif" font-size="14" fill="#333">🎯 <tspan font-weight="bold">Targeted Attacks:</tspan> 43% of cyberattacks target small businesses</text>
+  <text x="720" y="850" font-family="Arial, sans-serif" font-size="14" fill="#333">📱 <tspan font-weight=">bold">Mobile Threats:</tspan> 50% increase in mobile malware attacks year-over-year</text>
+  <text x="720" y="870" font-family="Arial, sans-serif" font-size="14" fill="#333">🌐 <tspan font-weight=">bold">IoT Vulnerabilities:</tspan> 75 billion connected devices by 2025</text>
+  <text x="720" y="890" font-family="Arial, sans-serif" font-size="14" fill="#333">🎯 <tspan font-weight=">bold">Targeted Attacks:</tspan> 43% of cyberattacks target small businesses</text>
   
   <!-- Emerging Threats -->
   <rect x="50" y="930" width="1300" height="150" fill="#E1F5FE" stroke="#03A9F4" stroke-width="3" rx="15"/>

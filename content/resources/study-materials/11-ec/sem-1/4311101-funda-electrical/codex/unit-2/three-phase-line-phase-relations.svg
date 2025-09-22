@@ -21,12 +21,12 @@
   <line x1="260" y1="220" x2="440" y2="160" class="a"/>
   <line x1="260" y1="220" x2="160" y2="300" class="b"/>
   <line x1="260" y1="220" x2="160" y2="140" class="c"/>
-  <text x="460" y="160" class="t">V_tspan baseline-shift="sub"RY</tspan></text>
-  <text x="120" y="320" class="t">V_tspan baseline-shift="sub"YB</tspan></text>
-  <text x="120" y="140" class="t">V_tspan baseline-shift="sub"BR</tspan></text>
-  <text x="64" y="400" class="t">|V_tspan baseline-shift="sub"line</tspan>| = √3·|V_tspan baseline-shift="sub"phase</tspan>|; I_tspan baseline-shift="sub"line</tspan> = I_tspan baseline-shift="sub"phase</tspan></text>
+  <text x="460" y="160" class="t">V<tspan baseline-shift="sub">RY</tspan></text>
+  <text x="120" y="320" class="t">V<tspan baseline-shift="sub">YB</tspan></text>
+  <text x="120" y="140" class="t">V<tspan baseline-shift="sub">BR</tspan></text>
+  <text x="64" y="400" class="t">|V<tspan baseline-shift="sub">line</tspan>| = √3·|V<tspan baseline-shift="sub">phase</tspan>|; I<tspan baseline-shift="sub">line</tspan> = I<tspan baseline-shift="sub">phase</tspan></text>
 
   <text x="680" y="80" class="h">Delta (Δ)</text>
   <polygon points="760,140 980,220 760,300" class="w"/>
-  <text x="680" y="400" class="t">V_tspan baseline-shift="sub"line</tspan> = V_tspan baseline-shift="sub"phase</tspan>; |I_tspan baseline-shift="sub"line</tspan>| = √3·|I_tspan baseline-shift="sub"phase</tspan>|</text>
+  <text x="680" y="400" class="t">V<tspan baseline-shift="sub">line</tspan> = V<tspan baseline-shift="sub">phase</tspan>; |I<tspan baseline-shift="sub">line</tspan>| = √3·|I<tspan baseline-shift="sub">phase</tspan>|</text>
 </svg>

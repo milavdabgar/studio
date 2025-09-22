@@ -36,8 +36,8 @@
   <a xlink:href="rectifier-efficiency-comparison.svg"><text x="40" y="410" class="t">કાર્યક્ષમતા</text></a>
   <a xlink:href="transformer-utilization-factor.svg"><text x="40" y="440" class="t">TUF</text></a>
   <a xlink:href="ripple-vs-capacitance.svg"><text x="40" y="470" class="t">ΔV vs C</text></a>
-  <a xlink:href="ripple-vs-load-current.svg"><text x="40" y="500" class="t">ΔV vs I_tspan baseline-shift="sub"L</tspan></text></a>
-  <a xlink:href="ripple-contours-c-vs-il.svg"><text x="40" y="530" class="t">ΔV કન્ટુર (C vs I_tspan baseline-shift="sub"L</tspan>)</text></a>
+  <a xlink:href="ripple-vs-load-current.svg"><text x="40" y="500" class="t">ΔV vs I<tspan baseline-shift="sub">L</tspan></text></a>
+  <a xlink:href="ripple-contours-c-vs-il.svg"><text x="40" y="530" class="t">ΔV કન્ટુર (C vs I<tspan baseline-shift="sub">L</tspan>)</text></a>
 
   <text x="420" y="340" class="h">પ્રોબિંગ</text>
   <a xlink:href="oscilloscope-probe-rectifier.svg"><text x="420" y="380" class="t">પ્રોબ જોડાણ</text></a>

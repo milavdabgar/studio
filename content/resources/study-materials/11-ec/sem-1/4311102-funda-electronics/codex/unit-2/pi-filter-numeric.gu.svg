@@ -9,8 +9,8 @@
     </style>
   </defs>
   <rect x="40" y="40" width="900" height="300" rx="10" class="box"/>
-  <text x="60" y="80" class="t">Assume: f = 50 Hz (full-wave → f<tspan baseline-shift="sub">r</tspan> = 100 Hz), I_tspan baseline-shift="sub"L</tspan> = 10 mA, C<tspan baseline-shift="sub">2</tspan> = 470 µF</text>
-  <text x="60" y="110" class="t">Approx ripple (peak–peak) at output: ΔV ≈ I_tspan baseline-shift="sub"L</tspan> / (f<tspan baseline-shift="sub">r</tspan> · C<tspan baseline-shift="sub">2</tspan>)</text>
+  <text x="60" y="80" class="t">Assume: f = 50 Hz (full-wave → f<tspan baseline-shift="sub">r</tspan> = 100 Hz), I<tspan baseline-shift="sub">L</tspan> = 10 mA, C<tspan baseline-shift="sub">2</tspan> = 470 µF</text>
+  <text x="60" y="110" class="t">Approx ripple (peak–peak) at output: ΔV ≈ I<tspan baseline-shift="sub">L</tspan> / (f<tspan baseline-shift="sub">r</tspan> · C<tspan baseline-shift="sub">2</tspan>)</text>
   <text x="60" y="140" class="t">ΔV ≈ 0.01 A / (100 · 470e−6) ≈ 0.21 V (idealized)</text>
   <text x="60" y="170" class="t">L improves ripple attenuation (especially low-frequency components). Actual ΔV depends on L and ESR.</text>
 

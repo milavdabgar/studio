@@ -7,7 +7,7 @@
       .t { font: 14px sans-serif; fill: #222; }
     </style>
   </defs>
-  <text x="40" y="90" class="t">V_tspan baseline-shift="sub"in</tspan></text>
+  <text x="40" y="90" class="t">V<tspan baseline-shift="sub">in</tspan></text>
   <line x1="80" y1="80" x2="820" y2="80" class="w"/>
   <polyline points="180,80 200,60 220,100 240,60 260,100 280,60 300,80" class="w"/>
   <text x="210" y="50" class="t">R<tspan baseline-shift="sub">s</tspan></text>
@@ -25,6 +25,6 @@
   <line x1="640" y1="80" x2="640" y2="200" class="w"/>
   <line x1="640" y1="200" x2="300" y2="200" class="w"/>
   <text x="540" y="50" class="t">R<tspan baseline-shift="sub">L</tspan></text>
-  <text x="310" y="110" class="t">V_tspan baseline-shift="sub"out</tspan> ≈ V_tspan baseline-shift="sub"Z</tspan></text>
+  <text x="310" y="110" class="t">V<tspan baseline-shift="sub">out</tspan> ≈ V<tspan baseline-shift="sub">Z</tspan></text>
 </svg>
 

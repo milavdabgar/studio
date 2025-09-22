@@ -167,7 +167,7 @@
         
         <!-- Conditions -->
         <text x="70" y="15" class="formula">VBE > 0.7V</text>
-        <text x="70" y="30" class="formula">VCE < 0.2V</text>>
+        <text x="70" y="30" class="formula">VCE &lt; 0.2V</text>>
       </g>
     </g>>
     
@@ -183,7 +183,7 @@
         <line x1="30" y1="30" x2="45" y2="25" class="wire"/>
         
         <!-- Conditions -->
-        <text x="70" y="15" class="formula">VBE < 0.7V</text>>
+        <text x="70" y="15" class="formula">VBE &lt; 0.7V</text>>
         <text x="70" y="30" class="formula">IC ≈ 0</text>
       </g>>
     </g>

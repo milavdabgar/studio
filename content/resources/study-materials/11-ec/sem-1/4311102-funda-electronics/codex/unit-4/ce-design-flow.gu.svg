@@ -15,7 +15,7 @@
   <rect x="40" y="40" width="900" height="440" rx="12" class="node"/>
   <text x="490" y="80" class="h" text-anchor="middle">લક્ષ્ય: ગેઇન, બેન્ડવિડ્થ, લોડ, સપ્લાય</text>
   <rect x="80" y="110" width="360" height="60" rx="10" class="node"/>
-  <text x="100" y="145" class="t">1) Q‑પોઈન્ટ માટે I_tspan baseline-shift="sub"C</tspan>, V_tspan baseline-shift="sub"CE</tspan> પસંદ કરો</text>
+  <text x="100" y="145" class="t">1) Q‑પોઈન્ટ માટે I<tspan baseline-shift="sub">C</tspan>, V<tspan baseline-shift="sub">CE</tspan> પસંદ કરો</text>
   <line x1="440" y1="140" x2="520" y2="140" class="arrow"/>
   <rect x="520" y="110" width="360" height="60" rx="10" class="node"/>
   <text x="540" y="145" class="t">2) g<tspan baseline-shift="sub">m</tspan>, r<tspan baseline-shift="sub">π</tspan> અંદાજો</text>
@@ -24,7 +24,7 @@
   <text x="540" y="245" class="t">3) R<tspan baseline-shift="sub">C</tspan> (ગેઇન), R<tspan baseline-shift="sub">E</tspan> (સ્થિરતા)</text>
   <line x1="520" y1="240" x2="440" y2="240" class="arrow"/>
   <rect x="80" y="210" width="360" height="60" rx="10" class="node"/>
-  <text x="100" y="245" class="t">4) બાયસ ડિવાઇડર (V_tspan baseline-shift="sub"B</tspan>), I_tspan baseline-shift="sub"B</tspan> કરતા ≳10×</text>
+  <text x="100" y="245" class="t">4) બાયસ ડિવાઇડર (V<tspan baseline-shift="sub">B</tspan>), I<tspan baseline-shift="sub">B</tspan> કરતા ≳10×</text>
   <line x1="260" y1="270" x2="260" y2="320" class="arrow"/>
   <rect x="80" y="320" width="360" height="60" rx="10" class="node"/>
   <text x="100" y="355" class="t">5) C<tspan baseline-shift="sub">IN</tspan>, C<tspan baseline-shift="sub">OUT</tspan>, C<tspan baseline-shift="sub">E</tspan> માટે f<tspan baseline-shift="sub">L</tspan></text>

@@ -13,22 +13,22 @@
     </marker>
   </defs>
   <rect x="40" y="40" width="900" height="440" rx="12" class="node"/>
-  <text x="490" y="80" class="h" text-anchor="middle">Target: V_tspan baseline-shift="sub"DC</tspan>, I_tspan baseline-shift="sub"L</tspan>, Ripple, Efficiency</text>
+  <text x="490" y="80" class="h" text-anchor="middle">Target: V<tspan baseline-shift="sub">DC</tspan>, I<tspan baseline-shift="sub">L</tspan>, Ripple, Efficiency</text>
 
   <rect x="80" y="110" width="360" height="60" rx="10" class="node"/>
   <text x="100" y="145" class="t">1) Select topology (HWR / FWR CT / Bridge)</text>
   <line x1="440" y1="140" x2="520" y2="140" class="arrow"/>
 
   <rect x="520" y="110" width="360" height="60" rx="10" class="node"/>
-  <text x="540" y="145" class="t">2) Transformer: V_tspan baseline-shift="sub"s</tspan> (account drops), current rating</text>
+  <text x="540" y="145" class="t">2) Transformer: V<tspan baseline-shift="sub">s</tspan> (account drops), current rating</text>
   <line x1="700" y1="170" x2="700" y2="210" class="arrow"/>
 
   <rect x="520" y="210" width="360" height="60" rx="10" class="node"/>
-  <text x="540" y="245" class="t">3) Diodes: PIV ≥ required, I_tspan baseline-shift="sub"F</tspan> rating</text>
+  <text x="540" y="245" class="t">3) Diodes: PIV ≥ required, I<tspan baseline-shift="sub">F</tspan> rating</text>
   <line x1="520" y1="240" x2="440" y2="240" class="arrow"/>
 
   <rect x="80" y="210" width="360" height="60" rx="10" class="node"/>
-  <text x="100" y="245" class="t">4) Filter: C (ΔV ≈ I_tspan baseline-shift="sub"L</tspan>/(f<tspan baseline-shift="sub">r</tspan>·C)), L if choke/π</text>
+  <text x="100" y="245" class="t">4) Filter: C (ΔV ≈ I<tspan baseline-shift="sub">L</tspan>/(f<tspan baseline-shift="sub">r</tspan>·C)), L if choke/π</text>
   <line x1="260" y1="270" x2="260" y2="320" class="arrow"/>
 
   <rect x="80" y="320" width="360" height="60" rx="10" class="node"/>
@@ -36,7 +36,7 @@
   <line x1="440" y1="350" x2="520" y2="350" class="arrow"/>
 
   <rect x="520" y="320" width="360" height="60" rx="10" class="node"/>
-  <text x="540" y="355" class="t">6) Verify V_tspan baseline-shift="sub"DC</tspan>, ripple, efficiency, thermal limits</text>
+  <text x="540" y="355" class="t">6) Verify V<tspan baseline-shift="sub">DC</tspan>, ripple, efficiency, thermal limits</text>
   <line x1="700" y1="380" x2="700" y2="420" class="arrow"/>
 
   <rect x="520" y="420" width="360" height="40" rx="10" class="node"/>

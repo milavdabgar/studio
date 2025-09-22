@@ -199,7 +199,7 @@
         While Loop Example
       </text>
       <text x="10" y="40" font-family="Courier, monospace" font-size="11" fill="#333">>count = 0</text>
-      <text x="10" y="55" font-family="Courier, monospace" font-size="11" fill="#333">while count < 3:</text>>
+      <text x="10" y="55" font-family="Courier, monospace" font-size="11" fill="#333">while count &lt; 3:</text>>
       <text x="10" y="70" font-family="Courier, monospace" font-size="11" fill="#333">    print(f"Count: {count}")</text>
       <text x="10" y="85" font-family="Courier, monospace" font-size="11" fill="#333">>    count += 1</text>
       <text x="10" y="105" font-family="Arial, sans-serif" font-size="10" fill="#666">>Output:</text>

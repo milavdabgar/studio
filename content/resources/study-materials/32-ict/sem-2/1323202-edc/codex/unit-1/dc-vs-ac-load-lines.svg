@@ -18,8 +18,8 @@
     <rect x="0" y="0" width="940" height="520" rx="12" class="bg"/>
     <line x1="80" y1="500" x2="880" y2="500" class="axis"/>
     <line x1="120" y1="520" x2="120" y2="100" class="axis"/>
-    <text x="888" y="504" class="t">V_tspan baseline-shift="sub"CE</tspan></text>
-    <text x="104" y="104" class="t">I_tspan baseline-shift="sub"C</tspan></text>
+    <text x="888" y="504" class="t">V<tspan baseline-shift="sub">CE</tspan></text>
+    <text x="104" y="104" class="t">I<tspan baseline-shift="sub">C</tspan></text>
     <!-- Characteristic -->
     <path d="M 120 470 C 240 450, 520 420, 880 400" class="curve"/>
     <!-- DC load line -->

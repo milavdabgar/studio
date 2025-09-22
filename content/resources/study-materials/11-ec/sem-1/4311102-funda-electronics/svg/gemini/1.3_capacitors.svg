@@ -47,7 +47,7 @@
     <rect x="800" y="90" width="380" height="200" class="box"/>
     <text x="990" y="120" text-anchor="middle" class="subtitle">Capacitor Coding</text>
     <text x="820" y="150" class="text">
-      <tspan x="820" dy="1.2em">Example Code: <tspan font-weight="bold">104</tspan></tspan>
+      <tspan x="820" dy="1.2em">Example Code: <tspan font-weight=">bold">104</tspan></tspan>
       <tspan x="820" dy="1.4em">1st Digit: 1</tspan>
       <tspan x="820" dy="1.2em">2nd Digit: 0</tspan>
       <tspan x="820" dy="1.2em">Multiplier: 4 (10⁴)</tspan>

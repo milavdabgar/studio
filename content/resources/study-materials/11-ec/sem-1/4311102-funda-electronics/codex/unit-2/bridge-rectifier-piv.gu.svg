@@ -35,6 +35,6 @@
 
   <!-- PIV dashed across reverse-biased diode -->
   <line x1="300" y1="220" x2="300" y2="150" class="hl"/>
-  <text x="290" y="180" class="t" text-anchor="end">PIV ≈ V_tspan baseline-shift="sub"max</tspan></text>
+  <text x="290" y="180" class="t" text-anchor="end">PIV ≈ V<tspan baseline-shift="sub">max</tspan></text>
 </svg>
 

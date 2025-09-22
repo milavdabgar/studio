@@ -15,8 +15,8 @@
   <text x="64" y="80" class="h">સર્કિટ</text>
   <circle cx="360" cy="200" r="5" fill="#111"/>
   <circle cx="600" cy="200" r="5" fill="#111"/>
-  <text x="350" y="180" class="t">V_tspan baseline-shift="sub"1</tspan></text>
-  <text x="590" y="180" class="t">V_tspan baseline-shift="sub"2</tspan></text>
+  <text x="350" y="180" class="t">V<tspan baseline-shift="sub">1</tspan></text>
+  <text x="590" y="180" class="t">V<tspan baseline-shift="sub">2</tspan></text>
   <polyline points="360,200 380,180 400,220 420,180 440,220 460,200" class="w"/>
   <text x="395" y="176" class="t">R1</text>
   <line x1="460" y1="200" x2="460" y2="300" class="w"/>
@@ -30,11 +30,11 @@
   <line x1="530" y1="200" x2="600" y2="200" class="w"/>
   <circle cx="480" cy="200" r="24" fill="none" stroke="#111" stroke-width="2"/>
   <line x1="480" y1="184" x2="480" y2="216" class="w"/>
-  <text x="470" y="240" class="t">V_tspan baseline-shift="sub"s</tspan></text>
+  <text x="470" y="240" class="t">V<tspan baseline-shift="sub">s</tspan></text>
   <rect x="330" y="160" width="300" height="120" rx="12" class="aux"/>
   <text x="340" y="160" class="t">સુપરનોડ</text>
   <text x="64" y="360" class="h">સમીકરણો</text>
   <text x="64" y="392" class="t">KCL (સુપરનોડ પર): R1 અને R2 મારફતે ગ્રાઉન્ડ તરફના કરંટ (અને સાઇડ બ્રાંચ) નો જગફળ = 0</text>
-  <text x="64" y="424" class="t">કન્સ્ટ્રેઇન્ટ: V1 − V2 = V_tspan baseline-shift="sub"s</tspan></text>
+  <text x="64" y="424" class="t">કન્સ્ટ્રેઇન્ટ: V1 − V2 = V<tspan baseline-shift="sub">s</tspan></text>
 </svg>
 

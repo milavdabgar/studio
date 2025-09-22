@@ -17,10 +17,10 @@
   <line x1="64" y1="360" x2="1200" y2="360" class="axis"/>
   <path d="M64 360 C 144 240, 224 480, 304 360 S 464 240, 544 360 S 704 480, 784 360 S 944 240, 1024 360 S 1184 480, 1264 360" class="sin"/>
   <line x1="64" y1="240" x2="64" y2="480" class="d"/>
-  <text x="70" y="240" class="t">+V_tspan baseline-shift="sub"m</tspan></text>
-  <text x="70" y="480" class="t">−V_tspan baseline-shift="sub"m</tspan></text>
+  <text x="70" y="240" class="t">+V<tspan baseline-shift="sub">m</tspan></text>
+  <text x="70" y="480" class="t">−V<tspan baseline-shift="sub">m</tspan></text>
   <line x1="64" y1="360" x2="224" y2="360" class="d"/>
-  <text x="230" y="365" class="t">V_tspan baseline-shift="sub"rms</tspan> = V_tspan baseline-shift="sub"m</tspan>/√2</text>
-  <text x="64" y="540" class="t">Half-cycle average: V_tspan baseline-shift="sub"avg</tspan> = 2V_tspan baseline-shift="sub"m</tspan>/π</text>
+  <text x="230" y="365" class="t">V<tspan baseline-shift="sub">rms</tspan> = V<tspan baseline-shift="sub">m</tspan>/√2</text>
+  <text x="64" y="540" class="t">Half-cycle average: V<tspan baseline-shift="sub">avg</tspan> = 2V<tspan baseline-shift="sub">m</tspan>/π</text>
 </svg>
 

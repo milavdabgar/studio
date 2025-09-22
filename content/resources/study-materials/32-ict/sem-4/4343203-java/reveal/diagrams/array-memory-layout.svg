@@ -168,7 +168,7 @@
   <text x="80" y="675" class="code-text">int length = arr.length;          // Get array size</text>
   <text x="80" y="690" class="code-text"></text>
   <text x="80" y="705" class="code-text">// Array traversal</text>
-  <text x="80" y="720" class="code-text">for (int i = 0; i < arr.length; i++) {</text>
+  <text x="80" y="720" class="code-text">for (int i = 0; i &lt; arr.length; i++) {</text>
   <text x="80" y="735" class="code-text">    System.out.println(arr[i]);</text>
   <text x="80" y="750" class="code-text">}</text>
   
@@ -187,8 +187,8 @@
   <text x="580" y="690" class="code-text">int cols = matrix[0].length;      // Number of columns</text>
   <text x="580" y="705" class="code-text"></text>
   <text x="580" y="720" class="code-text">// 2D Array traversal</text>
-  <text x="580" y="735" class="code-text">for (int i = 0; i < matrix.length; i++) {</text>
-  <text x="580" y="750" class="code-text">    for (int j = 0; j < matrix[i].length; j++) {</text>
+  <text x="580" y="735" class="code-text">for (int i = 0; i &lt; matrix.length; i++) {</text>
+  <text x="580" y="750" class="code-text">    for (int j = 0; j &lt; matrix[i].length; j++) {</text>
   <text x="600" y="765" class="code-text">System.out.print(matrix[i][j] + " ");</text>
   <text x="580" y="780" class="code-text">    }</text>
   <text x="580" y="795" class="code-text">}</text>

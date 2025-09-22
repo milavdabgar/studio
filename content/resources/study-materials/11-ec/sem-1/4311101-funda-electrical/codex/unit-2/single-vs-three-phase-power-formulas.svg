@@ -17,7 +17,7 @@
   <text x="80" y="162" class="t">V, I are RMS; φ is angle between v and i</text>
   <text x="64" y="230" class="h">Three Phase (Balanced)</text>
   <rect x="64" y="246" width="1152" height="120" class="row"/>
-  <text x="80" y="280" class="t">P = √3·V_tspan baseline-shift="sub"L</tspan>·I_tspan baseline-shift="sub"L</tspan>·cosφ, Q = √3·V_tspan baseline-shift="sub"L</tspan>·I_tspan baseline-shift="sub"L</tspan>·sinφ</text>
-  <text x="80" y="312" class="t">S = √3·V_tspan baseline-shift="sub"L</tspan>·I_tspan baseline-shift="sub"L</tspan>; V_tspan baseline-shift="sub"L</tspan>, I_tspan baseline-shift="sub"L</tspan> are line values</text>
+  <text x="80" y="280" class="t">P = √3·V<tspan baseline-shift="sub">L</tspan>·I<tspan baseline-shift="sub">L</tspan>·cosφ, Q = √3·V<tspan baseline-shift="sub">L</tspan>·I<tspan baseline-shift="sub">L</tspan>·sinφ</text>
+  <text x="80" y="312" class="t">S = √3·V<tspan baseline-shift="sub">L</tspan>·I<tspan baseline-shift="sub">L</tspan>; V<tspan baseline-shift="sub">L</tspan>, I<tspan baseline-shift="sub">L</tspan> are line values</text>
 </svg>
 

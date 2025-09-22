@@ -230,10 +230,10 @@
       String vs List Comparison
     </text>
     <text x="100" y="38" font-family="Arial, sans-serif" font-size="12" fill="#666">>
-      <tspan font-weight="bold">Strings:</tspan> Immutable, ordered, text data
+      <tspan font-weight=">bold">Strings:</tspan> Immutable, ordered, text data
     </text>>
     <text x="500" y="38" font-family="Arial, sans-serif" font-size="12" fill="#666">
-      <tspan font-weight="bold">Lists:</tspan> Mutable, ordered, any data type
+      <tspan font-weight=">bold">Lists:</tspan> Mutable, ordered, any data type
     </text>>
   </g>
 </svg>

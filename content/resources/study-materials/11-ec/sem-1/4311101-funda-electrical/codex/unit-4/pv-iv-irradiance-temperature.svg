@@ -21,8 +21,8 @@
   <path d="M200 220 C 500 220, 780 360, 1040 560" class="g3"/>
   <path d="M200 260 C 500 260, 780 380, 1040 560" class="g2"/>
   <path d="M200 300 C 500 300, 780 400, 1040 560" class="g1"/>
-  <text x="1040" y="590" class="t">V_tspan baseline-shift="sub"OC</tspan></text>
+  <text x="1040" y="590" class="t">V<tspan baseline-shift="sub">OC</tspan></text>
   <text x="160" y="220" class="t">G ↑</text>
   <!-- Temperature effect (fixed G) indicated near Voc region -->
-  <text x="760" y="520" class="t">T ↑ → V_tspan baseline-shift="sub"OC</tspan> ↓</text>
+  <text x="760" y="520" class="t">T ↑ → V<tspan baseline-shift="sub">OC</tspan> ↓</text>
 </svg>

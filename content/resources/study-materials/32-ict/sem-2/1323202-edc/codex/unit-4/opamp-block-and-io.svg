@@ -17,10 +17,10 @@
     <text x="120" y="210" class="t">A (open‑loop)</text>
     <line x1="-120" y1="180" x2="0" y2="180" class="wire"/>
     <line x1="-120" y1="220" x2="0" y2="220" class="wire"/>
-    <text x="-150" y="184" class="t">V_tspan baseline-shift="sub"+</tspan></text>
-    <text x="-150" y="224" class="t">V_tspan baseline-shift="sub"−</tspan></text>
+    <text x="-150" y="184" class="t">V<tspan baseline-shift="sub">+</tspan></text>
+    <text x="-150" y="224" class="t">V<tspan baseline-shift="sub">−</tspan></text>
     <line x1="300" y1="200" x2="420" y2="200" class="wire"/>
-    <text x="430" y="204" class="t">V_tspan baseline-shift="sub"out</tspan></text>
+    <text x="430" y="204" class="t">V<tspan baseline-shift="sub">out</tspan></text>
   </g>
 </svg>
 

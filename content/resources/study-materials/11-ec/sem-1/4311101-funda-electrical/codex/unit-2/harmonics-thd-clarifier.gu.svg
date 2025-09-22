@@ -22,7 +22,7 @@
   <text x="64" y="220" class="t">સમ (લીલો) વિકૃતિ દર્શાવે છે</text>
   <path d="M64 180 C 100 115, 140 250, 184 180 C 224 235, 264 230, 304 180 C 344 235, 384 230, 424 180 C 464 235, 504 230, 544 180" class="sum"/>
   <text x="64" y="300" class="h">THD</text>
-  <text x="64" y="332" class="t">THD = √(V_tspan baseline-shift="sub"2</tspan><tspan dy="-6">2</tspan> + V_tspan baseline-shift="sub"3</tspan><tspan dy="-6">2</tspan> + …) / V_tspan baseline-shift="sub"1</tspan></text>
-  <text x="64" y="372" class="t">V_tspan baseline-shift="sub"rms</tspan> = √(V_tspan baseline-shift="sub"1</tspan><tspan dy="-6">2</tspan> + ΣV_tspan baseline-shift="sub"n</tspan><tspan dy="-6">2</tspan>)</text>
+  <text x="64" y="332" class="t">THD = √(V<tspan baseline-shift="sub">2</tspan><tspan dy="-6">2</tspan> + V<tspan baseline-shift="sub">3</tspan><tspan dy="-6">2</tspan> + …) / V<tspan baseline-shift="sub">1</tspan></text>
+  <text x="64" y="372" class="t">V<tspan baseline-shift="sub">rms</tspan> = √(V<tspan baseline-shift="sub">1</tspan><tspan dy="-6">2</tspan> + ΣV<tspan baseline-shift="sub">n</tspan><tspan dy="-6">2</tspan>)</text>
 </svg>
 

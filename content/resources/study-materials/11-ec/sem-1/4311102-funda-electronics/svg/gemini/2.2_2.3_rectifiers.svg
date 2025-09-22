@@ -96,13 +96,13 @@
     <text x="430" y="630">Vout</text>
     <!-- Parameters -->
     <text x="950" y="550" class="text">
-      <tspan x="950" dy="1.2em" font-weight="bold">Center-Tap Parameters:</tspan>
+      <tspan x="950" dy="1.2em" font-weight=">bold">Center-Tap Parameters:</tspan>
       <tspan x="950" dy="1.2em">● Efficiency (η): 81.2%</tspan>
       <tspan x="950" dy="1.2em">● Ripple Factor (γ): 0.48</tspan>
       <tspan x="950" dy="1.2em">● PIV: 2Vm</tspan>
     </text>
     <text x="950" y="650" class="text">
-      <tspan x="950" dy="1.2em" font-weight="bold">Bridge Parameters:</tspan>
+      <tspan x="950" dy="1.2em" font-weight=">bold">Bridge Parameters:</tspan>
       <tspan x="950" dy="1.2em">● Efficiency (η): 81.2%</tspan>
       <tspan x="950" dy="1.2em">● Ripple Factor (γ): 0.48</tspan>
       <tspan x="950" dy="1.2em">● PIV: Vm</tspan>

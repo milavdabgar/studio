@@ -121,9 +121,9 @@
   <text x="1010" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">Security Properties Ensured</text>
   
   <rect x="890" y="150" width="240" height="80" fill="white" stroke="#F57C00" stroke-width="2" rx="5"/>
-  <text x="900" y="170" font-family="Arial, sans-serif" font-size="12" fill="#333">✓ <tspan font-weight="bold">Authentication:</tspan> Verifies sender</text>
-  <text x="900" y="190" font-family="Arial, sans-serif" font-size="12" fill="#333">✓ <tspan font-weight="bold">Integrity:</tspan> Detects tampering</text>
-  <text x="900" y="210" font-family="Arial, sans-serif" font-size="12" fill="#333">✓ <tspan font-weight="bold">Non-repudiation:</tspan> Prevents denial</text>
+  <text x="900" y="170" font-family="Arial, sans-serif" font-size="12" fill="#333">✓ <tspan font-weight=">bold">Authentication:</tspan> Verifies sender</text>
+  <text x="900" y="190" font-family="Arial, sans-serif" font-size="12" fill="#333">✓ <tspan font-weight=">bold">Integrity:</tspan> Detects tampering</text>
+  <text x="900" y="210" font-family="Arial, sans-serif" font-size="12" fill="#333">✓ <tspan font-weight=">bold">Non-repudiation:</tspan> Prevents denial</text>
   
   <!-- Applications Section -->
   <rect x="50" y="290" width="360" height="250" fill="url(#grad2)" stroke="#388E3C" stroke-width="3" rx="15"/>
@@ -258,10 +258,10 @@
   <rect x="50" y="720" width="1100" height="150" fill="#FFF3E0" stroke="#FF9800" stroke-width="3" rx="15"/>
   <text x="600" y="750" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#333">Key Concepts &amp; Benefits</text>
   
-  <text x="80" y="780" font-family="Arial, sans-serif" font-size="14" fill="#333">📝 <tspan font-weight="bold">Definition:</tspan> Digital signatures are cryptographic mechanisms that verify authenticity, integrity, and non-repudiation of digital documents</text>
-  <text x="80" y="805" font-family="Arial, sans-serif" font-size="14" fill="#333">🔐 <tspan font-weight="bold">Technology:</tspan> Uses asymmetric cryptography - private key for signing, public key for verification</text>
-  <text x="80" y="830" font-family="Arial, sans-serif" font-size="14" fill="#333">⚖️ <tspan font-weight="bold">Legal Value:</tspan> Legally recognized in many jurisdictions as equivalent to handwritten signatures</text>
-  <text x="80" y="855" font-family="Arial, sans-serif" font-size="14" fill="#333">🛡️ <tspan font-weight="bold">Security:</tspan> Provides strong cryptographic evidence of document origin and prevents tampering detection</text>
+  <text x="80" y="780" font-family="Arial, sans-serif" font-size="14" fill="#333">📝 <tspan font-weight=">bold">Definition:</tspan> Digital signatures are cryptographic mechanisms that verify authenticity, integrity, and non-repudiation of digital documents</text>
+  <text x="80" y="805" font-family="Arial, sans-serif" font-size="14" fill="#333">🔐 <tspan font-weight=">bold">Technology:</tspan> Uses asymmetric cryptography - private key for signing, public key for verification</text>
+  <text x="80" y="830" font-family="Arial, sans-serif" font-size="14" fill="#333">⚖️ <tspan font-weight=">bold">Legal Value:</tspan> Legally recognized in many jurisdictions as equivalent to handwritten signatures</text>
+  <text x="80" y="855" font-family="Arial, sans-serif" font-size="14" fill="#333">🛡️ <tspan font-weight=">bold">Security:</tspan> Provides strong cryptographic evidence of document origin and prevents tampering detection</text>
   
   <!-- Arrow marker definitions -->
   <defs>

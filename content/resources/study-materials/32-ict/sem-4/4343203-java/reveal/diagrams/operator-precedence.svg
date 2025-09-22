@@ -67,7 +67,7 @@
   <text x="250" y="400" class="operator-text">< <= > >= instanceof</text>
   <text x="250" y="415" class="description-text">Less than, Less/equal, Greater, Greater/equal, Type check</text>
   <text x="550" y="400" class="description-text">Comparison operations</text>
-  <text x="650" y="405" class="example-text">a < b > c → (a<b) > c</text>
+  <text x="650" y="405" class="example-text">a &lt; b > c → (a<b) > c</text>
   
   <!-- Precedence Level 7 -->
   <rect x="50" y="440" width="800" height="50" fill="#d35400" class="level-box"/>

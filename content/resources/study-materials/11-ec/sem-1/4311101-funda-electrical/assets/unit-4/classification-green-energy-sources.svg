@@ -365,23 +365,23 @@
       
       <g transform="translate(20, 30)">
         <text x="0" y="15" font-family="Arial, sans-serif" font-size="12" fill="#333">
-          <tspan font-weight="bold" fill="#FF8F00">Solar:</tspan> 1,419 GW (35%)
+          <tspan font-weight=">bold" fill="#FF8F00">Solar:</tspan> 1,419 GW (35%)
         </text>
         <text x="0" y="30" font-family="Arial, sans-serif" font-size="12" fill="#333">
-          <tspan font-weight="bold" fill="#1976D2">Hydro:</tspan> 1,392 GW (34%)
+          <tspan font-weight=">bold" fill="#1976D2">Hydro:</tspan> 1,392 GW (34%)
         </text>
         <text x="0" y="45" font-family="Arial, sans-serif" font-size="12" fill="#333">
-          <tspan font-weight="bold" fill="#2196F3">Wind:</tspan> 906 GW (22%)
+          <tspan font-weight=">bold" fill="#2196F3">Wind:</tspan> 906 GW (22%)
         </text>
 
         <text x="220" y="15" font-family="Arial, sans-serif" font-size="12" fill="#333">
-          <tspan font-weight="bold" fill="#388E3C">Biomass:</tspan> 147 GW (4%)
+          <tspan font-weight=">bold" fill="#388E3C">Biomass:</tspan> 147 GW (4%)
         </text>
         <text x="220" y="30" font-family="Arial, sans-serif" font-size="12" fill="#333">
-          <tspan font-weight="bold" fill="#D84315">Geothermal:</tspan> 15 GW (&amp;lt;1%)
+          <tspan font-weight=">bold" fill="#D84315">Geothermal:</tspan> 15 GW (&amp;lt;1%)
         </text>
         <text x="220" y="45" font-family="Arial, sans-serif" font-size="12" fill="#333">
-          <tspan font-weight="bold" fill="#0097A7">Ocean:</tspan> 1 GW (&amp;lt;1%)
+          <tspan font-weight=">bold" fill="#0097A7">Ocean:</tspan> 1 GW (&amp;lt;1%)
         </text>
 
         <text x="220" y="70" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#7B1FA2">

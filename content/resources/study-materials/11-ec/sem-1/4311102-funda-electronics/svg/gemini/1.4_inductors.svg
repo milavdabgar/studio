@@ -21,11 +21,11 @@
     <rect x="20" y="90" width="570" height="200" class="box"/>
     <text x="305" y="120" text-anchor="middle" class="subtitle">Faraday's Laws of Electromagnetic Induction</text>
     <text x="40" y="150" class="text">
-      <tspan x="40" dy="1.2em"><tspan font-weight="bold">1st Law:</tspan> A changing magnetic field in a conductor</tspan>
+      <tspan x="40" dy="1.2em"><tspan font-weight=">bold">1st Law:</tspan> A changing magnetic field in a conductor</tspan>
       <tspan x="40" dy="1.2em">induces an electromotive force (EMF) or voltage.</tspan>
-      <tspan x="40" dy="1.4em"><tspan font-weight="bold">2nd Law:</tspan> The magnitude of the induced EMF is</tspan>
+      <tspan x="40" dy="1.4em"><tspan font-weight=">bold">2nd Law:</tspan> The magnitude of the induced EMF is</tspan>
       <tspan x="40" dy="1.2em">proportional to the rate of change of magnetic flux.</tspan>
-      <tspan x="40" dy="1.4em" font-family="monospace" font-size="18px">ε = -N (dΦ_B / dt)</tspan>
+      <tspan x="40" dy="1.4em" font-family=">monospace" font-size="18px">ε = -N (dΦ_B / dt)</tspan>
     </text>
   </g>
 
@@ -34,10 +34,10 @@
     <rect x="610" y="90" width="570" height="200" class="box"/>
     <text x="895" y="120" text-anchor="middle" class="subtitle">Self &amp; Mutual Inductance</text>
     <text x="630" y="150" class="text">
-      <tspan x="630" dy="1.2em"><tspan font-weight="bold">Self-Inductance (L):</tspan> A coil's property to oppose</tspan>
-      <tspan x="630" dy="1.2em">a change in current flowing through <tspan font-weight="bold">itself</tspan>.</tspan>
-      <tspan x="630" dy="1.4em"><tspan font-weight="bold">Mutual-Inductance (M):</tspan> EMF induced in one coil</tspan>
-      <tspan x="630" dy="1.2em">due to changing current in a <tspan font-weight="bold">neighboring</tspan> coil.</tspan>
+      <tspan x="630" dy="1.2em"><tspan font-weight=">bold">Self-Inductance (L):</tspan> A coil's property to oppose</tspan>
+      <tspan x="630" dy="1.2em">a change in current flowing through <tspan font-weight=">bold">itself</tspan>.</tspan>
+      <tspan x="630" dy="1.4em"><tspan font-weight=">bold">Mutual-Inductance (M):</tspan> EMF induced in one coil</tspan>
+      <tspan x="630" dy="1.2em">due to changing current in a <tspan font-weight=">bold">neighboring</tspan> coil.</tspan>
     </text>
   </g>
 
@@ -46,9 +46,9 @@
     <rect x="20" y="310" width="570" height="150" class="box"/>
     <text x="305" y="340" text-anchor="middle" class="subtitle">Specifications &amp; Color Coding</text>
     <text x="40" y="370" class="text">
-      <tspan x="40" dy="1.2em">● <tspan font-weight="bold">Specifications:</tspan> Inductance (Henry), Tolerance (%),</tspan>
+      <tspan x="40" dy="1.2em">● <tspan font-weight=">bold">Specifications:</tspan> Inductance (Henry), Tolerance (%),</tspan>
       <tspan x="40" dy="1.2em">  DC Resistance (DCR), Saturation Current, Q Factor.</tspan>
-      <tspan x="40" dy="1.4em">● <tspan font-weight="bold">Color Coding:</tspan> Similar to resistors, but value is in</tspan>
+      <tspan x="40" dy="1.4em">● <tspan font-weight=">bold">Color Coding:</tspan> Similar to resistors, but value is in</tspan>
       <tspan x="40" dy="1.2em">  microhenries (µH). Uses dots or bands.</tspan>
     </text>
   </g>

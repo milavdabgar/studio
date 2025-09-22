@@ -131,11 +131,11 @@
   <g class="control-signals">
     <text x="50" y="450" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; fill: #2d3748;">Control Signal Functions:</text>
     
-    <text x="50" y="470" class="detail-text">• <tspan style="font-weight: bold;">ALE (Address Latch Enable):</tspan> Latches AD0-AD7 as address</text>
-    <text x="50" y="485" class="detail-text">• <tspan style="font-weight: bold;">RD (Read):</tspan> Enables data from memory/I/O to processor</text>
-    <text x="50" y="500" class="detail-text">• <tspan style="font-weight: bold;">WR (Write):</tspan> Enables data from processor to memory/I/O</text>
-    <text x="50" y="515" class="detail-text">• <tspan style="font-weight: bold;">IO/M:</tspan> 1 = I/O operation, 0 = Memory operation</text>
-    <text x="50" y="530" class="detail-text">• <tspan style="font-weight: bold;">S0, S1:</tspan> Status signals indicating operation type</text>
+    <text x="50" y="470" class="detail-text">• <tspan style=">font-weight: bold;">ALE (Address Latch Enable):</tspan> Latches AD0-AD7 as address</text>
+    <text x="50" y="485" class="detail-text">• <tspan style=">font-weight: bold;">RD (Read):</tspan> Enables data from memory/I/O to processor</text>
+    <text x="50" y="500" class="detail-text">• <tspan style=">font-weight: bold;">WR (Write):</tspan> Enables data from processor to memory/I/O</text>
+    <text x="50" y="515" class="detail-text">• <tspan style=">font-weight: bold;">IO/M:</tspan> 1 = I/O operation, 0 = Memory operation</text>
+    <text x="50" y="530" class="detail-text">• <tspan style=">font-weight: bold;">S0, S1:</tspan> Status signals indicating operation type</text>
     
     <text x="450" y="470" class="detail-text">• Address decoder reduces hardware complexity</text>
     <text x="450" y="485" class="detail-text">• Each device gets unique address range</text>

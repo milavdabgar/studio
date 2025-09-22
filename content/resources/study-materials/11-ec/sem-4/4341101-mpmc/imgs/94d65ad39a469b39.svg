@@ -37,7 +37,7 @@
     <rect x="270" y="80" width="80" height="60" class="filter-body" rx="5"/>
     <text x="310" y="105" class="label" fill="#333">Anti-Aliasing</text>
     <text x="310" y="120" class="label" fill="#333">Filter</text>
-    <text x="310" y="135" class="small-label" fill="#333">fc < fs/2</text>
+    <text x="310" y="135" class="small-label" fill="#333">fc &lt; fs/2</text>
     
     <!-- Input connection -->
     <line x1="230" y1="100" x2="270" y2="110" class="signal-line"/>

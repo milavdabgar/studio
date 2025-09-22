@@ -17,8 +17,8 @@
   <!-- Output nodes -->
   <line x1="360" y1="150" x2="520" y2="150" class="w"/>
   <line x1="360" y1="180" x2="520" y2="180" class="w"/>
-  <text x="525" y="150" class="t">V_tspan baseline-shift="sub"out+</tspan></text>
-  <text x="525" y="180" class="t">V_tspan baseline-shift="sub"out−</tspan></text>
+  <text x="525" y="150" class="t">V<tspan baseline-shift="sub">out+</tspan></text>
+  <text x="525" y="180" class="t">V<tspan baseline-shift="sub">out−</tspan></text>
 
   <!-- Scope probe -->
   <circle cx="600" cy="120" r="20" fill="#e2e8f0" stroke="#cbd5e1"/>

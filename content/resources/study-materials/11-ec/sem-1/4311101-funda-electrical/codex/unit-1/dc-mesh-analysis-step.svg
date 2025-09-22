@@ -26,8 +26,8 @@
   <line x1="160" y1="200" x2="160" y2="320" class="w"/>
   <line x1="160" y1="320" x2="800" y2="320" class="w"/>
   <line x1="800" y1="320" x2="800" y2="200" class="w"/>
-  <text x="260" y="240" class="t">I_tspan baseline-shift="sub"1</tspan> ⟳</text>
-  <text x="680" y="240" class="t">I_tspan baseline-shift="sub"2</tspan> ⟲</text>
+  <text x="260" y="240" class="t">I<tspan baseline-shift="sub">1</tspan> ⟳</text>
+  <text x="680" y="240" class="t">I<tspan baseline-shift="sub">2</tspan> ⟲</text>
   <text x="64" y="380" class="h">Write KVL</text>
   <text x="64" y="412" class="t">Loop 1: R1·I1 + Rshared·(I1 − I2) = Vs1</text>
   <text x="64" y="444" class="t">Loop 2: R2·I2 + Rshared·(I2 − I1) = Vs2</text>

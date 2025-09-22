@@ -10,10 +10,10 @@
   </defs>
   <line x1="80" y1="360" x2="800" y2="360" class="axis"/>
   <line x1="120" y1="380" x2="120" y2="80" class="axis"/>
-  <text x="805" y="364" class="label">V_tspan baseline-shift="sub"in</tspan></text>
-  <text x="105" y="75" class="label">V_tspan baseline-shift="sub"out</tspan></text>
+  <text x="805" y="364" class="label">V<tspan baseline-shift="sub">in</tspan></text>
+  <text x="105" y="75" class="label">V<tspan baseline-shift="sub">out</tspan></text>
   <!-- Near-flat output vs varying input -->
   <path d="M120 220 L 760 220" class="curve"/>
-  <text x="420" y="210" class="label">≈ constant (≈ V_tspan baseline-shift="sub"Z</tspan>)</text>
+  <text x="420" y="210" class="label">≈ constant (≈ V<tspan baseline-shift="sub">Z</tspan>)</text>
 </svg>
 

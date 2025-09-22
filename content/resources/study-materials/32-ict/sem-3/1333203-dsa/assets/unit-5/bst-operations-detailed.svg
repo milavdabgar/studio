@@ -75,8 +75,8 @@
         <text x="0" y="-10" class="small-text">Insert 25 - Step by step:</text>
 
         <rect x="0" y="10" width="300" height="120" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1" rx="5"/>
-        <text x="10" y="30" class="small-text">1. Start at root (50): 25 < 50 → go left</text>
-        <text x="10" y="50" class="small-text">2. At node (30): 25 < 30 → go left</text>
+        <text x="10" y="30" class="small-text">1. Start at root (50): 25 &lt; 50 → go left</text>
+        <text x="10" y="50" class="small-text">2. At node (30): 25 &lt; 30 → go left</text>
         <text x="10" y="70" class="small-text">3. At node (20): 25 > 20 → go right</text>
         <text x="10" y="90" class="small-text">4. Right child is NULL → insert 25 here</text>
         <text x="10" y="110" class="small-text" fill="#27ae60">5. New node 25 added as right child of 20</text>
@@ -189,7 +189,7 @@
         <rect x="0" y="0" width="350" height="100" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1" rx="5"/>
         <text x="10" y="20" class="small-text" font-weight="bold">Search Algorithm Steps:</text>
         <text x="15" y="40" class="small-text">1. Start at root (50): 60 > 50 → go right</text>
-        <text x="15" y="55" class="small-text">2. At node (70): 60 < 70 → go left</text>
+        <text x="15" y="55" class="small-text">2. At node (70): 60 &lt; 70 → go left</text>
         <text x="15" y="70" class="small-text">3. At node (60): 60 = 60 → FOUND!</text>
         <text x="15" y="85" class="small-text" fill="#27ae60">Time Complexity: O(log n) average case</text>
       </g>
@@ -365,7 +365,7 @@
     <text x="20" y="185" class="code" fill="#3498db">def insert(root, val):</text>
     <text x="40" y="205" class="code" fill="#ecf0f1">if not root:</text>
     <text x="60" y="225" class="code" fill="#27ae60">return TreeNode(val)</text>
-    <text x="40" y="245" class="code" fill="#ecf0f1">if val < root.val:</text>
+    <text x="40" y="245" class="code" fill="#ecf0f1">if val &lt; root.val:</text>
     <text x="60" y="265" class="code" fill="#ecf0f1">root.left = insert(root.left, val)</text>
     <text x="40" y="285" class="code" fill="#ecf0f1">else:</text>
     <text x="60" y="305" class="code" fill="#ecf0f1">root.right = insert(root.right, val)</text>
@@ -375,7 +375,7 @@
     <text x="20" y="375" class="code" fill="#3498db">def search(root, val):</text>
     <text x="40" y="395" class="code" fill="#ecf0f1">if not root or root.val == val:</text>
     <text x="60" y="415" class="code" fill="#27ae60">return root</text>
-    <text x="40" y="435" class="code" fill="#ecf0f1">if val < root.val:</text>
+    <text x="40" y="435" class="code" fill="#ecf0f1">if val &lt; root.val:</text>
     <text x="60" y="455" class="code" fill="#ecf0f1">return search(root.left, val)</text>
     <text x="40" y="475" class="code" fill="#ecf0f1">return search(root.right, val)</text>
 
@@ -446,7 +446,7 @@
       <text x="0" y="0" class="text" font-weight="bold" fill="#3498db">Properties:</text>
       <text x="10" y="20" class="small-text">• Inorder traversal gives sorted sequence</text>
       <text x="10" y="35" class="small-text">• No duplicate values allowed</text>
-      <text x="10" y="50" class="small-text">• Left subtree < root < right subtree</text>
+      <text x="10" y="50" class="small-text">• Left subtree &lt; root &lt; right subtree</text>
       <text x="10" y="65" class="small-text">• Recursive structure</text>
     </g>
 

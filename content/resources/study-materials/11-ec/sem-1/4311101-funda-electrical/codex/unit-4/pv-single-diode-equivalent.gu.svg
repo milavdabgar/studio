@@ -13,7 +13,7 @@
   <!-- Current source Iph -->
   <circle cx="200" cy="220" r="24" fill="none" stroke="#111" stroke-width="2"/>
   <line x1="200" y1="206" x2="200" y2="234" class="w"/>
-  <text x="230" y="220" class="t">I_tspan baseline-shift="sub"ph</tspan></text>
+  <text x="230" y="220" class="t">I<tspan baseline-shift="sub">ph</tspan></text>
   <line x1="224" y1="220" x2="360" y2="220" class="w"/>
   <!-- Diode -->
   <polygon points="360,236 360,204 400,220" fill="none" stroke="#111" stroke-width="2"/>
