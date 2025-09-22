@@ -75,11 +75,11 @@
     <g transform="translate(400,120)">
       <rect x="0" y="0" width="80" height="40" fill="#2ecc71" stroke="#27ae60" stroke-width="2" rx="5"/>
       <text x="40" y="15" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">ELV</text>
-      <text x="40" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">><50V AC</text>
-      <text x="40" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">><120V DC</text>
-      <text x="40" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">>Extra Low</text>
-      <text x="40" y="68" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">>Basic precautions</text>
-    </g>>
+      <text x="40" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">&lt;50V AC</text>
+      <text x="40" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">&lt;120V DC</text>
+      <text x="40" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">Extra Low</text>
+      <text x="40" y="68" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">Basic precautions</text>
+    </g>
     
     <!-- Low Voltage -->
     <g transform="translate(490,120)">

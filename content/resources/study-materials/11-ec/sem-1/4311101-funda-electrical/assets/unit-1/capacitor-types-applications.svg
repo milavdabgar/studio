@@ -353,7 +353,7 @@
 
       <text x="15" y="133" font-family="Arial, sans-serif" font-size="8">Super</text>
       <text x="95" y="133" font-family="Arial, sans-serif" font-size="8">F</text>
-      <text x="165" y="133" font-family="Arial, sans-serif" font-size="8"><3V</text>
+      <text x="165" y="133" font-family="Arial, sans-serif" font-size="8">&lt;3V</text>
       <text x="235" y="133" font-family="Arial, sans-serif" font-size="8">High</text>
       <text x="305" y="133" font-family="Arial, sans-serif" font-size="8">Energy storage</text>
     </g>
