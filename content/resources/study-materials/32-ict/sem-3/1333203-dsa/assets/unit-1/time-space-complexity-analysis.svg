@@ -538,7 +538,7 @@
         def factorial(n):
       </text>
       <text x="20" y="65" font-family="monospace" font-size="11" fill="#333">
-        if n <= 1:              # O(1)
+        if n &lt;= 1:              # O(1)
       </text>
       <text x="30" y="80" font-family="monospace" font-size="11" fill="#333">
         return 1              # O(1)
@@ -573,7 +573,7 @@
         left, right = 0, len(arr) - 1
       </text>
       <text x="20" y="80" font-family="monospace" font-size="11" fill="#333">
-        while left <= right:     # O(log n)
+        while left &lt;= right:     # O(log n)
       </text>
       <text x="30" y="95" font-family="monospace" font-size="11" fill="#333">
         mid = (left + right) // 2  # O(1)

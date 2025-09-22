@@ -179,7 +179,7 @@
       <path d="M150,60 L150,65" stroke="#e74c3c" stroke-width="2" stroke-dasharray="3,3"/>
       <text x="155" y="67" class="noise-label">Hunting</text>
 
-      <text x="0" y="120" class="equation">Condition: |dx/dt| << δ·fs</text>
+      <text x="0" y="120" class="equation">Condition: |dx/dt| &lt;&lt; δ·fs</text>
       <text x="0" y="135" class="equation">Solution: Decrease δ</text>
     </g>
   </g>

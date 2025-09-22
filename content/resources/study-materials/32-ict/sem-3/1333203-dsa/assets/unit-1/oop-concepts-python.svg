@@ -445,7 +445,7 @@
         def validate_age(age):
       </text>
       <text x="60" y="100" font-family="monospace" font-size="11" fill="#333">
-        return 0 <= age <= 150
+        return 0 &lt;= age &lt;= 150
       </text>
 
       <text x="40" y="125" font-family="monospace" font-size="11" fill="#007bff">
