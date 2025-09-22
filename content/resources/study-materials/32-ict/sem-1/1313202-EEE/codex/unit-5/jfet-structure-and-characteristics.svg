@@ -49,7 +49,7 @@
     <text x="64" y="126" class="t">I<tspan baseline-shift="sub">D</tspan></text>
     <!-- Parabolic-like curve from Vp to 0 -->
     <path d="M 140 520 C 200 380, 360 260, 520 240" class="curve"/>
-    <text x="120" y="536" class="t">V<tspan baseline-shift="sub">P_/tspan</text>
+    <text x="120" y="536" class="t">V<tspan baseline-shift="sub">P</tspan></text>
     <text x="380" y="260" class="t">I<tspan baseline-shift="sub">DSS</tspan></text>
   </g>
 
