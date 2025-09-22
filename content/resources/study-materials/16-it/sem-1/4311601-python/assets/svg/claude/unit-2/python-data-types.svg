@@ -291,7 +291,7 @@
         Returns the type of variable
       </text>
       <text x="500" y="15" font-family="Courier, monospace" font-size="12" fill="#333">>
-        type(42) → <class 'int'>
+        type(42) → &lt;class 'int'&gt;
       </text>
     </g>>
 
