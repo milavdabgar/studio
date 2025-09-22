@@ -256,7 +256,7 @@
     <!-- Lagging -->
     <rect x="390" y="30" width="180" height="80" fill="#fef2f2" stroke="#f87171" stroke-width="1" rx="4"/>
     <text x="480" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#dc2626">Lagging</text>
-    <text x="400" y="60" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">• φ < 0° (negative phase)</text>
+    <text x="400" y="60" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">• φ &lt; 0° (negative phase)</text>
     <text x="400" y="75" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">• Waveform starts later</text>
     <text x="400" y="87" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">• Reaches peak after reference</text>
     <text x="400" y="99" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">"Behind in time"</text>

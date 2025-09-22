@@ -68,7 +68,7 @@
   <!-- Negative Temperature Coefficient Section -->
   <rect x="490" y="160" width="420" height="320" fill="#eff6ff" stroke="#93c5fd" stroke-width="2" rx="8"/>
   <text x="700" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1d4ed8">Negative Temperature Coefficient</text>
-  <text x="700" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#1e40af">α < 0 (Semiconductors, Carbon)</text>
+  <text x="700" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#1e40af">α &lt; 0 (Semiconductors, Carbon)</text>
   
   <!-- NTC Material Examples -->
   <rect x="510" y="220" width="180" height="120" fill="#ffffff" stroke="#e5e7eb" stroke-width="1" rx="4"/>
@@ -107,7 +107,7 @@
   
   <!-- ZTC Materials and Applications -->
   <rect x="950" y="220" width="380" height="85" fill="#ffffff" stroke="#e5e7eb" stroke-width="1" rx="4"/>
-  <text x="1140" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151">Materials & Applications</text>
+  <text x="1140" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151">Materials &amp; Applications</text>
   <text x="960" y="260" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">• Constantan (Cu-Ni alloy): α ≈ ±0.000002/°C</text>
   <text x="960" y="275" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">• Manganin (Cu-Mn-Ni): α ≈ ±0.000015/°C</text>
   <text x="960" y="290" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">• Used in precision resistors and measuring instruments</text>

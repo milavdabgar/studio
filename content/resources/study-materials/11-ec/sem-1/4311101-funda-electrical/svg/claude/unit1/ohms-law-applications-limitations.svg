@@ -96,7 +96,7 @@
   
   <!-- Measurement and Testing Application -->
   <rect x="380" y="375" width="300" height="155" fill="#ffffff" stroke="#e5e7eb" stroke-width="1" rx="4"/>
-  <text x="530" y="395" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151">Measurement & Testing</text>
+  <text x="530" y="395" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151">Measurement &amp; Testing</text>
   
   <text x="390" y="415" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">• Continuity testing of conductors</text>
   <text x="390" y="430" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">• Insulation resistance measurement</text>

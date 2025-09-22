@@ -147,7 +147,7 @@
       <text x="20" y="160" font-weight="bold" fill="#059669">Leading PF:</text>
       <text x="30" y="175">• Capacitive load</text>
       <text x="30" y="190">• Current leads voltage</text>
-      <text x="30" y="205">• φ < 0°</text>
+      <text x="30" y="205">• φ &lt; 0°</text>
       
       <text x="20" y="230" font-weight="bold" fill="#DC2626">Lagging PF:</text>
       <text x="30" y="245">• Inductive load</text>
