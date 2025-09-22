@@ -27,12 +27,12 @@
   
   <!-- Iterable Interface (Top Level) -->
   <rect x="600" y="60" width="200" height="40" class="collection-color interface-box"/>
-  <text x="700" y="75" text-anchor="middle" class="interface-title">Iterable<T></text>
+  <text x="700" y="75" text-anchor="middle" class="interface-title">Iterable&lt;T&gt;</text>
   <text x="700" y="90" text-anchor="middle" class="description-text">(Root Interface)</text>
   
   <!-- Collection Interface -->
   <rect x="600" y="130" width="200" height="60" class="collection-color interface-box"/>
-  <text x="700" y="150" text-anchor="middle" class="interface-title">Collection<E></text>
+  <text x="700" y="150" text-anchor="middle" class="interface-title">Collection&lt;E&gt;</text>
   <text x="610" y="170" class="method-text">+ add(E e): boolean</text>
   <text x="610" y="185" class="method-text">+ remove(Object o): boolean</text>
   
@@ -41,28 +41,28 @@
   
   <!-- List Interface -->
   <rect x="50" y="220" width="180" height="80" class="list-color interface-box"/>
-  <text x="140" y="240" text-anchor="middle" class="interface-title">List<E></text>
+  <text x="140" y="240" text-anchor="middle" class="interface-title">List&lt;E&gt;</text>
   <text x="60" y="255" class="method-text">+ get(int index): E</text>
   <text x="60" y="270" class="method-text">+ set(int index, E e): E</text>
   <text x="60" y="285" class="method-text">+ indexOf(Object o): int</text>
   
   <!-- Set Interface -->
   <rect x="260" y="220" width="180" height="80" class="set-color interface-box"/>
-  <text x="350" y="240" text-anchor="middle" class="interface-title">Set<E></text>
+  <text x="350" y="240" text-anchor="middle" class="interface-title">Set&lt;E&gt;</text>
   <text x="270" y="255" class="description-text">No duplicate elements</text>
   <text x="270" y="270" class="method-text">+ add(E e): boolean</text>
   <text x="270" y="285" class="method-text">+ contains(Object o): boolean</text>
   
   <!-- Queue Interface -->
   <rect x="470" y="220" width="180" height="80" class="queue-color interface-box"/>
-  <text x="560" y="240" text-anchor="middle" class="interface-title">Queue<E></text>
+  <text x="560" y="240" text-anchor="middle" class="interface-title">Queue&lt;E&gt;</text>
   <text x="480" y="255" class="method-text">+ offer(E e): boolean</text>
   <text x="480" y="270" class="method-text">+ poll(): E</text>
   <text x="480" y="285" class="method-text">+ peek(): E</text>
   
   <!-- Deque Interface -->
   <rect x="680" y="220" width="180" height="80" class="queue-color interface-box"/>
-  <text x="770" y="240" text-anchor="middle" class="interface-title">Deque<E></text>
+  <text x="770" y="240" text-anchor="middle" class="interface-title">Deque&lt;E&gt;</text>
   <text x="690" y="255" class="method-text">+ addFirst(E e): void</text>
   <text x="690" y="270" class="method-text">+ addLast(E e): void</text>
   <text x="690" y="285" class="method-text">+ removeFirst(): E</text>
@@ -75,44 +75,44 @@
   
   <!-- List Implementations -->
   <rect x="20" y="340" width="120" height="60" class="list-color concrete-box"/>
-  <text x="80" y="360" text-anchor="middle" class="class-title">ArrayList<E></text>
+  <text x="80" y="360" text-anchor="middle" class="class-title">ArrayList&lt;E&gt;</text>
   <text x="30" y="375" class="description-text">Dynamic array</text>
   <text x="30" y="390" class="description-text">Fast random access</text>
   
   <rect x="150" y="340" width="120" height="60" class="list-color concrete-box"/>
-  <text x="210" y="360" text-anchor="middle" class="class-title">LinkedList<E></text>
+  <text x="210" y="360" text-anchor="middle" class="class-title">LinkedList&lt;E&gt;</text>
   <text x="160" y="375" class="description-text">Doubly-linked list</text>
   <text x="160" y="390" class="description-text">Fast insertion/deletion</text>
   
   <rect x="280" y="340" width="120" height="60" class="list-color concrete-box"/>
-  <text x="340" y="360" text-anchor="middle" class="class-title">Vector<E></text>
+  <text x="340" y="360" text-anchor="middle" class="class-title">Vector&lt;E&gt;</text>
   <text x="290" y="375" class="description-text">Synchronized</text>
   <text x="290" y="390" class="description-text">Legacy class</text>
   
   <!-- Set Implementations -->
   <rect x="450" y="340" width="120" height="60" class="set-color concrete-box"/>
-  <text x="510" y="360" text-anchor="middle" class="class-title">HashSet<E></text>
+  <text x="510" y="360" text-anchor="middle" class="class-title">HashSet&lt;E&gt;</text>
   <text x="460" y="375" class="description-text">Hash table</text>
   <text x="460" y="390" class="description-text">O(1) operations</text>
   
   <rect x="580" y="340" width="120" height="60" class="set-color concrete-box"/>
-  <text x="640" y="360" text-anchor="middle" class="class-title">LinkedHashSet<E></text>
+  <text x="640" y="360" text-anchor="middle" class="class-title">LinkedHashSet&lt;E&gt;</text>
   <text x="590" y="375" class="description-text">Maintains order</text>
   <text x="590" y="390" class="description-text">Hash + LinkedList</text>
   
   <rect x="710" y="340" width="120" height="60" class="set-color concrete-box"/>
-  <text x="770" y="360" text-anchor="middle" class="class-title">TreeSet<E></text>
+  <text x="770" y="360" text-anchor="middle" class="class-title">TreeSet&lt;E&gt;</text>
   <text x="720" y="375" class="description-text">Red-Black tree</text>
   <text x="720" y="390" class="description-text">Sorted order</text>
   
   <!-- Queue/Deque Implementations -->
   <rect x="840" y="340" width="120" height="60" class="queue-color concrete-box"/>
-  <text x="900" y="360" text-anchor="middle" class="class-title">ArrayDeque<E></text>
+  <text x="900" y="360" text-anchor="middle" class="class-title">ArrayDeque&lt;E&gt;</text>
   <text x="850" y="375" class="description-text">Resizable array</text>
   <text x="850" y="390" class="description-text">No capacity limit</text>
   
   <rect x="970" y="340" width="120" height="60" class="queue-color concrete-box"/>
-  <text x="1030" y="360" text-anchor="middle" class="class-title">PriorityQueue<E></text>
+  <text x="1030" y="360" text-anchor="middle" class="class-title">PriorityQueue&lt;E&gt;</text>
   <text x="980" y="375" class="description-text">Heap-based</text>
   <text x="980" y="390" class="description-text">Natural ordering</text>
   
@@ -130,19 +130,19 @@
   
   <!-- Map Interface (Separate hierarchy) -->
   <rect x="1100" y="130" width="200" height="60" class="map-color interface-box"/>
-  <text x="1200" y="150" text-anchor="middle" class="interface-title">Map<K,V></text>
+  <text x="1200" y="150" text-anchor="middle" class="interface-title">Map&lt;K,V&gt;</text>
   <text x="1110" y="170" class="method-text">+ put(K key, V value): V</text>
   <text x="1110" y="185" class="method-text">+ get(Object key): V</text>
   
   <!-- SortedMap Interface -->
   <rect x="1100" y="220" width="200" height="60" class="map-color interface-box"/>
-  <text x="1200" y="240" text-anchor="middle" class="interface-title">SortedMap<K,V></text>
+  <text x="1200" y="240" text-anchor="middle" class="interface-title">SortedMap&lt;K,V&gt;</text>
   <text x="1110" y="255" class="method-text">+ firstKey(): K</text>
   <text x="1110" y="270" class="method-text">+ lastKey(): K</text>
   
   <!-- NavigableMap Interface -->
   <rect x="1100" y="300" width="200" height="60" class="map-color interface-box"/>
-  <text x="1200" y="320" text-anchor="middle" class="interface-title">NavigableMap<K,V></text>
+  <text x="1200" y="320" text-anchor="middle" class="interface-title">NavigableMap&lt;K,V&gt;</text>
   <text x="1110" y="335" class="method-text">+ lowerKey(K key): K</text>
   <text x="1110" y="350" class="method-text">+ higherKey(K key): K</text>
   
@@ -152,22 +152,22 @@
   
   <!-- Map Implementations -->
   <rect x="900" y="450" width="120" height="60" class="map-color concrete-box"/>
-  <text x="960" y="470" text-anchor="middle" class="class-title">HashMap<K,V></text>
+  <text x="960" y="470" text-anchor="middle" class="class-title">HashMap&lt;K,V&gt;</text>
   <text x="910" y="485" class="description-text">Hash table</text>
   <text x="910" y="500" class="description-text">O(1) operations</text>
   
   <rect x="1030" y="450" width="120" height="60" class="map-color concrete-box"/>
-  <text x="1090" y="470" text-anchor="middle" class="class-title">LinkedHashMap<K,V></text>
+  <text x="1090" y="470" text-anchor="middle" class="class-title">LinkedHashMap&lt;K,V&gt;</text>
   <text x="1040" y="485" class="description-text">Maintains order</text>
   <text x="1040" y="500" class="description-text">Hash + LinkedList</text>
   
   <rect x="1160" y="450" width="120" height="60" class="map-color concrete-box"/>
-  <text x="1220" y="470" text-anchor="middle" class="class-title">TreeMap<K,V></text>
+  <text x="1220" y="470" text-anchor="middle" class="class-title">TreeMap&lt;K,V&gt;</text>
   <text x="1170" y="485" class="description-text">Red-Black tree</text>
   <text x="1170" y="500" class="description-text">Sorted keys</text>
   
   <rect x="1290" y="450" width="120" height="60" class="map-color concrete-box"/>
-  <text x="1350" y="470" text-anchor="middle" class="class-title">Hashtable<K,V></text>
+  <text x="1350" y="470" text-anchor="middle" class="class-title">Hashtable&lt;K,V&gt;</text>
   <text x="1300" y="485" class="description-text">Synchronized</text>
   <text x="1300" y="500" class="description-text">Legacy class</text>
   
@@ -284,7 +284,7 @@
   <!-- Performance Note -->
   <rect x="50" y="760" width="900" height="30" fill="#d1ecf1" stroke="#bee5eb" stroke-width="2" rx="5"/>
   <text x="500" y="780" text-anchor="middle" class="description-text" font-size="12">
-    <tspan font-weight=">bold">Performance Note:</tspan> O(1)* means amortized constant time (may occasionally be O(n) due to resizing). 
+    <tspan font-weight="bold">Performance Note:</tspan> O(1)* means amortized constant time (may occasionally be O(n) due to resizing). 
     Choose collections based on your specific use case and performance requirements.
   </text>
   

@@ -56,18 +56,18 @@
   <!-- Precedence Level 5 -->
   <rect x="50" y="320" width="800" height="50" fill="#16a085" class="level-box"/>
   <text x="100" y="340" class="level-text">5. SHIFT</text>
-  <text x="250" y="340" class="operator-text"><< >> >>></text>
+  <text x="250" y="340" class="operator-text">&lt;&lt; &gt;&gt; &gt;&gt;&gt;</text>
   <text x="250" y="355" class="description-text">Left shift, Right shift, Unsigned right shift</text>
   <text x="500" y="340" class="description-text">Bitwise shifting operations</text>
-  <text x="650" y="345" class="example-text">8 << 2 → 32 (shift left by 2 bits)</text>
+  <text x="650" y="345" class="example-text">8 &lt;&lt; 2 → 32 (shift left by 2 bits)</text>
   
   <!-- Precedence Level 6 -->
   <rect x="50" y="380" width="800" height="50" fill="#f39c12" class="level-box"/>
   <text x="100" y="400" class="level-text">6. RELATIONAL</text>
-  <text x="250" y="400" class="operator-text">< <= > >= instanceof</text>
+  <text x="250" y="400" class="operator-text">&lt; &lt;= &gt; &gt;= instanceof</text>
   <text x="250" y="415" class="description-text">Less than, Less/equal, Greater, Greater/equal, Type check</text>
   <text x="550" y="400" class="description-text">Comparison operations</text>
-  <text x="650" y="405" class="example-text">a &lt; b > c → (a<b) > c</text>
+  <text x="650" y="405" class="example-text">a &lt; b &gt; c → (a&lt;b) &gt; c</text>
   
   <!-- Precedence Level 7 -->
   <rect x="50" y="440" width="800" height="50" fill="#d35400" class="level-box"/>
@@ -127,7 +127,7 @@
   <!-- Precedence Level 14 - Lowest -->
   <rect x="370" y="740" width="480" height="50" fill="#bdc3c7" class="level-box"/>
   <text x="420" y="760" class="level-text">14. LOWEST - ASSIGNMENT</text>
-  <text x="650" y="760" class="operator-text">= += -= *= /= %= &amp;= |= ^= <<= >>= >>>=</text>
+  <text x="650" y="760" class="operator-text">= += -= *= /= %= &amp;= |= ^= &lt;&lt;= &gt;&gt;= &gt;&gt;&gt;=</text>
   <text x="650" y="775" class="description-text">Assignment and compound assignment</text>
   
   <!-- Arrow showing precedence direction -->

@@ -104,7 +104,7 @@
   <text x="440" y="220" class="code-text">Character c = 'X';        // char → Character</text>
   
   <text x="440" y="245" class="code-text">// In collections</text>
-  <text x="440" y="260" class="code-text">List<Integer> numbers = new ArrayList<>();</text>
+  <text x="440" y="260" class="code-text">List&lt;Integer&gt; numbers = new ArrayList&lt;&gt;();</text>
   <text x="440" y="275" class="code-text">numbers.add(10);          // Autoboxing</text>
   <text x="440" y="290" class="code-text">numbers.add(20);          // Autoboxing</text>
   
