@@ -461,7 +461,7 @@
       <text x="30" y="105" class="small-label">>• Precise geometry control</text>
       
       <text x="300" y="45" class="label">>Key Design Features:</text>
-      <text x="310" y="60" class="small-label">• Thin base width (< 1μm)</text>>
+      <text x="310" y="60" class="small-label">• Thin base width (&lt; 1μm)</text>
       <text x="310" y="75" class="small-label">• Heavy emitter doping</text>
       <text x="310" y="90" class="small-label">>• Large collector area</text>
       <text x="310" y="105" class="small-label">>• Low base resistance</text>
