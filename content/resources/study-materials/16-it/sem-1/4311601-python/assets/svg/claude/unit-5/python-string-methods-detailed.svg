@@ -1,0 +1,205 @@
+<svg viewBox="0 0 1000 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="stringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF5722;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D84315;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="methodGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1565C0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="exampleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="900" fill="#F8F9FA"/>
+
+  <!-- Title -->
+  <text x="500" y="40" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#2C3E50">
+    Python String Methods &amp; Operations
+  </text>
+  <text x="500" y="70" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666">
+    Comprehensive guide to string manipulation in Python
+  </text>
+
+  <!-- String Basics -->
+  <g transform="translate(50, 100)">
+    <rect x="0" y="0" width="900" height="80" rx="15" fill="#FFEBEE" stroke="#FF5722" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF5722">
+      String Creation &amp; Basic Properties
+    </text>
+    <g transform="translate(30, 45)">
+      <text x="0" y="15" font-family="Courier, monospace" font-size="12" fill="#333">
+        name = "Python"  # Single quotes: 'Python'  # Triple quotes: """Python"""
+      </text>
+      <text x="0" y="30" font-family="Arial, sans-serif" font-size="11" fill="#666">
+        Strings are immutable, ordered sequences of characters with zero-based indexing
+      </text>
+    </g>
+  </g>
+
+  <!-- String Methods - Part 1 -->
+  <g transform="translate(50, 200)">
+    <rect x="0" y="0" width="450" height="280" rx="15" fill="#E3F2FD" stroke="#2196F3" stroke-width="3"/>
+    <text x="225" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#2196F3">
+      Case &amp; Format Methods
+    </text>
+
+    <!-- Case Methods -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2196F3">Case Conversion:</text>
+
+      <g transform="translate(0, 25)">
+        <rect x="0" y="0" width="410" height="60" rx="5" fill="rgba(33,150,243,0.1)" stroke="#2196F3" stroke-width="1"/>
+        <text x="5" y="15" font-family="Courier, monospace" font-size="10" fill="#333">text = "Hello World"</text>
+        <text x="5" y="28" font-family="Courier, monospace" font-size="10" fill="#333">text.upper()      # "HELLO WORLD"</text>
+        <text x="5" y="41" font-family="Courier, monospace" font-size="10" fill="#333">text.lower()      # "hello world"</text>
+        <text x="5" y="54" font-family="Courier, monospace" font-size="10" fill="#333">text.title()      # "Hello World"</text>
+      </g>
+
+      <text x="0" y="105" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2196F3">Advanced Case:</text>
+
+      <g transform="translate(0, 115)">
+        <rect x="0" y="0" width="410" height="60" rx="5" fill="rgba(33,150,243,0.1)" stroke="#2196F3" stroke-width="1"/>
+        <text x="5" y="15" font-family="Courier, monospace" font-size="10" fill="#333">text.capitalize()  # "Hello world"</text>
+        <text x="5" y="28" font-family="Courier, monospace" font-size="10" fill="#333">text.swapcase()   # "hELLO wORLD"</text>
+        <text x="5" y="41" font-family="Courier, monospace" font-size="10" fill="#333">text.casefold()   # "hello world" (aggressive)</text>
+        <text x="5" y="54" font-family="Courier, monospace" font-size="10" fill="#333">text.islower()    # False</text>
+      </g>
+
+      <text x="0" y="195" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2196F3">Formatting:</text>
+
+      <g transform="translate(0, 205)">
+        <rect x="0" y="0" width="410" height="47" rx="5" fill="rgba(33,150,243,0.1)" stroke="#2196F3" stroke-width="1"/>
+        <text x="5" y="15" font-family="Courier, monospace" font-size="10" fill="#333">text.center(20, '*')  # "****Hello World*****"</text>
+        <text x="5" y="28" font-family="Courier, monospace" font-size="10" fill="#333">text.ljust(15, '-')   # "Hello World----"</text>
+        <text x="5" y="41" font-family="Courier, monospace" font-size="10" fill="#333">text.rjust(15, '-')   # "----Hello World"</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- String Methods - Part 2 -->
+  <g transform="translate(520, 200)">
+    <rect x="0" y="0" width="430" height="280" rx="15" fill="#E8F5E8" stroke="#4CAF50" stroke-width="3"/>
+    <text x="215" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#4CAF50">
+      Search &amp; Replace Methods
+    </text>
+
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">Finding Content:</text>
+
+      <g transform="translate(0, 25)">
+        <rect x="0" y="0" width="390" height="74" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+        <text x="5" y="15" font-family="Courier, monospace" font-size="10" fill="#333">text = "Python Programming"</text>
+        <text x="5" y="28" font-family="Courier, monospace" font-size="10" fill="#333">text.find("Pro")     # 7 (index)</text>
+        <text x="5" y="41" font-family="Courier, monospace" font-size="10" fill="#333">text.index("Pro")    # 7 (raises error if not found)</text>
+        <text x="5" y="54" font-family="Courier, monospace" font-size="10" fill="#333">text.count("o")      # 2 (occurrences)</text>
+        <text x="5" y="67" font-family="Courier, monospace" font-size="10" fill="#333">"Pro" in text       # True</text>
+      </g>
+
+      <text x="0" y="119" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">String Testing:</text>
+
+      <g transform="translate(0, 129)">
+        <rect x="0" y="0" width="390" height="60" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+        <text x="5" y="15" font-family="Courier, monospace" font-size="10" fill="#333">text.startswith("Py")  # True</text>
+        <text x="5" y="28" font-family="Courier, monospace" font-size="10" fill="#333">text.endswith("ing")   # True</text>
+        <text x="5" y="41" font-family="Courier, monospace" font-size="10" fill="#333">text.isalpha()         # False (space)</text>
+        <text x="5" y="54" font-family="Courier, monospace" font-size="10" fill="#333">"123".isdigit()        # True</text>
+      </g>
+
+      <text x="0" y="209" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">Replace &amp; Modify:</text>
+
+      <g transform="translate(0, 219)">
+        <rect x="0" y="0" width="390" height="47" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+        <text x="5" y="15" font-family="Courier, monospace" font-size="10" fill="#333">text.replace("Python", "Java")  # "Java Programming"</text>
+        <text x="5" y="28" font-family="Courier, monospace" font-size="10" fill="#333">"  hello  ".strip()           # "hello"</text>
+        <text x="5" y="41" font-family="Courier, monospace" font-size="10" fill="#333">text.removeprefix("Python ")   # "Programming"</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- String Splitting and Joining -->
+  <g transform="translate(50, 500)">
+    <rect x="0" y="0" width="900" height="180" rx="15" fill="#FFF3E0" stroke="#FF9800" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF9800">
+      String Splitting &amp; Joining Operations
+    </text>
+
+    <g transform="translate(30, 50)">
+      <!-- Split Methods -->
+      <g transform="translate(0, 0)">
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">Split Operations:</text>
+        <rect x="0" y="20" width="420" height="90" rx="5" fill="rgba(255,152,0,0.1)" stroke="#FF9800" stroke-width="1"/>
+        <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">sentence = "apple,banana,cherry"</text>
+        <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">sentence.split(",")           # ['apple', 'banana', 'cherry']</text>
+        <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">sentence.split(",", 1)        # ['apple', 'banana,cherry']</text>
+        <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">"a-b-c".rsplit("-", 1)        # ['a-b', 'c']</text>
+        <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">"line1\nline2".splitlines()   # ['line1', 'line2']</text>
+        <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">"word1 word2".partition(" ")  # ('word1', ' ', 'word2')</text>
+      </g>
+
+      <!-- Join Methods -->
+      <g transform="translate(450, 0)">
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">Join Operations:</text>
+        <rect x="0" y="20" width="420" height="90" rx="5" fill="rgba(255,152,0,0.1)" stroke="#FF9800" stroke-width="1"/>
+        <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">fruits = ['apple', 'banana', 'cherry']</text>
+        <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">", ".join(fruits)              # "apple, banana, cherry"</text>
+        <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">"".join(['h','e','l','l','o']) # "hello"</text>
+        <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">"-".join("abc")               # "a-b-c"</text>
+        <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">" | ".join(map(str, [1,2,3])) # "1 | 2 | 3"</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- String Formatting -->
+  <g transform="translate(50, 700)">
+    <rect x="0" y="0" width="900" height="180" rx="15" fill="#F3E5F5" stroke="#9C27B0" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#9C27B0">
+      Advanced String Formatting Techniques
+    </text>
+
+    <g transform="translate(30, 50)">
+      <!-- Old Style Formatting -->
+      <g transform="translate(0, 0)">
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#9C27B0">% Formatting (Old Style):</text>
+        <rect x="0" y="20" width="280" height="60" rx="5" fill="rgba(156,39,176,0.1)" stroke="#9C27B0" stroke-width="1"/>
+        <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">name, age = "Alice", 25</text>
+        <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">"Hi %s, age %d" % (name, age)</text>
+        <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333"># "Hi Alice, age 25"</text>
+        <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">"%.2f" % 3.14159  # "3.14"</text>
+      </g>
+
+      <!-- .format() Method -->
+      <g transform="translate(300, 0)">
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#9C27B0">.format() Method:</text>
+        <rect x="0" y="20" width="280" height="60" rx="5" fill="rgba(156,39,176,0.1)" stroke="#9C27B0" stroke-width="1"/>
+        <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">"Hi {}, age {}".format(name, age)</text>
+        <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">"Hi {0}, age {1}".format(name, age)</text>
+        <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">"Hi {n}, age {a}".format(n=name, a=age)</text>
+        <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">"{:.2f}".format(3.14159)  # "3.14"</text>
+      </g>
+
+      <!-- f-strings -->
+      <g transform="translate(600, 0)">
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#9C27B0">f-strings (Python 3.6+):</text>
+        <rect x="0" y="20" width="280" height="60" rx="5" fill="rgba(156,39,176,0.1)" stroke="#9C27B0" stroke-width="1"/>
+        <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">f"Hi {name}, age {age}"</text>
+        <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">f"Result: {5 + 3}"  # "Result: 8"</text>
+        <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">f"{name.upper()}"   # "ALICE"</text>
+        <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">f"{3.14159:.2f}"    # "3.14"</text>
+      </g>
+
+      <!-- Template Strings -->
+      <g transform="translate(150, 100)">
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#9C27B0">Template Strings:</text>
+        <rect x="0" y="20" width="600" height="47" rx="5" fill="rgba(156,39,176,0.1)" stroke="#9C27B0" stroke-width="1"/>
+        <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">from string import Template</text>
+        <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">t = Template("Hi $name, your score is $score")</text>
+        <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">t.substitute(name="Bob", score=95)  # "Hi Bob, your score is 95"</text>
+      </g>
+    </g>
+  </g>
+</svg>

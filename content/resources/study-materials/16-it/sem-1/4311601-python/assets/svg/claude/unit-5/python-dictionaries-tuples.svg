@@ -1,0 +1,207 @@
+<svg viewBox="0 0 1000 950" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="dictGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#9C27B0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6A1B9A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="tupleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF5722;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D84315;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="operationGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="950" fill="#F8F9FA"/>
+
+  <!-- Title -->
+  <text x="500" y="40" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#2C3E50">
+    Python Dictionaries &amp; Tuples
+  </text>
+  <text x="500" y="70" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666">
+    Advanced data structures for organizing and storing data
+  </text>
+
+  <!-- Dictionaries Section -->
+  <g transform="translate(50, 100)">
+    <rect x="0" y="0" width="450" height="380" rx="15" fill="#F3E5F5" stroke="#9C27B0" stroke-width="3"/>
+    <text x="225" y="25" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#9C27B0">
+      Dictionaries (Key-Value Pairs)
+    </text>
+
+    <!-- Dictionary Basics -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#9C27B0">Creation &amp; Basic Operations:</text>
+      <rect x="0" y="20" width="410" height="80" rx="5" fill="rgba(156,39,176,0.1)" stroke="#9C27B0" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Creating dictionaries</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">person = {"name": "Alice", "age": 25, "city": "Mumbai"}</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">scores = dict(math=95, science=88, english=92)</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">empty_dict = {} or dict()</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">print(person["name"])  # "Alice"</text>
+    </g>
+
+    <!-- Dictionary Methods -->
+    <g transform="translate(20, 140)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#9C27B0">Common Methods:</text>
+      <rect x="0" y="20" width="410" height="120" rx="5" fill="rgba(156,39,176,0.1)" stroke="#9C27B0" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">person.get("age", 0)          # 25 (safe access)</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">person.keys()                 # dict_keys(['name', 'age', 'city'])</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">person.values()               # dict_values(['Alice', 25, 'Mumbai'])</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">person.items()                # dict_items([('name', 'Alice'), ...])</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">person.update({"job": "Engineer"}) # Add/update entries</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">person.pop("city")            # Remove and return value</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">person.clear()                # Remove all items</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">"name" in person              # True (membership test)</text>
+    </g>
+
+    <!-- Dictionary Comprehension -->
+    <g transform="translate(20, 280)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#9C27B0">Dictionary Comprehension:</text>
+      <rect x="0" y="20" width="410" height="67" rx="5" fill="rgba(156,39,176,0.1)" stroke="#9C27B0" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Squares of numbers</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">squares = {x: x**2 for x in range(1, 6)}</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333"># {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">filtered = {k: v for k, v in scores.items() if v &gt; 90}</text>
+    </g>
+  </g>
+
+  <!-- Tuples Section -->
+  <g transform="translate(520, 100)">
+    <rect x="0" y="0" width="430" height="380" rx="15" fill="#FFEBEE" stroke="#FF5722" stroke-width="3"/>
+    <text x="215" y="25" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#FF5722">
+      Tuples (Immutable Sequences)
+    </text>
+
+    <!-- Tuple Basics -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">Creation &amp; Properties:</text>
+      <rect x="0" y="20" width="390" height="80" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Creating tuples</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">coordinates = (10, 20)        # Parentheses optional</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">point = 10, 20, 30            # Tuple packing</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">single = (42,) or 42,         # Single element tuple</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">empty = () or tuple()         # Empty tuple</text>
+    </g>
+
+    <!-- Tuple Operations -->
+    <g transform="translate(20, 140)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">Operations &amp; Methods:</text>
+      <rect x="0" y="20" width="390" height="107" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">numbers = (1, 2, 3, 2, 4, 2)</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">numbers[0]                    # 1 (indexing)</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">numbers[1:4]                  # (2, 3, 2) (slicing)</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">numbers.count(2)              # 3 (count occurrences)</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">numbers.index(3)              # 2 (find index)</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">len(numbers)                  # 6 (length)</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">2 in numbers                  # True (membership)</text>
+    </g>
+
+    <!-- Tuple Unpacking -->
+    <g transform="translate(20, 267)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">Tuple Unpacking:</text>
+      <rect x="0" y="20" width="390" height="80" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">x, y, z = point               # Unpacking</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">first, *rest = (1, 2, 3, 4)  # first=1, rest=[2,3,4]</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">a, b = b, a                   # Swapping variables</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">for name, age in [("Alice", 25), ("Bob", 30)]:</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    print(f"{name} is {age}")  # Unpacking in loops</text>
+    </g>
+  </g>
+
+  <!-- Advanced Operations -->
+  <g transform="translate(50, 500)">
+    <rect x="0" y="0" width="900" height="200" rx="15" fill="#E8F5E8" stroke="#4CAF50" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#4CAF50">
+      Advanced Operations &amp; Use Cases
+    </text>
+
+    <!-- Dictionary Advanced -->
+    <g transform="translate(30, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#4CAF50">Dictionary Advanced Techniques:</text>
+      <rect x="0" y="20" width="420" height="120" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Nested dictionaries</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">students = {</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    "Alice": {"math": 95, "science": 88},</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">    "Bob": {"math": 87, "science": 92}</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">}</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333"># Merging dictionaries (Python 3.9+)</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">combined = dict1 | dict2</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">dict1.setdefault("key", []).append("value")</text>
+    </g>
+
+    <!-- Tuple Advanced -->
+    <g transform="translate(470, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#4CAF50">Tuple Advanced Techniques:</text>
+      <rect x="0" y="20" width="400" height="120" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Named tuples (from collections)</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">from collections import namedtuple</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">Point = namedtuple('Point', ['x', 'y'])</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">p = Point(10, 20)</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">print(p.x, p.y)  # 10 20</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333"># Tuple as dictionary key</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">locations = {(0, 0): "origin", (1, 1): "point"}</text>
+    </g>
+  </g>
+
+  <!-- Comparison Table -->
+  <g transform="translate(50, 720)">
+    <rect x="0" y="0" width="900" height="200" rx="15" fill="#FFF8E1" stroke="#FFC107" stroke-width="2"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF8F00">
+      Dictionary vs Tuple Comparison
+    </text>
+
+    <!-- Comparison Headers -->
+    <g transform="translate(50, 50)">
+      <rect x="0" y="0" width="150" height="30" fill="#FF8F00"/>
+      <text x="75" y="20" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="white">Feature</text>
+
+      <rect x="150" y="0" width="350" height="30" fill="#9C27B0"/>
+      <text x="325" y="20" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="white">Dictionary</text>
+
+      <rect x="500" y="0" width="350" height="30" fill="#FF5722"/>
+      <text x="675" y="20" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="white">Tuple</text>
+    </g>
+
+    <!-- Comparison Rows -->
+    <g transform="translate(50, 80)">
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="150" height="25" fill="rgba(255,143,0,0.2)" stroke="#FFC107" stroke-width="1"/>
+        <text x="10" y="17" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF8F00">Mutability</text>
+        <rect x="150" y="0" width="350" height="25" fill="rgba(156,39,176,0.1)" stroke="#9C27B0" stroke-width="1"/>
+        <text x="160" y="17" font-family="Arial, sans-serif" font-size="11" fill="#333">Mutable (can be changed)</text>
+        <rect x="500" y="0" width="350" height="25" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+        <text x="510" y="17" font-family="Arial, sans-serif" font-size="11" fill="#333">Immutable (cannot be changed)</text>
+      </g>
+
+      <g transform="translate(0, 25)">
+        <rect x="0" y="0" width="150" height="25" fill="rgba(255,143,0,0.2)" stroke="#FFC107" stroke-width="1"/>
+        <text x="10" y="17" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF8F00">Ordering</text>
+        <rect x="150" y="0" width="350" height="25" fill="rgba(156,39,176,0.1)" stroke="#9C27B0" stroke-width="1"/>
+        <text x="160" y="17" font-family="Arial, sans-serif" font-size="11" fill="#333">Ordered (Python 3.7+)</text>
+        <rect x="500" y="0" width="350" height="25" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+        <text x="510" y="17" font-family="Arial, sans-serif" font-size="11" fill="#333">Ordered (by position)</text>
+      </g>
+
+      <g transform="translate(0, 50)">
+        <rect x="0" y="0" width="150" height="25" fill="rgba(255,143,0,0.2)" stroke="#FFC107" stroke-width="1"/>
+        <text x="10" y="17" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF8F00">Access</text>
+        <rect x="150" y="0" width="350" height="25" fill="rgba(156,39,176,0.1)" stroke="#9C27B0" stroke-width="1"/>
+        <text x="160" y="17" font-family="Arial, sans-serif" font-size="11" fill="#333">By key: dict["key"]</text>
+        <rect x="500" y="0" width="350" height="25" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+        <text x="510" y="17" font-family="Arial, sans-serif" font-size="11" fill="#333">By index: tuple[0]</text>
+      </g>
+
+      <g transform="translate(0, 75)">
+        <rect x="0" y="0" width="150" height="25" fill="rgba(255,143,0,0.2)" stroke="#FFC107" stroke-width="1"/>
+        <text x="10" y="17" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF8F00">Use Case</text>
+        <rect x="150" y="0" width="350" height="25" fill="rgba(156,39,176,0.1)" stroke="#9C27B0" stroke-width="1"/>
+        <text x="160" y="17" font-family="Arial, sans-serif" font-size="11" fill="#333">Key-value mappings, lookups</text>
+        <rect x="500" y="0" width="350" height="25" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+        <text x="510" y="17" font-family="Arial, sans-serif" font-size="11" fill="#333">Fixed collections, coordinates</text>
+      </g>
+    </g>
+  </g>
+</svg>

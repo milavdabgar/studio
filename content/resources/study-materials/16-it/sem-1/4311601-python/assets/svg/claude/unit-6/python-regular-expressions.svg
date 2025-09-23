@@ -1,0 +1,196 @@
+<svg viewBox="0 0 1000 950" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="regexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E91E63;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#880E4F;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="patternGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3F51B5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1A237E;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="methodGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF5722;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#BF360C;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="950" fill="#F8F9FA"/>
+
+  <!-- Title -->
+  <text x="500" y="40" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#2C3E50">
+    Python Regular Expressions (Regex)
+  </text>
+  <text x="500" y="70" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666">
+    Complete guide to pattern matching and text processing with regex
+  </text>
+
+  <!-- Regex Basics -->
+  <g transform="translate(50, 100)">
+    <rect x="0" y="0" width="900" height="100" rx="15" fill="#FCE4EC" stroke="#E91E63" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#E91E63">
+      Regular Expression Fundamentals
+    </text>
+
+    <g transform="translate(30, 45)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#E91E63">What is Regex?</text>
+      <text x="130" y="15" font-family="Arial, sans-serif" font-size="12" fill="#333">A sequence of characters that define a search pattern for text</text>
+
+      <text x="0" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#E91E63">Python re Module:</text>
+      <text x="130" y="35" font-family="Courier, monospace" font-size="12" fill="#333">import re</text>
+      <text x="250" y="35" font-family="Arial, sans-serif" font-size="12" fill="#333">- Built-in module for regex operations</text>
+
+      <text x="0" y="55" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#E91E63">Basic Example:</text>
+      <text x="130" y="55" font-family="Courier, monospace" font-size="12" fill="#333">re.search(r"hello", "hello world")  # Matches "hello"</text>
+    </g>
+  </g>
+
+  <!-- Basic Patterns -->
+  <g transform="translate(50, 220)">
+    <rect x="0" y="0" width="450" height="300" rx="15" fill="#E8EAF6" stroke="#3F51B5" stroke-width="3"/>
+    <text x="225" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#3F51B5">
+      Basic Regex Patterns
+    </text>
+
+    <!-- Literal Characters -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#3F51B5">Literal Characters:</text>
+      <rect x="0" y="20" width="410" height="60" rx="5" fill="rgba(63,81,181,0.1)" stroke="#3F51B5" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">r"hello"     # Matches exactly "hello"</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">r"python"    # Matches exactly "python"</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">r"123"       # Matches exactly "123"</text>
+      <text x="5" y="74" font-family="Arial, sans-serif" font-size="9" fill="#666">Case-sensitive by default</text>
+    </g>
+
+    <!-- Metacharacters -->
+    <g transform="translate(20, 130)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#3F51B5">Metacharacters:</text>
+      <rect x="0" y="20" width="410" height="100" rx="5" fill="rgba(63,81,181,0.1)" stroke="#3F51B5" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">. (dot)      # Matches any character except newline</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">^            # Matches start of string</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">$            # Matches end of string</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">*            # Matches 0 or more of preceding</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">+            # Matches 1 or more of preceding</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">?            # Matches 0 or 1 of preceding</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">|            # OR operator (alternation)</text>
+    </g>
+
+    <!-- Character Classes -->
+    <g transform="translate(20, 245)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#3F51B5">Character Classes:</text>
+      <rect x="0" y="20" width="410" height="45" rx="5" fill="rgba(63,81,181,0.1)" stroke="#3F51B5" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">[abc]        # Matches a, b, or c</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">[a-z]        # Matches any lowercase letter</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">[^abc]       # Matches anything except a, b, or c</text>
+    </g>
+  </g>
+
+  <!-- Predefined Character Classes -->
+  <g transform="translate(520, 220)">
+    <rect x="0" y="0" width="430" height="300" rx="15" fill="#FFEBEE" stroke="#FF5722" stroke-width="3"/>
+    <text x="215" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF5722">
+      Predefined Character Classes
+    </text>
+
+    <!-- Common Classes -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">Common Classes:</text>
+      <rect x="0" y="20" width="390" height="120" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">\d           # Matches any digit [0-9]</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">\D           # Matches any non-digit [^0-9]</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">\w           # Matches word char [a-zA-Z0-9_]</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">\W           # Matches non-word char [^\w]</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">\s           # Matches whitespace [ \t\n\r\f\v]</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">\S           # Matches non-whitespace [^\s]</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">\b           # Word boundary</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">\B           # Non-word boundary</text>
+    </g>
+
+    <!-- Quantifiers -->
+    <g transform="translate(20, 180)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">Quantifiers:</text>
+      <rect x="0" y="20" width="390" height="100" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">{n}          # Exactly n times</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">{n,}         # n or more times</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">{n,m}        # Between n and m times</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">*?           # Non-greedy 0 or more</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">+?           # Non-greedy 1 or more</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">??           # Non-greedy 0 or 1</text>
+      <text x="5" y="113" font-family="Arial, sans-serif" font-size="9" fill="#666">Greedy: matches as much as possible</text>
+    </g>
+  </g>
+
+  <!-- Regex Methods -->
+  <g transform="translate(50, 540)">
+    <rect x="0" y="0" width="900" height="200" rx="15" fill="#E8F5E8" stroke="#4CAF50" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#4CAF50">
+      Python Regex Methods
+    </text>
+
+    <!-- Search Methods -->
+    <g transform="translate(30, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">Search Methods:</text>
+      <rect x="0" y="20" width="420" height="120" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import re</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333"># Search for first match</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">match = re.search(r"\d+", "Age: 25 years")</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">if match: print(match.group())  # "25"</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333"># Match from start of string</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">match = re.match(r"\w+", "hello world")</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">print(match.group())  # "hello"</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333"># Find all matches</text>
+      <text x="5" y="139" font-family="Courier, monospace" font-size="10" fill="#333">matches = re.findall(r"\d+", "12 apples, 5 oranges")</text>
+    </g>
+
+    <!-- Replace Methods -->
+    <g transform="translate(470, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">Replace &amp; Split Methods:</text>
+      <rect x="0" y="20" width="400" height="120" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Replace matches</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">text = "Hello World"</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">result = re.sub(r"World", "Python", text)</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">print(result)  # "Hello Python"</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333"># Split by pattern</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">parts = re.split(r"[,;]", "a,b;c,d")</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">print(parts)  # ['a', 'b', 'c', 'd']</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333"># Replace with limit</text>
+      <text x="5" y="139" font-family="Courier, monospace" font-size="10" fill="#333">re.sub(r"a", "X", "banana", count=2)  # "bXnXna"</text>
+    </g>
+  </g>
+
+  <!-- Advanced Patterns -->
+  <g transform="translate(50, 760)">
+    <rect x="0" y="0" width="900" height="170" rx="15" fill="#FFF3E0" stroke="#FF9800" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF9800">
+      Advanced Regex Patterns &amp; Examples
+    </text>
+
+    <!-- Groups and Capturing -->
+    <g transform="translate(30, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">Groups &amp; Capturing:</text>
+      <rect x="0" y="20" width="420" height="110" rx="5" fill="rgba(255,152,0,0.1)" stroke="#FF9800" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Capturing groups with parentheses</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">pattern = r"(\w+)@(\w+)\.(\w+)"</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">match = re.search(pattern, "user@domain.com")</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">print(match.group(1))  # "user"</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">print(match.group(2))  # "domain"</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">print(match.group(3))  # "com"</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333"># Named groups: (?P&lt;name&gt;pattern)</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">r"(?P&lt;user&gt;\w+)@(?P&lt;domain&gt;\w+\.\w+)"</text>
+    </g>
+
+    <!-- Practical Examples -->
+    <g transform="translate(470, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">Practical Examples:</text>
+      <rect x="0" y="20" width="400" height="110" rx="5" fill="rgba(255,152,0,0.1)" stroke="#FF9800" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Email validation</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333"># Phone number (US format)</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">phone_pattern = r"^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$"</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333"># Extract URLs</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">url_pattern = r"https?://[^\s]+"</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333"># Password strength (8+ chars, mixed case, digit)</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">pwd_pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,209 @@
+<svg viewBox="0 0 1000 950" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="listCompGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0D47A1;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="dictCompGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#9C27B0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4A148C;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="generatorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF5722;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#BF360C;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="950" fill="#F8F9FA"/>
+
+  <!-- Title -->
+  <text x="500" y="40" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#2C3E50">
+    Python Comprehensions &amp; Generators
+  </text>
+  <text x="500" y="70" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666">
+    Advanced techniques for creating collections and memory-efficient iteration
+  </text>
+
+  <!-- List Comprehensions -->
+  <g transform="translate(50, 100)">
+    <rect x="0" y="0" width="450" height="300" rx="15" fill="#E3F2FD" stroke="#2196F3" stroke-width="3"/>
+    <text x="225" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#2196F3">
+      List Comprehensions
+    </text>
+
+    <!-- Basic List Comprehension -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2196F3">Basic Syntax:</text>
+      <rect x="0" y="20" width="410" height="80" rx="5" fill="rgba(33,150,243,0.1)" stroke="#2196F3" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Basic form: [expression for item in iterable]</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">squares = [x**2 for x in range(5)]</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333"># Result: [0, 1, 4, 9, 16]</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333"># Equivalent to:</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">squares = []</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">for x in range(5): squares.append(x**2)</text>
+    </g>
+
+    <!-- Conditional List Comprehension -->
+    <g transform="translate(20, 140)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2196F3">With Conditions:</text>
+      <rect x="0" y="20" width="410" height="100" rx="5" fill="rgba(33,150,243,0.1)" stroke="#2196F3" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Filter with condition: [expr for item in iterable if condition]</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">evens = [x for x in range(10) if x % 2 == 0]</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333"># Result: [0, 2, 4, 6, 8]</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333"># Multiple conditions</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">filtered = [x for x in range(20) if x % 2 == 0 if x % 3 == 0]</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333"># Result: [0, 6, 12, 18] (divisible by both 2 and 3)</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333"># Conditional expression</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">signs = ["positive" if x &gt; 0 else "negative" for x in [-1, 0, 1]]</text>
+    </g>
+
+    <!-- Nested List Comprehension -->
+    <g transform="translate(20, 250)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2196F3">Nested Comprehensions:</text>
+      <rect x="0" y="20" width="410" height="40" rx="5" fill="rgba(33,150,243,0.1)" stroke="#2196F3" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Flatten 2D list</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">matrix = [[1, 2], [3, 4], [5, 6]]</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">flattened = [num for row in matrix for num in row]  # [1,2,3,4,5,6]</text>
+    </g>
+  </g>
+
+  <!-- Dictionary and Set Comprehensions -->
+  <g transform="translate(520, 100)">
+    <rect x="0" y="0" width="430" height="300" rx="15" fill="#F3E5F5" stroke="#9C27B0" stroke-width="3"/>
+    <text x="215" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#9C27B0">
+      Dictionary &amp; Set Comprehensions
+    </text>
+
+    <!-- Dictionary Comprehensions -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#9C27B0">Dictionary Comprehensions:</text>
+      <rect x="0" y="20" width="390" height="120" rx="5" fill="rgba(156,39,176,0.1)" stroke="#9C27B0" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Basic form: {key_expr: value_expr for item in iterable}</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">squares_dict = {x: x**2 for x in range(5)}</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333"># Result: {0: 0, 1: 1, 2: 4, 3: 9, 4: 16}</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333"># From two lists</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">names = ["Alice", "Bob", "Charlie"]</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">ages = [25, 30, 35]</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">people = {name: age for name, age in zip(names, ages)}</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333"># With condition</text>
+      <text x="5" y="139" font-family="Courier, monospace" font-size="10" fill="#333">adults = {name: age for name, age in people.items() if age &gt;= 18}</text>
+    </g>
+
+    <!-- Set Comprehensions -->
+    <g transform="translate(20, 180)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#9C27B0">Set Comprehensions:</text>
+      <rect x="0" y="20" width="390" height="100" rx="5" fill="rgba(156,39,176,0.1)" stroke="#9C27B0" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Basic form: {expression for item in iterable}</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">unique_squares = {x**2 for x in range(-3, 4)}</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333"># Result: {0, 1, 4, 9} (duplicates removed)</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333"># Word lengths from text</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">text = "hello world python programming"</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">word_lengths = {len(word) for word in text.split()}</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333"># Result: {5, 6, 11} (unique lengths)</text>
+    </g>
+  </g>
+
+  <!-- Generators -->
+  <g transform="translate(50, 420)">
+    <rect x="0" y="0" width="450" height="280" rx="15" fill="#FFEBEE" stroke="#FF5722" stroke-width="3"/>
+    <text x="225" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF5722">
+      Generator Expressions &amp; Functions
+    </text>
+
+    <!-- Generator Expressions -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">Generator Expressions:</text>
+      <rect x="0" y="20" width="410" height="100" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Use parentheses instead of brackets</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">squares_gen = (x**2 for x in range(1000000))</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333"># Memory efficient - values generated on demand</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">print(next(squares_gen))  # 0</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">print(next(squares_gen))  # 1</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333"># Can iterate once only</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">for square in squares_gen: print(square)  # 4, 9, 16...</text>
+    </g>
+
+    <!-- Generator Functions -->
+    <g transform="translate(20, 160)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">Generator Functions (yield):</text>
+      <rect x="0" y="20" width="410" height="100" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">def fibonacci(n):</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">    a, b = 0, 1</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    for _ in range(n):</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">        yield a  # Pause and return value</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">        a, b = b, a + b</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333"># Usage: for num in fibonacci(10): print(num)</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333"># Generates: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34</text>
+    </g>
+  </g>
+
+  <!-- Advanced Generator Techniques -->
+  <g transform="translate(520, 420)">
+    <rect x="0" y="0" width="430" height="280" rx="15" fill="#E8F5E8" stroke="#4CAF50" stroke-width="3"/>
+    <text x="215" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#4CAF50">
+      Advanced Generator Techniques
+    </text>
+
+    <!-- Generator Methods -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">Generator Methods:</text>
+      <rect x="0" y="20" width="390" height="100" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">def counter():</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">    value = 0</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    while True:</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">        received = yield value</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">        if received is not None: value = received</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">        else: value += 1</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333"># gen.send(value) - send value to generator</text>
+    </g>
+
+    <!-- Infinite Generators -->
+    <g transform="translate(20, 160)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">Infinite Generators:</text>
+      <rect x="0" y="20" width="390" height="100" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">def infinite_sequence():</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">    num = 0</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    while True:</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">        yield num</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">        num += 1</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333"># Use with itertools.takewhile() or break condition</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">import itertools; list(itertools.islice(infinite_sequence(), 5))</text>
+    </g>
+  </g>
+
+  <!-- Performance Comparison -->
+  <g transform="translate(50, 720)">
+    <rect x="0" y="0" width="900" height="200" rx="15" fill="#FFF3E0" stroke="#FF9800" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF9800">
+      Performance Comparison &amp; Best Practices
+    </text>
+
+    <!-- Memory Usage Comparison -->
+    <g transform="translate(30, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">Memory Usage Comparison:</text>
+      <rect x="0" y="20" width="420" height="120" rx="5" fill="rgba(255,152,0,0.1)" stroke="#FF9800" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import sys</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333"># List comprehension - stores all values in memory</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">list_comp = [x**2 for x in range(1000)]</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">print(sys.getsizeof(list_comp))  # ~8856 bytes</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333"># Generator expression - lazy evaluation</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">gen_exp = (x**2 for x in range(1000))</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">print(sys.getsizeof(gen_exp))    # ~112 bytes</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333"># Generator is ~80x more memory efficient!</text>
+    </g>
+
+    <!-- Best Practices -->
+    <g transform="translate(470, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">Best Practices:</text>
+      <rect x="0" y="20" width="400" height="120" rx="5" fill="rgba(255,152,0,0.1)" stroke="#FF9800" stroke-width="1"/>
+      <text x="5" y="35" font-family="Arial, sans-serif" font-size="11" fill="#333">• Use list comprehensions for small datasets (&lt; 1000 items)</text>
+      <text x="5" y="50" font-family="Arial, sans-serif" font-size="11" fill="#333">• Use generators for large datasets or infinite sequences</text>
+      <text x="5" y="65" font-family="Arial, sans-serif" font-size="11" fill="#333">• Prefer comprehensions over map() and filter() for readability</text>
+      <text x="5" y="80" font-family="Arial, sans-serif" font-size="11" fill="#333">• Keep comprehensions simple - use regular loops for complex logic</text>
+      <text x="5" y="95" font-family="Arial, sans-serif" font-size="11" fill="#333">• Use generator expressions in function arguments when possible</text>
+      <text x="5" y="110" font-family="Arial, sans-serif" font-size="11" fill="#333">• Remember: generators can only be iterated once</text>
+      <text x="5" y="125" font-family="Arial, sans-serif" font-size="11" fill="#333">• Use yield from for generator delegation</text>
+    </g>
+  </g>
+</svg>

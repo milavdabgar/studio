@@ -1,0 +1,211 @@
+<svg viewBox="0 0 1000 950" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="inputGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00BCD4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#006064;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="outputGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF5722;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#BF360C;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="formatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1B5E20;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="950" fill="#F8F9FA"/>
+
+  <!-- Title -->
+  <text x="500" y="40" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#2C3E50">
+    Python Input/Output Operations
+  </text>
+  <text x="500" y="70" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666">
+    Complete guide to reading input and displaying output in Python
+  </text>
+
+  <!-- Input Operations -->
+  <g transform="translate(50, 100)">
+    <rect x="0" y="0" width="450" height="300" rx="15" fill="#E0F7FA" stroke="#00BCD4" stroke-width="3"/>
+    <text x="225" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#00BCD4">
+      Input Operations
+    </text>
+
+    <!-- Basic Input -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#00BCD4">Basic Input with input():</text>
+      <rect x="0" y="20" width="410" height="80" rx="5" fill="rgba(0,188,212,0.1)" stroke="#00BCD4" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Basic string input</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">name = input("Enter your name: ")</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">print(f"Hello, {name}!")  # Hello, John!</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333"># input() always returns a string</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">user_input = input()  # Prompts for input without message</text>
+    </g>
+
+    <!-- Type Conversion with Input -->
+    <g transform="translate(20, 140)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#00BCD4">Type Conversion with Input:</text>
+      <rect x="0" y="20" width="410" height="100" rx="5" fill="rgba(0,188,212,0.1)" stroke="#00BCD4" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Converting to numbers</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">age = int(input("Enter your age: "))</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">height = float(input("Enter height: "))</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333"># Safe input with error handling</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">try:</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">    num = int(input("Enter number: "))</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">except ValueError:</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">    print("Invalid input!")</text>
+    </g>
+
+    <!-- Multiple Inputs -->
+    <g transform="translate(20, 255)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#00BCD4">Multiple Inputs:</text>
+      <rect x="0" y="20" width="410" height="40" rx="5" fill="rgba(0,188,212,0.1)" stroke="#00BCD4" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Multiple values in one line</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">x, y = input("Enter x and y: ").split()</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">numbers = list(map(int, input().split()))</text>
+    </g>
+  </g>
+
+  <!-- Output Operations -->
+  <g transform="translate(520, 100)">
+    <rect x="0" y="0" width="430" height="300" rx="15" fill="#FFEBEE" stroke="#FF5722" stroke-width="3"/>
+    <text x="215" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF5722">
+      Output Operations
+    </text>
+
+    <!-- Basic Print -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">Basic print() Function:</text>
+      <rect x="0" y="20" width="390" height="80" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Basic output</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">print("Hello, World!")  # Hello, World!</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">print(42)              # 42</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">print([1, 2, 3])       # [1, 2, 3]</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">print()                # Empty line</text>
+    </g>
+
+    <!-- Print Parameters -->
+    <g transform="translate(20, 140)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">Print Parameters:</text>
+      <rect x="0" y="20" width="390" height="120" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Multiple values</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">print("Name:", "John", "Age:", 25)  # Name: John Age: 25</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333"># Custom separator</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">print("A", "B", "C", sep="-")  # A-B-C</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333"># Custom end character</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">print("Hello", end=" ")  # Hello (no newline)</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">print("World")           # World</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333"># Output: Hello World</text>
+      <text x="5" y="139" font-family="Courier, monospace" font-size="10" fill="#333">print("Line1", "Line2", sep="\n")  # Newline separator</text>
+    </g>
+  </g>
+
+  <!-- Formatted Output -->
+  <g transform="translate(50, 420)">
+    <rect x="0" y="0" width="900" height="260" rx="15" fill="#E8F5E8" stroke="#4CAF50" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#4CAF50">
+      Formatted Output Methods
+    </text>
+
+    <!-- String Formatting Methods -->
+    <g transform="translate(30, 50)">
+      <!-- % Formatting -->
+      <g transform="translate(0, 0)">
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">% Formatting (Old Style):</text>
+        <rect x="0" y="20" width="280" height="80" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+        <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">name = "Alice"</text>
+        <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">age = 25</text>
+        <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">print("Name: %s, Age: %d" % (name, age))</text>
+        <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">print("Pi: %.2f" % 3.14159)  # Pi: 3.14</text>
+        <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">print("%10s" % "right")  # Right-aligned</text>
+      </g>
+
+      <!-- .format() Method -->
+      <g transform="translate(300, 0)">
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">.format() Method:</text>
+        <rect x="0" y="20" width="280" height="80" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+        <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">print("Name: {}, Age: {}".format(name, age))</text>
+        <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">print("Name: {0}, Age: {1}".format(name, age))</text>
+        <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">print("Name: {n}, Age: {a}".format(n=name, a=age))</text>
+        <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">print("{:.2f}".format(3.14159))  # 3.14</text>
+        <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">print("{:&gt;10}".format("right"))  # Right-aligned</text>
+      </g>
+
+      <!-- f-strings -->
+      <g transform="translate(600, 0)">
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">f-strings (Python 3.6+):</text>
+        <rect x="0" y="20" width="270" height="80" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+        <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">print(f"Name: {name}, Age: {age}")</text>
+        <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">print(f"Sum: {2 + 3}")  # Sum: 5</text>
+        <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">print(f"{name.upper()}")  # ALICE</text>
+        <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">print(f"{3.14159:.2f}")  # 3.14</text>
+        <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">print(f"{'right':&gt;10}")  # Right-aligned</text>
+      </g>
+    </g>
+
+    <!-- Advanced Formatting -->
+    <g transform="translate(30, 150)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">Advanced f-string Formatting:</text>
+      <rect x="0" y="20" width="840" height="90" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Number formatting</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">price = 19.99</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">print(f"Price: ${price:.2f}")        # Price: $19.99</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">print(f"Price: ${price:&gt;8.2f}")     # Price:   $19.99 (right-aligned, width 8)</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">print(f"Binary: {42:b}")           # Binary: 101010</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">print(f"Hex: {255:x}")             # Hex: ff</text>
+
+      <text x="420" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># String formatting</text>
+      <text x="420" y="48" font-family="Courier, monospace" font-size="10" fill="#333">text = "python"</text>
+      <text x="420" y="61" font-family="Courier, monospace" font-size="10" fill="#333">print(f"{text:&lt;10}")            # python     (left-aligned)</text>
+      <text x="420" y="74" font-family="Courier, monospace" font-size="10" fill="#333">print(f"{text:^10}")            #   python   (centered)</text>
+      <text x="420" y="87" font-family="Courier, monospace" font-size="10" fill="#333">print(f"{text:*^10}")           # **python** (centered with padding)</text>
+      <text x="420" y="100" font-family="Courier, monospace" font-size="10" fill="#333">print(f"{text:.3}")            # pyt (truncated)</text>
+    </g>
+  </g>
+
+  <!-- Advanced I/O Operations -->
+  <g transform="translate(50, 700)">
+    <rect x="0" y="0" width="900" height="220" rx="15" fill="#FFF3E0" stroke="#FF9800" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF9800">
+      Advanced I/O Operations
+    </text>
+
+    <!-- Command Line Arguments -->
+    <g transform="translate(30, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">Command Line Arguments:</text>
+      <rect x="0" y="20" width="420" height="80" rx="5" fill="rgba(255,152,0,0.1)" stroke="#FF9800" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import sys</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333"># sys.argv contains command line arguments</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">print(f"Script name: {sys.argv[0]}")</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">if len(sys.argv) &gt; 1:</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    print(f"Arguments: {sys.argv[1:]}")</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333"># Usage: python script.py arg1 arg2</text>
+    </g>
+
+    <!-- File I/O Redirection -->
+    <g transform="translate(470, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">I/O Redirection:</text>
+      <rect x="0" y="20" width="400" height="80" rx="5" fill="rgba(255,152,0,0.1)" stroke="#FF9800" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Redirect output to file</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">with open("output.txt", "w") as f:</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    print("Hello", file=f)</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333"># Redirect to stderr</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">import sys</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">print("Error message", file=sys.stderr)</text>
+    </g>
+
+    <!-- Interactive Input -->
+    <g transform="translate(30, 150)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">Interactive Input Validation:</text>
+      <rect x="0" y="20" width="840" height="50" rx="5" fill="rgba(255,152,0,0.1)" stroke="#FF9800" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">def get_valid_number(prompt):</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">    while True:</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">        try: return int(input(prompt))</text>
+
+      <text x="420" y="35" font-family="Courier, monospace" font-size="10" fill="#333">        except ValueError:</text>
+      <text x="420" y="48" font-family="Courier, monospace" font-size="10" fill="#333">            print("Please enter a valid number.")</text>
+      <text x="420" y="61" font-family="Courier, monospace" font-size="10" fill="#333">age = get_valid_number("Enter age: ")</text>
+    </g>
+  </g>
+</svg>

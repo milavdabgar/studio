@@ -1,0 +1,197 @@
+<svg viewBox="0 0 1000 950" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="fileGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#607D8B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#37474F;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="modeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="operationGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF5722;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D84315;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="950" fill="#F8F9FA"/>
+
+  <!-- Title -->
+  <text x="500" y="40" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#2C3E50">
+    Python File Handling &amp; I/O Operations
+  </text>
+  <text x="500" y="70" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666">
+    Complete guide to reading, writing, and managing files in Python
+  </text>
+
+  <!-- File Opening Modes -->
+  <g transform="translate(50, 100)">
+    <rect x="0" y="0" width="900" height="120" rx="15" fill="#ECEFF1" stroke="#607D8B" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#607D8B">
+      File Opening Modes &amp; Basic Syntax
+    </text>
+
+    <g transform="translate(30, 45)">
+      <text x="0" y="15" font-family="Courier, monospace" font-size="12" font-weight="bold" fill="#333">file = open("filename.txt", "mode", encoding="utf-8")</text>
+
+      <g transform="translate(0, 30)">
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#607D8B">Common Modes:</text>
+        <text x="150" y="15" font-family="Courier, monospace" font-size="11" fill="#333">'r' - Read (default)</text>
+        <text x="280" y="15" font-family="Courier, monospace" font-size="11" fill="#333">'w' - Write (overwrite)</text>
+        <text x="420" y="15" font-family="Courier, monospace" font-size="11" fill="#333">'a' - Append</text>
+        <text x="530" y="15" font-family="Courier, monospace" font-size="11" fill="#333">'x' - Exclusive create</text>
+
+        <text x="150" y="35" font-family="Courier, monospace" font-size="11" fill="#333">'rb' - Read binary</text>
+        <text x="280" y="35" font-family="Courier, monospace" font-size="11" fill="#333">'wb' - Write binary</text>
+        <text x="420" y="35" font-family="Courier, monospace" font-size="11" fill="#333">'r+' - Read &amp; Write</text>
+        <text x="530" y="35" font-family="Courier, monospace" font-size="11" fill="#333">'w+' - Write &amp; Read</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Basic File Operations -->
+  <g transform="translate(50, 240)">
+    <rect x="0" y="0" width="450" height="300" rx="15" fill="#E8F5E8" stroke="#4CAF50" stroke-width="3"/>
+    <text x="225" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#4CAF50">
+      Basic File Operations
+    </text>
+
+    <!-- Reading Files -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">Reading Files:</text>
+      <rect x="0" y="20" width="410" height="100" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Method 1: Read entire file</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">with open("data.txt", "r") as file:</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    content = file.read()  # Read all content</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">    # content = file.read(10)  # Read 10 characters</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    line = file.readline()    # Read one line</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">    lines = file.readlines()  # Read all lines to list</text>
+    </g>
+
+    <!-- Writing Files -->
+    <g transform="translate(20, 160)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">Writing Files:</text>
+      <rect x="0" y="20" width="410" height="85" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">with open("output.txt", "w") as file:</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">    file.write("Hello World\n")     # Write string</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    file.writelines(["Line 1\n", "Line 2\n"])  # Write list</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">    print("Python", file=file)     # Print to file</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    file.flush()                    # Force write</text>
+    </g>
+
+    <!-- File Position -->
+    <g transform="translate(20, 255)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">File Position Control:</text>
+      <rect x="0" y="20" width="410" height="40" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">file.tell()        # Get current position</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">file.seek(0)       # Move to beginning</text>
+    </g>
+  </g>
+
+  <!-- Context Managers and Error Handling -->
+  <g transform="translate(520, 240)">
+    <rect x="0" y="0" width="430" height="300" rx="15" fill="#FFEBEE" stroke="#FF5722" stroke-width="3"/>
+    <text x="215" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF5722">
+      Safe File Handling
+    </text>
+
+    <!-- Context Managers -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">Context Managers (Recommended):</text>
+      <rect x="0" y="20" width="390" height="85" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Automatically closes file even if error occurs</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">with open("file.txt", "r") as file:</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    data = file.read()</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">    # Process data</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333"># File automatically closed here</text>
+    </g>
+
+    <!-- Traditional Method -->
+    <g transform="translate(20, 145)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">Traditional Method (Manual Close):</text>
+      <rect x="0" y="20" width="390" height="85" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">try:</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">    file = open("file.txt", "r")</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    data = file.read()</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">finally:</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    file.close()  # Must manually close</text>
+    </g>
+
+    <!-- File Existence Check -->
+    <g transform="translate(20, 240)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">Checking File Existence:</text>
+      <rect x="0" y="20" width="390" height="55" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import os</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">if os.path.exists("file.txt"):</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    print("File exists")</text>
+    </g>
+  </g>
+
+  <!-- Advanced File Operations -->
+  <g transform="translate(50, 560)">
+    <rect x="0" y="0" width="900" height="180" rx="15" fill="#E3F2FD" stroke="#2196F3" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#2196F3">
+      Advanced File Operations &amp; CSV Handling
+    </text>
+
+    <!-- CSV Operations -->
+    <g transform="translate(30, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2196F3">CSV File Handling:</text>
+      <rect x="0" y="20" width="420" height="120" rx="5" fill="rgba(33,150,243,0.1)" stroke="#2196F3" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import csv</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333"># Reading CSV</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">with open("data.csv", "r") as file:</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">    reader = csv.reader(file)</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    for row in reader:</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">        print(row)  # Each row is a list</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333"># DictReader for header-based access</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">reader = csv.DictReader(file)</text>
+    </g>
+
+    <!-- JSON Operations -->
+    <g transform="translate(470, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2196F3">JSON File Handling:</text>
+      <rect x="0" y="20" width="400" height="120" rx="5" fill="rgba(33,150,243,0.1)" stroke="#2196F3" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import json</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333"># Reading JSON</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">with open("data.json", "r") as file:</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">    data = json.load(file)</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333"># Writing JSON</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">with open("output.json", "w") as file:</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">    json.dump(data, file, indent=2)</text>
+    </g>
+  </g>
+
+  <!-- File System Operations -->
+  <g transform="translate(50, 760)">
+    <rect x="0" y="0" width="900" height="170" rx="15" fill="#FFF3E0" stroke="#FF9800" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF9800">
+      File System Operations &amp; Path Handling
+    </text>
+
+    <!-- OS Module Operations -->
+    <g transform="translate(30, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">OS Module Operations:</text>
+      <rect x="0" y="20" width="420" height="100" rx="5" fill="rgba(255,152,0,0.1)" stroke="#FF9800" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import os</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">os.listdir(".")           # List directory contents</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">os.mkdir("new_folder")    # Create directory</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">os.remove("file.txt")     # Delete file</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">os.rmdir("folder")        # Remove empty directory</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">os.rename("old.txt", "new.txt")  # Rename file</text>
+    </g>
+
+    <!-- Pathlib (Modern Approach) -->
+    <g transform="translate(470, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">Pathlib (Modern Path Handling):</text>
+      <rect x="0" y="20" width="400" height="100" rx="5" fill="rgba(255,152,0,0.1)" stroke="#FF9800" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">from pathlib import Path</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">path = Path("data/file.txt")</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">path.exists()             # Check if exists</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">path.parent               # Get parent directory</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">path.suffix               # Get file extension</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">path.read_text()          # Read file content</text>
+    </g>
+  </g>
+</svg>

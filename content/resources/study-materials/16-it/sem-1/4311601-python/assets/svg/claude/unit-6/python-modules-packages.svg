@@ -1,0 +1,191 @@
+<svg viewBox="0 0 1000 950" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="moduleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3F51B5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1A237E;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="packageGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#009688;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#004D40;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="importGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF5722;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#BF360C;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="950" fill="#F8F9FA"/>
+
+  <!-- Title -->
+  <text x="500" y="40" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#2C3E50">
+    Python Modules &amp; Packages
+  </text>
+  <text x="500" y="70" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666">
+    Complete guide to organizing, importing, and creating reusable code
+  </text>
+
+  <!-- What are Modules -->
+  <g transform="translate(50, 100)">
+    <rect x="0" y="0" width="900" height="100" rx="15" fill="#E8EAF6" stroke="#3F51B5" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#3F51B5">
+      Understanding Modules &amp; Packages
+    </text>
+
+    <g transform="translate(30, 45)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#3F51B5">Module:</text>
+      <text x="80" y="15" font-family="Arial, sans-serif" font-size="12" fill="#333">A single Python file (.py) containing functions, classes, and variables</text>
+
+      <text x="0" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#3F51B5">Package:</text>
+      <text x="80" y="35" font-family="Arial, sans-serif" font-size="12" fill="#333">A directory containing multiple modules with an __init__.py file</text>
+
+      <text x="0" y="55" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#3F51B5">Library:</text>
+      <text x="80" y="55" font-family="Arial, sans-serif" font-size="12" fill="#333">Collection of packages and modules providing specific functionality</text>
+    </g>
+  </g>
+
+  <!-- Import Statements -->
+  <g transform="translate(50, 220)">
+    <rect x="0" y="0" width="450" height="280" rx="15" fill="#FFEBEE" stroke="#FF5722" stroke-width="3"/>
+    <text x="225" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF5722">
+      Import Statements &amp; Syntax
+    </text>
+
+    <!-- Basic Import -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">Basic Import:</text>
+      <rect x="0" y="20" width="410" height="55" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import math</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">result = math.sqrt(16)  # 4.0</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">print(math.pi)          # 3.141592653589793</text>
+    </g>
+
+    <!-- Import with Alias -->
+    <g transform="translate(20, 115)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">Import with Alias:</text>
+      <rect x="0" y="20" width="410" height="55" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import numpy as np</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">import pandas as pd</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">array = np.array([1, 2, 3])</text>
+    </g>
+
+    <!-- From Import -->
+    <g transform="translate(20, 180)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">Specific Import:</text>
+      <rect x="0" y="20" width="410" height="80" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">from math import sqrt, pi</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">result = sqrt(16)  # No need for math. prefix</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">print(pi)</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333"># Import with alias</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">from datetime import datetime as dt</text>
+    </g>
+  </g>
+
+  <!-- Creating Modules -->
+  <g transform="translate(520, 220)">
+    <rect x="0" y="0" width="430" height="280" rx="15" fill="#E0F2F1" stroke="#009688" stroke-width="3"/>
+    <text x="215" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#009688">
+      Creating Custom Modules
+    </text>
+
+    <!-- Module Example -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#009688">mymodule.py:</text>
+      <rect x="0" y="20" width="390" height="120" rx="5" fill="rgba(0,150,136,0.1)" stroke="#009688" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">"""A simple calculator module"""</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333"># Module-level variable</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">PI = 3.14159</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">def add(a, b):</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    """Add two numbers"""</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">    return a + b</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">def multiply(a, b):</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">    return a * b</text>
+    </g>
+
+    <!-- Using Custom Module -->
+    <g transform="translate(20, 180)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#009688">Using the Module:</text>
+      <rect x="0" y="20" width="390" height="80" rx="5" fill="rgba(0,150,136,0.1)" stroke="#009688" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import mymodule</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">result = mymodule.add(5, 3)     # 8</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">print(mymodule.PI)             # 3.14159</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333"># Or use specific import</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">from mymodule import add, PI</text>
+    </g>
+  </g>
+
+  <!-- Package Structure -->
+  <g transform="translate(50, 520)">
+    <rect x="0" y="0" width="900" height="200" rx="15" fill="#E8F5E8" stroke="#4CAF50" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#4CAF50">
+      Package Structure &amp; Organization
+    </text>
+
+    <!-- Directory Structure -->
+    <g transform="translate(30, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">Package Directory Structure:</text>
+      <rect x="0" y="20" width="420" height="140" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">mypackage/</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">    __init__.py          # Makes it a package</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    module1.py           # Module in package</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">    module2.py</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    subpackage/          # Nested package</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">        __init__.py</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">        submodule.py</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">    tests/               # Test modules</text>
+      <text x="5" y="139" font-family="Courier, monospace" font-size="10" fill="#333">        test_module1.py</text>
+    </g>
+
+    <!-- Package Imports -->
+    <g transform="translate(470, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">Package Import Examples:</text>
+      <rect x="0" y="20" width="400" height="140" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># Import entire package</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">import mypackage</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333"># Import specific module</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">from mypackage import module1</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333"># Import from subpackage</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">from mypackage.subpackage import submodule</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333"># Import specific function</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">from mypackage.module1 import my_function</text>
+      <text x="5" y="139" font-family="Courier, monospace" font-size="10" fill="#333"># Relative import (within package)</text>
+      <text x="5" y="152" font-family="Courier, monospace" font-size="10" fill="#333">from .module2 import helper_function</text>
+    </g>
+  </g>
+
+  <!-- Standard Library and Module Path -->
+  <g transform="translate(50, 740)">
+    <rect x="0" y="0" width="900" height="190" rx="15" fill="#FFF8E1" stroke="#FFC107" stroke-width="2"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF8F00">
+      Module Search Path &amp; Popular Standard Library Modules
+    </text>
+
+    <!-- Module Search Path -->
+    <g transform="translate(30, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF8F00">Module Search Path:</text>
+      <rect x="0" y="20" width="420" height="120" rx="5" fill="rgba(255,193,7,0.1)" stroke="#FFC107" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import sys</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">print(sys.path)  # List of search directories</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333"># Python searches in this order:</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333"># 1. Current directory</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333"># 2. PYTHONPATH environment variable</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333"># 3. Standard library directories</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333"># 4. Site-packages (third-party)</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">sys.path.append("/custom/path")  # Add path</text>
+    </g>
+
+    <!-- Popular Standard Modules -->
+    <g transform="translate(470, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF8F00">Popular Standard Library Modules:</text>
+      <rect x="0" y="20" width="400" height="120" rx="5" fill="rgba(255,193,7,0.1)" stroke="#FFC107" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">os, sys           # Operating system, system functions</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">datetime, time    # Date and time operations</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">json, csv         # Data format handling</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">random, math      # Random numbers, mathematics</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">re                # Regular expressions</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">urllib, requests  # HTTP/URL handling</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">collections       # Specialized containers</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">itertools         # Iterator utilities</text>
+    </g>
+  </g>
+</svg>

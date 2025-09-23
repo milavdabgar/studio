@@ -1,0 +1,227 @@
+<svg viewBox="0 0 1000 950" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="builtinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#673AB7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#311B92;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="mathGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#009688;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#004D40;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="libraryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF5722;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#BF360C;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="950" fill="#F8F9FA"/>
+
+  <!-- Title -->
+  <text x="500" y="40" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#2C3E50">
+    Python Built-in Functions &amp; Standard Libraries
+  </text>
+  <text x="500" y="70" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666">
+    Essential built-in functions and commonly used standard library modules
+  </text>
+
+  <!-- Built-in Functions Categories -->
+  <g transform="translate(50, 100)">
+    <rect x="0" y="0" width="900" height="280" rx="15" fill="#EDE7F6" stroke="#673AB7" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#673AB7">
+      Essential Built-in Functions
+    </text>
+
+    <!-- Type Conversion Functions -->
+    <g transform="translate(30, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#673AB7">Type Conversion:</text>
+      <rect x="0" y="20" width="280" height="100" rx="5" fill="rgba(103,58,183,0.1)" stroke="#673AB7" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">int()    # Convert to integer</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">float()  # Convert to float</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">str()    # Convert to string</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">bool()   # Convert to boolean</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">list()   # Convert to list</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">tuple()  # Convert to tuple</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">dict()   # Create dictionary</text>
+    </g>
+
+    <!-- Mathematical Functions -->
+    <g transform="translate(330, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#673AB7">Mathematical:</text>
+      <rect x="0" y="20" width="280" height="100" rx="5" fill="rgba(103,58,183,0.1)" stroke="#673AB7" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">abs()    # Absolute value</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">round()  # Round to n decimals</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">pow()    # Power (x**y)</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">min()    # Minimum value</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">max()    # Maximum value</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">sum()    # Sum of iterable</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">divmod() # Quotient &amp; remainder</text>
+    </g>
+
+    <!-- Input/Output Functions -->
+    <g transform="translate(630, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#673AB7">Input/Output:</text>
+      <rect x="0" y="20" width="240" height="100" rx="5" fill="rgba(103,58,183,0.1)" stroke="#673AB7" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">print()  # Display output</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">input()  # Get user input</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">open()   # Open file</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">format() # String formatting</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">repr()   # Object representation</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">ascii()  # ASCII representation</text>
+    </g>
+
+    <!-- Sequence Functions -->
+    <g transform="translate(30, 170)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#673AB7">Sequence Operations:</text>
+      <rect x="0" y="20" width="280" height="85" rx="5" fill="rgba(103,58,183,0.1)" stroke="#673AB7" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">len()       # Length of sequence</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">range()     # Generate range</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">enumerate() # Index, value pairs</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">zip()       # Combine iterables</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">reversed()  # Reverse iterator</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">sorted()    # Return sorted list</text>
+    </g>
+
+    <!-- Object Functions -->
+    <g transform="translate(330, 170)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#673AB7">Object Inspection:</text>
+      <rect x="0" y="20" width="280" height="85" rx="5" fill="rgba(103,58,183,0.1)" stroke="#673AB7" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">type()      # Object type</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">isinstance() # Check instance</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">hasattr()   # Check attribute</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">getattr()   # Get attribute</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">setattr()   # Set attribute</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">dir()       # List attributes</text>
+    </g>
+
+    <!-- Functional Programming -->
+    <g transform="translate(630, 170)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#673AB7">Functional:</text>
+      <rect x="0" y="20" width="240" height="85" rx="5" fill="rgba(103,58,183,0.1)" stroke="#673AB7" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">map()     # Apply function</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">filter()  # Filter sequence</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">all()     # All true?</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">any()     # Any true?</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">callable() # Is callable?</text>
+    </g>
+  </g>
+
+  <!-- Standard Library Modules -->
+  <g transform="translate(50, 400)">
+    <rect x="0" y="0" width="450" height="260" rx="15" fill="#E0F2F1" stroke="#009688" stroke-width="3"/>
+    <text x="225" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#009688">
+      Essential Standard Library Modules
+    </text>
+
+    <!-- Math and Random -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#009688">Math &amp; Random:</text>
+      <rect x="0" y="20" width="410" height="80" rx="5" fill="rgba(0,150,136,0.1)" stroke="#009688" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import math</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">math.pi, math.e      # Constants</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">math.sqrt(), math.log(), math.sin()  # Functions</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">import random</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">random.random(), random.randint(), random.choice()</text>
+    </g>
+
+    <!-- Date and Time -->
+    <g transform="translate(20, 140)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#009688">Date &amp; Time:</text>
+      <rect x="0" y="20" width="410" height="100" rx="5" fill="rgba(0,150,136,0.1)" stroke="#009688" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import datetime</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">datetime.datetime.now()     # Current time</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">datetime.date.today()       # Current date</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">import time</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">time.time(), time.sleep()   # Unix time, delay</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">time.strftime("%Y-%m-%d")   # Format time</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">time.strptime("2023-01-01") # Parse time</text>
+    </g>
+  </g>
+
+  <!-- File and System Operations -->
+  <g transform="translate(520, 400)">
+    <rect x="0" y="0" width="430" height="260" rx="15" fill="#FFEBEE" stroke="#FF5722" stroke-width="3"/>
+    <text x="215" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF5722">
+      File &amp; System Operations
+    </text>
+
+    <!-- OS Module -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">OS Module:</text>
+      <rect x="0" y="20" width="390" height="100" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import os</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">os.getcwd()           # Current directory</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">os.listdir()          # List directory</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">os.mkdir(), os.rmdir() # Create/remove dir</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">os.path.join()        # Path operations</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">os.path.exists()      # Check existence</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">os.environ            # Environment variables</text>
+    </g>
+
+    <!-- Sys Module -->
+    <g transform="translate(20, 160)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">Sys Module:</text>
+      <rect x="0" y="20" width="390" height="80" rx="5" fill="rgba(255,87,34,0.1)" stroke="#FF5722" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import sys</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">sys.argv              # Command line args</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">sys.path              # Python path</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">sys.version           # Python version</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">sys.exit()            # Exit program</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">sys.stdin, sys.stdout # Standard streams</text>
+    </g>
+  </g>
+
+  <!-- Collections and Data Processing -->
+  <g transform="translate(50, 680)">
+    <rect x="0" y="0" width="900" height="240" rx="15" fill="#FFF8E1" stroke="#FFC107" stroke-width="2"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF8F00">
+      Collections &amp; Data Processing Libraries
+    </text>
+
+    <!-- Collections Module -->
+    <g transform="translate(30, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF8F00">Collections Module:</text>
+      <rect x="0" y="20" width="420" height="120" rx="5" fill="rgba(255,193,7,0.1)" stroke="#FFC107" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">from collections import Counter, defaultdict, deque</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333"># Counter: count occurrences</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">counter = Counter("hello")  # {'l': 2, 'h': 1, ...}</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333"># defaultdict: default values</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">dd = defaultdict(list)  # Auto-creates list</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333"># deque: double-ended queue</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">d = deque([1, 2, 3])</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">d.appendleft(0)  # [0, 1, 2, 3]</text>
+    </g>
+
+    <!-- Itertools -->
+    <g transform="translate(470, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF8F00">Itertools Module:</text>
+      <rect x="0" y="20" width="400" height="120" rx="5" fill="rgba(255,193,7,0.1)" stroke="#FFC107" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import itertools</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333"># Infinite iterators</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">itertools.count(10, 2)      # 10, 12, 14, ...</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">itertools.cycle([1, 2, 3])  # 1, 2, 3, 1, 2, 3, ...</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333"># Combinatorial</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">itertools.permutations([1,2,3])  # All permutations</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">itertools.combinations([1,2,3], 2) # All combinations</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">itertools.chain([1,2], [3,4])   # Flatten sequences</text>
+    </g>
+
+    <!-- JSON and CSV -->
+    <g transform="translate(30, 180)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF8F00">Data Formats:</text>
+      <rect x="0" y="20" width="420" height="45" rx="5" fill="rgba(255,193,7,0.1)" stroke="#FFC107" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import json  # JSON parsing: json.loads(), json.dumps()</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">import csv   # CSV handling: csv.reader(), csv.writer()</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">import pickle # Object serialization: pickle.dump(), pickle.load()</text>
+    </g>
+
+    <!-- Regular Expressions -->
+    <g transform="translate(470, 180)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF8F00">Text Processing:</text>
+      <rect x="0" y="20" width="400" height="45" rx="5" fill="rgba(255,193,7,0.1)" stroke="#FFC107" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import re      # Regular expressions: re.search(), re.findall()</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">import string  # String constants: string.ascii_letters, string.digits</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">import textwrap # Text wrapping: textwrap.fill(), textwrap.dedent()</text>
+    </g>
+  </g>
+</svg>

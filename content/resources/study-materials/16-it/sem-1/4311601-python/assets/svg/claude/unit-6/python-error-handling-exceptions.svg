@@ -1,0 +1,210 @@
+<svg viewBox="0 0 1000 950" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="errorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F44336;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C62828;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="tryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1565C0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="exceptionGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F57C00;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="950" fill="#F8F9FA"/>
+
+  <!-- Title -->
+  <text x="500" y="40" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#2C3E50">
+    Python Error Handling &amp; Exceptions
+  </text>
+  <text x="500" y="70" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666">
+    Comprehensive guide to handling errors and exceptions in Python
+  </text>
+
+  <!-- Exception Hierarchy -->
+  <g transform="translate(50, 100)">
+    <rect x="0" y="0" width="900" height="120" rx="15" fill="#FFEBEE" stroke="#F44336" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#F44336">
+      Python Exception Hierarchy
+    </text>
+
+    <g transform="translate(50, 45)">
+      <text x="0" y="15" font-family="Courier, monospace" font-size="12" font-weight="bold" fill="#333">BaseException</text>
+      <text x="150" y="15" font-family="Courier, monospace" font-size="11" fill="#666">├── SystemExit, KeyboardInterrupt, GeneratorExit</text>
+      <text x="20" y="35" font-family="Courier, monospace" font-size="12" font-weight="bold" fill="#333">└── Exception</text>
+      <text x="150" y="35" font-family="Courier, monospace" font-size="11" fill="#666">└── Standard exceptions (most user exceptions inherit from this)</text>
+      <text x="50" y="55" font-family="Courier, monospace" font-size="11" fill="#333">├── ValueError, TypeError, IndexError, KeyError, FileNotFoundError</text>
+      <text x="50" y="70" font-family="Courier, monospace" font-size="11" fill="#333">├── ZeroDivisionError, AttributeError, ImportError, IOError</text>
+    </g>
+  </g>
+
+  <!-- Try-Except Block -->
+  <g transform="translate(50, 240)">
+    <rect x="0" y="0" width="450" height="280" rx="15" fill="#E3F2FD" stroke="#2196F3" stroke-width="3"/>
+    <text x="225" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#2196F3">
+      Try-Except Structure
+    </text>
+
+    <!-- Basic Try-Except -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2196F3">Basic Structure:</text>
+      <rect x="0" y="20" width="410" height="100" rx="5" fill="rgba(33,150,243,0.1)" stroke="#2196F3" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">try:</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">    # Code that might raise an exception</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    result = 10 / 0</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">except ZeroDivisionError:</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    print("Cannot divide by zero!")</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">except Exception as e:</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">    print(f"An error occurred: {e}")</text>
+    </g>
+
+    <!-- Complete Try Block -->
+    <g transform="translate(20, 140)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2196F3">Complete Structure:</text>
+      <rect x="0" y="20" width="410" height="120" rx="5" fill="rgba(33,150,243,0.1)" stroke="#2196F3" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">try:</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">    # Code that might fail</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    value = int(input("Enter number: "))</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">except ValueError:</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    print("Invalid number format")</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">else:</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">    print(f"Number entered: {value}")</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">finally:</text>
+      <text x="5" y="139" font-family="Courier, monospace" font-size="10" fill="#333">    print("This always executes")</text>
+    </g>
+  </g>
+
+  <!-- Common Exceptions -->
+  <g transform="translate(520, 240)">
+    <rect x="0" y="0" width="430" height="280" rx="15" fill="#FFF3E0" stroke="#FF9800" stroke-width="3"/>
+    <text x="215" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF9800">
+      Common Exception Types
+    </text>
+
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">Built-in Exceptions:</text>
+      <rect x="0" y="20" width="390" height="235" rx="5" fill="rgba(255,152,0,0.1)" stroke="#FF9800" stroke-width="1"/>
+
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" font-weight="bold" fill="#333">ValueError:</text>
+      <text x="85" y="35" font-family="Courier, monospace" font-size="10" fill="#333">int("abc") # Invalid conversion</text>
+
+      <text x="5" y="50" font-family="Courier, monospace" font-size="10" font-weight="bold" fill="#333">TypeError:</text>
+      <text x="85" y="50" font-family="Courier, monospace" font-size="10" fill="#333">"5" + 5 # Cannot add str and int</text>
+
+      <text x="5" y="65" font-family="Courier, monospace" font-size="10" font-weight="bold" fill="#333">IndexError:</text>
+      <text x="85" y="65" font-family="Courier, monospace" font-size="10" fill="#333">list[10] # Index out of range</text>
+
+      <text x="5" y="80" font-family="Courier, monospace" font-size="10" font-weight="bold" fill="#333">KeyError:</text>
+      <text x="85" y="80" font-family="Courier, monospace" font-size="10" fill="#333">dict["missing_key"]</text>
+
+      <text x="5" y="95" font-family="Courier, monospace" font-size="10" font-weight="bold" fill="#333">FileNotFoundError:</text>
+      <text x="120" y="95" font-family="Courier, monospace" font-size="10" fill="#333">open("missing.txt")</text>
+
+      <text x="5" y="110" font-family="Courier, monospace" font-size="10" font-weight="bold" fill="#333">ZeroDivisionError:</text>
+      <text x="135" y="110" font-family="Courier, monospace" font-size="10" fill="#333">10 / 0</text>
+
+      <text x="5" y="125" font-family="Courier, monospace" font-size="10" font-weight="bold" fill="#333">AttributeError:</text>
+      <text x="115" y="125" font-family="Courier, monospace" font-size="10" fill="#333">obj.missing_attr</text>
+
+      <text x="5" y="140" font-family="Courier, monospace" font-size="10" font-weight="bold" fill="#333">ImportError:</text>
+      <text x="95" y="140" font-family="Courier, monospace" font-size="10" fill="#333">import missing_module</text>
+
+      <text x="5" y="155" font-family="Courier, monospace" font-size="10" font-weight="bold" fill="#333">IndentationError:</text>
+      <text x="130" y="155" font-family="Courier, monospace" font-size="10" fill="#333">Incorrect indentation</text>
+
+      <text x="5" y="170" font-family="Courier, monospace" font-size="10" font-weight="bold" fill="#333">NameError:</text>
+      <text x="85" y="170" font-family="Courier, monospace" font-size="10" fill="#333">print(undefined_var)</text>
+
+      <text x="5" y="185" font-family="Courier, monospace" font-size="10" font-weight="bold" fill="#333">SyntaxError:</text>
+      <text x="95" y="185" font-family="Courier, monospace" font-size="10" fill="#333">Invalid Python syntax</text>
+
+      <text x="5" y="200" font-family="Courier, monospace" font-size="10" font-weight="bold" fill="#333">RuntimeError:</text>
+      <text x="105" y="200" font-family="Courier, monospace" font-size="10" fill="#333">General runtime error</text>
+
+      <text x="5" y="215" font-family="Courier, monospace" font-size="10" font-weight="bold" fill="#333">OverflowError:</text>
+      <text x="115" y="215" font-family="Courier, monospace" font-size="10" fill="#333">Number too large</text>
+
+      <text x="5" y="230" font-family="Courier, monospace" font-size="10" font-weight="bold" fill="#333">MemoryError:</text>
+      <text x="105" y="230" font-family="Courier, monospace" font-size="10" fill="#333">Out of memory</text>
+
+      <text x="5" y="245" font-family="Courier, monospace" font-size="10" font-weight="bold" fill="#333">StopIteration:</text>
+      <text x="115" y="245" font-family="Courier, monospace" font-size="10" fill="#333">Iterator exhausted</text>
+    </g>
+  </g>
+
+  <!-- Advanced Exception Handling -->
+  <g transform="translate(50, 540)">
+    <rect x="0" y="0" width="900" height="180" rx="15" fill="#E8F5E8" stroke="#4CAF50" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#4CAF50">
+      Advanced Exception Handling Techniques
+    </text>
+
+    <!-- Multiple Exceptions -->
+    <g transform="translate(30, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">Multiple Exception Handling:</text>
+      <rect x="0" y="20" width="420" height="120" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">try:</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">    data = {"key": "value"}</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    result = int(data["number"]) / 0</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">except (KeyError, ValueError) as e:</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    print(f"Data error: {e}")</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">except ZeroDivisionError:</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">    print("Division by zero")</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">except Exception as e:</text>
+      <text x="5" y="139" font-family="Courier, monospace" font-size="10" fill="#333">    print(f"Unexpected error: {e}")</text>
+    </g>
+
+    <!-- Raising Exceptions -->
+    <g transform="translate(470, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">Raising Custom Exceptions:</text>
+      <rect x="0" y="20" width="400" height="120" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">def validate_age(age):</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">    if age &lt; 0:</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">        raise ValueError("Age cannot be negative")</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">    if age &gt; 150:</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">        raise ValueError("Age too high")</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">    return True</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333"># Re-raising: raise  # without argument</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333"># Chain exceptions: raise NewError() from e</text>
+    </g>
+  </g>
+
+  <!-- Custom Exceptions and Best Practices -->
+  <g transform="translate(50, 740)">
+    <rect x="0" y="0" width="900" height="180" rx="15" fill="#F3E5F5" stroke="#9C27B0" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#9C27B0">
+      Custom Exceptions &amp; Best Practices
+    </text>
+
+    <!-- Custom Exception Classes -->
+    <g transform="translate(30, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#9C27B0">Creating Custom Exceptions:</text>
+      <rect x="0" y="20" width="420" height="120" rx="5" fill="rgba(156,39,176,0.1)" stroke="#9C27B0" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">class CustomError(Exception):</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">    """Custom exception for specific errors"""</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    def __init__(self, message, error_code=None):</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">        self.message = message</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">        self.error_code = error_code</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">        super().__init__(self.message)</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333"># Usage:</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">raise CustomError("Something went wrong", 404)</text>
+    </g>
+
+    <!-- Best Practices -->
+    <g transform="translate(470, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#9C27B0">Exception Handling Best Practices:</text>
+      <rect x="0" y="20" width="400" height="120" rx="5" fill="rgba(156,39,176,0.1)" stroke="#9C27B0" stroke-width="1"/>
+      <text x="5" y="35" font-family="Arial, sans-serif" font-size="10" fill="#333">• Be specific - catch specific exceptions, not Exception</text>
+      <text x="5" y="50" font-family="Arial, sans-serif" font-size="10" fill="#333">• Use finally for cleanup (close files, connections)</text>
+      <text x="5" y="65" font-family="Arial, sans-serif" font-size="10" fill="#333">• Don't ignore exceptions - log or handle them</text>
+      <text x="5" y="80" font-family="Arial, sans-serif" font-size="10" fill="#333">• Use else block for code that runs when no exception</text>
+      <text x="5" y="95" font-family="Arial, sans-serif" font-size="10" fill="#333">• Keep try blocks small and focused</text>
+      <text x="5" y="110" font-family="Arial, sans-serif" font-size="10" fill="#333">• Document exceptions your functions can raise</text>
+      <text x="5" y="125" font-family="Arial, sans-serif" font-size="10" fill="#333">• Use context managers (with statement) when possible</text>
+    </g>
+  </g>
+</svg>

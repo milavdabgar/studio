@@ -1,0 +1,194 @@
+<svg viewBox="0 0 1000 950" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="debugGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F44336;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C62828;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="testGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="toolGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F57C00;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="950" fill="#F8F9FA"/>
+
+  <!-- Title -->
+  <text x="500" y="40" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#2C3E50">
+    Python Debugging &amp; Testing
+  </text>
+  <text x="500" y="70" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666">
+    Complete guide to debugging techniques and testing methodologies
+  </text>
+
+  <!-- Debugging Techniques -->
+  <g transform="translate(50, 100)">
+    <rect x="0" y="0" width="450" height="300" rx="15" fill="#FFEBEE" stroke="#F44336" stroke-width="3"/>
+    <text x="225" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#F44336">
+      Debugging Techniques
+    </text>
+
+    <!-- Print Debugging -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#F44336">Print Debugging:</text>
+      <rect x="0" y="20" width="410" height="80" rx="5" fill="rgba(244,67,54,0.1)" stroke="#F44336" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">def calculate_average(numbers):</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">    print(f"Input: {numbers}")  # Debug input</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    total = sum(numbers)</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">    print(f"Total: {total}")    # Debug intermediate</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    result = total / len(numbers)</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">    print(f"Result: {result}")  # Debug output</text>
+    </g>
+
+    <!-- Python Debugger (pdb) -->
+    <g transform="translate(20, 140)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#F44336">Python Debugger (pdb):</text>
+      <rect x="0" y="20" width="410" height="120" rx="5" fill="rgba(244,67,54,0.1)" stroke="#F44336" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import pdb</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">def buggy_function(x, y):</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    pdb.set_trace()  # Set breakpoint</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">    result = x / y</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    return result</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333"># Common pdb commands:</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333"># n (next), s (step), c (continue), l (list)</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333"># p variable_name (print), q (quit)</text>
+      <text x="5" y="139" font-family="Courier, monospace" font-size="10" fill="#333"># python -m pdb script.py (run with debugger)</text>
+    </g>
+  </g>
+
+  <!-- Testing Methodologies -->
+  <g transform="translate(520, 100)">
+    <rect x="0" y="0" width="430" height="300" rx="15" fill="#E8F5E8" stroke="#4CAF50" stroke-width="3"/>
+    <text x="215" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#4CAF50">
+      Testing Methodologies
+    </text>
+
+    <!-- Unit Testing -->
+    <g transform="translate(20, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">Unit Testing with unittest:</text>
+      <rect x="0" y="20" width="390" height="120" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import unittest</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">class TestMathFunctions(unittest.TestCase):</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    def test_addition(self):</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">        self.assertEqual(2 + 2, 4)</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    def test_division_by_zero(self):</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">        with self.assertRaises(ZeroDivisionError):</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">            result = 10 / 0</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">if __name__ == '__main__':</text>
+      <text x="5" y="139" font-family="Courier, monospace" font-size="10" fill="#333">    unittest.main()</text>
+    </g>
+
+    <!-- Pytest -->
+    <g transform="translate(20, 180)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">Pytest (Third-party):</text>
+      <rect x="0" y="20" width="390" height="100" rx="5" fill="rgba(76,175,80,0.1)" stroke="#4CAF50" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333"># test_math.py</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">def test_addition():</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    assert 2 + 2 == 4</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">def test_string_length():</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    assert len("hello") == 5</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333"># Run: pytest test_math.py</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333"># Install: pip install pytest</text>
+    </g>
+  </g>
+
+  <!-- Assertion Methods -->
+  <g transform="translate(50, 420)">
+    <rect x="0" y="0" width="900" height="180" rx="15" fill="#FFF3E0" stroke="#FF9800" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FF9800">
+      Assertion Methods &amp; Test Types
+    </text>
+
+    <!-- Unittest Assertions -->
+    <g transform="translate(30, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">Common unittest Assertions:</text>
+      <rect x="0" y="20" width="420" height="120" rx="5" fill="rgba(255,152,0,0.1)" stroke="#FF9800" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">self.assertEqual(a, b)        # a == b</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">self.assertNotEqual(a, b)     # a != b</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">self.assertTrue(x)            # bool(x) is True</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">self.assertFalse(x)           # bool(x) is False</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">self.assertIsNone(x)          # x is None</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">self.assertIn(a, b)           # a in b</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">self.assertIsInstance(a, b)   # isinstance(a, b)</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">self.assertRaises(exc, func)  # func raises exc</text>
+    </g>
+
+    <!-- Test Types -->
+    <g transform="translate(470, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">Types of Testing:</text>
+      <rect x="0" y="20" width="400" height="120" rx="5" fill="rgba(255,152,0,0.1)" stroke="#FF9800" stroke-width="1"/>
+      <text x="5" y="35" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF9800">Unit Tests:</text>
+      <text x="80" y="35" font-family="Arial, sans-serif" font-size="11" fill="#333">Test individual functions/methods</text>
+      <text x="5" y="50" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF9800">Integration Tests:</text>
+      <text x="110" y="50" font-family="Arial, sans-serif" font-size="11" fill="#333">Test interaction between components</text>
+      <text x="5" y="65" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF9800">Functional Tests:</text>
+      <text x="100" y="65" font-family="Arial, sans-serif" font-size="11" fill="#333">Test complete workflows</text>
+      <text x="5" y="80" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF9800">Edge Cases:</text>
+      <text x="75" y="80" font-family="Arial, sans-serif" font-size="11" fill="#333">Test boundary conditions</text>
+      <text x="5" y="95" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF9800">Error Testing:</text>
+      <text x="85" y="95" font-family="Arial, sans-serif" font-size="11" fill="#333">Test exception handling</text>
+      <text x="5" y="110" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF9800">Performance Tests:</text>
+      <text x="115" y="110" font-family="Arial, sans-serif" font-size="11" fill="#333">Test speed and efficiency</text>
+      <text x="5" y="125" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF9800">Regression Tests:</text>
+      <text x="105" y="125" font-family="Arial, sans-serif" font-size="11" fill="#333">Ensure fixes don't break existing code</text>
+    </g>
+  </g>
+
+  <!-- Debugging Tools and Best Practices -->
+  <g transform="translate(50, 620)">
+    <rect x="0" y="0" width="900" height="300" rx="15" fill="#E1F5FE" stroke="#2196F3" stroke-width="3"/>
+    <text x="450" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#2196F3">
+      Advanced Debugging Tools &amp; Best Practices
+    </text>
+
+    <!-- Logging -->
+    <g transform="translate(30, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2196F3">Logging for Debugging:</text>
+      <rect x="0" y="20" width="420" height="120" rx="5" fill="rgba(33,150,243,0.1)" stroke="#2196F3" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import logging</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">logging.basicConfig(level=logging.DEBUG)</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">logger = logging.getLogger(__name__)</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">def process_data(data):</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    logger.debug(f"Processing {len(data)} items")</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">    logger.info("Data processing started")</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">    logger.warning("Low memory warning")</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">    logger.error("Failed to process item")</text>
+      <text x="5" y="139" font-family="Courier, monospace" font-size="10" fill="#333">    logger.critical("System failure!")</text>
+    </g>
+
+    <!-- Exception Handling -->
+    <g transform="translate(470, 50)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2196F3">Exception Handling for Debugging:</text>
+      <rect x="0" y="20" width="400" height="120" rx="5" fill="rgba(33,150,243,0.1)" stroke="#2196F3" stroke-width="1"/>
+      <text x="5" y="35" font-family="Courier, monospace" font-size="10" fill="#333">import traceback</text>
+      <text x="5" y="48" font-family="Courier, monospace" font-size="10" fill="#333">try:</text>
+      <text x="5" y="61" font-family="Courier, monospace" font-size="10" fill="#333">    risky_operation()</text>
+      <text x="5" y="74" font-family="Courier, monospace" font-size="10" fill="#333">except Exception as e:</text>
+      <text x="5" y="87" font-family="Courier, monospace" font-size="10" fill="#333">    logger.error(f"Error: {e}")</text>
+      <text x="5" y="100" font-family="Courier, monospace" font-size="10" fill="#333">    logger.error(traceback.format_exc())</text>
+      <text x="5" y="113" font-family="Courier, monospace" font-size="10" fill="#333">    # Print full stack trace</text>
+      <text x="5" y="126" font-family="Courier, monospace" font-size="10" fill="#333">    traceback.print_exc()</text>
+    </g>
+
+    <!-- Best Practices -->
+    <g transform="translate(30, 180)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2196F3">Debugging Best Practices:</text>
+      <rect x="0" y="20" width="840" height="90" rx="5" fill="rgba(33,150,243,0.1)" stroke="#2196F3" stroke-width="1"/>
+      <text x="5" y="35" font-family="Arial, sans-serif" font-size="11" fill="#333">• Use descriptive variable names and comments</text>
+      <text x="5" y="50" font-family="Arial, sans-serif" font-size="11" fill="#333">• Write small, testable functions (Single Responsibility Principle)</text>
+      <text x="5" y="65" font-family="Arial, sans-serif" font-size="11" fill="#333">• Use version control to track changes and identify when bugs were introduced</text>
+      <text x="5" y="80" font-family="Arial, sans-serif" font-size="11" fill="#333">• Reproduce bugs consistently before attempting to fix them</text>
+      <text x="5" y="95" font-family="Arial, sans-serif" font-size="11" fill="#333">• Use rubber duck debugging (explain your code to someone/something else)</text>
+
+      <text x="420" y="35" font-family="Arial, sans-serif" font-size="11" fill="#333">• Write tests before fixing bugs (Test-Driven Development)</text>
+      <text x="420" y="50" font-family="Arial, sans-serif" font-size="11" fill="#333">• Use IDE debugging features (breakpoints, watch variables)</text>
+      <text x="420" y="65" font-family="Arial, sans-serif" font-size="11" fill="#333">• Remove debug code before production deployment</text>
+      <text x="420" y="80" font-family="Arial, sans-serif" font-size="11" fill="#333">• Use static analysis tools (pylint, flake8, mypy)</text>
+      <text x="420" y="95" font-family="Arial, sans-serif" font-size="11" fill="#333">• Document known issues and their workarounds</text>
+    </g>
+  </g>
+</svg>
