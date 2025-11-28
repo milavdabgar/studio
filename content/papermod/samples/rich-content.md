@@ -15,7 +15,7 @@ Hugo ships with several [Built-in Shortcodes](https://gohugo.io/content-manageme
 
 ## Figure Shortcode ([PaperMod enhanced](https://github.com/adityatelange/hugo-PaperMod/commits/master/layouts/shortcodes/figure.html))
 
-{{< figure src="https://picsum.photos/800/600?random=5" attr="Random sample image from Picsum Photos" align=center link="https://picsum.photos" target="_blank" >}}
+{{< figure src="https://dummyimage.com/800x600/0066cc/ffffff&text=Sample+Image" attr="Sample image from DummyImage" align=center link="https://dummyimage.com" target="_blank" >}}
 
 ---
 ## Figure Shortcode (Hugo Official)

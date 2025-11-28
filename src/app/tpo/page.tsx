@@ -117,7 +117,7 @@ export default function TPOPage() {
             <div className="relative">
               <div className="bg-white dark:bg-gray-900 p-8 rounded dark:bg-gray-800-2xl shadow dark:bg-gray-800-xl dark:bg-gray-900">
                 <Image
-                  src="https://picsum.photos/seed/tpo-mission/600/400"
+                  src="https://dummyimage.com/600x400/0066cc/ffffff&text=TPO+Mission"
                   alt="TPO Mission"
                   width={600}
                   height={400}

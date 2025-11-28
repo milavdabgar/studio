@@ -56,9 +56,9 @@ export default function ShortcodesDemo() {
               <CardContent>
                 <ImageGallery
                   images={[
-                    "https://picsum.photos/600/400?random=2",
-                    "https://picsum.photos/600/400?random=3",
-                    "https://picsum.photos/600/400?random=4"
+                    "https://dummyimage.com/600x400/0066cc/ffffff&text=Gallery+1",
+                    "https://dummyimage.com/600x400/0066cc/ffffff&text=Gallery+2",
+                    "https://dummyimage.com/600x400/0066cc/ffffff&text=Gallery+3"
                   ]}
                   captions={["Programming", "Code", "Software"]}
                   height={400}

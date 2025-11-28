@@ -76,7 +76,7 @@ export default function InnovationPage() {
             <div className="relative">
               <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl">
                 <Image
-                  src="https://picsum.photos/seed/innovation/600/400"
+                  src="https://dummyimage.com/600x400/0066cc/ffffff&text=Innovation+Lab"
                   alt="Innovation Lab"
                   width={600}
                   height={400}

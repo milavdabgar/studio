@@ -169,7 +169,7 @@ export default function LibraryPage() {
             <div className="relative">
               <div className="bg-white p-6 rounded-2xl shadow-xl dark:bg-gray-900">
                 <Image
-                  src="https://picsum.photos/seed/gpp-library/600/400"
+                  src="https://dummyimage.com/600x400/0066cc/ffffff&text=GPP+Central+Library"
                   alt="GP Palanpur Central Library"
                   width={600}
                   height={400}

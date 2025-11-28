@@ -131,7 +131,7 @@ export default function StudentSectionPage() {
             <div className="relative">
               <div className="bg-white dark:bg-gray-900 p-6 rounded rounded-2xl shadow-xl">
                 <Image
-                  src="https://picsum.photos/seed/student-section/600/400"
+                  src="https://dummyimage.com/600x400/0066cc/ffffff&text=Student+Section+Office"
                   alt="Student Section Office"
                   width={600}
                   height={400}

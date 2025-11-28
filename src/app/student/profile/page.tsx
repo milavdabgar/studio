@@ -1468,7 +1468,7 @@ export default function StudentProfilePage() {
             <CardHeader className="items-center text-center pb-4 sm:pb-6">
               <div className="relative">
                 <Avatar className="w-20 h-20 sm:w-24 sm:h-24 mb-3 sm:mb-4 ring-2 ring-primary ring-offset-2">
-                  <AvatarImage src={student.photoURL || `https://picsum.photos/seed/${student.id}/100/100`} alt={student.firstName || student.enrollmentNumber} />
+                  <AvatarImage src={student.photoURL || `https://dummyimage.com/100x100/0066cc/ffffff&text=${(student.firstName || student.enrollmentNumber || 'S').charAt(0).toUpperCase()}`} alt={student.firstName || student.enrollmentNumber} />
                   <AvatarFallback>{(student.firstName?.[0] || 'S').toUpperCase()}{(student.lastName?.[0] || 'P').toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2">

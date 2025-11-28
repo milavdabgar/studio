@@ -256,9 +256,9 @@ export default function CivilEngineeringPage() {
             </div>
             
             <div className="relative">
-              <div className="bg-white p-6 rounded-2xl shadow-xl dark:bg-gray-900">
+              <div className="bg-white dark:bg-gray-900 p-8 rounded dark:bg-gray-800-2xl shadow dark:bg-gray-800-xl dark:bg-gray-900">
                 <Image
-                  src="https://picsum.photos/seed/civil-engineering/600/400"
+                  src="https://dummyimage.com/600x400/0066cc/ffffff&text=Civil+Engineering+Department"
                   alt="Civil Engineering Department"
                   width={600}
                   height={400}
@@ -397,7 +397,7 @@ export default function CivilEngineeringPage() {
                 <CardHeader>
                   <div className="relative h-48 rounded-lg overflow-hidden mb-4">
                     <Image
-                      src={`https://picsum.photos/seed/${lab.image}/400/200`}
+                      src={`https://dummyimage.com/400x200/0066cc/ffffff&text=${encodeURIComponent(lab.name)}`}
                       alt={lab.name}
                       fill
                       className="object-cover"

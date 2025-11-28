@@ -366,7 +366,7 @@ export default function RootLayout({
         activeRole: parsedUser.activeRole || 'unknown',
         availableRoles: parsedUser.availableRoles && parsedUser.availableRoles.length > 0 ? parsedUser.availableRoles : ['unknown'],
         email: parsedUser.email,
-        avatarUrl: `https://picsum.photos/seed/${parsedUser.email}/40/40`, 
+        avatarUrl: `https://dummyimage.com/40x40/0066cc/ffffff&text=${parsedUser.name.charAt(0).toUpperCase()}`, 
         dataAiHint: 'user avatar',
       });
     } else {

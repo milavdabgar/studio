@@ -374,7 +374,7 @@ export default function FacultyProfilePage() {
             <CardHeader className="items-center text-center">
               <div className="relative">
                 <Avatar className="w-24 h-24 mb-4 ring-2 ring-primary ring-offset-2">
-                  <AvatarImage src={faculty.photoURL || `https://picsum.photos/seed/${faculty.id}/100/100`} alt={fullName} />
+                  <AvatarImage src={faculty.photoURL || `https://dummyimage.com/100x100/0066cc/ffffff&text=${(faculty.firstName || 'F').charAt(0).toUpperCase()}`} alt={fullName} />
                   <AvatarFallback>{(faculty.firstName?.[0] || 'F').toUpperCase()}{(faculty.lastName?.[0] || 'M').toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="absolute -bottom-2 -right-2">

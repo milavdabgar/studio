@@ -88,7 +88,7 @@ export default function DepartmentsPage() {
                   </div>
                   <div className="relative h-48 mt-4 rounded-lg overflow-hidden">
                     <Image
-                      src={`https://picsum.photos/seed/${dept.id}-dept/400/200`}
+                      src={`https://dummyimage.com/400x200/0066cc/ffffff&text=${encodeURIComponent(dept.name)}`}
                       alt={`${dept.name} Department`}
                       fill
                       className="object-cover"

@@ -113,7 +113,7 @@ export default function FacilitiesPage() {
             <div className="relative">
               <div className="bg-white dark:bg-gray-900 p-6 rounded dark:bg-gray-800-2xl shadow dark:bg-gray-800-xl dark:bg-gray-900">
                 <Image
-                  src="https://picsum.photos/seed/gpp-overview/600/400"
+                  src="https://dummyimage.com/600x400/0066cc/ffffff&text=GP+Palanpur+Campus+Overview"
                   alt="GP Palanpur Campus Overview"
                   width={600}
                   height={400}
@@ -159,7 +159,7 @@ export default function FacilitiesPage() {
                     </div>
                     <div className="relative h-40 rounded-lg overflow-hidden">
                       <Image
-                        src={`https://picsum.photos/seed/${facility.id}-facility/400/200`}
+                        src={`https://dummyimage.com/400x200/0066cc/ffffff&text=${encodeURIComponent(facility.name)}`}
                         alt={facility.name}
                         fill
                         className="object-cover"

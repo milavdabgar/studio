@@ -166,7 +166,7 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
               <div className="relative mx-auto md:mx-0">
                 <Avatar className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 ring-4 sm:ring-6 ring-white shadow-2xl">
                   <AvatarImage 
-                    src={profile.photoURL || `https://picsum.photos/seed/${profile.id}/300/300`} 
+                    src={profile.photoURL || `https://dummyimage.com/300x300/0066cc/ffffff&text=${(profile.firstName || 'F').charAt(0).toUpperCase()}`} 
                     alt={`${profile.firstName} ${profile.lastName}`} 
                   />
                   <AvatarFallback className="text-2xl sm:text-3xl md:text-4xl bg-gradient-to-br from-purple-500 to-blue-600 text-white">

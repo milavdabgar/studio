@@ -260,7 +260,7 @@ export default function StudentProfilePage({}: StudentProfilePageProps) {
               <div className="relative">
                 <Avatar className="w-40 h-40 ring-6 ring-white shadow-2xl">
                   <AvatarImage 
-                    src={(profile as any).photoURL || `https://picsum.photos/seed/${profile.id}/300/300`} 
+                    src={(profile as any).photoURL || `https://dummyimage.com/300x300/0066cc/ffffff&text=${profile.firstName?.charAt(0) || 'S'}`} 
                     alt={`${profile.firstName} ${profile.lastName}`} 
                   />
                   <AvatarFallback className="text-4xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white">

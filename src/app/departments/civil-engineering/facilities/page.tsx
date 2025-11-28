@@ -345,7 +345,7 @@ export default function CivilFacilitiesPage() {
                     <div>
                       <div className="relative h-48 rounded-lg overflow-hidden">
                         <Image
-                          src={`https://picsum.photos/seed/${lab.image}/400/200`}
+                          src={`https://dummyimage.com/400x200/0066cc/ffffff&text=${encodeURIComponent(lab.name)}`}
                           alt={lab.name}
                           fill
                           className="object-cover"

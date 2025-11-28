@@ -135,10 +135,10 @@ export default function SSIPPage() {
               </div>
             </div>
             <div className="relative">
-              <div className="bg-white dark:bg-gray-900 p-6 rounded dark:bg-gray-800-2xl shadow dark:bg-gray-800-xl dark:bg-gray-900">
+              <div className="bg-white dark:bg-gray-900 p-8 rounded dark:bg-gray-800-2xl shadow dark:bg-gray-800-xl dark:bg-gray-900">
                 <Image
-                  src="https://picsum.photos/seed/ssip-innovation/600/400"
-                  alt="SSIP Innovation Lab"
+                  src="https://dummyimage.com/600x400/0066cc/ffffff&text=SSIP+Innovation"
+                  alt="SSIP Innovation Hub"
                   width={600}
                   height={400}
                   className="rounded-xl"

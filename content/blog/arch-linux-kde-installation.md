@@ -5,7 +5,7 @@ author: "Milav Dhaagar"
 description: "A comprehensive guide for installing Arch Linux with KDE Plasma desktop environment"
 summary: "Learn how to install and configure Arch Linux with a complete KDE Plasma desktop environment from scratch."
 tags: ["linux", "arch", "kde", "installation", "tutorial"]
-featured: "https://picsum.photos/800/400?random=2"
+featured: "https://dummyimage.com/800x400/0066cc/ffffff&text=Arch+Linux+KDE+Installation"
 ---
 
 This guide walks you through a complete Arch Linux installation with KDE Plasma desktop environment. It covers everything from partitioning to configuring a fully functional desktop system.

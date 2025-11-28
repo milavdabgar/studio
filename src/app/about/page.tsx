@@ -113,7 +113,7 @@ export default function AboutPage() {
             <div className="relative">
               <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl border dark:border dark:border-gray-700-gray-700 dark:bg-gray-900 dark:border-gray-700">
                 <Image
-                  src="https://picsum.photos/seed/gpp-about/600/400"
+                  src="https://dummyimage.com/600x400/0066cc/ffffff&text=Government+Polytechnic+Palanpur"
                   alt="Government Polytechnic Palanpur - About Us"
                   width={600}
                   height={400}
