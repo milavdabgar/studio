@@ -130,7 +130,11 @@ export default function DepartmentPage({ params }: DepartmentPageProps) {
             <div className="relative">
               <div className="bg-white p-6 rounded-2xl shadow-xl dark:bg-gray-900">
                 <Image
-                  src={`https://picsum.photos/seed/${department.slug}/600/400`}
+                  src={
+                    department.slug === 'electrical-engineering'
+                      ? `/images/departments/electrical-engineering.jpeg`
+                      : `https://picsum.photos/seed/${department.slug}/600/400`
+                  }
                   alt={`${department.name} Department`}
                   width={600}
                   height={400}
