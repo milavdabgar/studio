@@ -133,7 +133,7 @@ export default function DepartmentPage({ params }: DepartmentPageProps) {
                   src={
                     department.slug === 'electrical-engineering'
                       ? `/images/departments/electrical-engineering.jpeg`
-                      : `https://picsum.photos/seed/${department.slug}/600/400`
+                      : `https://dummyimage.com/600x400/0066cc/ffffff&text=${department.name.replace(/\s+/g, '+')}`
                   }
                   alt={`${department.name} Department`}
                   width={600}
