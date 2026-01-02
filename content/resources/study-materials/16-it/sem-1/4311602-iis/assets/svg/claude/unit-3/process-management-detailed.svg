@@ -1,0 +1,225 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E91E63;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF5722;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="processGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1976D2;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="3" dy="3" stdDeviation="3" flood-color="#00000030"/>
+    </filter>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#FAFAFA"/>
+
+  <!-- Header -->
+  <rect x="0" y="0" width="1200" height="80" fill="url(#headerGrad)"/>
+  <text x="600" y="35" text-anchor="middle" fill="white" font-size="28" font-weight="bold">Process Management in Operating Systems</text>
+  <text x="600" y="60" text-anchor="middle" fill="white" font-size="16">Process States, Scheduling, and Thread Management</text>
+
+  <!-- Process State Diagram -->
+  <g transform="translate(50, 120)">
+    <rect x="0" y="0" width="500" height="300" rx="10" fill="white" stroke="#666" stroke-width="2" filter="url(#shadow)"/>
+    <text x="250" y="25" text-anchor="middle" fill="#333" font-size="18" font-weight="bold">Process State Transitions</text>
+
+    <!-- New State -->
+    <ellipse cx="100" cy="80" rx="60" ry="25" fill="#FFCDD2" stroke="#F44336" stroke-width="2"/>
+    <text x="100" y="85" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">NEW</text>
+
+    <!-- Ready State -->
+    <ellipse cx="250" cy="150" rx="60" ry="25" fill="#FFF9C4" stroke="#FBC02D" stroke-width="2"/>
+    <text x="250" y="155" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">READY</text>
+
+    <!-- Running State -->
+    <ellipse cx="400" cy="150" rx="60" ry="25" fill="#C8E6C9" stroke="#4CAF50" stroke-width="2"/>
+    <text x="400" y="155" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">RUNNING</text>
+
+    <!-- Waiting State -->
+    <ellipse cx="250" cy="220" rx="60" ry="25" fill="#E1BEE7" stroke="#9C27B0" stroke-width="2"/>
+    <text x="250" y="225" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">WAITING</text>
+
+    <!-- Terminated State -->
+    <ellipse cx="400" cy="80" rx="60" ry="25" fill="#CFD8DC" stroke="#607D8B" stroke-width="2"/>
+    <text x="400" y="85" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">TERMINATED</text>
+
+    <!-- Arrows -->
+    <path d="M150 90 L200 140" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="175" y="115" text-anchor="middle" fill="#666" font-size="10">admit</text>
+
+    <path d="M300 150 L350 150" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="325" y="145" text-anchor="middle" fill="#666" font-size="10">dispatch</text>
+
+    <path d="M350 140 L300 140" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="325" y="135" text-anchor="middle" fill="#666" font-size="10">timeout</text>
+
+    <path d="M380 135 L270 205" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="325" y="175" text-anchor="middle" fill="#666" font-size="10">I/O wait</text>
+
+    <path d="M270 205 L380 165" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="325" y="185" text-anchor="middle" fill="#666" font-size="10">I/O complete</text>
+
+    <path d="M400 125 L400 105" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="420" y="115" text-anchor="middle" fill="#666" font-size="10">exit</text>
+  </g>
+
+  <!-- Process Control Block -->
+  <g transform="translate(600, 120)">
+    <rect x="0" y="0" width="300" height="300" rx="10" fill="white" stroke="#666" stroke-width="2" filter="url(#shadow)"/>
+    <text x="150" y="25" text-anchor="middle" fill="#333" font-size="18" font-weight="bold">Process Control Block (PCB)</text>
+
+    <!-- PCB Contents -->
+    <g transform="translate(20, 40)">
+      <rect x="0" y="0" width="260" height="240" rx="5" fill="#E8F5E8" stroke="#4CAF50" stroke-width="1"/>
+
+      <text x="10" y="20" fill="#333" font-size="12" font-weight="bold">Process Information:</text>
+      <text x="15" y="35" fill="#333" font-size="11">• Process ID (PID)</text>
+      <text x="15" y="50" fill="#333" font-size="11">• Process State</text>
+      <text x="15" y="65" fill="#333" font-size="11">• Parent Process ID</text>
+
+      <text x="10" y="85" fill="#333" font-size="12" font-weight="bold">CPU Information:</text>
+      <text x="15" y="100" fill="#333" font-size="11">• Program Counter</text>
+      <text x="15" y="115" fill="#333" font-size="11">• CPU Registers</text>
+      <text x="15" y="130" fill="#333" font-size="11">• CPU Scheduling Info</text>
+
+      <text x="10" y="150" fill="#333" font-size="12" font-weight="bold">Memory Management:</text>
+      <text x="15" y="165" fill="#333" font-size="11">• Memory Pointers</text>
+      <text x="15" y="180" fill="#333" font-size="11">• Memory Limits</text>
+
+      <text x="10" y="200" fill="#333" font-size="12" font-weight="bold">I/O Information:</text>
+      <text x="15" y="215" fill="#333" font-size="11">• Open Files List</text>
+      <text x="15" y="230" fill="#333" font-size="11">• I/O Device Status</text>
+    </g>
+  </g>
+
+  <!-- Scheduling Algorithms -->
+  <g transform="translate(950, 120)">
+    <rect x="0" y="0" width="200" height="300" rx="10" fill="white" stroke="#666" stroke-width="2" filter="url(#shadow)"/>
+    <text x="100" y="25" text-anchor="middle" fill="#333" font-size="16" font-weight="bold">CPU Scheduling</text>
+
+    <text x="100" y="50" text-anchor="middle" fill="#333" font-size="14" font-weight="bold">Algorithms:</text>
+
+    <text x="100" y="75" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">FCFS</text>
+    <text x="100" y="90" text-anchor="middle" fill="#333" font-size="10">First Come First Serve</text>
+
+    <text x="100" y="110" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">SJF</text>
+    <text x="100" y="125" text-anchor="middle" fill="#333" font-size="10">Shortest Job First</text>
+
+    <text x="100" y="145" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">Priority</text>
+    <text x="100" y="160" text-anchor="middle" fill="#333" font-size="10">Priority Scheduling</text>
+
+    <text x="100" y="180" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">Round Robin</text>
+    <text x="100" y="195" text-anchor="middle" fill="#333" font-size="10">Time Slice Based</text>
+
+    <text x="100" y="215" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">SRTF</text>
+    <text x="100" y="230" text-anchor="middle" fill="#333" font-size="10">Shortest Remaining Time</text>
+
+    <text x="100" y="250" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">Multilevel</text>
+    <text x="100" y="265" text-anchor="middle" fill="#333" font-size="10">Queue Scheduling</text>
+
+    <text x="100" y="285" text-anchor="middle" fill="#FF9800" font-size="11" font-weight="bold">Preemptive vs</text>
+    <text x="100" y="300" text-anchor="middle" fill="#FF9800" font-size="11" font-weight="bold">Non-preemptive</text>
+  </g>
+
+  <!-- Threads vs Processes -->
+  <g transform="translate(50, 450)">
+    <rect x="0" y="0" width="500" height="320" rx="10" fill="white" stroke="#666" stroke-width="2" filter="url(#shadow)"/>
+    <text x="250" y="25" text-anchor="middle" fill="#333" font-size="18" font-weight="bold">Threads vs Processes</text>
+
+    <!-- Process -->
+    <g transform="translate(50, 50)">
+      <rect x="0" y="0" width="180" height="240" rx="8" fill="#FFECB3" stroke="#FFA000" stroke-width="2"/>
+      <text x="90" y="20" text-anchor="middle" fill="#FFA000" font-size="16" font-weight="bold">Process</text>
+
+      <text x="90" y="45" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">Characteristics:</text>
+      <text x="90" y="65" text-anchor="middle" fill="#333" font-size="11">• Own memory space</text>
+      <text x="90" y="80" text-anchor="middle" fill="#333" font-size="11">• Independent execution</text>
+      <text x="90" y="95" text-anchor="middle" fill="#333" font-size="11">• Heavy resource usage</text>
+      <text x="90" y="110" text-anchor="middle" fill="#333" font-size="11">• Separate PCB</text>
+      <text x="90" y="125" text-anchor="middle" fill="#333" font-size="11">• Inter-process communication</text>
+
+      <text x="90" y="150" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">Advantages:</text>
+      <text x="90" y="170" text-anchor="middle" fill="#333" font-size="11">• Process isolation</text>
+      <text x="90" y="185" text-anchor="middle" fill="#333" font-size="11">• Security</text>
+      <text x="90" y="200" text-anchor="middle" fill="#333" font-size="11">• Fault tolerance</text>
+
+      <text x="90" y="220" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">Disadvantages:</text>
+      <text x="90" y="235" text-anchor="middle" fill="#333" font-size="11">• High overhead</text>
+    </g>
+
+    <!-- Thread -->
+    <g transform="translate(270, 50)">
+      <rect x="0" y="0" width="180" height="240" rx="8" fill="#E8F5E8" stroke="#4CAF50" stroke-width="2"/>
+      <text x="90" y="20" text-anchor="middle" fill="#4CAF50" font-size="16" font-weight="bold">Thread</text>
+
+      <text x="90" y="45" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">Characteristics:</text>
+      <text x="90" y="65" text-anchor="middle" fill="#333" font-size="11">• Shared memory space</text>
+      <text x="90" y="80" text-anchor="middle" fill="#333" font-size="11">• Lightweight</text>
+      <text x="90" y="95" text-anchor="middle" fill="#333" font-size="11">• Fast context switching</text>
+      <text x="90" y="110" text-anchor="middle" fill="#333" font-size="11">• Thread Control Block</text>
+      <text x="90" y="125" text-anchor="middle" fill="#333" font-size="11">• Shared resources</text>
+
+      <text x="90" y="150" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">Advantages:</text>
+      <text x="90" y="170" text-anchor="middle" fill="#333" font-size="11">• Low overhead</text>
+      <text x="90" y="185" text-anchor="middle" fill="#333" font-size="11">• Fast communication</text>
+      <text x="90" y="200" text-anchor="middle" fill="#333" font-size="11">• Parallelism</text>
+
+      <text x="90" y="220" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">Disadvantages:</text>
+      <text x="90" y="235" text-anchor="middle" fill="#333" font-size="11">• Synchronization issues</text>
+    </g>
+  </g>
+
+  <!-- Synchronization Concepts -->
+  <g transform="translate(600, 450)">
+    <rect x="0" y="0" width="550" height="320" rx="10" fill="white" stroke="#666" stroke-width="2" filter="url(#shadow)"/>
+    <text x="275" y="25" text-anchor="middle" fill="#333" font-size="18" font-weight="bold">Process Synchronization</text>
+
+    <!-- Critical Section Problem -->
+    <g transform="translate(50, 50)">
+      <rect x="0" y="0" width="200" height="120" rx="8" fill="#FFEBEE" stroke="#F44336" stroke-width="2"/>
+      <text x="100" y="20" text-anchor="middle" fill="#F44336" font-size="14" font-weight="bold">Critical Section</text>
+      <text x="100" y="40" text-anchor="middle" fill="#333" font-size="11">Code segment where shared</text>
+      <text x="100" y="55" text-anchor="middle" fill="#333" font-size="11">resources are accessed</text>
+      <text x="100" y="75" text-anchor="middle" fill="#333" font-size="11">Requirements:</text>
+      <text x="100" y="90" text-anchor="middle" fill="#333" font-size="10">• Mutual Exclusion</text>
+      <text x="100" y="105" text-anchor="middle" fill="#333" font-size="10">• Progress, Bounded Waiting</text>
+    </g>
+
+    <!-- Semaphores -->
+    <g transform="translate(275, 50)">
+      <rect x="0" y="0" width="200" height="120" rx="8" fill="#E3F2FD" stroke="#2196F3" stroke-width="2"/>
+      <text x="100" y="20" text-anchor="middle" fill="#2196F3" font-size="14" font-weight="bold">Semaphores</text>
+      <text x="100" y="40" text-anchor="middle" fill="#333" font-size="11">Synchronization primitive</text>
+      <text x="100" y="60" text-anchor="middle" fill="#333" font-size="11">Operations:</text>
+      <text x="100" y="75" text-anchor="middle" fill="#333" font-size="10">• wait() or P()</text>
+      <text x="100" y="90" text-anchor="middle" fill="#333" font-size="10">• signal() or V()</text>
+      <text x="100" y="105" text-anchor="middle" fill="#333" font-size="10">Binary &amp; Counting types</text>
+    </g>
+
+    <!-- Mutex -->
+    <g transform="translate(50, 190)">
+      <rect x="0" y="0" width="200" height="100" rx="8" fill="#F3E5F5" stroke="#9C27B0" stroke-width="2"/>
+      <text x="100" y="20" text-anchor="middle" fill="#9C27B0" font-size="14" font-weight="bold">Mutex</text>
+      <text x="100" y="40" text-anchor="middle" fill="#333" font-size="11">Mutual Exclusion lock</text>
+      <text x="100" y="55" text-anchor="middle" fill="#333" font-size="10">• Binary semaphore</text>
+      <text x="100" y="70" text-anchor="middle" fill="#333" font-size="10">• Ownership concept</text>
+      <text x="100" y="85" text-anchor="middle" fill="#333" font-size="10">• Lock/Unlock operations</text>
+    </g>
+
+    <!-- Deadlock -->
+    <g transform="translate(275, 190)">
+      <rect x="0" y="0" width="200" height="100" rx="8" fill="#FFF3E0" stroke="#FF9800" stroke-width="2"/>
+      <text x="100" y="20" text-anchor="middle" fill="#FF9800" font-size="14" font-weight="bold">Deadlock</text>
+      <text x="100" y="40" text-anchor="middle" fill="#333" font-size="11">Circular waiting condition</text>
+      <text x="100" y="55" text-anchor="middle" fill="#333" font-size="10">Four conditions:</text>
+      <text x="100" y="70" text-anchor="middle" fill="#333" font-size="10">Mutual Exclusion, Hold &amp; Wait</text>
+      <text x="100" y="85" text-anchor="middle" fill="#333" font-size="10">No Preemption, Circular Wait</text>
+    </g>
+  </g>
+</svg>

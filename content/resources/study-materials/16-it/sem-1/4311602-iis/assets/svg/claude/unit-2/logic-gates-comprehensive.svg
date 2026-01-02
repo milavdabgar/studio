@@ -1,0 +1,319 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#673AB7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#00000030"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#FAFAFA"/>
+
+  <!-- Header -->
+  <rect x="0" y="0" width="1200" height="70" fill="url(#headerGrad)"/>
+  <text x="600" y="30" text-anchor="middle" fill="white" font-size="26" font-weight="bold">Logic Gates - Complete Reference</text>
+  <text x="600" y="55" text-anchor="middle" fill="white" font-size="14">Basic and Universal Logic Gates with Truth Tables</text>
+
+  <!-- AND Gate -->
+  <g transform="translate(80, 100)">
+    <rect x="0" y="0" width="180" height="140" rx="8" fill="#E8F5E8" stroke="#4CAF50" stroke-width="2" filter="url(#shadow)"/>
+    <text x="90" y="20" text-anchor="middle" fill="#4CAF50" font-size="16" font-weight="bold">AND Gate</text>
+
+    <!-- AND gate symbol -->
+    <g transform="translate(30, 30)">
+      <path d="M0 20 L40 20 L40 0 A20 20 0 0 1 40 40 L40 20 Z" fill="white" stroke="#4CAF50" stroke-width="2"/>
+      <line x1="0" y1="10" x2="15" y2="10" stroke="#333" stroke-width="2"/>
+      <line x1="0" y1="30" x2="15" y2="30" stroke="#333" stroke-width="2"/>
+      <line x1="60" y1="20" x2="75" y2="20" stroke="#333" stroke-width="2"/>
+      <text x="-15" y="15" fill="#333" font-size="10">A</text>
+      <text x="-15" y="35" fill="#333" font-size="10">B</text>
+      <text x="80" y="25" fill="#333" font-size="10">Y</text>
+    </g>
+
+    <!-- Truth table -->
+    <g transform="translate(10, 80)">
+      <rect x="0" y="0" width="160" height="50" fill="white" stroke="#4CAF50" stroke-width="1"/>
+      <text x="20" y="15" fill="#333" font-size="10" font-weight="bold">A B | Y</text>
+      <text x="20" y="28" fill="#333" font-size="10">0 0 | 0</text>
+      <text x="20" y="41" fill="#333" font-size="10">1 1 | 1</text>
+      <text x="80" y="28" fill="#333" font-size="10">0 1 | 0</text>
+      <text x="80" y="41" fill="#333" font-size="10">Y = A · B</text>
+    </g>
+  </g>
+
+  <!-- OR Gate -->
+  <g transform="translate(280, 100)">
+    <rect x="0" y="0" width="180" height="140" rx="8" fill="#E3F2FD" stroke="#2196F3" stroke-width="2" filter="url(#shadow)"/>
+    <text x="90" y="20" text-anchor="middle" fill="#2196F3" font-size="16" font-weight="bold">OR Gate</text>
+
+    <!-- OR gate symbol -->
+    <g transform="translate(30, 30)">
+      <path d="M0 0 Q20 0 40 20 Q20 40 0 40 Q15 20 0 0" fill="white" stroke="#2196F3" stroke-width="2"/>
+      <line x1="5" y1="10" x2="15" y2="10" stroke="#333" stroke-width="2"/>
+      <line x1="5" y1="30" x2="15" y2="30" stroke="#333" stroke-width="2"/>
+      <line x1="40" y1="20" x2="55" y2="20" stroke="#333" stroke-width="2"/>
+      <text x="-10" y="15" fill="#333" font-size="10">A</text>
+      <text x="-10" y="35" fill="#333" font-size="10">B</text>
+      <text x="60" y="25" fill="#333" font-size="10">Y</text>
+    </g>
+
+    <!-- Truth table -->
+    <g transform="translate(10, 80)">
+      <rect x="0" y="0" width="160" height="50" fill="white" stroke="#2196F3" stroke-width="1"/>
+      <text x="20" y="15" fill="#333" font-size="10" font-weight="bold">A B | Y</text>
+      <text x="20" y="28" fill="#333" font-size="10">0 0 | 0</text>
+      <text x="20" y="41" fill="#333" font-size="10">1 1 | 1</text>
+      <text x="80" y="28" fill="#333" font-size="10">0 1 | 1</text>
+      <text x="80" y="41" fill="#333" font-size="10">Y = A + B</text>
+    </g>
+  </g>
+
+  <!-- NOT Gate -->
+  <g transform="translate(480, 100)">
+    <rect x="0" y="0" width="180" height="140" rx="8" fill="#FFEBEE" stroke="#F44336" stroke-width="2" filter="url(#shadow)"/>
+    <text x="90" y="20" text-anchor="middle" fill="#F44336" font-size="16" font-weight="bold">NOT Gate</text>
+
+    <!-- NOT gate symbol -->
+    <g transform="translate(50, 30)">
+      <polygon points="0,10 0,30 30,20" fill="white" stroke="#F44336" stroke-width="2"/>
+      <circle cx="35" cy="20" r="5" fill="white" stroke="#F44336" stroke-width="2"/>
+      <line x1="0" y1="20" x2="-15" y2="20" stroke="#333" stroke-width="2"/>
+      <line x1="40" y1="20" x2="55" y2="20" stroke="#333" stroke-width="2"/>
+      <text x="-25" y="25" fill="#333" font-size="10">A</text>
+      <text x="60" y="25" fill="#333" font-size="10">Y</text>
+    </g>
+
+    <!-- Truth table -->
+    <g transform="translate(10, 80)">
+      <rect x="0" y="0" width="160" height="50" fill="white" stroke="#F44336" stroke-width="1"/>
+      <text x="20" y="15" fill="#333" font-size="10" font-weight="bold">A | Y</text>
+      <text x="20" y="28" fill="#333" font-size="10">0 | 1</text>
+      <text x="20" y="41" fill="#333" font-size="10">1 | 0</text>
+      <text x="80" y="35" fill="#333" font-size="10">Y = Ā</text>
+    </g>
+  </g>
+
+  <!-- NAND Gate -->
+  <g transform="translate(680, 100)">
+    <rect x="0" y="0" width="180" height="140" rx="8" fill="#FFF3E0" stroke="#FF9800" stroke-width="2" filter="url(#shadow)"/>
+    <text x="90" y="20" text-anchor="middle" fill="#FF9800" font-size="16" font-weight="bold">NAND Gate</text>
+
+    <!-- NAND gate symbol -->
+    <g transform="translate(25, 30)">
+      <path d="M0 20 L40 20 L40 0 A20 20 0 0 1 40 40 L40 20 Z" fill="white" stroke="#FF9800" stroke-width="2"/>
+      <circle cx="65" cy="20" r="5" fill="white" stroke="#FF9800" stroke-width="2"/>
+      <line x1="0" y1="10" x2="15" y2="10" stroke="#333" stroke-width="2"/>
+      <line x1="0" y1="30" x2="15" y2="30" stroke="#333" stroke-width="2"/>
+      <line x1="70" y1="20" x2="85" y2="20" stroke="#333" stroke-width="2"/>
+      <text x="-15" y="15" fill="#333" font-size="10">A</text>
+      <text x="-15" y="35" fill="#333" font-size="10">B</text>
+      <text x="90" y="25" fill="#333" font-size="10">Y</text>
+    </g>
+
+    <!-- Truth table -->
+    <g transform="translate(10, 80)">
+      <rect x="0" y="0" width="160" height="50" fill="white" stroke="#FF9800" stroke-width="1"/>
+      <text x="20" y="15" fill="#333" font-size="10" font-weight="bold">A B | Y</text>
+      <text x="20" y="28" fill="#333" font-size="10">0 0 | 1</text>
+      <text x="20" y="41" fill="#333" font-size="10">1 1 | 0</text>
+      <text x="80" y="28" fill="#333" font-size="10">0 1 | 1</text>
+      <text x="80" y="41" fill="#333" font-size="10">Y = A · B</text>
+    </g>
+  </g>
+
+  <!-- NOR Gate -->
+  <g transform="translate(880, 100)">
+    <rect x="0" y="0" width="180" height="140" rx="8" fill="#F3E5F5" stroke="#9C27B0" stroke-width="2" filter="url(#shadow)"/>
+    <text x="90" y="20" text-anchor="middle" fill="#9C27B0" font-size="16" font-weight="bold">NOR Gate</text>
+
+    <!-- NOR gate symbol -->
+    <g transform="translate(25, 30)">
+      <path d="M0 0 Q20 0 40 20 Q20 40 0 40 Q15 20 0 0" fill="white" stroke="#9C27B0" stroke-width="2"/>
+      <circle cx="45" cy="20" r="5" fill="white" stroke="#9C27B0" stroke-width="2"/>
+      <line x1="5" y1="10" x2="15" y2="10" stroke="#333" stroke-width="2"/>
+      <line x1="5" y1="30" x2="15" y2="30" stroke="#333" stroke-width="2"/>
+      <line x1="50" y1="20" x2="65" y2="20" stroke="#333" stroke-width="2"/>
+      <text x="-10" y="15" fill="#333" font-size="10">A</text>
+      <text x="-10" y="35" fill="#333" font-size="10">B</text>
+      <text x="70" y="25" fill="#333" font-size="10">Y</text>
+    </g>
+
+    <!-- Truth table -->
+    <g transform="translate(10, 80)">
+      <rect x="0" y="0" width="160" height="50" fill="white" stroke="#9C27B0" stroke-width="1"/>
+      <text x="20" y="15" fill="#333" font-size="10" font-weight="bold">A B | Y</text>
+      <text x="20" y="28" fill="#333" font-size="10">0 0 | 1</text>
+      <text x="20" y="41" fill="#333" font-size="10">1 1 | 0</text>
+      <text x="80" y="28" fill="#333" font-size="10">0 1 | 0</text>
+      <text x="80" y="41" fill="#333" font-size="10">Y = A + B</text>
+    </g>
+  </g>
+
+  <!-- XOR Gate -->
+  <g transform="translate(180, 270)">
+    <rect x="0" y="0" width="180" height="140" rx="8" fill="#E0F2F1" stroke="#009688" stroke-width="2" filter="url(#shadow)"/>
+    <text x="90" y="20" text-anchor="middle" fill="#009688" font-size="16" font-weight="bold">XOR Gate</text>
+
+    <!-- XOR gate symbol -->
+    <g transform="translate(25, 30)">
+      <path d="M0 0 Q20 0 40 20 Q20 40 0 40 Q15 20 0 0" fill="white" stroke="#009688" stroke-width="2"/>
+      <path d="M-5 0 Q10 20 -5 40" fill="none" stroke="#009688" stroke-width="2"/>
+      <line x1="5" y1="10" x2="15" y2="10" stroke="#333" stroke-width="2"/>
+      <line x1="5" y1="30" x2="15" y2="30" stroke="#333" stroke-width="2"/>
+      <line x1="40" y1="20" x2="55" y2="20" stroke="#333" stroke-width="2"/>
+      <text x="-15" y="15" fill="#333" font-size="10">A</text>
+      <text x="-15" y="35" fill="#333" font-size="10">B</text>
+      <text x="60" y="25" fill="#333" font-size="10">Y</text>
+    </g>
+
+    <!-- Truth table -->
+    <g transform="translate(10, 80)">
+      <rect x="0" y="0" width="160" height="50" fill="white" stroke="#009688" stroke-width="1"/>
+      <text x="20" y="15" fill="#333" font-size="10" font-weight="bold">A B | Y</text>
+      <text x="20" y="28" fill="#333" font-size="10">0 0 | 0</text>
+      <text x="20" y="41" fill="#333" font-size="10">1 1 | 0</text>
+      <text x="80" y="28" fill="#333" font-size="10">0 1 | 1</text>
+      <text x="80" y="41" fill="#333" font-size="10">Y = A ⊕ B</text>
+    </g>
+  </g>
+
+  <!-- XNOR Gate -->
+  <g transform="translate(380, 270)">
+    <rect x="0" y="0" width="180" height="140" rx="8" fill="#FFF8E1" stroke="#FBC02D" stroke-width="2" filter="url(#shadow)"/>
+    <text x="90" y="20" text-anchor="middle" fill="#FBC02D" font-size="16" font-weight="bold">XNOR Gate</text>
+
+    <!-- XNOR gate symbol -->
+    <g transform="translate(25, 30)">
+      <path d="M0 0 Q20 0 40 20 Q20 40 0 40 Q15 20 0 0" fill="white" stroke="#FBC02D" stroke-width="2"/>
+      <path d="M-5 0 Q10 20 -5 40" fill="none" stroke="#FBC02D" stroke-width="2"/>
+      <circle cx="45" cy="20" r="5" fill="white" stroke="#FBC02D" stroke-width="2"/>
+      <line x1="5" y1="10" x2="15" y2="10" stroke="#333" stroke-width="2"/>
+      <line x1="5" y1="30" x2="15" y2="30" stroke="#333" stroke-width="2"/>
+      <line x1="50" y1="20" x2="65" y2="20" stroke="#333" stroke-width="2"/>
+      <text x="-15" y="15" fill="#333" font-size="10">A</text>
+      <text x="-15" y="35" fill="#333" font-size="10">B</text>
+      <text x="70" y="25" fill="#333" font-size="10">Y</text>
+    </g>
+
+    <!-- Truth table -->
+    <g transform="translate(10, 80)">
+      <rect x="0" y="0" width="160" height="50" fill="white" stroke="#FBC02D" stroke-width="1"/>
+      <text x="20" y="15" fill="#333" font-size="10" font-weight="bold">A B | Y</text>
+      <text x="20" y="28" fill="#333" font-size="10">0 0 | 1</text>
+      <text x="20" y="41" fill="#333" font-size="10">1 1 | 1</text>
+      <text x="80" y="28" fill="#333" font-size="10">0 1 | 0</text>
+      <text x="80" y="41" fill="#333" font-size="10">Y = A ⊕ B</text>
+    </g>
+  </g>
+
+  <!-- Universal Gates Section -->
+  <g transform="translate(600, 270)">
+    <rect x="0" y="0" width="480" height="140" rx="10" fill="#E8EAF6" stroke="#3F51B5" stroke-width="2" filter="url(#shadow)"/>
+    <text x="240" y="25" text-anchor="middle" fill="#3F51B5" font-size="18" font-weight="bold">Universal Gates</text>
+
+    <text x="240" y="50" text-anchor="middle" fill="#333" font-size="14">NAND and NOR gates are called Universal Gates</text>
+    <text x="240" y="70" text-anchor="middle" fill="#333" font-size="12">Any logic function can be implemented using only NAND or only NOR gates</text>
+
+    <!-- NAND implementations -->
+    <text x="120" y="95" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">Using NAND:</text>
+    <text x="120" y="110" text-anchor="middle" fill="#333" font-size="11">NOT: A NAND A = Ā</text>
+    <text x="120" y="125" text-anchor="middle" fill="#333" font-size="11">AND: (A NAND B) NAND (A NAND B)</text>
+
+    <!-- NOR implementations -->
+    <text x="360" y="95" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">Using NOR:</text>
+    <text x="360" y="110" text-anchor="middle" fill="#333" font-size="11">NOT: A NOR A = Ā</text>
+    <text x="360" y="125" text-anchor="middle" fill="#333" font-size="11">OR: (A NOR B) NOR (A NOR B)</text>
+  </g>
+
+  <!-- Boolean Laws Section -->
+  <g transform="translate(50, 440)">
+    <rect x="0" y="0" width="1100" height="180" rx="10" fill="white" stroke="#607D8B" stroke-width="2" filter="url(#shadow)"/>
+    <text x="550" y="25" text-anchor="middle" fill="#607D8B" font-size="20" font-weight="bold">Boolean Algebra Laws</text>
+
+    <!-- Identity Laws -->
+    <g transform="translate(50, 40)">
+      <text x="0" y="15" fill="#333" font-size="14" font-weight="bold">Identity Laws:</text>
+      <text x="0" y="35" fill="#333" font-size="12">A + 0 = A</text>
+      <text x="0" y="50" fill="#333" font-size="12">A · 1 = A</text>
+    </g>
+
+    <!-- Null Laws -->
+    <g transform="translate(200, 40)">
+      <text x="0" y="15" fill="#333" font-size="14" font-weight="bold">Null Laws:</text>
+      <text x="0" y="35" fill="#333" font-size="12">A + 1 = 1</text>
+      <text x="0" y="50" fill="#333" font-size="12">A · 0 = 0</text>
+    </g>
+
+    <!-- Idempotent Laws -->
+    <g transform="translate(350, 40)">
+      <text x="0" y="15" fill="#333" font-size="14" font-weight="bold">Idempotent:</text>
+      <text x="0" y="35" fill="#333" font-size="12">A + A = A</text>
+      <text x="0" y="50" fill="#333" font-size="12">A · A = A</text>
+    </g>
+
+    <!-- Complement Laws -->
+    <g transform="translate(500, 40)">
+      <text x="0" y="15" fill="#333" font-size="14" font-weight="bold">Complement:</text>
+      <text x="0" y="35" fill="#333" font-size="12">A + Ā = 1</text>
+      <text x="0" y="50" fill="#333" font-size="12">A · Ā = 0</text>
+    </g>
+
+    <!-- Commutative Laws -->
+    <g transform="translate(650, 40)">
+      <text x="0" y="15" fill="#333" font-size="14" font-weight="bold">Commutative:</text>
+      <text x="0" y="35" fill="#333" font-size="12">A + B = B + A</text>
+      <text x="0" y="50" fill="#333" font-size="12">A · B = B · A</text>
+    </g>
+
+    <!-- Associative Laws -->
+    <g transform="translate(50, 80)">
+      <text x="0" y="15" fill="#333" font-size="14" font-weight="bold">Associative:</text>
+      <text x="0" y="35" fill="#333" font-size="12">A + (B + C) = (A + B) + C</text>
+      <text x="0" y="50" fill="#333" font-size="12">A · (B · C) = (A · B) · C</text>
+    </g>
+
+    <!-- Distributive Laws -->
+    <g transform="translate(300, 80)">
+      <text x="0" y="15" fill="#333" font-size="14" font-weight="bold">Distributive:</text>
+      <text x="0" y="35" fill="#333" font-size="12">A · (B + C) = A·B + A·C</text>
+      <text x="0" y="50" fill="#333" font-size="12">A + (B · C) = (A+B) · (A+C)</text>
+    </g>
+
+    <!-- De Morgan's Laws -->
+    <g transform="translate(600, 80)">
+      <text x="0" y="15" fill="#333" font-size="14" font-weight="bold">De Morgan's:</text>
+      <text x="0" y="35" fill="#333" font-size="12">(A + B) = Ā · B̄</text>
+      <text x="0" y="50" fill="#333" font-size="12">(A · B) = Ā + B̄</text>
+    </g>
+
+    <!-- Absorption Laws -->
+    <g transform="translate(800, 80)">
+      <text x="0" y="15" fill="#333" font-size="14" font-weight="bold">Absorption:</text>
+      <text x="0" y="35" fill="#333" font-size="12">A + (A · B) = A</text>
+      <text x="0" y="50" fill="#333" font-size="12">A · (A + B) = A</text>
+    </g>
+  </g>
+
+  <!-- Applications Section -->
+  <g transform="translate(50, 650)">
+    <rect x="0" y="0" width="1100" height="120" rx="10" fill="#F1F8E9" stroke="#689F38" stroke-width="2"/>
+    <text x="550" y="25" text-anchor="middle" fill="#689F38" font-size="18" font-weight="bold">Real-World Applications</text>
+
+    <text x="200" y="50" text-anchor="middle" fill="#333" font-size="12">• Digital Circuits</text>
+    <text x="400" y="50" text-anchor="middle" fill="#333" font-size="12">• Computer Processors</text>
+    <text x="600" y="50" text-anchor="middle" fill="#333" font-size="12">• Memory Units</text>
+    <text x="800" y="50" text-anchor="middle" fill="#333" font-size="12">• Control Systems</text>
+    <text x="1000" y="50" text-anchor="middle" fill="#333" font-size="12">• Calculators</text>
+
+    <text x="200" y="75" text-anchor="middle" fill="#333" font-size="12">• Traffic Lights</text>
+    <text x="400" y="75" text-anchor="middle" fill="#333" font-size="12">• Elevators</text>
+    <text x="600" y="75" text-anchor="middle" fill="#333" font-size="12">• Security Systems</text>
+    <text x="800" y="75" text-anchor="middle" fill="#333" font-size="12">• Washing Machines</text>
+    <text x="1000" y="75" text-anchor="middle" fill="#333" font-size="12">• Mobile Phones</text>
+
+    <text x="550" y="105" text-anchor="middle" fill="#689F38" font-size="12" font-weight="bold">Logic gates are the foundation of all digital electronics and computing systems</text>
+  </g>
+</svg>

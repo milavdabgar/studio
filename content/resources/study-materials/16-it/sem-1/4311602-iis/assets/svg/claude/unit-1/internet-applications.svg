@@ -1,0 +1,178 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3F51B5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5C6BC0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="webGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1976D2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="emailGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8F5E8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#388E3C;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="ftpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFF3E0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8F00;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="3" dy="3" stdDeviation="3" flood-color="#00000030"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#FAFAFA"/>
+
+  <!-- Header -->
+  <rect x="0" y="0" width="1200" height="80" fill="url(#headerGrad)"/>
+  <text x="600" y="35" text-anchor="middle" fill="white" font-size="28" font-weight="bold">Internet Applications</text>
+  <text x="600" y="60" text-anchor="middle" fill="white" font-size="16">Common Uses and Services on the Internet</text>
+
+  <!-- Central Internet Cloud -->
+  <ellipse cx="600" cy="400" rx="200" ry="120" fill="#E8EAF6" stroke="#3F51B5" stroke-width="4" filter="url(#shadow)"/>
+  <text x="600" y="390" text-anchor="middle" fill="#3F51B5" font-size="32" font-weight="bold">INTERNET</text>
+  <text x="600" y="420" text-anchor="middle" fill="#3F51B5" font-size="16">Global Network</text>
+
+  <!-- World Wide Web -->
+  <g transform="translate(150, 120)">
+    <rect x="0" y="0" width="280" height="180" rx="15" fill="url(#webGrad)" stroke="#1976D2" stroke-width="3" filter="url(#shadow)"/>
+    <text x="140" y="30" text-anchor="middle" fill="white" font-size="20" font-weight="bold">World Wide Web (WWW)</text>
+
+    <rect x="20" y="50" width="240" height="110" rx="8" fill="white" stroke="#1976D2" stroke-width="1"/>
+    <text x="140" y="75" text-anchor="middle" fill="#1976D2" font-size="16" font-weight="bold">Features:</text>
+    <text x="140" y="95" text-anchor="middle" fill="#333" font-size="12">• Web browsing</text>
+    <text x="140" y="115" text-anchor="middle" fill="#333" font-size="12">• Hypertext links</text>
+    <text x="140" y="135" text-anchor="middle" fill="#333" font-size="12">• Multimedia content</text>
+    <text x="140" y="155" text-anchor="middle" fill="#333" font-size="12">• Search engines</text>
+  </g>
+
+  <!-- Email -->
+  <g transform="translate(770, 120)">
+    <rect x="0" y="0" width="280" height="180" rx="15" fill="url(#emailGrad)" stroke="#388E3C" stroke-width="3" filter="url(#shadow)"/>
+    <text x="140" y="30" text-anchor="middle" fill="white" font-size="20" font-weight="bold">Electronic Mail (Email)</text>
+
+    <rect x="20" y="50" width="240" height="110" rx="8" fill="white" stroke="#388E3C" stroke-width="1"/>
+    <text x="140" y="75" text-anchor="middle" fill="#388E3C" font-size="16" font-weight="bold">Features:</text>
+    <text x="140" y="95" text-anchor="middle" fill="#333" font-size="12">• Send/receive messages</text>
+    <text x="140" y="115" text-anchor="middle" fill="#333" font-size="12">• File attachments</text>
+    <text x="140" y="135" text-anchor="middle" fill="#333" font-size="12">• Address book</text>
+    <text x="140" y="155" text-anchor="middle" fill="#333" font-size="12">• Instant delivery</text>
+  </g>
+
+  <!-- File Transfer -->
+  <g transform="translate(150, 500)">
+    <rect x="0" y="0" width="280" height="180" rx="15" fill="url(#ftpGrad)" stroke="#FF8F00" stroke-width="3" filter="url(#shadow)"/>
+    <text x="140" y="30" text-anchor="middle" fill="white" font-size="20" font-weight="bold">File Transfer (FTP)</text>
+
+    <rect x="20" y="50" width="240" height="110" rx="8" fill="white" stroke="#FF8F00" stroke-width="1"/>
+    <text x="140" y="75" text-anchor="middle" fill="#FF8F00" font-size="16" font-weight="bold">Features:</text>
+    <text x="140" y="95" text-anchor="middle" fill="#333" font-size="12">• Upload/download files</text>
+    <text x="140" y="115" text-anchor="middle" fill="#333" font-size="12">• Large file support</text>
+    <text x="140" y="135" text-anchor="middle" fill="#333" font-size="12">• Folder management</text>
+    <text x="140" y="155" text-anchor="middle" fill="#333" font-size="12">• Secure transfer</text>
+  </g>
+
+  <!-- Social Media -->
+  <g transform="translate(770, 500)">
+    <rect x="0" y="0" width="280" height="180" rx="15" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="3" filter="url(#shadow)"/>
+    <text x="140" y="30" text-anchor="middle" fill="#7B1FA2" font-size="20" font-weight="bold">Social Media</text>
+
+    <rect x="20" y="50" width="240" height="110" rx="8" fill="white" stroke="#7B1FA2" stroke-width="1"/>
+    <text x="140" y="75" text-anchor="middle" fill="#7B1FA2" font-size="16" font-weight="bold">Platforms:</text>
+    <text x="140" y="95" text-anchor="middle" fill="#333" font-size="12">• Facebook, Twitter</text>
+    <text x="140" y="115" text-anchor="middle" fill="#333" font-size="12">• LinkedIn, Instagram</text>
+    <text x="140" y="135" text-anchor="middle" fill="#333" font-size="12">• WhatsApp, Telegram</text>
+    <text x="140" y="155" text-anchor="middle" fill="#333" font-size="12">• YouTube, TikTok</text>
+  </g>
+
+  <!-- Additional Services -->
+  <g transform="translate(50, 320)">
+    <rect x="0" y="0" width="180" height="160" rx="10" fill="#FFEBEE" stroke="#D32F2F" stroke-width="2" filter="url(#shadow)"/>
+    <text x="90" y="25" text-anchor="middle" fill="#D32F2F" font-size="16" font-weight="bold">Remote Access</text>
+    <text x="90" y="50" text-anchor="middle" fill="#333" font-size="12">• Telnet</text>
+    <text x="90" y="70" text-anchor="middle" fill="#333" font-size="12">• SSH</text>
+    <text x="90" y="90" text-anchor="middle" fill="#333" font-size="12">• VPN</text>
+    <text x="90" y="110" text-anchor="middle" fill="#333" font-size="12">• Remote Desktop</text>
+    <text x="90" y="130" text-anchor="middle" fill="#333" font-size="12">• TeamViewer</text>
+    <text x="90" y="150" text-anchor="middle" fill="#333" font-size="12">• Cloud Computing</text>
+  </g>
+
+  <g transform="translate(970, 320)">
+    <rect x="0" y="0" width="180" height="160" rx="10" fill="#E1F5FE" stroke="#0277BD" stroke-width="2" filter="url(#shadow)"/>
+    <text x="90" y="25" text-anchor="middle" fill="#0277BD" font-size="16" font-weight="bold">Entertainment</text>
+    <text x="90" y="50" text-anchor="middle" fill="#333" font-size="12">• Online Gaming</text>
+    <text x="90" y="70" text-anchor="middle" fill="#333" font-size="12">• Video Streaming</text>
+    <text x="90" y="90" text-anchor="middle" fill="#333" font-size="12">• Music Streaming</text>
+    <text x="90" y="110" text-anchor="middle" fill="#333" font-size="12">• Online Movies</text>
+    <text x="90" y="130" text-anchor="middle" fill="#333" font-size="12">• Podcasts</text>
+    <text x="90" y="150" text-anchor="middle" fill="#333" font-size="12">• E-books</text>
+  </g>
+
+  <!-- Internet Protocol Suite -->
+  <g transform="translate(450, 100)">
+    <rect x="0" y="0" width="300" height="150" rx="10" fill="#F1F8E9" stroke="#689F38" stroke-width="2" filter="url(#shadow)"/>
+    <text x="150" y="25" text-anchor="middle" fill="#689F38" font-size="18" font-weight="bold">Internet Protocols</text>
+
+    <!-- Protocol boxes -->
+    <rect x="20" y="40" width="80" height="30" rx="5" fill="white" stroke="#689F38" stroke-width="1"/>
+    <text x="60" y="60" text-anchor="middle" fill="#333" font-size="11">HTTP/HTTPS</text>
+
+    <rect x="110" y="40" width="80" height="30" rx="5" fill="white" stroke="#689F38" stroke-width="1"/>
+    <text x="150" y="60" text-anchor="middle" fill="#333" font-size="11">SMTP/POP3</text>
+
+    <rect x="200" y="40" width="80" height="30" rx="5" fill="white" stroke="#689F38" stroke-width="1"/>
+    <text x="240" y="60" text-anchor="middle" fill="#333" font-size="11">FTP/SFTP</text>
+
+    <rect x="20" y="80" width="80" height="30" rx="5" fill="white" stroke="#689F38" stroke-width="1"/>
+    <text x="60" y="100" text-anchor="middle" fill="#333" font-size="11">TCP/IP</text>
+
+    <rect x="110" y="80" width="80" height="30" rx="5" fill="white" stroke="#689F38" stroke-width="1"/>
+    <text x="150" y="100" text-anchor="middle" fill="#333" font-size="11">DNS</text>
+
+    <rect x="200" y="80" width="80" height="30" rx="5" fill="white" stroke="#689F38" stroke-width="1"/>
+    <text x="240" y="100" text-anchor="middle" fill="#333" font-size="11">DHCP</text>
+
+    <text x="150" y="130" text-anchor="middle" fill="#689F38" font-size="12">Network Communication Standards</text>
+  </g>
+
+  <!-- E-commerce and Digital Services -->
+  <g transform="translate(450, 550)">
+    <rect x="0" y="0" width="300" height="150" rx="10" fill="#FCE4EC" stroke="#C2185B" stroke-width="2" filter="url(#shadow)"/>
+    <text x="150" y="25" text-anchor="middle" fill="#C2185B" font-size="18" font-weight="bold">E-commerce &amp; Digital Services</text>
+
+    <!-- Service boxes -->
+    <rect x="20" y="40" width="80" height="30" rx="5" fill="white" stroke="#C2185B" stroke-width="1"/>
+    <text x="60" y="60" text-anchor="middle" fill="#333" font-size="11">Online Shopping</text>
+
+    <rect x="110" y="40" width="80" height="30" rx="5" fill="white" stroke="#C2185B" stroke-width="1"/>
+    <text x="150" y="60" text-anchor="middle" fill="#333" font-size="11">Digital Banking</text>
+
+    <rect x="200" y="40" width="80" height="30" rx="5" fill="white" stroke="#C2185B" stroke-width="1"/>
+    <text x="240" y="60" text-anchor="middle" fill="#333" font-size="11">Online Education</text>
+
+    <rect x="20" y="80" width="80" height="30" rx="5" fill="white" stroke="#C2185B" stroke-width="1"/>
+    <text x="60" y="100" text-anchor="middle" fill="#333" font-size="11">Telemedicine</text>
+
+    <rect x="110" y="80" width="80" height="30" rx="5" fill="white" stroke="#C2185B" stroke-width="1"/>
+    <text x="150" y="100" text-anchor="middle" fill="#333" font-size="11">Digital Payment</text>
+
+    <rect x="200" y="80" width="80" height="30" rx="5" fill="white" stroke="#C2185B" stroke-width="1"/>
+    <text x="240" y="100" text-anchor="middle" fill="#333" font-size="11">Cloud Storage</text>
+
+    <text x="150" y="130" text-anchor="middle" fill="#C2185B" font-size="12">Modern Digital Economy</text>
+  </g>
+
+  <!-- Indian Government Services -->
+  <g transform="translate(50, 720)">
+    <rect x="0" y="0" width="1100" height="60" rx="10" fill="#E8F5E8" stroke="#4CAF50" stroke-width="2"/>
+    <text x="550" y="25" text-anchor="middle" fill="#4CAF50" font-size="18" font-weight="bold">Digital India Internet Services</text>
+    <text x="150" y="45" text-anchor="middle" fill="#333" font-size="12">• Aadhaar Portal</text>
+    <text x="300" y="45" text-anchor="middle" fill="#333" font-size="12">• Income Tax e-Filing</text>
+    <text x="450" y="45" text-anchor="middle" fill="#333" font-size="12">• DigiLocker</text>
+    <text x="600" y="45" text-anchor="middle" fill="#333" font-size="12">• BHIM UPI</text>
+    <text x="750" y="45" text-anchor="middle" fill="#333" font-size="12">• MyGov Portal</text>
+    <text x="900" y="45" text-anchor="middle" fill="#333" font-size="12">• COWIN</text>
+    <text x="1050" y="45" text-anchor="middle" fill="#333" font-size="12">• e-Shram</text>
+  </g>
+</svg>

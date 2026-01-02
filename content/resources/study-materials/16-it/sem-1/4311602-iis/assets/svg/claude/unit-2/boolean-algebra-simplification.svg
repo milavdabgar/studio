@@ -1,0 +1,279 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#D32F2F;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F44336;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="kmapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8F5E8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C8E6C9;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="3" dy="3" stdDeviation="3" flood-color="#00000030"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#FAFAFA"/>
+
+  <!-- Header -->
+  <rect x="0" y="0" width="1200" height="80" fill="url(#headerGrad)"/>
+  <text x="600" y="35" text-anchor="middle" fill="white" font-size="28" font-weight="bold">Boolean Algebra Simplification</text>
+  <text x="600" y="60" text-anchor="middle" fill="white" font-size="16">K-Maps and Algebraic Methods</text>
+
+  <!-- Example 1: Algebraic Simplification -->
+  <g transform="translate(50, 120)">
+    <rect x="0" y="0" width="500" height="200" rx="10" fill="#FFF3E0" stroke="#FF9800" stroke-width="2" filter="url(#shadow)"/>
+    <text x="250" y="25" text-anchor="middle" fill="#FF9800" font-size="18" font-weight="bold">Algebraic Simplification Example</text>
+
+    <text x="250" y="50" text-anchor="middle" fill="#333" font-size="14" font-weight="bold">Original Expression:</text>
+    <text x="250" y="70" text-anchor="middle" fill="#333" font-size="14">F = ABC + ABC̄ + ĀBC + ĀBC̄</text>
+
+    <text x="250" y="100" text-anchor="middle" fill="#333" font-size="14" font-weight="bold">Step-by-Step Simplification:</text>
+    <text x="250" y="120" text-anchor="middle" fill="#333" font-size="12">F = BC(A + Ā) + BC̄(A + Ā)</text>
+    <text x="250" y="135" text-anchor="middle" fill="#333" font-size="12">F = BC(1) + BC̄(1)</text>
+    <text x="250" y="150" text-anchor="middle" fill="#333" font-size="12">F = BC + BC̄</text>
+    <text x="250" y="165" text-anchor="middle" fill="#333" font-size="12">F = B(C + C̄)</text>
+    <text x="250" y="180" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">F = B</text>
+  </g>
+
+  <!-- K-Map for 2 Variables -->
+  <g transform="translate(600, 120)">
+    <rect x="0" y="0" width="300" height="200" rx="10" fill="url(#kmapGrad)" stroke="#4CAF50" stroke-width="2" filter="url(#shadow)"/>
+    <text x="150" y="25" text-anchor="middle" fill="#4CAF50" font-size="18" font-weight="bold">2-Variable K-Map</text>
+
+    <!-- K-Map Grid -->
+    <g transform="translate(50, 40)">
+      <!-- Headers -->
+      <text x="30" y="30" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">B</text>
+      <text x="80" y="15" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">A</text>
+      <text x="100" y="30" text-anchor="middle" fill="#333" font-size="12">0</text>
+      <text x="140" y="30" text-anchor="middle" fill="#333" font-size="12">1</text>
+
+      <!-- Row headers -->
+      <text x="60" y="55" text-anchor="middle" fill="#333" font-size="12">0</text>
+      <text x="60" y="85" text-anchor="middle" fill="#333" font-size="12">1</text>
+
+      <!-- K-Map cells -->
+      <rect x="80" y="40" width="35" height="25" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="97" y="57" text-anchor="middle" fill="#333" font-size="12">0</text>
+
+      <rect x="120" y="40" width="35" height="25" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="137" y="57" text-anchor="middle" fill="#333" font-size="12">1</text>
+
+      <rect x="80" y="70" width="35" height="25" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="97" y="87" text-anchor="middle" fill="#333" font-size="12">1</text>
+
+      <rect x="120" y="70" width="35" height="25" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="137" y="87" text-anchor="middle" fill="#333" font-size="12">1</text>
+
+      <!-- Grouping -->
+      <rect x="118" y="38" width="39" height="59" fill="none" stroke="#F44336" stroke-width="3" stroke-dasharray="5,5"/>
+      <text x="137" y="110" text-anchor="middle" fill="#F44336" font-size="12" font-weight="bold">Group: A</text>
+    </g>
+
+    <text x="150" y="170" text-anchor="middle" fill="#333" font-size="14">Example: F(A,B) = AB̄ + AB + ĀB = A + B</text>
+  </g>
+
+  <!-- K-Map for 3 Variables -->
+  <g transform="translate(950, 120)">
+    <rect x="0" y="0" width="200" height="200" rx="10" fill="#E3F2FD" stroke="#2196F3" stroke-width="2" filter="url(#shadow)"/>
+    <text x="100" y="25" text-anchor="middle" fill="#2196F3" font-size="16" font-weight="bold">3-Variable K-Map</text>
+
+    <!-- K-Map Grid -->
+    <g transform="translate(20, 40)">
+      <!-- Headers -->
+      <text x="30" y="15" text-anchor="middle" fill="#333" font-size="10" font-weight="bold">BC</text>
+      <text x="80" y="15" text-anchor="middle" fill="#333" font-size="10" font-weight="bold">A</text>
+      <text x="50" y="30" text-anchor="middle" fill="#333" font-size="10">00</text>
+      <text x="70" y="30" text-anchor="middle" fill="#333" font-size="10">01</text>
+      <text x="90" y="30" text-anchor="middle" fill="#333" font-size="10">11</text>
+      <text x="110" y="30" text-anchor="middle" fill="#333" font-size="10">10</text>
+
+      <!-- Row headers -->
+      <text x="30" y="50" text-anchor="middle" fill="#333" font-size="10">0</text>
+      <text x="30" y="70" text-anchor="middle" fill="#333" font-size="10">1</text>
+
+      <!-- K-Map cells -->
+      <rect x="40" y="40" width="20" height="15" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="50" y="52" text-anchor="middle" fill="#333" font-size="9">0</text>
+
+      <rect x="60" y="40" width="20" height="15" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="70" y="52" text-anchor="middle" fill="#333" font-size="9">1</text>
+
+      <rect x="80" y="40" width="20" height="15" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="90" y="52" text-anchor="middle" fill="#333" font-size="9">1</text>
+
+      <rect x="100" y="40" width="20" height="15" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="110" y="52" text-anchor="middle" fill="#333" font-size="9">0</text>
+
+      <rect x="40" y="60" width="20" height="15" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="50" y="72" text-anchor="middle" fill="#333" font-size="9">1</text>
+
+      <rect x="60" y="60" width="20" height="15" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="70" y="72" text-anchor="middle" fill="#333" font-size="9">1</text>
+
+      <rect x="80" y="60" width="20" height="15" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="90" y="72" text-anchor="middle" fill="#333" font-size="9">1</text>
+
+      <rect x="100" y="60" width="20" height="15" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="110" y="72" text-anchor="middle" fill="#333" font-size="9">1</text>
+    </g>
+
+    <text x="100" y="130" text-anchor="middle" fill="#333" font-size="11">3 Variables:</text>
+    <text x="100" y="145" text-anchor="middle" fill="#333" font-size="11">F(A,B,C)</text>
+    <text x="100" y="160" text-anchor="middle" fill="#333" font-size="11">8 minterms</text>
+    <text x="100" y="175" text-anchor="middle" fill="#333" font-size="11">2×4 grid</text>
+  </g>
+
+  <!-- K-Map for 4 Variables -->
+  <g transform="translate(50, 350)">
+    <rect x="0" y="0" width="350" height="280" rx="10" fill="#F3E5F5" stroke="#9C27B0" stroke-width="2" filter="url(#shadow)"/>
+    <text x="175" y="25" text-anchor="middle" fill="#9C27B0" font-size="18" font-weight="bold">4-Variable K-Map</text>
+
+    <!-- K-Map Grid -->
+    <g transform="translate(50, 40)">
+      <!-- Headers -->
+      <text x="60" y="15" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">CD</text>
+      <text x="140" y="15" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">AB</text>
+
+      <!-- Column headers -->
+      <text x="30" y="40" text-anchor="middle" fill="#333" font-size="11">00</text>
+      <text x="60" y="40" text-anchor="middle" fill="#333" font-size="11">01</text>
+      <text x="90" y="40" text-anchor="middle" fill="#333" font-size="11">11</text>
+      <text x="120" y="40" text-anchor="middle" fill="#333" font-size="11">10</text>
+
+      <!-- Row headers -->
+      <text x="10" y="60" text-anchor="middle" fill="#333" font-size="11">00</text>
+      <text x="10" y="85" text-anchor="middle" fill="#333" font-size="11">01</text>
+      <text x="10" y="110" text-anchor="middle" fill="#333" font-size="11">11</text>
+      <text x="10" y="135" text-anchor="middle" fill="#333" font-size="11">10</text>
+
+      <!-- K-Map cells with values -->
+      <!-- Row 1 (AB=00) -->
+      <rect x="20" y="50" width="20" height="20" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="30" y="65" text-anchor="middle" fill="#333" font-size="10">0</text>
+
+      <rect x="50" y="50" width="20" height="20" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="60" y="65" text-anchor="middle" fill="#333" font-size="10">1</text>
+
+      <rect x="80" y="50" width="20" height="20" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="90" y="65" text-anchor="middle" fill="#333" font-size="10">1</text>
+
+      <rect x="110" y="50" width="20" height="20" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="120" y="65" text-anchor="middle" fill="#333" font-size="10">0</text>
+
+      <!-- Row 2 (AB=01) -->
+      <rect x="20" y="75" width="20" height="20" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="30" y="90" text-anchor="middle" fill="#333" font-size="10">0</text>
+
+      <rect x="50" y="75" width="20" height="20" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="60" y="90" text-anchor="middle" fill="#333" font-size="10">1</text>
+
+      <rect x="80" y="75" width="20" height="20" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="90" y="90" text-anchor="middle" fill="#333" font-size="10">1</text>
+
+      <rect x="110" y="75" width="20" height="20" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="120" y="90" text-anchor="middle" fill="#333" font-size="10">0</text>
+
+      <!-- Row 3 (AB=11) -->
+      <rect x="20" y="100" width="20" height="20" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="30" y="115" text-anchor="middle" fill="#333" font-size="10">0</text>
+
+      <rect x="50" y="100" width="20" height="20" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="60" y="115" text-anchor="middle" fill="#333" font-size="10">1</text>
+
+      <rect x="80" y="100" width="20" height="20" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="90" y="115" text-anchor="middle" fill="#333" font-size="10">1</text>
+
+      <rect x="110" y="100" width="20" height="20" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="120" y="115" text-anchor="middle" fill="#333" font-size="10">0</text>
+
+      <!-- Row 4 (AB=10) -->
+      <rect x="20" y="125" width="20" height="20" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="30" y="140" text-anchor="middle" fill="#333" font-size="10">0</text>
+
+      <rect x="50" y="125" width="20" height="20" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="60" y="140" text-anchor="middle" fill="#333" font-size="10">1</text>
+
+      <rect x="80" y="125" width="20" height="20" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="90" y="140" text-anchor="middle" fill="#333" font-size="10">1</text>
+
+      <rect x="110" y="125" width="20" height="20" fill="white" stroke="#333" stroke-width="1"/>
+      <text x="120" y="140" text-anchor="middle" fill="#333" font-size="10">0</text>
+
+      <!-- Groupings -->
+      <rect x="48" y="48" width="54" height="99" fill="none" stroke="#F44336" stroke-width="2" stroke-dasharray="5,5"/>
+      <text x="75" y="165" text-anchor="middle" fill="#F44336" font-size="11" font-weight="bold">Group 1: C</text>
+    </g>
+
+    <text x="175" y="210" text-anchor="middle" fill="#333" font-size="14">4 Variables: F(A,B,C,D)</text>
+    <text x="175" y="230" text-anchor="middle" fill="#333" font-size="14">16 minterms in 4×4 grid</text>
+    <text x="175" y="250" text-anchor="middle" fill="#333" font-size="14">Simplified: F = C</text>
+  </g>
+
+  <!-- K-Map Rules -->
+  <g transform="translate(450, 350)">
+    <rect x="0" y="0" width="350" height="280" rx="10" fill="#FFEBEE" stroke="#E91E63" stroke-width="2" filter="url(#shadow)"/>
+    <text x="175" y="25" text-anchor="middle" fill="#E91E63" font-size="18" font-weight="bold">K-Map Grouping Rules</text>
+
+    <g transform="translate(20, 40)">
+      <text x="0" y="20" fill="#333" font-size="14" font-weight="bold">1. Group Size Rules:</text>
+      <text x="10" y="40" fill="#333" font-size="12">• Groups must contain 1, 2, 4, 8, or 16 cells</text>
+      <text x="10" y="55" fill="#333" font-size="12">• Groups must be rectangular</text>
+      <text x="10" y="70" fill="#333" font-size="12">• All cells in group must contain 1s</text>
+
+      <text x="0" y="95" fill="#333" font-size="14" font-weight="bold">2. Adjacency Rules:</text>
+      <text x="10" y="115" fill="#333" font-size="12">• Adjacent cells differ by only 1 variable</text>
+      <text x="10" y="130" fill="#333" font-size="12">• Edge cells are adjacent to opposite edge</text>
+      <text x="10" y="145" fill="#333" font-size="12">• Corner cells are adjacent to corner</text>
+
+      <text x="0" y="170" fill="#333" font-size="14" font-weight="bold">3. Optimization Goals:</text>
+      <text x="10" y="190" fill="#333" font-size="12">• Make groups as large as possible</text>
+      <text x="10" y="205" fill="#333" font-size="12">• Use minimum number of groups</text>
+      <text x="10" y="220" fill="#333" font-size="12">• Cover all 1s exactly once</text>
+      <text x="10" y="235" fill="#333" font-size="12">• Overlapping groups are allowed</text>
+    </g>
+  </g>
+
+  <!-- SOP and POS Forms -->
+  <g transform="translate(850, 350)">
+    <rect x="0" y="0" width="300" height="280" rx="10" fill="#E8F5E8" stroke="#4CAF50" stroke-width="2" filter="url(#shadow)"/>
+    <text x="150" y="25" text-anchor="middle" fill="#4CAF50" font-size="18" font-weight="bold">SOP &amp; POS Forms</text>
+
+    <g transform="translate(20, 40)">
+      <text x="0" y="20" fill="#333" font-size="14" font-weight="bold">Sum of Products (SOP):</text>
+      <text x="10" y="40" fill="#333" font-size="12">• Minterms ORed together</text>
+      <text x="10" y="55" fill="#333" font-size="12">• Each term is a product of literals</text>
+      <text x="10" y="70" fill="#333" font-size="12">• Example: AB + ĀC + BC̄</text>
+      <text x="10" y="85" fill="#333" font-size="12">• Canonical form: Σm(1,3,5,7)</text>
+
+      <text x="0" y="110" fill="#333" font-size="14" font-weight="bold">Product of Sums (POS):</text>
+      <text x="10" y="130" fill="#333" font-size="12">• Maxterms ANDed together</text>
+      <text x="10" y="145" fill="#333" font-size="12">• Each term is a sum of literals</text>
+      <text x="10" y="160" fill="#333" font-size="12">• Example: (A+B)(Ā+C)(B+C̄)</text>
+      <text x="10" y="175" fill="#333" font-size="12">• Canonical form: ΠM(0,2,4,6)</text>
+
+      <text x="0" y="200" fill="#333" font-size="14" font-weight="bold">Conversion:</text>
+      <text x="10" y="220" fill="#333" font-size="12">• SOP ↔ POS using De Morgan's</text>
+      <text x="10" y="235" fill="#333" font-size="12">• Minterms ↔ Maxterms</text>
+      <text x="10" y="250" fill="#333" font-size="12">• Choose simpler form</text>
+    </g>
+  </g>
+
+  <!-- Don't Care Conditions -->
+  <g transform="translate(50, 660)">
+    <rect x="0" y="0" width="1100" height="120" rx="10" fill="#FFF8E1" stroke="#FFC107" stroke-width="2"/>
+    <text x="550" y="25" text-anchor="middle" fill="#FFC107" font-size="18" font-weight="bold">Don't Care Conditions (X or d)</text>
+
+    <text x="200" y="50" text-anchor="middle" fill="#333" font-size="12">• Input combinations that never occur</text>
+    <text x="550" y="50" text-anchor="middle" fill="#333" font-size="12">• Can be treated as 0 or 1 for optimization</text>
+    <text x="900" y="50" text-anchor="middle" fill="#333" font-size="12">• Marked as X or d in K-maps</text>
+
+    <text x="200" y="75" text-anchor="middle" fill="#333" font-size="12">• Use to make larger groups</text>
+    <text x="550" y="75" text-anchor="middle" fill="#333" font-size="12">• Simplify Boolean expressions</text>
+    <text x="900" y="75" text-anchor="middle" fill="#333" font-size="12">• Reduce circuit complexity</text>
+
+    <text x="550" y="105" text-anchor="middle" fill="#FFC107" font-size="14" font-weight="bold">Example: BCD to 7-segment decoder has don't care for 1010-1111 (A-F in hex)</text>
+  </g>
+</svg>

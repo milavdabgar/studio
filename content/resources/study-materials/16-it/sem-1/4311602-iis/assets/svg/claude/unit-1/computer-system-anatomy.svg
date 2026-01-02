@@ -1,0 +1,175 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1565C0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#42A5F5;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cpuGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFE082;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8F00;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="memoryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A5D6A7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="3" dy="3" stdDeviation="3" flood-color="#00000030"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#F8F9FA"/>
+
+  <!-- Header -->
+  <rect x="0" y="0" width="1200" height="80" fill="url(#headerGrad)"/>
+  <text x="600" y="35" text-anchor="middle" fill="white" font-size="28" font-weight="bold">Computer System Anatomy</text>
+  <text x="600" y="60" text-anchor="middle" fill="white" font-size="16">Internal Components and Architecture</text>
+
+  <!-- Motherboard (Main Container) -->
+  <rect x="200" y="120" width="800" height="550" rx="20" fill="#ECEFF1" stroke="#37474F" stroke-width="3" filter="url(#shadow)"/>
+  <text x="600" y="150" text-anchor="middle" fill="#37474F" font-size="24" font-weight="bold">Motherboard</text>
+
+  <!-- CPU -->
+  <rect x="450" y="180" width="300" height="150" rx="10" fill="url(#cpuGrad)" stroke="#FF8F00" stroke-width="2" filter="url(#shadow)"/>
+  <text x="600" y="210" text-anchor="middle" fill="white" font-size="20" font-weight="bold">Central Processing Unit (CPU)</text>
+  <text x="600" y="235" text-anchor="middle" fill="white" font-size="14">• Arithmetic Logic Unit (ALU)</text>
+  <text x="600" y="255" text-anchor="middle" fill="white" font-size="14">• Control Unit (CU)</text>
+  <text x="600" y="275" text-anchor="middle" fill="white" font-size="14">• Registers</text>
+  <text x="600" y="295" text-anchor="middle" fill="white" font-size="14">• Cache Memory</text>
+  <text x="600" y="315" text-anchor="middle" fill="white" font-size="12">Brain of the Computer</text>
+
+  <!-- Primary Memory -->
+  <rect x="250" y="180" width="150" height="200" rx="10" fill="url(#memoryGrad)" stroke="#2E7D32" stroke-width="2" filter="url(#shadow)"/>
+  <text x="325" y="210" text-anchor="middle" fill="white" font-size="18" font-weight="bold">Primary Memory</text>
+
+  <!-- RAM -->
+  <rect x="260" y="230" width="130" height="60" rx="5" fill="white" stroke="#2E7D32" stroke-width="1"/>
+  <text x="325" y="250" text-anchor="middle" fill="#2E7D32" font-size="14" font-weight="bold">RAM</text>
+  <text x="325" y="270" text-anchor="middle" fill="#333" font-size="12">Random Access Memory</text>
+  <text x="325" y="285" text-anchor="middle" fill="#333" font-size="10">Volatile, Fast Access</text>
+
+  <!-- ROM -->
+  <rect x="260" y="300" width="130" height="60" rx="5" fill="white" stroke="#2E7D32" stroke-width="1"/>
+  <text x="325" y="320" text-anchor="middle" fill="#2E7D32" font-size="14" font-weight="bold">ROM</text>
+  <text x="325" y="340" text-anchor="middle" fill="#333" font-size="12">Read Only Memory</text>
+  <text x="325" y="355" text-anchor="middle" fill="#333" font-size="10">Non-volatile, Boot Data</text>
+
+  <!-- Secondary Storage -->
+  <rect x="800" y="180" width="150" height="200" rx="10" fill="#FFCDD2" stroke="#C62828" stroke-width="2" filter="url(#shadow)"/>
+  <text x="875" y="210" text-anchor="middle" fill="#C62828" font-size="18" font-weight="bold">Secondary Storage</text>
+
+  <!-- HDD -->
+  <rect x="810" y="230" width="130" height="60" rx="5" fill="white" stroke="#C62828" stroke-width="1"/>
+  <text x="875" y="250" text-anchor="middle" fill="#C62828" font-size="14" font-weight="bold">HDD</text>
+  <text x="875" y="270" text-anchor="middle" fill="#333" font-size="12">Hard Disk Drive</text>
+  <text x="875" y="285" text-anchor="middle" fill="#333" font-size="10">Magnetic Storage</text>
+
+  <!-- SSD -->
+  <rect x="810" y="300" width="130" height="60" rx="5" fill="white" stroke="#C62828" stroke-width="1"/>
+  <text x="875" y="320" text-anchor="middle" fill="#C62828" font-size="14" font-weight="bold">SSD</text>
+  <text x="875" y="340" text-anchor="middle" fill="#333" font-size="12">Solid State Drive</text>
+  <text x="875" y="355" text-anchor="middle" fill="#333" font-size="10">Flash Memory</text>
+
+  <!-- Expansion Slots -->
+  <g transform="translate(250, 420)">
+    <rect x="0" y="0" width="700" height="80" rx="5" fill="#E8EAF6" stroke="#3F51B5" stroke-width="2"/>
+    <text x="350" y="25" text-anchor="middle" fill="#3F51B5" font-size="16" font-weight="bold">Expansion Slots &amp; Connectors</text>
+
+    <!-- PCIe Slots -->
+    <rect x="20" y="35" width="120" height="30" rx="3" fill="white" stroke="#3F51B5" stroke-width="1"/>
+    <text x="80" y="55" text-anchor="middle" fill="#3F51B5" font-size="12">PCIe Slots</text>
+
+    <!-- USB Ports -->
+    <rect x="160" y="35" width="120" height="30" rx="3" fill="white" stroke="#3F51B5" stroke-width="1"/>
+    <text x="220" y="55" text-anchor="middle" fill="#3F51B5" font-size="12">USB Ports</text>
+
+    <!-- SATA -->
+    <rect x="300" y="35" width="120" height="30" rx="3" fill="white" stroke="#3F51B5" stroke-width="1"/>
+    <text x="360" y="55" text-anchor="middle" fill="#3F51B5" font-size="12">SATA</text>
+
+    <!-- Power -->
+    <rect x="440" y="35" width="120" height="30" rx="3" fill="white" stroke="#3F51B5" stroke-width="1"/>
+    <text x="500" y="55" text-anchor="middle" fill="#3F51B5" font-size="12">Power Supply</text>
+
+    <!-- Audio/Video -->
+    <rect x="580" y="35" width="100" height="30" rx="3" fill="white" stroke="#3F51B5" stroke-width="1"/>
+    <text x="630" y="55" text-anchor="middle" fill="#3F51B5" font-size="12">Audio/Video</text>
+  </g>
+
+  <!-- Input/Output Devices -->
+  <g transform="translate(50, 450)">
+    <rect x="0" y="0" width="120" height="180" rx="10" fill="#FFF3E0" stroke="#E65100" stroke-width="2" filter="url(#shadow)"/>
+    <text x="60" y="25" text-anchor="middle" fill="#E65100" font-size="16" font-weight="bold">Input Devices</text>
+    <text x="60" y="50" text-anchor="middle" fill="#333" font-size="12">• Keyboard</text>
+    <text x="60" y="70" text-anchor="middle" fill="#333" font-size="12">• Mouse</text>
+    <text x="60" y="90" text-anchor="middle" fill="#333" font-size="12">• Microphone</text>
+    <text x="60" y="110" text-anchor="middle" fill="#333" font-size="12">• Scanner</text>
+    <text x="60" y="130" text-anchor="middle" fill="#333" font-size="12">• Camera</text>
+    <text x="60" y="150" text-anchor="middle" fill="#333" font-size="12">• Touch Screen</text>
+    <text x="60" y="170" text-anchor="middle" fill="#333" font-size="12">• Joystick</text>
+  </g>
+
+  <g transform="translate(1030, 450)">
+    <rect x="0" y="0" width="120" height="180" rx="10" fill="#E8F5E8" stroke="#388E3C" stroke-width="2" filter="url(#shadow)"/>
+    <text x="60" y="25" text-anchor="middle" fill="#388E3C" font-size="16" font-weight="bold">Output Devices</text>
+    <text x="60" y="50" text-anchor="middle" fill="#333" font-size="12">• Monitor</text>
+    <text x="60" y="70" text-anchor="middle" fill="#333" font-size="12">• Printer</text>
+    <text x="60" y="90" text-anchor="middle" fill="#333" font-size="12">• Speakers</text>
+    <text x="60" y="110" text-anchor="middle" fill="#333" font-size="12">• Headphones</text>
+    <text x="60" y="130" text-anchor="middle" fill="#333" font-size="12">• Projector</text>
+    <text x="60" y="150" text-anchor="middle" fill="#333" font-size="12">• Plotter</text>
+    <text x="60" y="170" text-anchor="middle" fill="#333" font-size="12">• 3D Printer</text>
+  </g>
+
+  <!-- Buses -->
+  <g transform="translate(250, 530)">
+    <rect x="0" y="0" width="700" height="60" rx="5" fill="#FCE4EC" stroke="#AD1457" stroke-width="2"/>
+    <text x="350" y="25" text-anchor="middle" fill="#AD1457" font-size="16" font-weight="bold">System Buses</text>
+
+    <text x="120" y="45" text-anchor="middle" fill="#333" font-size="12">Data Bus</text>
+    <text x="350" y="45" text-anchor="middle" fill="#333" font-size="12">Address Bus</text>
+    <text x="580" y="45" text-anchor="middle" fill="#333" font-size="12">Control Bus</text>
+  </g>
+
+  <!-- Memory Hierarchy -->
+  <g transform="translate(50, 120)">
+    <rect x="0" y="0" width="120" height="300" rx="10" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="2" filter="url(#shadow)"/>
+    <text x="60" y="25" text-anchor="middle" fill="#7B1FA2" font-size="14" font-weight="bold">Memory Hierarchy</text>
+
+    <!-- Fastest to Slowest -->
+    <rect x="10" y="40" width="100" height="30" rx="3" fill="#FFCDD2" stroke="#C62828" stroke-width="1"/>
+    <text x="60" y="60" text-anchor="middle" fill="#333" font-size="11">CPU Registers</text>
+
+    <rect x="10" y="80" width="100" height="30" rx="3" fill="#FFECB3" stroke="#FF8F00" stroke-width="1"/>
+    <text x="60" y="100" text-anchor="middle" fill="#333" font-size="11">Cache Memory</text>
+
+    <rect x="10" y="120" width="100" height="30" rx="3" fill="#C8E6C9" stroke="#388E3C" stroke-width="1"/>
+    <text x="60" y="140" text-anchor="middle" fill="#333" font-size="11">Main Memory</text>
+
+    <rect x="10" y="160" width="100" height="30" rx="3" fill="#BBDEFB" stroke="#1976D2" stroke-width="1"/>
+    <text x="60" y="180" text-anchor="middle" fill="#333" font-size="11">Secondary Storage</text>
+
+    <rect x="10" y="200" width="100" height="30" rx="3" fill="#D1C4E9" stroke="#512DA8" stroke-width="1"/>
+    <text x="60" y="220" text-anchor="middle" fill="#333" font-size="11">Optical Storage</text>
+
+    <rect x="10" y="240" width="100" height="30" rx="3" fill="#FFCDD2" stroke="#D32F2F" stroke-width="1"/>
+    <text x="60" y="260" text-anchor="middle" fill="#333" font-size="11">Magnetic Tape</text>
+
+    <text x="60" y="285" text-anchor="middle" fill="#7B1FA2" font-size="10">Fastest ↑</text>
+    <text x="60" y="300" text-anchor="middle" fill="#7B1FA2" font-size="10">Slowest ↓</text>
+  </g>
+
+  <!-- Performance Factors -->
+  <g transform="translate(50, 690)">
+    <rect x="0" y="0" width="1100" height="80" rx="10" fill="white" stroke="#607D8B" stroke-width="2"/>
+    <text x="550" y="25" text-anchor="middle" fill="#607D8B" font-size="18" font-weight="bold">Computer Performance Factors</text>
+    <text x="200" y="50" text-anchor="middle" fill="#333" font-size="12">• Clock Speed (GHz)</text>
+    <text x="400" y="50" text-anchor="middle" fill="#333" font-size="12">• Number of Cores</text>
+    <text x="600" y="50" text-anchor="middle" fill="#333" font-size="12">• Cache Size</text>
+    <text x="800" y="50" text-anchor="middle" fill="#333" font-size="12">• Memory Bandwidth</text>
+    <text x="1000" y="50" text-anchor="middle" fill="#333" font-size="12">• Storage Speed</text>
+    <text x="300" y="70" text-anchor="middle" fill="#333" font-size="12">• Architecture (32/64-bit)</text>
+    <text x="550" y="70" text-anchor="middle" fill="#333" font-size="12">• Instruction Set</text>
+    <text x="800" y="70" text-anchor="middle" fill="#333" font-size="12">• Bus Width</text>
+  </g>
+</svg>
