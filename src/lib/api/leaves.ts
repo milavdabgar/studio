@@ -71,6 +71,20 @@ const mockLeaveBalances: LeaveBalance[] = [
     casual: { total: 8, used: 1, remaining: 7 },
     vacation: { total: 20, used: 0, remaining: 20 },
   },
+  {
+    userId: 'FAC001',
+    year: 2026,
+    sick: { total: 12, used: 0, remaining: 12 },
+    casual: { total: 8, used: 0, remaining: 8 },
+    vacation: { total: 20, used: 0, remaining: 20 },
+  },
+  {
+    userId: 'FAC002',
+    year: 2026,
+    sick: { total: 12, used: 0, remaining: 12 },
+    casual: { total: 8, used: 0, remaining: 8 },
+    vacation: { total: 20, used: 0, remaining: 20 },
+  },
 ];
 
 export async function getLeaveRequests(userId?: string): Promise<LeaveRequest[]> {

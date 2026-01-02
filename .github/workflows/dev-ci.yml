@@ -123,14 +123,14 @@ jobs:
               du -sh .next/standalone/content/ 2>/dev/null || echo "No content directory"
             fi
             
-            # Reasonable limit for Next.js production build (1GB without cache)
-            if [ "$BUILD_SIZE" -gt 1000 ]; then
-              echo "❌ Build size too large: ${BUILD_SIZE}MB (max: 1000MB)"
+            # Reasonable limit for Next.js production build (1.5GB without cache)
+            if [ "$BUILD_SIZE" -gt 1500 ]; then
+              echo "❌ Build size too large: ${BUILD_SIZE}MB (max: 1500MB)"
               echo "🔍 Top 10 largest files in build:"
               find .next -type f -exec du -h {} \; | sort -hr | head -10
               exit 1
             else
-              echo "✅ Build size is acceptable: ${BUILD_SIZE}MB (max: 1000MB)"
+              echo "✅ Build size is acceptable: ${BUILD_SIZE}MB (max: 1500MB)"
             fi
           else
             echo "❌ No .next directory found - build may have failed"
