@@ -15,7 +15,7 @@ interface FeedbackReportProps {
 const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
   const { toast } = useToast();
 
-  const downloadReport = async (type: 'markdown' | 'excel' | 'pdf' | 'wkhtml' | 'latex' | 'puppeteer', reportId: string) => {
+  const downloadReport = async (type: 'markdown' | 'excel' | 'pdf' | 'latex' | 'puppeteer', reportId: string) => {
     try {
       let effectiveType = type;
       let fileExtension: string = type;
@@ -23,9 +23,6 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
       if (type === 'pdf' || type === 'puppeteer' || type === 'latex') { // Default PDF to puppeteer for direct generation
         effectiveType = type === 'pdf' ? 'puppeteer' : type;
         fileExtension = 'pdf';
-      } else if (type === 'wkhtml') {
-        // The API returns a Markdown file with instructions for these types
-        fileExtension = 'md';
       } else if (type === 'excel') {
         effectiveType = 'excel';
         fileExtension = 'excel';
@@ -150,9 +147,7 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
           <Button onClick={() => downloadReport('puppeteer', analysisResult.id)} variant="outline">
             <Download className="mr-2 h-4 w-4" /> Download PDF (Puppeteer)
           </Button>
-          <Button onClick={() => downloadReport('wkhtml', analysisResult.id)} variant="outline" title="Downloads Markdown version for wkhtmltopdf conversion">
-            <Download className="mr-2 h-4 w-4" /> For PDF (wkhtmltopdf)
-          </Button>
+
           <Button onClick={() => downloadReport('latex', analysisResult.id)} variant="outline" title="Downloads Markdown version for LaTeX conversion">
             <Download className="mr-2 h-4 w-4" /> For PDF (LaTeX)
           </Button>
