@@ -15,26 +15,26 @@ const execAsync = promisify(exec);
 
 // Import Puppeteer for PDF generation
 interface PuppeteerBrowser {
-  newPage: () => Promise<{
-    setViewport: (options: { width: number; height: number; deviceScaleFactor: number }) => Promise<void>;
-    evaluateOnNewDocument: (fn: () => void) => Promise<void>;
-    setContent: (html: string, options?: { waitUntil?: string; timeout?: number }) => Promise<void>;
-    evaluateHandle: (script: string) => Promise<unknown>;
-    evaluate: (fn: () => Promise<void>) => Promise<void>;
-    pdf: (options: Record<string, unknown>) => Promise<Buffer>;
-  }>;
-  close: () => Promise<void>;
+    newPage: () => Promise<{
+        setViewport: (options: { width: number; height: number; deviceScaleFactor: number }) => Promise<void>;
+        evaluateOnNewDocument: (fn: () => void) => Promise<void>;
+        setContent: (html: string, options?: { waitUntil?: string; timeout?: number }) => Promise<void>;
+        evaluateHandle: (script: string) => Promise<unknown>;
+        evaluate: (fn: () => Promise<void>) => Promise<void>;
+        pdf: (options: Record<string, unknown>) => Promise<Buffer>;
+    }>;
+    close: () => Promise<void>;
 }
 
 interface PuppeteerInstance {
-  launch: (options?: Record<string, unknown>) => Promise<PuppeteerBrowser>;
+    launch: (options?: Record<string, unknown>) => Promise<PuppeteerBrowser>;
 }
 
 let puppeteer: PuppeteerInstance | null = null;
 interface ChromiumInstance {
-  executablePath: (path: string) => Promise<string>;
-  args: string[];
-  defaultViewport: Record<string, unknown>;
+    executablePath: (path: string) => Promise<string>;
+    args: string[];
+    defaultViewport: Record<string, unknown>;
 }
 
 let chromium: ChromiumInstance | null = null;
@@ -52,11 +52,11 @@ try {
 
 // Import KaTeX for math rendering
 interface KatexInstance {
-  renderToString: (math: string, options?: {
-    displayMode?: boolean;
-    throwOnError?: boolean;
-    strict?: boolean;
-  }) => string;
+    renderToString: (math: string, options?: {
+        displayMode?: boolean;
+        throwOnError?: boolean;
+        strict?: boolean;
+    }) => string;
 }
 
 let katex: KatexInstance | null = null;
@@ -97,24 +97,24 @@ export class ContentConverterV2 {
     private async processCodeBlocks(content: string): Promise<string> {
         // Enhanced code block processing with Shiki syntax highlighting
         const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
-        
+
         const processCodeBlock = async (match: string, language: string = '', code: string): Promise<string> => {
             try {
                 // Skip Mermaid diagrams - they will be processed separately
                 if (language && language.toLowerCase() === 'mermaid') {
                     return match; // Return original Mermaid block unchanged
                 }
-                
+
                 // Handle special cases that Shiki doesn't support
                 const unsupportedLanguages = ['goat', 'ascii', 'diagram', 'text', 'plain', 'assembly', 'asm', 'x86', 'arm', 'nasm', 'masm'];
-                
+
                 if (!language || unsupportedLanguages.includes(language.toLowerCase())) {
                     // For ASCII diagrams and plain text, render without syntax highlighting
                     const escapedCode = code
                         .replace(/&/g, '&amp;')
                         .replace(/</g, '&lt;')
                         .replace(/>/g, '&gt;');
-                    
+
                     const cssClass = language === 'goat' ? 'goat-diagram' : 'plain-text';
                     return `<pre class="${cssClass}"><code>${escapedCode}</code></pre>`;
                 }
@@ -124,7 +124,7 @@ export class ContentConverterV2 {
                 if (language === 'yml') {
                     actualLanguage = 'yaml';
                 }
-                
+
                 // Generate syntax highlighted HTML with dual theme support
                 const html = await codeToHtml(code, {
                     lang: actualLanguage as BundledLanguage,
@@ -134,7 +134,7 @@ export class ContentConverterV2 {
                     },
                     defaultColor: false
                 });
-                
+
                 return html;
             } catch (error) {
                 if (process.env.NODE_ENV !== 'test') {
@@ -152,21 +152,21 @@ export class ContentConverterV2 {
         // Process all code blocks
         const matches = Array.from(content.matchAll(codeBlockRegex));
         let processedContent = content;
-        
+
         // Process in reverse order to maintain string positions
         for (let i = matches.length - 1; i >= 0; i--) {
             const match = matches[i];
             const [fullMatch, language, code] = match;
             const startIndex = match.index!;
             const endIndex = startIndex + fullMatch.length;
-            
+
             const highlightedCode = await processCodeBlock(fullMatch, language, code);
-            
-            processedContent = processedContent.slice(0, startIndex) + 
-                             highlightedCode + 
-                             processedContent.slice(endIndex);
+
+            processedContent = processedContent.slice(0, startIndex) +
+                highlightedCode +
+                processedContent.slice(endIndex);
         }
-        
+
         return processedContent;
     }
 
@@ -178,23 +178,23 @@ export class ContentConverterV2 {
     async convertSlidev(slidevContent: string, format: string, options: ConversionOptions = {}): Promise<Buffer | string> {
         // Parse Slidev content manually (simplified version)
         const presentation = this.parseSlidevContentBasic(slidevContent);
-        
+
         switch (format) {
             case 'md':
                 return slidevContent;
-            
+
             case 'html':
                 return await this.convertSlidevToHtml(presentation, options);
-            
+
             case 'pdf':
                 return await this.convertSlidevToPdf(presentation, options);
-            
+
             case 'pptx':
                 return await this.convertSlidevToPptx(presentation, options);
-            
+
             case 'txt':
                 return this.convertSlidevToPlainText(presentation, options);
-            
+
             default:
                 // For other formats, convert to plain markdown first
                 const markdownContent = this.convertSlidevToMarkdown(presentation);
@@ -208,16 +208,16 @@ export class ContentConverterV2 {
      */
     private parseSlidevContentBasic(content: string) {
         const { data: frontmatter, content: body } = matter(content);
-        
+
         // Split slides by --- separator
         const slides = body.split('\n---\n').map((slideContent, index) => {
             // Extract layout from slide content if present
             const layoutMatch = slideContent.match(/^layout:\s*(.+)$/m);
             const layout = layoutMatch ? layoutMatch[1] : 'default';
-            
+
             // Remove layout line from content
             const cleanContent = slideContent.replace(/^layout:\s*.+$/m, '').trim();
-            
+
             return {
                 content: cleanContent,
                 layout,
@@ -287,7 +287,7 @@ export class ContentConverterV2 {
      */
     private async convertSlidevToPdf(presentation: any, options: ConversionOptions): Promise<Buffer> {
         const html = await this.convertSlidevToHtml(presentation, options);
-        
+
         // Use Puppeteer to generate PDF with slide-friendly settings
         if (puppeteer) {
             const browser = await puppeteer.launch({
@@ -337,7 +337,7 @@ export class ContentConverterV2 {
                 .replace(/`(.*?)`/g, '$1') // Remove code
                 .replace(/\n+/g, '\n') // Normalize newlines
                 .trim();
-            
+
             return `SLIDE ${index + 1}:\n${content}\n${'='.repeat(50)}`;
         }).join('\n\n');
 
@@ -348,63 +348,63 @@ export class ContentConverterV2 {
      * Convert Slidev presentation to plain markdown
      */
     private convertSlidevToMarkdown(presentation: any): string {
-        const frontmatterString = Object.keys(presentation.frontmatter).length > 0 
+        const frontmatterString = Object.keys(presentation.frontmatter).length > 0
             ? `---\n${Object.entries(presentation.frontmatter).map(([key, value]) => `${key}: ${value}`).join('\n')}\n---\n\n`
             : '';
-        
+
         const slidesMarkdown = presentation.slides.map((slide: any) => slide.content).join('\n\n---\n\n');
-        
+
         return frontmatterString + slidesMarkdown;
     }
 
     async convert(markdownContent: string, format: string, options: ConversionOptions = {}): Promise<Buffer | string> {
         const { data: frontmatter, content } = matter(markdownContent);
-        
+
         switch (format) {
             case 'md':
                 return markdownContent;
-            
+
             case 'html':
                 return await this.convertToHtml(content, frontmatter, options);
-            
+
             case 'pdf':
                 // Use Puppeteer by default, fallback to Chrome if not available
                 return await this.convertToPdfPuppeteer(content, frontmatter, options);
-            
+
             case 'pdf-chrome':
                 // Explicitly use Chrome headless
                 return await this.convertToPdfChrome(content, frontmatter, options);
-            
+
             case 'pdf-puppeteer':
                 // Explicitly use Puppeteer
                 return await this.convertToPdfPuppeteer(content, frontmatter, options);
-            
+
             case 'pdf-pandoc':
                 // Use pandoc with XeLaTeX for PDF generation
                 return await this.convertToPdfPandoc(content, frontmatter, options);
-            
+
             case 'txt':
                 return this.convertToPlainText(content, frontmatter, options);
-            
+
             case 'rtf':
                 return this.convertToRtf(content, frontmatter, options);
-            
+
             case 'docx':
                 return await this.convertToDocx(content, frontmatter, options);
-            
+
             case 'odt':
                 return await this.convertToOdt(content, frontmatter, options);
-            
+
             case 'epub':
                 return await this.convertToEpub(content, frontmatter, options);
-            
+
             case 'pptx':
                 return await this.convertToPptx(content, frontmatter, options);
-            
+
             case 'latex':
             case 'tex':
                 return await this.convertToLatex(content, frontmatter, options);
-            
+
             default:
                 throw new Error(`Unsupported format: ${format}`);
         }
@@ -413,38 +413,38 @@ export class ContentConverterV2 {
     private async convertToHtml(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): Promise<string> {
         // Process code blocks with syntax highlighting first
         let processedContent = await this.processCodeBlocks(content);
-        
+
         // Process math expressions (before markdown)
         processedContent = this.processMathExpressions(processedContent);
-        
+
         // Convert markdown to HTML (excluding code blocks that are already processed)
         let htmlContent = await marked(processedContent);
-        
+
         // Process Mermaid diagrams
         htmlContent = this.processMermaidDiagrams(htmlContent);
-        
+
         // Process SVG images for PDF compatibility
         htmlContent = await this.processSvgImages(htmlContent, options);
-        
+
         // Generate the complete HTML
         const title = String(options.title || frontmatter.title || 'Document');
         const author = String(options.author || frontmatter.author || 'Unknown');
-        
+
         return this.generateHtmlTemplate(htmlContent, title, author, options);
     }
 
     private async convertToPdfChrome(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): Promise<Buffer> {
         // First convert to HTML
         const htmlContent = await this.convertToHtml(content, frontmatter, options);
-        
+
         // Save HTML to temporary file
         const tempHtmlPath = path.join(this.tempDir, `temp-${Date.now()}.html`);
         fs.writeFileSync(tempHtmlPath, htmlContent);
-        
+
         try {
             // Use Chrome headless to convert to PDF
             const outputPath = path.join(this.tempDir, `output-${Date.now()}.pdf`);
-            
+
             const chromeArgs = [
                 '--headless',
                 '--disable-gpu',
@@ -463,30 +463,30 @@ export class ContentConverterV2 {
                 '--print-to-pdf-no-header',
                 '--virtual-time-budget=10000'
             ];
-            
+
             // Use the system chromium binary if available, otherwise try Chrome paths
             let chromePath = '/usr/bin/chromium-browser'; // Alpine Linux path
             if (!require('fs').existsSync(chromePath)) {
                 chromePath = '/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome'; // macOS path
             }
-            
+
             const command = `${chromePath} ${chromeArgs.join(' ')} "${tempHtmlPath}"`;
-            
+
             await execAsync(command);
-            
+
             // Wait a bit for file to be written
             await new Promise(resolve => setTimeout(resolve, 2000));
-            
+
             if (!fs.existsSync(outputPath)) {
                 throw new Error('PDF generation failed - output file not created');
             }
-            
+
             const pdfBuffer = fs.readFileSync(outputPath);
-            
+
             // Clean up temporary files
             fs.unlinkSync(tempHtmlPath);
             fs.unlinkSync(outputPath);
-            
+
             return pdfBuffer;
         } catch (error) {
             // Clean up temp HTML file
@@ -510,11 +510,11 @@ export class ContentConverterV2 {
 
         // First convert to HTML
         const htmlContent = await this.convertToHtml(content, frontmatter, options);
-        
+
         let browser;
         try {
             const isProduction = process.env.NODE_ENV === 'production';
-            
+
             // Configure browser launch options
             const launchOptions: Record<string, unknown> = {
                 headless: true,
@@ -577,14 +577,14 @@ export class ContentConverterV2 {
             });
 
             // Set content and wait for resources
-            await page.setContent(htmlContent, { 
+            await page.setContent(htmlContent, {
                 waitUntil: options.pdfOptions?.waitForNetwork ? 'networkidle0' : 'load',
                 timeout: options.pdfOptions?.timeout || 30000
             });
 
             // Wait for fonts to load with extended timeout
             await page.evaluateHandle('document.fonts.ready');
-            
+
             // Additional wait for Google Fonts and custom fonts
             await page.evaluate(() => {
                 return new Promise<void>((resolve) => {
@@ -612,15 +612,15 @@ export class ContentConverterV2 {
                         // Check if Mermaid is available
                         if (typeof (window as unknown as { mermaid?: unknown }).mermaid !== 'undefined') {
                             (window as unknown as {
-                              mermaid: {
-                                initialize: (config: Record<string, unknown>) => void;
-                                render: (id: string, code: string, callback: (svg: string) => void) => void;
-                              };
+                                mermaid: {
+                                    initialize: (config: Record<string, unknown>) => void;
+                                    render: (id: string, code: string, callback: (svg: string) => void) => void;
+                                };
                             }).mermaid.initialize({
                                 startOnLoad: false,
                                 theme: 'default',
-                                flowchart: { 
-                                    useMaxWidth: true, 
+                                flowchart: {
+                                    useMaxWidth: true,
                                     htmlLabels: true
                                 },
                                 securityLevel: 'loose'
@@ -635,9 +635,9 @@ export class ContentConverterV2 {
                                 if (codeEl && renderEl && codeEl.textContent) {
                                     try {
                                         (window as unknown as {
-                                          mermaid: {
-                                            render: (id: string, code: string, callback: (svg: string) => void) => void;
-                                          };
+                                            mermaid: {
+                                                render: (id: string, code: string, callback: (svg: string) => void) => void;
+                                            };
                                         }).mermaid.render(`diagram-${index}`, codeEl.textContent, (svgCode: string) => {
                                             renderEl.innerHTML = svgCode;
                                             rendered++;
@@ -734,22 +734,22 @@ export class ContentConverterV2 {
         const title = options.title || frontmatter.title || 'Document';
         const author = options.author || frontmatter.author || '';
         const date = frontmatter.date ? new Date(frontmatter.date as string).toLocaleDateString() : '';
-        
+
         let header = title;
         if (author) header += `\nBy: ${author}`;
         if (date) header += `\nDate: ${date}`;
         header += '\n' + '='.repeat(String(title).length) + '\n\n';
-        
+
         return header + text;
     }
 
     private convertToRtf(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): string {
         // Convert markdown to RTF (Rich Text Format)
         const rtf = this.markdownToRtf(content);
-        
+
         const title = options.title || frontmatter.title || 'Document';
         const author = options.author || frontmatter.author || '';
-        
+
         return `{\\rtf1\\ansi\\deff0 {\\fonttbl {\\f0 Times New Roman;}}
 {\\info{\\title ${title}}{\\author ${author}}}
 \\f0\\fs24
@@ -780,19 +780,19 @@ ${rtf}
         // Use pandoc to convert markdown to docx
         const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
         const tempDocxPath = path.join(this.tempDir, `temp-${Date.now()}.docx`);
-        
+
         try {
             // Convert Mermaid diagrams to images first
             let processedContent = await this.convertMermaidToImages(content);
-            
+
             // Process SVG images for Pandoc compatibility
             processedContent = await this.processSvgForPandoc(processedContent, options);
-            
+
             // Create frontmatter content
             const title = options.title || frontmatter.title || 'Document';
             const author = options.author || frontmatter.author || '';
             const date = frontmatter.date ? new Date(frontmatter.date as string).toLocaleDateString() : '';
-            
+
             const markdownWithMeta = `---
 title: "${title}"
 author: "${author}"
@@ -800,23 +800,23 @@ date: "${date}"
 ---
 
 ${processedContent}`;
-            
+
             fs.writeFileSync(tempMdPath, markdownWithMeta);
-            
+
             // Convert using pandoc
             const pandocCommand = `pandoc "${tempMdPath}" -o "${tempDocxPath}" --from markdown --to docx`;
             await execAsync(pandocCommand);
-            
+
             if (!fs.existsSync(tempDocxPath)) {
                 throw new Error('DOCX generation failed - output file not created');
             }
-            
+
             const docxBuffer = fs.readFileSync(tempDocxPath);
-            
+
             // Clean up temporary files
             fs.unlinkSync(tempMdPath);
             fs.unlinkSync(tempDocxPath);
-            
+
             return docxBuffer;
         } catch (error) {
             // Clean up temp files
@@ -834,15 +834,15 @@ ${processedContent}`;
         // Generate temporary markdown file
         const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
         const tempEpubPath = path.join(this.tempDir, `output-${Date.now()}.epub`);
-        
+
         // Process SVG images for Pandoc compatibility
         const processedContent = await this.processSvgForPandoc(content, options);
-        
+
         // Create complete markdown with frontmatter
         const title = options.title || frontmatter.title || 'Document';
         const author = options.author || frontmatter.author || 'Unknown Author';
         const date = frontmatter.date || new Date().toISOString().split('T')[0];
-        
+
         const fullMarkdown = `---
 title: "${title}"
 author: "${author}"
@@ -851,10 +851,10 @@ lang: ${options.language || 'en'}
 ---
 
 ${processedContent}`;
-        
+
         try {
             fs.writeFileSync(tempMdPath, fullMarkdown);
-            
+
             // Use pandoc to convert to EPUB with custom styling
             const pandocCommand = [
                 'pandoc',
@@ -864,16 +864,16 @@ ${processedContent}`;
                 '--toc-depth=3',
                 '--epub-chapter-level=2'
             ].join(' ');
-            
+
             await execAsync(pandocCommand);
-            
+
             // Read the generated EPUB file
             const epubBuffer = fs.readFileSync(tempEpubPath);
-            
+
             // Clean up temporary files
             fs.unlinkSync(tempMdPath);
             fs.unlinkSync(tempEpubPath);
-            
+
             return epubBuffer;
         } catch (error) {
             // Clean up temporary files in case of error
@@ -891,15 +891,15 @@ ${processedContent}`;
         // Generate temporary markdown file
         const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
         const tempTexPath = path.join(this.tempDir, `output-${Date.now()}.tex`);
-        
+
         // Process SVG images for Pandoc compatibility
         const processedContent = await this.processSvgForPandoc(content, options);
-        
+
         // Create complete markdown with frontmatter
         const title = options.title || frontmatter.title || 'Document';
         const author = options.author || frontmatter.author || 'Unknown Author';
         const date = frontmatter.date || new Date().toISOString().split('T')[0];
-        
+
         const fullMarkdown = `---
 title: "${title}"
 author: "${author}"
@@ -907,10 +907,10 @@ date: ${date}
 ---
 
 ${processedContent}`;
-        
+
         try {
             fs.writeFileSync(tempMdPath, fullMarkdown);
-            
+
             // Use pandoc to convert to LaTeX
             const pandocCommand = [
                 'pandoc',
@@ -921,16 +921,16 @@ ${processedContent}`;
                 '--variable=fontsize=11pt',
                 '--variable=documentclass=article'
             ].join(' ');
-            
+
             await execAsync(pandocCommand);
-            
+
             // Read the generated LaTeX file
             const latexContent = fs.readFileSync(tempTexPath, 'utf8');
-            
+
             // Clean up temporary files
             fs.unlinkSync(tempMdPath);
             fs.unlinkSync(tempTexPath);
-            
+
             return latexContent;
         } catch (error) {
             // Clean up temporary files in case of error
@@ -949,19 +949,19 @@ ${processedContent}`;
         const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
         const tempPdfPath = path.join(this.tempDir, `output-${Date.now()}.pdf`);
         const tempTexPath = path.join(this.tempDir, `template-${Date.now()}.tex`);
-        
+
         try {
             // Convert Mermaid diagrams to images first
             let processedContent = await this.convertMermaidToImages(content);
-            
+
             // Process SVG images for Pandoc compatibility
             processedContent = await this.processSvgForPandoc(processedContent, options);
-            
+
             // Create complete markdown with frontmatter
             const title = String(options.title || frontmatter.title || 'Document');
             const author = String(options.author || frontmatter.author || 'Unknown Author');
             const date = frontmatter.date && typeof frontmatter.date === 'string' ? frontmatter.date : new Date().toISOString().split('T')[0];
-            
+
             const fullMarkdown = `---
 title: "${title}"
 author: "${author}"
@@ -972,16 +972,16 @@ documentclass: article
 ---
 
 ${processedContent}`;
-            
+
             fs.writeFileSync(tempMdPath, fullMarkdown);
-            
+
             // Try enhanced LaTeX template first, fallback to basic if it fails
             try {
                 // Create enhanced LaTeX template based on reference templates
                 const dateString: string = typeof date === 'string' ? date : String(date);
                 const latexTemplate = this.generateProfessionalLatexTemplate(title, author, dateString);
                 fs.writeFileSync(tempTexPath, latexTemplate);
-                
+
                 // Try XeLaTeX first, fallback to pdfLaTeX if XeLaTeX fails
                 let pandocCommand = [
                     'pandoc',
@@ -998,24 +998,23 @@ ${processedContent}`;
                     '--variable=fontsize:11pt',
                     '--variable=geometry:margin=1in'
                 ].join(' ');
-                
+
                 try {
                     await execAsync(pandocCommand);
                 } catch (xelatexError) {
                     console.warn('XeLaTeX failed, trying pdfLaTeX:', xelatexError);
-                    
+
                     // Clean up failed attempt
                     if (fs.existsSync(tempPdfPath)) {
                         fs.unlinkSync(tempPdfPath);
                     }
-                    
+
                     // Try with pdfLaTeX instead
                     pandocCommand = [
                         'pandoc',
                         `"${tempMdPath}"`,
                         '-o', `"${tempPdfPath}"`,
                         '--pdf-engine=pdflatex',
-                        '--template', `"${tempTexPath}"`,
                         '--standalone',
                         '--toc',
                         '--variable=colorlinks:true',
@@ -1025,21 +1024,21 @@ ${processedContent}`;
                         '--variable=fontsize:11pt',
                         '--variable=geometry:margin=1in'
                     ].join(' ');
-                    
+
                     await execAsync(pandocCommand);
                 }
-                
+
                 if (!fs.existsSync(tempPdfPath)) {
                     throw new Error('Custom template PDF generation failed');
                 }
             } catch (templateError) {
                 console.warn('Custom template failed, falling back to basic pandoc:', templateError);
-                
+
                 // Clean up failed attempt
                 if (fs.existsSync(tempPdfPath)) {
                     fs.unlinkSync(tempPdfPath);
                 }
-                
+
                 // Fallback to basic pandoc without custom template - try pdfLaTeX for better compatibility
                 const basicPandocCommand = [
                     'pandoc',
@@ -1055,24 +1054,24 @@ ${processedContent}`;
                     '--variable=fontsize:11pt',
                     '--variable=geometry:margin=1in'
                 ].join(' ');
-                
+
                 await execAsync(basicPandocCommand);
             }
-            
+
             if (!fs.existsSync(tempPdfPath)) {
                 throw new Error('PDF generation failed - output file not created');
             }
-            
+
             // Read the generated PDF file
             const pdfBuffer = fs.readFileSync(tempPdfPath);
-            
+
             // Clean up temporary files
             fs.unlinkSync(tempMdPath);
             if (fs.existsSync(tempTexPath)) {
                 fs.unlinkSync(tempTexPath);
             }
             fs.unlinkSync(tempPdfPath);
-            
+
             return pdfBuffer;
         } catch (error) {
             // Clean up temporary files in case of error
@@ -1093,19 +1092,19 @@ ${processedContent}`;
         // Generate temporary markdown file
         const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
         const tempOdtPath = path.join(this.tempDir, `output-${Date.now()}.odt`);
-        
+
         try {
             // Convert Mermaid diagrams to images first
             let processedContent = await this.convertMermaidToImages(content);
-            
+
             // Process SVG images for Pandoc compatibility
             processedContent = await this.processSvgForPandoc(processedContent, options);
-            
+
             // Create complete markdown with frontmatter
             const title = options.title || frontmatter.title || 'Document';
             const author = options.author || frontmatter.author || 'Unknown Author';
             const date = frontmatter.date && typeof frontmatter.date === 'string' ? frontmatter.date : new Date().toISOString().split('T')[0];
-            
+
             const fullMarkdown = `---
 title: "${title}"
 author: "${author}"
@@ -1114,9 +1113,9 @@ lang: ${options.language || 'en'}
 ---
 
 ${processedContent}`;
-            
+
             fs.writeFileSync(tempMdPath, fullMarkdown);
-            
+
             // Use pandoc to convert to ODT (OpenDocument Text)
             const pandocCommand = [
                 'pandoc',
@@ -1126,20 +1125,20 @@ ${processedContent}`;
                 '--toc',
                 '--toc-depth=3'
             ].join(' ');
-            
+
             await execAsync(pandocCommand);
-            
+
             if (!fs.existsSync(tempOdtPath)) {
                 throw new Error('ODT generation failed - output file not created');
             }
-            
+
             // Read the generated ODT file
             const odtBuffer = fs.readFileSync(tempOdtPath);
-            
+
             // Clean up temporary files
             fs.unlinkSync(tempMdPath);
             fs.unlinkSync(tempOdtPath);
-            
+
             return odtBuffer;
         } catch (error) {
             // Clean up temporary files in case of error
@@ -1157,26 +1156,26 @@ ${processedContent}`;
         // Generate temporary markdown file
         const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
         const tempPptxPath = path.join(this.tempDir, `output-${Date.now()}.pptx`);
-        
+
         try {
             // Convert Mermaid diagrams to images first
             let processedContent = await this.convertMermaidToImages(content);
-            
+
             // Process SVG images for Pandoc compatibility
             processedContent = await this.processSvgForPandoc(processedContent, options);
-            
+
             // Create complete markdown with frontmatter optimized for presentation
             const title = options.title || frontmatter.title || 'Presentation';
             const author = options.author || frontmatter.author || 'Unknown Author';
             const date = frontmatter.date && typeof frontmatter.date === 'string' ? frontmatter.date : new Date().toISOString().split('T')[0];
-            
+
             // Process content to be more presentation-friendly
             let presentationContent = processedContent;
-            
+
             // Convert main headings (# and ##) to slide breaks
             presentationContent = presentationContent.replace(/^# /gm, '\n---\n\n# ');
             presentationContent = presentationContent.replace(/^## /gm, '\n---\n\n## ');
-            
+
             const fullMarkdown = `---
 title: "${title}"
 author: "${author}"
@@ -1192,9 +1191,9 @@ ${date}
 ---
 
 ${presentationContent}`;
-            
+
             fs.writeFileSync(tempMdPath, fullMarkdown);
-            
+
             // Use pandoc to convert to PPTX with presentation-specific options
             const pandocCommand = [
                 'pandoc',
@@ -1204,20 +1203,20 @@ ${presentationContent}`;
                 '-t', 'pptx',
                 '--slide-level=2'  // Use level 2 headings as slides
             ].join(' ');
-            
+
             await execAsync(pandocCommand);
-            
+
             if (!fs.existsSync(tempPptxPath)) {
                 throw new Error('PPTX generation failed - output file not created');
             }
-            
+
             // Read the generated PPTX file
             const pptxBuffer = fs.readFileSync(tempPptxPath);
-            
+
             // Clean up temporary files
             fs.unlinkSync(tempMdPath);
             fs.unlinkSync(tempPptxPath);
-            
+
             return pptxBuffer;
         } catch (error) {
             // Clean up temporary files in case of error
@@ -1269,19 +1268,19 @@ ${presentationContent}`;
 
     private processMermaidDiagrams(html: string): string {
         let diagramCounter = 0;
-        
+
         // Process mermaid code blocks - handle both already converted and original markdown
         // First handle any remaining markdown mermaid blocks that weren't processed by marked
         html = html.replace(/```mermaid\n([\s\S]*?)```/g, (match, code) => {
             diagramCounter++;
             const cleanCode = code.trim();
-            
+
             return `<div class="mermaid-diagram" data-diagram-id="${diagramCounter}">
 <pre class="mermaid-code">${cleanCode}</pre>
 <div class="mermaid-render" id="mermaid-${diagramCounter}"></div>
 </div>`;
         });
-        
+
         // Then handle any that were converted by marked to HTML code blocks
         html = html.replace(/<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g, (match, code) => {
             diagramCounter++;
@@ -1290,13 +1289,13 @@ ${presentationContent}`;
                 .replace(/&gt;/g, '>')
                 .replace(/&amp;/g, '&')
                 .replace(/&quot;/g, '"');
-            
+
             return `<div class="mermaid-diagram" data-diagram-id="${diagramCounter}">
 <pre class="mermaid-code">${cleanCode}</pre>
 <div class="mermaid-render" id="mermaid-${diagramCounter}"></div>
 </div>`;
         });
-        
+
         return html;
     }
 
@@ -1308,20 +1307,20 @@ ${presentationContent}`;
         // Find all img tags with SVG sources
         const imgRegex = /<img([^>]*?)src=["']([^"']*\.svg)["']([^>]*?)>/gi;
         const matches = Array.from(html.matchAll(imgRegex));
-        
+
         if (matches.length === 0) {
             return html;
         }
 
         let processedHtml = html;
-        
+
         // Process each SVG image
         for (const match of matches) {
             const [fullMatch, beforeSrc, svgPath, afterSrc] = match;
-            
+
             try {
                 let svgContent: string | null = null;
-                
+
                 // First try to get SVG content from API or filesystem
                 if (svgPath.startsWith('/api/content-images/')) {
                     // SVG is served through API - fetch it
@@ -1342,7 +1341,7 @@ ${presentationContent}`;
                     if (resolvedApiPath) {
                         svgContent = await this.fetchSvgFromApi(resolvedApiPath);
                     }
-                    
+
                     // Fallback to filesystem resolution
                     if (!svgContent) {
                         const resolvedPath = this.resolveSvgPath(svgPath);
@@ -1351,16 +1350,16 @@ ${presentationContent}`;
                         }
                     }
                 }
-                
+
                 if (svgContent) {
                     // Convert to base64 data URL
                     const base64Data = Buffer.from(svgContent).toString('base64');
                     const dataUrl = `data:image/svg+xml;base64,${base64Data}`;
-                    
+
                     // Replace the image src with the data URL
                     const newImg = `<img${beforeSrc}src="${dataUrl}"${afterSrc}>`;
                     processedHtml = processedHtml.replace(fullMatch, newImg);
-                    
+
                     console.log(`Converted SVG to base64: ${svgPath}`);
                 } else {
                     console.warn(`SVG file not found: ${svgPath}`);
@@ -1375,7 +1374,7 @@ ${presentationContent}`;
                 processedHtml = processedHtml.replace(fullMatch, errorImg);
             }
         }
-        
+
         return processedHtml;
     }
 
@@ -1387,20 +1386,20 @@ ${presentationContent}`;
         // Find all markdown image references with SVG sources, including title
         const imgRegex = /!\[([^\]]*)\]\(([^)]*\.svg)(?:\s+"([^"]*)")?\)/g;
         const matches = Array.from(content.matchAll(imgRegex));
-        
+
         if (matches.length === 0) {
             return content;
         }
 
         let processedContent = content;
-        
+
         // Process each SVG image
         for (const match of matches) {
             const [fullMatch, , svgPath] = match;
-            
+
             try {
                 let svgContent: string | null = null;
-                
+
                 // Resolve SVG path using the same logic as HTML processing
                 if (svgPath.startsWith('/api/content-images/')) {
                     svgContent = await this.fetchSvgFromApi(svgPath);
@@ -1419,7 +1418,7 @@ ${presentationContent}`;
                     if (resolvedApiPath) {
                         svgContent = await this.fetchSvgFromApi(resolvedApiPath);
                     }
-                    
+
                     // Fallback to filesystem resolution
                     if (!svgContent) {
                         const resolvedPath = this.resolveSvgPath(svgPath);
@@ -1428,13 +1427,13 @@ ${presentationContent}`;
                         }
                     }
                 }
-                
+
                 if (svgContent) {
                     // For Pandoc processing, we want to embed the SVG directly in HTML
                     // Note: title attribute preserved in match for potential future use
                     const htmlReplacement = `<div class="svg-container"><svg>${svgContent}</svg></div>`;
                     processedContent = processedContent.replace(fullMatch, htmlReplacement);
-                    
+
                     console.log(`Converted SVG to base64 for Pandoc: ${svgPath}`);
                 } else {
                     // Replace with error message
@@ -1451,7 +1450,7 @@ ${presentationContent}`;
                 }
             }
         }
-        
+
         return processedContent;
     }
 
@@ -1471,7 +1470,7 @@ ${presentationContent}`;
                 path.resolve(process.cwd(), 'content', svgPath),
                 path.resolve(process.cwd(), 'public', svgPath)
             ];
-            
+
             for (const possiblePath of possiblePaths) {
                 try {
                     if (fs.existsSync(possiblePath)) {
@@ -1483,32 +1482,32 @@ ${presentationContent}`;
             }
             return null;
         }
-        
+
         // Extract the directory part of the content path
         const contentDir = path.dirname(contentPath);
-        
+
         // Try multiple resolution strategies
         const possiblePaths = [
             path.resolve(contentDir, svgPath),
             path.resolve(process.cwd(), 'content', svgPath),
             path.resolve(process.cwd(), 'public', svgPath)
         ];
-        
+
         for (const possiblePath of possiblePaths) {
             try {
                 if (fs.existsSync(possiblePath)) {
                     // Construct the API path
                     const apiPath = `/api/content-images/${contentDir}/${svgPath}`;
                     if (process.env.NODE_ENV !== 'test') {
-                console.log(`Resolving relative SVG path: ${svgPath} -> ${apiPath}`);
-            }
+                        console.log(`Resolving relative SVG path: ${svgPath} -> ${apiPath}`);
+                    }
                     return apiPath;
                 }
             } catch {
                 // Continue to next path
             }
         }
-        
+
         return null;
     }
 
@@ -1520,11 +1519,11 @@ ${presentationContent}`;
             // Construct the full URL for the API call
             const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
             const fullUrl = `${baseUrl}${apiPath}`;
-            
+
             if (process.env.NODE_ENV !== 'test') {
                 console.log(`Fetching SVG from API: ${fullUrl}`);
             }
-            
+
             // Try to use fetch - handle both browser and Node.js environments
             let fetchFunction: typeof fetch;
             try {
@@ -1535,7 +1534,7 @@ ${presentationContent}`;
                 console.warn('fetch not available, skipping API call');
                 return null;
             }
-            
+
             const response = await fetchFunction(fullUrl, {
                 method: 'GET',
                 headers: {
@@ -1567,12 +1566,12 @@ ${presentationContent}`;
         if (!svgPath) {
             return svgPath;
         }
-        
+
         // If it's already an absolute path, use it
         if (path.isAbsolute(svgPath)) {
             return svgPath;
         }
-        
+
         // Try different base directories
         const possiblePaths = [
             // Relative to current working directory
@@ -1584,7 +1583,7 @@ ${presentationContent}`;
             // Relative to content directory
             path.resolve(process.cwd(), 'content', svgPath),
         ];
-        
+
         // Find the first path that exists
         for (const possiblePath of possiblePaths) {
             try {
@@ -1596,7 +1595,7 @@ ${presentationContent}`;
                 continue;
             }
         }
-        
+
         // Default fallback
         return path.resolve(process.cwd(), svgPath);
     }
@@ -1614,7 +1613,7 @@ ${presentationContent}`;
         const currentDate = new Date().toLocaleDateString('en-GB');
         const escapedTitle = this.escapeHtml(title);
         const escapedAuthor = this.escapeHtml(author);
-        
+
         return `<!DOCTYPE html>
 <html lang="${options.language || 'en'}">
 <head>
@@ -2107,37 +2106,37 @@ ${presentationContent}`;
     private async convertMermaidToImages(content: string): Promise<string> {
         // Convert Mermaid diagrams to PNG images for formats that don't support interactive diagrams
         const mermaidRegex = /```mermaid\n([\s\S]*?)```/g;
-        
+
         let processedContent = content;
         const matches = Array.from(content.matchAll(mermaidRegex));
-        
+
         // Process in reverse order to maintain string positions
         for (let i = matches.length - 1; i >= 0; i--) {
             const match = matches[i];
             const [fullMatch, diagramCode] = match;
             const startIndex = match.index!;
             const endIndex = startIndex + fullMatch.length;
-            
+
             try {
                 // Generate a unique filename for this diagram
                 const diagramId = `mermaid-${Date.now()}-${i}`;
                 const mermaidFile = path.join(this.tempDir, `${diagramId}.mmd`);
                 const pngPath = path.join(this.tempDir, `${diagramId}.png`);
-                
+
                 // Write the Mermaid code to a file
                 fs.writeFileSync(mermaidFile, diagramCode.trim());
-                
+
                 try {
                     // Use mermaid CLI to generate PNG (better compatibility in documents)
                     await execAsync(`npx @mermaid-js/mermaid-cli -i "${mermaidFile}" -o "${pngPath}" -t neutral -b white --width 800 --height 600`);
-                    
+
                     // Check if PNG was created successfully
                     if (fs.existsSync(pngPath)) {
                         // Replace the Mermaid code block with an image reference
                         const imageMarkdown = `![Mermaid Diagram](${pngPath})`;
-                        processedContent = processedContent.slice(0, startIndex) + 
-                                         imageMarkdown + 
-                                         processedContent.slice(endIndex);
+                        processedContent = processedContent.slice(0, startIndex) +
+                            imageMarkdown +
+                            processedContent.slice(endIndex);
                         console.log(`✅ Converted Mermaid diagram ${i + 1} to PNG`);
                     } else {
                         throw new Error('PNG file was not created');
@@ -2147,26 +2146,26 @@ ${presentationContent}`;
                     // Fallback to descriptive text
                     const diagramType = diagramCode.trim().split('\n')[0] || 'diagram';
                     const textFallback = `[Mermaid ${diagramType} - Image conversion not available]`;
-                    processedContent = processedContent.slice(0, startIndex) + 
-                                     textFallback + 
-                                     processedContent.slice(endIndex);
+                    processedContent = processedContent.slice(0, startIndex) +
+                        textFallback +
+                        processedContent.slice(endIndex);
                 }
-                
+
                 // Clean up temporary mermaid file
                 if (fs.existsSync(mermaidFile)) {
                     fs.unlinkSync(mermaidFile);
                 }
-                
+
             } catch (error) {
                 console.warn(`Error processing Mermaid diagram ${i + 1}:`, error);
                 // Replace with simple text fallback
                 const textFallback = `[Mermaid Diagram]`;
-                processedContent = processedContent.slice(0, startIndex) + 
-                                 textFallback + 
-                                 processedContent.slice(endIndex);
+                processedContent = processedContent.slice(0, startIndex) +
+                    textFallback +
+                    processedContent.slice(endIndex);
             }
         }
-        
+
         return processedContent;
     }
 
@@ -2196,14 +2195,26 @@ ${presentationContent}`;
 \\usepackage{titlesec}
 \\usepackage{enumitem}
 \\usepackage{multicol}
-\\usepackage{hyperref}
 \\usepackage{tikz}
 \\usepackage{array}
 \\usepackage{tabularx}
+\\usepackage{longtable}
+\\usepackage{booktabs}
+\\usepackage{calc}
 \\usepackage{ragged2e}
+\\usepackage{etoolbox}
+
+% Fix for longtable vertical spacing
+\\makeatletter
+\\patchcmd\\longtable{\\par}{\\if@noskipsec\\mbox{}\\fi\\par}{}{}
+\\makeatother
+
+% Fix for "No counter 'none' defined" error
+\\newcounter{none}
 \\usepackage{setspace}
 \\usepackage{fancyhdr}
 \\usepackage{changepage}
+\\usepackage{graphicx}
 
 % Colors - Professional palette
 \\definecolor{primary}{RGB}{0, 79, 144}
@@ -2213,7 +2224,8 @@ ${presentationContent}`;
 \\definecolor{mediumgray}{RGB}{128, 128, 128}
 \\definecolor{success}{RGB}{40, 167, 69}
 
-% Hyperref setup
+% Hyperref setup (Load last to avoid conflicts)
+\\usepackage{hyperref}
 \\hypersetup{
     colorlinks=true,
     linkcolor=primary,
@@ -2319,7 +2331,7 @@ $if(toc)$
 \\color{primary}\\Large\\sffamily\\bfseries Contents
 \\end{center}
 \\vspace{0.3cm}
-$toc$
+\\tableofcontents
 \\newpage
 $endif$
 
