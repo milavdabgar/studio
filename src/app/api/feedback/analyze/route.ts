@@ -6,14 +6,13 @@ import mongoose from 'mongoose';
 import { FeedbackAnalysisModel } from '@/lib/models';
 
 const getFacultyInitial = (name: string): string => {
-    const parts = name.split(' ');
+    // Remove common salutations (case insensitive, with or without dot) at the start of the string
+    const cleanerName = name.replace(/^(mr|ms|mrs|dr|prof|er)\.?\s+/i, '').trim();
+
+    const parts = cleanerName.split(' ');
     if (parts.length === 0) return '';
-    const commonTitles = ['mr.', 'ms.', 'mrs.', 'dr.', 'prof.'];
-    let nameParts = parts;
-    if (commonTitles.includes(parts[0].toLowerCase().replace('.', ''))) {
-        nameParts = parts.slice(1);
-    }
-    return nameParts.map(part => part[0]?.toUpperCase()).filter(Boolean).join('');
+
+    return parts.map(part => part[0]?.toUpperCase()).filter(Boolean).join('');
 };
 
 const getSubjectShortForm = (fullName: string): string => {
@@ -35,7 +34,7 @@ function calculateSubjectScores(data: FeedbackDataRow[]): SubjectScore[] {
         scores: { [key: string]: number };
         count: number;
     }>();
-    
+
     data.forEach(row => {
         const key = `${row.Subject_Code}-${row.Faculty_Name}`;
         if (!subjects.has(key)) {
@@ -47,7 +46,7 @@ function calculateSubjectScores(data: FeedbackDataRow[]): SubjectScore[] {
                 count: 0
             });
         }
-        
+
         const subject = subjects.get(key);
         if (!subject) return;
         for (let i = 1; i <= 12; i++) {
@@ -72,7 +71,7 @@ function calculateSubjectScores(data: FeedbackDataRow[]): SubjectScore[] {
                 validQuestionCount++;
             }
         }
-        
+
         const overallScore = validQuestionCount > 0 ? totalSumOfAverages / validQuestionCount : 0;
 
         return {
@@ -139,7 +138,7 @@ function calculateFacultyScores(subjectScores: SubjectScore[]): FacultyScore[] {
 }
 
 function calculateGenericScores<T extends { scores: { [key: string]: number }, count: number }, K extends keyof FeedbackDataRow>(
-    data: FeedbackDataRow[], 
+    data: FeedbackDataRow[],
     groupByKeys: K[]
 ): Array<Partial<FeedbackDataRow> & { Score: number } & { [key: string]: number }> {
     const scoresMap = new Map<string, T & Partial<FeedbackDataRow>>();
@@ -182,19 +181,19 @@ function calculateGenericScores<T extends { scores: { [key: string]: number }, c
             }
         }
         const overallScore = validQuestionCount > 0 ? totalSumOfAverages / validQuestionCount : 0;
-        
+
         const resultEntry: Partial<FeedbackDataRow> & { Score: number } & { [key: string]: number } = { Score: overallScore };
         groupByKeys.forEach(k => {
-          (resultEntry as Record<string, unknown>)[k as string] = (entry as Record<string, unknown>)[k as string];
+            (resultEntry as Record<string, unknown>)[k as string] = (entry as Record<string, unknown>)[k as string];
         });
         Object.assign(resultEntry, averageScores);
-        
+
         return resultEntry;
     });
 }
 
 
-const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownReport'|'analysisDate'|'originalFileName'|'rawFeedbackData'>): string => {
+const generateMarkdownReport = (result: Omit<AnalysisResult, 'id' | 'markdownReport' | 'analysisDate' | 'originalFileName' | 'rawFeedbackData'>): string => {
     const formatFloat = (x: number): string => x.toFixed(2);
 
     let report = `# Student Feedback Analysis Report\n\n`;
@@ -215,6 +214,7 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownRepor
     report += `- **Q12 Student Progress Feedback**: Feedback provided on student's progress\n\n`;
 
     report += `### Rating Scale\n\n`;
+    report += `<caption>Rating Scale</caption>\n\n`;
     report += `| Rating | Description |\n`;
     report += `|--------|-------------|\n`;
     report += `| 1      | Very Poor   |\n`;
@@ -225,6 +225,19 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownRepor
 
     report += `## Feedback Analysis (Overall)\n\n`;
 
+    const headerMap: Record<string, string> = {
+        "Branch": "Branch",
+        "Score": "Score",
+        "Year": "Year",
+        "Term": "Term",
+        "Sem": "Sem",
+        "Subject_Code": "Subject Code",
+        "Subject_ShortForm": "Subject Short",
+        "Subject_FullName": "Subject Name",
+        "Faculty_Name": "Faculty Name",
+        "Faculty_Initial": "Faculty Initial"
+    };
+
     const overallSections = [
         { title: "Branch Analysis", data: result.branch_scores, keys: ["Branch", "Score"] },
         { title: "Term-Year Analysis", data: result.term_year_scores, keys: ["Year", "Term", "Score"] },
@@ -233,13 +246,20 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownRepor
         { title: "Faculty Analysis", data: result.faculty_scores, keys: ["Faculty_Name", "Faculty_Initial", "Score"] },
     ];
 
-    overallSections.forEach(section => {
+    overallSections.forEach((section) => {
         report += `### ${section.title}\n\n`;
         if (section.data && section.data.length > 0) {
-            report += `| ${section.keys.join(' | ')} |\n`;
+            // Add a specific caption marker that our latex generator can identify
+            report += `<caption>${section.title}</caption>\n\n`;
+
+            // Use headerMap for table headers
+            report += `| ${section.keys.map(k => headerMap[k] || k).join(' | ')} |\n`;
             report += `|${section.keys.map(() => '------').join('|')}|\n`;
-            section.data.forEach((item: SubjectScore | FacultyScore | BranchScore | TermYearScore) => {
-                report += `| ${section.keys.map(key => typeof item[key as keyof typeof item] === 'number' ? formatFloat(item[key as keyof typeof item] as number) : item[key as keyof typeof item] || '-').join(' | ')} |\n`;
+            section.data.forEach((item: any) => {
+                report += `| ${section.keys.map(key => {
+                    const val = item[key];
+                    return typeof val === 'number' ? formatFloat(val) : (val || '-');
+                }).join(' | ')} |\n`;
             });
         } else {
             report += `_No data available for ${section.title}._\n`;
@@ -251,36 +271,45 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownRepor
     const parameterKeys = Array.from({ length: 12 }, (_, i) => `Q${i + 1}`);
     const parameterSections = [
         { title: "Branch Analysis (Parameter-wise)", data: result.branch_scores, baseKeys: ["Branch"], scoreKeys: parameterKeys, overallScoreKey: "Score" },
-        { title: "Term-Year Analysis (Parameter-wise)", data: result.term_year_scores, baseKeys: ["Year", "Term"], scoreKeys: parameterKeys, overallScoreKey: "Score"  },
-        { title: "Semester Analysis (Parameter-wise)", data: result.semester_scores, baseKeys: ["Branch", "Sem"], scoreKeys: parameterKeys, overallScoreKey: "Score"  },
-        { title: "Subject Analysis (Parameter-wise)", data: result.subject_scores, baseKeys: ["Subject_Code", "Subject_ShortForm", "Faculty_Initial"], scoreKeys: parameterKeys, overallScoreKey: "Score"  },
-        { title: "Faculty Analysis (Parameter-wise)", data: result.faculty_scores, baseKeys: ["Faculty_Initial"], scoreKeys: parameterKeys, overallScoreKey: "Score"  },
+        { title: "Term-Year Analysis (Parameter-wise)", data: result.term_year_scores, baseKeys: ["Year", "Term"], scoreKeys: parameterKeys, overallScoreKey: "Score" },
+        { title: "Semester Analysis (Parameter-wise)", data: result.semester_scores, baseKeys: ["Branch", "Sem"], scoreKeys: parameterKeys, overallScoreKey: "Score" },
+        { title: "Subject Analysis (Parameter-wise)", data: result.subject_scores, baseKeys: ["Subject_Code", "Subject_ShortForm", "Faculty_Initial"], scoreKeys: parameterKeys, overallScoreKey: "Score" },
+        { title: "Faculty Analysis (Parameter-wise)", data: result.faculty_scores, baseKeys: ["Faculty_Initial"], scoreKeys: parameterKeys, overallScoreKey: "Score" },
     ];
-    
+
     parameterSections.forEach(section => {
         report += `### ${section.title}\n\n`;
         if (section.data && section.data.length > 0) {
+            report += `<caption>${section.title}</caption>\n\n`;
+
             const allKeys = [...section.baseKeys, ...section.scoreKeys, section.overallScoreKey];
-            report += `| ${allKeys.join(' | ')} |\n`;
+            // Display clean headers
+            const displayHeaders = allKeys.map(k => headerMap[k] || k);
+
+            report += `| ${displayHeaders.join(' | ')} |\n`;
             report += `|${allKeys.map(() => '------').join('|')}|\n`;
-            section.data.forEach((item: SubjectScore | FacultyScore | BranchScore | TermYearScore) => {
-                report += `| ${allKeys.map(key => typeof item[key as keyof typeof item] === 'number' ? formatFloat(item[key as keyof typeof item] as number) : item[key as keyof typeof item] || '-').join(' | ')} |\n`;
+            section.data.forEach((item: any) => {
+                report += `| ${allKeys.map(key => {
+                    const val = item[key];
+                    return typeof val === 'number' ? formatFloat(val) : (val || '-');
+                }).join(' | ')} |\n`;
             });
         } else {
             report += `_No data available for ${section.title}._\n`;
         }
         report += '\n';
     });
-    
+
     report += `## Misc Feedback Analysis\n\n`;
     report += `### Faculty-Subject Correlation Matrix\n\n`;
 
     if (result.subject_scores && result.faculty_scores && result.subject_scores.length > 0 && result.faculty_scores.length > 0) {
+        report += `<caption>Faculty-Subject Correlation Matrix</caption>\n\n`;
         const facultyInitials = result.faculty_scores.map(f => f.Faculty_Initial).sort();
         const uniqueSubjectInfos = Array.from(new Map(result.subject_scores.map(s => [`${s.Subject_Code}-${s.Subject_ShortForm}`, { code: s.Subject_Code, shortForm: s.Subject_ShortForm }])).values());
 
-        report += `| Subject Code | Subject SF | ${facultyInitials.join(' | ')} | Subject Avg |\n`;
-        report += `|--------------|------------|${facultyInitials.map(() => '------').join('|')}|-------------|\n`;
+        report += `| Subject Code | Subject Short | ${facultyInitials.join(' | ')} | Subject Avg |\n`;
+        report += `|--------------|---------------|${facultyInitials.map(() => '------').join('|')}|-------------|\n`;
 
         uniqueSubjectInfos.forEach(subjectInfo => {
             let row = `| ${subjectInfo.code} | ${subjectInfo.shortForm} |`;
@@ -291,7 +320,7 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownRepor
                 row += ` ${score !== undefined ? formatFloat(score) : '-'} |`;
                 if (score !== undefined) subjectScoresForAvg.push(score);
             });
-            const subjectAvg = subjectScoresForAvg.length > 0 ? subjectScoresForAvg.reduce((a,b) => a+b, 0) / subjectScoresForAvg.length : 0;
+            const subjectAvg = subjectScoresForAvg.length > 0 ? subjectScoresForAvg.reduce((a, b) => a + b, 0) / subjectScoresForAvg.length : 0;
             row += ` ${formatFloat(subjectAvg)} |\n`;
             report += row;
         });
@@ -313,82 +342,82 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownRepor
 
 
 export async function POST(request: NextRequest) {
-  try {
-    // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
+    try {
+        // Connect to MongoDB
+        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
 
-    const formData = await request.formData();
-    const file = formData.get('file') as File | null;
+        const formData = await request.formData();
+        const file = formData.get('file') as File | null;
 
-    if (!file) {
-      return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
-    }
+        if (!file) {
+            return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
+        }
 
-    const fileContent = await file.text();
-    let feedbackData: FeedbackDataRow[] = [];
+        const fileContent = await file.text();
+        let feedbackData: FeedbackDataRow[] = [];
 
-    const parseResult = parse<FeedbackDataRow>(fileContent, {
-        header: true,
-        skipEmptyLines: true,
-        dynamicTyping: (field: string | number) => {
-            if (typeof field === 'string' && /^Q\d+$/.test(field)) { // For Q1, Q2 etc.
-              return true;
+        const parseResult = parse<FeedbackDataRow>(fileContent, {
+            header: true,
+            skipEmptyLines: true,
+            dynamicTyping: (field: string | number) => {
+                if (typeof field === 'string' && /^Q\d+$/.test(field)) { // For Q1, Q2 etc.
+                    return true;
+                }
+                return false; // Keep other fields as strings initially
+            },
+            transformHeader: header => header.trim(), // Keep original header case for mapping if needed, but trim
+        });
+
+        if (parseResult.errors.length > 0) {
+            console.error("CSV Parsing errors:", parseResult.errors);
+            const userFriendlyErrors = parseResult.errors.map(err => `Row ${(err.row || 0) + 2}: ${err.message} (Code: ${err.code})`).slice(0, 5);
+            return NextResponse.json({ error: 'Error parsing CSV file. Please check column headers and data format.', details: userFriendlyErrors }, { status: 400 });
+        }
+
+        feedbackData = parseResult.data.map(row => {
+            const newRow: Record<string, unknown> = { ...row };
+            for (let i = 1; i <= 12; i++) {
+                const qKey = `Q${i}`;
+                const val = row[qKey];
+                newRow[qKey] = (val !== undefined && val !== null && !isNaN(Number(val))) ? Number(val) : 0;
             }
-            return false; // Keep other fields as strings initially
-          },
-        transformHeader: header => header.trim(), // Keep original header case for mapping if needed, but trim
-    });
-    
-    if (parseResult.errors.length > 0) {
-        console.error("CSV Parsing errors:", parseResult.errors);
-        const userFriendlyErrors = parseResult.errors.map(err => `Row ${(err.row || 0) + 2}: ${err.message} (Code: ${err.code})`).slice(0, 5);
-        return NextResponse.json({ error: 'Error parsing CSV file. Please check column headers and data format.', details: userFriendlyErrors }, { status: 400 });
+            return newRow as FeedbackDataRow;
+        });
+
+
+        const subjectScores = calculateSubjectScores(feedbackData);
+        const facultyScores = calculateFacultyScores(subjectScores);
+        const semesterScores = calculateGenericScores<{ scores: { [key: string]: number }, count: number }, keyof FeedbackDataRow>(feedbackData, ['Year', 'Term', 'Branch', 'Sem']) as SemesterScore[];
+        const branchScores = calculateGenericScores<{ scores: { [key: string]: number }, count: number }, keyof FeedbackDataRow>(feedbackData, ['Branch']) as BranchScore[];
+        const termYearScores = calculateGenericScores<{ scores: { [key: string]: number }, count: number }, keyof FeedbackDataRow>(feedbackData, ['Year', 'Term']) as TermYearScore[];
+
+        const analysisPayloadForReport = {
+            subject_scores: subjectScores,
+            faculty_scores: facultyScores,
+            semester_scores: semesterScores,
+            branch_scores: branchScores,
+            term_year_scores: termYearScores,
+        };
+
+        const markdownReport = generateMarkdownReport(analysisPayloadForReport);
+
+        const resultId = `analysis_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+        const analysisResult: AnalysisResult = {
+            id: resultId,
+            originalFileName: file.name,
+            analysisDate: new Date().toISOString(),
+            ...analysisPayloadForReport,
+            markdownReport,
+            rawFeedbackData: fileContent, // Store raw CSV data
+        };
+
+        // Save to MongoDB instead of in-memory store
+        await FeedbackAnalysisModel.create(analysisResult);
+
+        return NextResponse.json({ success: true, reportId: resultId, message: "Analysis complete. Fetch report by ID." });
+
+    } catch (error) {
+        console.error('Error processing feedback:', error);
+        return NextResponse.json({ error: 'Error processing feedback', details: (error as Error).message }, { status: 500 });
     }
-
-    feedbackData = parseResult.data.map(row => {
-      const newRow: Record<string, unknown> = { ...row };
-      for (let i = 1; i <= 12; i++) {
-        const qKey = `Q${i}`;
-        const val = row[qKey];
-        newRow[qKey] = (val !== undefined && val !== null && !isNaN(Number(val))) ? Number(val) : 0; 
-      }
-      return newRow as FeedbackDataRow;
-    });
-
-
-    const subjectScores = calculateSubjectScores(feedbackData);
-    const facultyScores = calculateFacultyScores(subjectScores);
-    const semesterScores = calculateGenericScores<{ scores: { [key: string]: number }, count: number }, keyof FeedbackDataRow>(feedbackData, ['Year', 'Term', 'Branch', 'Sem']) as SemesterScore[];
-    const branchScores = calculateGenericScores<{ scores: { [key: string]: number }, count: number }, keyof FeedbackDataRow>(feedbackData, ['Branch']) as BranchScore[];
-    const termYearScores = calculateGenericScores<{ scores: { [key: string]: number }, count: number }, keyof FeedbackDataRow>(feedbackData, ['Year', 'Term']) as TermYearScore[];
-    
-    const analysisPayloadForReport = {
-        subject_scores: subjectScores,
-        faculty_scores: facultyScores,
-        semester_scores: semesterScores,
-        branch_scores: branchScores,
-        term_year_scores: termYearScores,
-    };
-
-    const markdownReport = generateMarkdownReport(analysisPayloadForReport);
-
-    const resultId = `analysis_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-    const analysisResult: AnalysisResult = {
-        id: resultId,
-        originalFileName: file.name,
-        analysisDate: new Date().toISOString(),
-        ...analysisPayloadForReport,
-        markdownReport,
-        rawFeedbackData: fileContent, // Store raw CSV data
-    };
-
-    // Save to MongoDB instead of in-memory store
-    await FeedbackAnalysisModel.create(analysisResult);
-
-    return NextResponse.json({ success: true, reportId: resultId, message: "Analysis complete. Fetch report by ID." });
-
-  } catch (error) {
-    console.error('Error processing feedback:', error);
-    return NextResponse.json({ error: 'Error processing feedback', details: (error as Error).message }, { status: 500 });
-  }
 }

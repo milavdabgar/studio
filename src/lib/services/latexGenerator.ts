@@ -5,23 +5,34 @@ export function generateNativeLatex(analysisResult: AnalysisResult): string {
     const { markdownReport, originalFileName, analysisDate } = analysisResult;
 
     // 1. Preamble
-    const preamble = `\\documentclass[11pt,a4paper]{article}
+    const preamble = `\\documentclass{article}
 \\usepackage[utf8]{inputenc}
-\\usepackage{geometry}
-\\geometry{a4paper, margin=1in}
+\\usepackage[a4paper, margin=0.5in]{geometry}
 \\usepackage{graphicx}
 \\usepackage{booktabs}
 \\usepackage{longtable}
+\\usepackage{xltabular}
+\\usepackage{ragged2e}
 \\usepackage{hyperref}
 \\usepackage{xcolor}
 \\usepackage{titlesec}
 \\usepackage{fancyhdr}
 \\usepackage{enumitem}
 \\usepackage{float}
+\\usepackage{enumitem}
+\\usepackage{float}
+\\usepackage[export]{adjustbox}
+\\usepackage{makecell}
+\\renewcommand\\theadfont{\\bfseries}
 
 % Colors
 \\definecolor{primary}{RGB}{0, 51, 102}
 \\definecolor{secondary}{RGB}{0, 102, 204}
+
+% Custom Column Types
+\\newcolumntype{L}{>{\\RaggedRight\\arraybackslash}X}
+\\newcolumntype{C}{>{\\Centering\\arraybackslash}X}
+\\newcolumntype{R}{>{\\RaggedLeft\\arraybackslash}X}
 
 % Typography
 \\usepackage{lmodern}
@@ -61,6 +72,7 @@ export function generateNativeLatex(analysisResult: AnalysisResult): string {
 
 function parseTokens(tokens: Token[]): string {
     let latex = '';
+    let pendingCaption = '';
 
     for (const token of tokens) {
         switch (token.type) {
@@ -75,8 +87,13 @@ function parseTokens(tokens: Token[]): string {
             }
             case 'paragraph': {
                 const p = token as Tokens.Paragraph;
-                // Skip paragraphs that are just images for now, or handle them
-                latex += `${parseInline(p.text)}\n\n`;
+                // Check if paragraph is actually a caption marker
+                const captionMatch = p.text.match(/^\s*<caption>(.*?)<\/caption>\s*$/);
+                if (captionMatch) {
+                    pendingCaption = captionMatch[1];
+                } else {
+                    latex += `${parseInline(p.text)}\n\n`;
+                }
                 break;
             }
             case 'list': {
@@ -84,15 +101,13 @@ function parseTokens(tokens: Token[]): string {
                 const env = l.ordered ? 'enumerate' : 'itemize';
                 latex += `\\begin{${env}}\n`;
                 for (const item of l.items) {
-                    latex += `  \\item ${parseTokens([item] as Token[]).trim()}\n`; // item.tokens usually exists but marked types are tricky
+                    latex += `  \\item ${parseTokens([item] as Token[]).trim()}\n`;
                 }
                 latex += `\\end{${env}}\n\n`;
                 break;
             }
             case 'list_item': {
                 const li = token as Tokens.ListItem;
-                // List items can contain multiple block tokens
-                // If it has tokens, use them, otherwise use text
                 if (li.tokens && li.tokens.length > 0) {
                     latex += parseTokens(li.tokens);
                 } else {
@@ -102,7 +117,8 @@ function parseTokens(tokens: Token[]): string {
             }
             case 'table': {
                 const t = token as Tokens.Table;
-                latex += generateLatexTable(t);
+                latex += generateLatexTable(t, pendingCaption);
+                pendingCaption = ''; // Reset after consuming
                 break;
             }
             case 'blockquote': {
@@ -118,16 +134,21 @@ function parseTokens(tokens: Token[]): string {
                 break;
             case 'text':
                 const tx = token as Tokens.Text;
-                // Handle text token. It can be a block level text token.
                 if (tx.tokens) {
                     latex += parseTokens(tx.tokens);
                 } else {
                     latex += parseInline(tx.text);
                 }
                 break;
+            case 'html': {
+                const h = token as Tokens.HTML;
+                const captionMatch = h.text.match(/^\s*<caption>(.*?)<\/caption>\s*$/);
+                if (captionMatch) {
+                    pendingCaption = captionMatch[1];
+                }
+                break;
+            }
             default:
-                // Basic fallback for unknown tokens, strictly purely text
-                // Many tokens might be handled by 'text' or 'html' case if not explicitly covered
                 if ('text' in token) {
                     const t = token as { text: string };
                     latex += escapeLatex(t.text) + '\n';
@@ -233,7 +254,7 @@ function parseInline(text: string): string {
         if (m.startsWith('`')) {
             // Code
             const content = m.slice(1, -1);
-            result += `\\texttt{${simpleEscape(content)}}`; // latex-escape inside code? or verbatim? texttt needs escape.
+            result += `\\texttt{${simpleEscape(content)}}`;
         } else if (m.startsWith('**')) {
             // Bold
             const content = m.slice(2, -2);
@@ -242,6 +263,15 @@ function parseInline(text: string): string {
             // Italic
             const content = m.slice(1, -1);
             result += `\\textit{${parseInline(content)}}`; // Recurse
+        } else if (m.startsWith('![')) {
+            // Image ![alt](url)
+            const imgMatch = m.match(/^!\[(.*?)\]\((.*?)\)$/);
+            if (imgMatch) {
+                // const alt = imgMatch[1];
+                const url = imgMatch[2];
+                // Safe include with max width
+                result += `\\includegraphics[max width=\\linewidth,height=0.3\\textheight,keepaspectratio]{${url}}`;
+            }
         } else if (m.startsWith('[')) {
             // Link [text](url)
             const linkMatch = m.match(/^\[(.*?)\]\((.*?)\)$/);
@@ -253,7 +283,6 @@ function parseInline(text: string): string {
         } else {
             result += simpleEscape(m);
         }
-
         lastIndex = pattern.lastIndex;
     }
 
@@ -272,25 +301,94 @@ function escapeLatex(text: string): string {
 }
 
 
-function generateLatexTable(table: Tokens.Table): string {
-    // Use longtable and booktabs for professional look
-    const alignMap: Record<string, string> = {
-        'left': 'l',
-        'right': 'r',
-        'center': 'c'
-    };
+function generateLatexTable(table: Tokens.Table, caption?: string): string {
+    // Global Approach: Smart Column Sizing
+    // 1. Analyze data to determine max width of text in each column
+    // 2. If Header >> Data, wrap header using \makecell to save horizontal space
+    // 3. If Data >> Threshold, use X column (L) to wrap data
 
-    const colSpec = table.align.map((a: string | null) => alignMap[a || 'left']).join(' ');
+    const numCols = table.header.length;
+    const colMaxLens = new Array(numCols).fill(0);
+
+    // Scan body for max lengths
+    for (const row of table.rows) {
+        row.forEach((cell: Tokens.TableCell, i: number) => {
+            // Simple estimation: generic text length
+            // If inline tokens exist, it might be slightly off but good enough heuristic
+            const len = cell.text.length;
+            if (len > colMaxLens[i]) colMaxLens[i] = len;
+        });
+    }
+
+    const colTypes: string[] = [];
+    const processedHeaders: string[] = [];
+
+    table.header.forEach((cell: Tokens.TableCell, i: number) => {
+        const headerText = cell.text;
+        const dataLen = colMaxLens[i];
+
+        // Decision 1: Column Type
+        // If data is very long (> 30 chars), likely needs wrapping -> Use 'L' (X column)
+        // Unless it's the ONLY column? No, standard logic fine.
+        let colType = 'l'; // Default
+
+        // Smart Alignment base
+        const align = table.align[i] || 'left';
+
+        if (dataLen > 35) {
+            colType = align === 'right' ? 'R' : (align === 'center' ? 'C' : 'L');
+        } else {
+            colType = align === 'right' ? 'r' : (align === 'center' ? 'c' : 'l');
+        }
+
+        colTypes.push(colType);
+
+        // Decision 2: Header Wrapping
+        // Aggressively wrap if header suggests it is wider than data
+        if (headerText.length > dataLen && headerText.includes(' ')) {
+            // Split by words, parse each word to escape special chars, then join with LaTeX line break
+            const parts = headerText.split(/\s+/);
+            const wrapped = parts.map(p => parseInline(p)).join(' \\\\ ');
+
+            // Use \thead[align]{...} which uses \theadfont (bold)
+            const cellAlign = colType.toLowerCase() === 'r' ? 'r' : (colType.toLowerCase() === 'c' ? 'c' : 'l');
+            processedHeaders.push(`\\thead[${cellAlign}]{${wrapped}}`);
+        } else {
+            processedHeaders.push(`\\textbf{${parseInline(headerText)}}`); // Standard bold header
+        }
+    });
+
+    const colSpec = colTypes.join(' ');
+
+    // For wide tables, adjust font size and padding dynamically
+    let preTable = '';
+    let postTable = '';
+
+    if (numCols > 16) {
+        // Very wide tables (Correlation Matrix): smallest font, tightest padding
+        preTable = `{\\footnotesize \\setlength{\\tabcolsep}{2pt}\n`;
+        postTable = `}\n`;
+    } else if (numCols > 14) {
+        // Moderately wide tables (Semester Analysis): small font, reduced padding
+        preTable = `{\\small \\setlength{\\tabcolsep}{3pt}\n`;
+        postTable = `}\n`;
+    }
+    // <= 14 uses standard font (Faculty Analysis Parameter-wise)
 
     let latex = `
-\\begin{longtable}{${colSpec}}
-\\toprule
+${preTable}\\begin{xltabular}{\\linewidth}{${colSpec}}
 `;
 
+    if (caption) {
+        latex += `\\caption{${parseInline(caption)}} \\\\\n`;
+    }
+
+    latex += `\\toprule\n`;
+
     // Header
-    latex += table.header.map((cell: Tokens.TableCell) => `\\textbf{${parseInline(cell.text)}}`).join(' & ') + ' \\\\\n';
+    latex += processedHeaders.join(' & ') + ' \\\\\n';
     latex += '\\midrule\n';
-    latex += '\\endhead\n'; // Longtable header repeat
+    latex += '\\endhead\n';
 
     // Body
     for (const row of table.rows) {
@@ -298,7 +396,7 @@ function generateLatexTable(table: Tokens.Table): string {
     }
 
     latex += `\\bottomrule
-\\end{longtable}
-`;
+\\end{xltabular}
+${postTable}`;
     return latex;
 }
