@@ -18,19 +18,14 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
   const downloadReport = async (type: 'markdown' | 'excel' | 'pdf' | 'wkhtml' | 'latex' | 'puppeteer', reportId: string) => {
     try {
       let effectiveType = type;
-      let fileExtension = type;
+      let fileExtension: string = type;
 
-      if (type === 'pdf') { // Default PDF to puppeteer for direct generation
-        effectiveType = 'puppeteer';
+      if (type === 'pdf' || type === 'puppeteer' || type === 'latex') { // Default PDF to puppeteer for direct generation
+        effectiveType = type === 'pdf' ? 'puppeteer' : type;
         fileExtension = 'pdf';
-      } else if (type === 'wkhtml' || type === 'latex') {
-        // For these types, the API might return markdown if direct PDF generation isn't set up.
-        // The API handles this, but we set the expected extension for the user.
-        // If API returns markdown:
-        // effectiveType = 'markdown'; // API will handle this by providing MD
-        // fileExtension = 'md';
-        // If API attempts PDF generation (even if via Pandoc -> markdown internally):
-        fileExtension = 'pdf';
+      } else if (type === 'wkhtml') {
+        // The API returns a Markdown file with instructions for these types
+        fileExtension = 'md';
       } else if (type === 'excel') {
         effectiveType = 'excel';
         fileExtension = 'excel';
@@ -38,26 +33,26 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
 
 
       const response = await fetch(`/api/feedback/download/${effectiveType}/${reportId}`);
-      
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Download failed: ${response.status} ${errorText}`);
       }
-      
+
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      
+
       a.download = `feedback_report_${reportId}.${fileExtension}`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
-      toast({ title: "Download Started", description: `Report ${a.download} should begin downloading.`});
+      toast({ title: "Download Started", description: `Report ${a.download} should begin downloading.` });
     } catch (error) {
       console.error(`Error downloading ${type} report:`, error);
-      toast({ variant: "destructive", title: "Download Error", description: `Failed to download report: ${(error as Error).message}`});
+      toast({ variant: "destructive", title: "Download Error", description: `Failed to download report: ${(error as Error).message}` });
     }
   };
 
@@ -65,14 +60,14 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
     subject: f.Faculty_Initial,
     Q1: f.Q1, Q2: f.Q2, Q3: f.Q3, Q4: f.Q4, Q5: f.Q5, Q6: f.Q6,
     Q7: f.Q7, Q8: f.Q8, Q9: f.Q9, Q10: f.Q10, Q11: f.Q11, Q12: f.Q12,
-    fullMark: 5, 
+    fullMark: 5,
   }));
-  
+
   const parameterLineData = Array.from({ length: 12 }, (_, i) => {
     const qKey = `Q${i + 1}` as keyof SubjectScore;
     const scores = analysisResult.subject_scores.map((s: SubjectScore) => (s[qKey] as number) || 0);
     const average = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
-    return { name: `Q${i+1}`, averageScore: parseFloat(average.toFixed(2)) };
+    return { name: `Q${i + 1}`, averageScore: parseFloat(average.toFixed(2)) };
   });
 
 
@@ -111,7 +106,7 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
               <Tooltip />
             </RadarChart>
           </ResponsiveContainer>
-           <p className="text-xs text-muted-foreground mt-2 text-center">Radar chart shows score for Q1 for each faculty. Adapt for multi-series or average.</p>
+          <p className="text-xs text-muted-foreground mt-2 text-center">Radar chart shows score for Q1 for each faculty. Adapt for multi-series or average.</p>
         </div>
 
         <div className="p-6 rounded-lg shadow-lg border bg-card dark:border-gray-700">
@@ -164,11 +159,11 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
         </div>
         <p className="text-xs text-muted-foreground mt-4 text-center">Note: PDF generation via wkhtmltopdf/LaTeX might provide a Markdown file if server-side conversion tools are not fully configured.</p>
       </div>
-      
+
       <div className="mt-12 p-6 rounded-lg shadow-lg border bg-card dark:border-gray-700">
         <h3 className="text-xl font-semibold mb-4 text-card-foreground">Generated Markdown Report Preview</h3>
         <div className="prose prose-sm dark:prose-invert max-w-none max-h-[600px] overflow-y-auto p-4 border rounded-md bg-background dark:border-gray-700">
-            <pre className="whitespace-pre-wrap">{analysisResult.markdownReport}</pre>
+          <pre className="whitespace-pre-wrap">{analysisResult.markdownReport}</pre>
         </div>
       </div>
 

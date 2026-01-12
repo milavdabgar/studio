@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import type { 
-  User, Role, Permission, Department, Course, Batch, Program, 
+import type {
+  User, Role, Permission, Department, Course, Batch, Program,
   Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, Project, Assessment, Result, Enrollment, CourseOffering, Notification, StudentAssessmentScore, CourseMaterial, AttendanceRecord, Timetable, ProjectLocation, Curriculum, RoomAllocation, Examination, AcademicTerm, ProgramSemesterDateEntry, FacultyPreference, CoursePreference, TimePreference, TimeSlot
 } from '@/types/entities';
 
@@ -27,7 +27,7 @@ const instituteSchema = new Schema<IInstitute>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       if (ret.id && typeof ret.id === 'string' && ret.id !== ret._id.toString()) {
         // Keep the custom id
@@ -61,7 +61,7 @@ const buildingSchema = new Schema<IBuilding>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -82,19 +82,19 @@ const roomSchema = new Schema<IRoom>({
   name: { type: String },
   buildingId: { type: String, required: true },
   floor: { type: Number },
-  type: { 
-    type: String, 
-    enum: ['Lecture Hall', 'Laboratory', 'Office', 'Staff Room', 'Workshop', 'Library', 'Store Room', 'Seminar Hall', 'Auditorium', 'Other'], 
-    required: true 
+  type: {
+    type: String,
+    enum: ['Lecture Hall', 'Laboratory', 'Office', 'Staff Room', 'Workshop', 'Library', 'Store Room', 'Seminar Hall', 'Auditorium', 'Other'],
+    required: true
   },
   capacity: { type: Number },
   areaSqFt: { type: Number },
   facilities: [{ type: String }],
-  status: { 
-    type: String, 
-    enum: ['available', 'occupied', 'under_maintenance', 'unavailable', 'reserved'], 
-    required: true, 
-    default: 'available' 
+  status: {
+    type: String,
+    enum: ['available', 'occupied', 'under_maintenance', 'unavailable', 'reserved'],
+    required: true,
+    default: 'available'
   },
   notes: { type: String },
   cctv: {
@@ -104,8 +104,8 @@ const roomSchema = new Schema<IRoom>({
     ipAddress: { type: String }, // e.g., "10.169.24.27"
     username: { type: String }, // e.g., "admin"
     password: { type: String }, // e.g., "admin", "admin@123"
-    status: { 
-      type: String, 
+    status: {
+      type: String,
       enum: ['working', 'down', 'maintenance', 'not_installed'],
       default: 'not_installed'
     }
@@ -115,7 +115,7 @@ const roomSchema = new Schema<IRoom>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -150,11 +150,11 @@ const committeeSchema = new Schema<ICommittee>({
   instituteId: { type: String, required: true },
   formationDate: { type: String, required: true },
   dissolutionDate: { type: String },
-  status: { 
-    type: String, 
-    enum: ['active', 'inactive', 'dissolved', 'suspended'], 
-    required: true, 
-    default: 'active' 
+  status: {
+    type: String,
+    enum: ['active', 'inactive', 'dissolved', 'suspended'],
+    required: true,
+    default: 'active'
   },
   convenerId: { type: String },
   members: [{
@@ -171,7 +171,7 @@ const committeeSchema = new Schema<ICommittee>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -199,16 +199,16 @@ const academicTermSchema = new Schema<IAcademicTerm>({
   name: { type: String, required: true }, // "Odd Term 2024-25" (no program-specific)
   academicYear: { type: String, required: true },
   term: { type: String, enum: ['Odd', 'Even'], required: true },
-  
+
   // Multiple entries - each can have different programs, semesters, and dates (table-like structure)
   dateEntries: [programSemesterDateEntrySchema],
-  
+
   status: { type: String, enum: ['draft', 'active', 'completed', 'cancelled'], required: true, default: 'draft' },
   gtuCalendarUrl: { type: String },
   notes: { type: String },
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() },
-  
+
   // Legacy fields (for backward compatibility - will be removed in future)
   programId: { type: String }, // Deprecated
   semesters: [{ type: Number }], // Deprecated
@@ -220,7 +220,7 @@ const academicTermSchema = new Schema<IAcademicTerm>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -230,56 +230,56 @@ const academicTermSchema = new Schema<IAcademicTerm>({
   }
 });
 
-academicTermSchema.pre('save', function(next) {
+academicTermSchema.pre('save', function (next) {
   // Generate custom ID if not provided
   if (!this.id) {
     this.id = this._id.toString();
   }
-  
+
   // Generate name if not provided
   if (!this.name) {
     this.name = `${this.term} Term ${this.academicYear}`;
   }
-  
+
   // Set updatedAt timestamp
   this.updatedAt = new Date().toISOString();
-  
+
   // Validate date entries
   if (this.dateEntries && this.dateEntries.length > 0) {
     for (let i = 0; i < this.dateEntries.length; i++) {
       const entry = this.dateEntries[i];
-      
+
       // Validate required fields
       if (!entry.programs || entry.programs.length === 0) {
         return next(new Error(`Date entry ${i + 1}: At least one program must be selected`));
       }
-      
+
       if (!entry.semesters || entry.semesters.length === 0) {
         return next(new Error(`Date entry ${i + 1}: At least one semester must be selected`));
       }
-      
+
       if (!entry.startDate || !entry.endDate) {
         return next(new Error(`Date entry ${i + 1}: Start date and end date are required`));
       }
-      
+
       // Validate date formats and order
       const startDate = new Date(entry.startDate);
       const endDate = new Date(entry.endDate);
-      
+
       if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
         return next(new Error(`Date entry ${i + 1}: Invalid date format`));
       }
-      
+
       if (startDate >= endDate) {
         return next(new Error(`Date entry ${i + 1}: Start date must be before end date`));
       }
-      
+
       // Validate semester numbers (1-6 for diploma programs)
       const invalidSemesters = entry.semesters.filter(sem => sem < 1 || sem > 6);
       if (invalidSemesters.length > 0) {
         return next(new Error(`Date entry ${i + 1}: Invalid semester numbers: ${invalidSemesters.join(', ')}. Must be between 1 and 6`));
       }
-      
+
       // Validate semester numbers match term type
       const termType = this.term;
       if (termType === 'Odd') {
@@ -297,7 +297,7 @@ academicTermSchema.pre('save', function(next) {
       }
     }
   }
-  
+
   (this as IAcademicTerm).updatedAt = new Date().toISOString();
   next();
 });
@@ -319,22 +319,22 @@ const userSchema = new Schema<IUser>({
   photoURL: { type: String },
   phoneNumber: { type: String },
   departmentId: { type: String },
-  
-  authProviders: [{ 
-    type: String, 
+
+  authProviders: [{
+    type: String,
     enum: ['password', 'google', 'microsoft'],
-    required: true 
+    required: true
   }],
-  
+
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() },
   lastLoginAt: { type: String },
   isActive: { type: Boolean, required: true, default: true },
   isEmailVerified: { type: Boolean, default: false },
-  
+
   roles: [{ type: String, required: true }],
   currentRole: { type: String, required: true },
-  
+
   preferences: {
     theme: { type: String, enum: ['light', 'dark', 'system'], default: 'system' },
     language: { type: String, default: 'en' },
@@ -348,15 +348,15 @@ const userSchema = new Schema<IUser>({
       favorites: [{ type: String }]
     }
   },
-  
+
   instituteId: { type: String },
   instituteEmail: { type: String },
-  
+
   password: { type: String }
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -378,18 +378,18 @@ const roleSchema = new Schema<IRole>({
   code: { type: String, required: true, unique: true },
   description: { type: String, required: true },
   permissions: [{ type: String, required: true }],
-  
+
   isSystemRole: { type: Boolean, default: false },
   isCommitteeRole: { type: Boolean, default: false },
   committeeId: { type: String },
   committeeCode: { type: String },
-  
+
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() },
-  
+
   scope: {
-    level: { 
-      type: String, 
+    level: {
+      type: String,
       enum: ['system', 'dte', 'gtu', 'institute', 'department', 'committee'],
       required: true
     },
@@ -400,7 +400,7 @@ const roleSchema = new Schema<IRole>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -425,7 +425,7 @@ const permissionSchema = new Schema<IPermission>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
@@ -452,7 +452,7 @@ const departmentSchema = new Schema<IDepartment>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -499,7 +499,7 @@ const courseSchema = new Schema<ICourse>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -527,7 +527,7 @@ const batchSchema = new Schema<IBatch>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -571,7 +571,7 @@ const programSchema = new Schema<IProgram>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       if (ret.id && typeof ret.id === 'string' && ret.id !== ret._id.toString()) {
         // Keep the custom id
@@ -612,7 +612,7 @@ const curriculumSchema = new Schema<ICurriculum>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -623,57 +623,57 @@ const curriculumSchema = new Schema<ICurriculum>({
 });
 
 // Update timestamps middleware
-instituteSchema.pre('save', function(next) {
+instituteSchema.pre('save', function (next) {
   (this as IInstitute).updatedAt = new Date().toISOString();
   next();
 });
 
-buildingSchema.pre('save', function(next) {
+buildingSchema.pre('save', function (next) {
   (this as IBuilding).updatedAt = new Date().toISOString();
   next();
 });
 
-roomSchema.pre('save', function(next) {
+roomSchema.pre('save', function (next) {
   (this as IRoom).updatedAt = new Date().toISOString();
   next();
 });
 
-committeeSchema.pre('save', function(next) {
+committeeSchema.pre('save', function (next) {
   (this as { updatedAt?: string }).updatedAt = new Date().toISOString();
   next();
 });
 
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function (next) {
   (this as IUser).updatedAt = new Date().toISOString();
   next();
 });
 
-roleSchema.pre('save', function(next) {
+roleSchema.pre('save', function (next) {
   (this as IRole).updatedAt = new Date().toISOString();
   next();
 });
 
-departmentSchema.pre('save', function(next) {
+departmentSchema.pre('save', function (next) {
   (this as IDepartment).updatedAt = new Date().toISOString();
   next();
 });
 
-courseSchema.pre('save', function(next) {
+courseSchema.pre('save', function (next) {
   (this as ICourse).updatedAt = new Date().toISOString();
   next();
 });
 
-batchSchema.pre('save', function(next) {
+batchSchema.pre('save', function (next) {
   (this as IBatch).updatedAt = new Date().toISOString();
   next();
 });
 
-programSchema.pre('save', function(next) {
+programSchema.pre('save', function (next) {
   (this as IProgram).updatedAt = new Date().toISOString();
   next();
 });
 
-curriculumSchema.pre('save', function(next) {
+curriculumSchema.pre('save', function (next) {
   (this as ICurriculum).updatedAt = new Date().toISOString();
   next();
 });
@@ -703,7 +703,7 @@ const roomAllocationSchema = new Schema<IRoomAllocation>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -713,7 +713,7 @@ const roomAllocationSchema = new Schema<IRoomAllocation>({
   }
 });
 
-roomAllocationSchema.pre('save', function(next) {
+roomAllocationSchema.pre('save', function (next) {
   (this as IRoomAllocation).updatedAt = new Date().toISOString();
   next();
 });
@@ -753,7 +753,7 @@ const examinationSchema = new Schema<IExamination>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -763,7 +763,7 @@ const examinationSchema = new Schema<IExamination>({
   }
 });
 
-examinationSchema.pre('save', function(next) {
+examinationSchema.pre('save', function (next) {
   (this as IExamination).updatedAt = new Date().toISOString();
   next();
 });
@@ -776,25 +776,25 @@ interface IStudent extends Omit<Student, 'id'>, Document {
 const studentSchema = new Schema<IStudent>({
   id: { type: String, unique: true, sparse: true }, // Custom ID field
   userId: { type: String }, // Reference to User model
-  
+
   enrollmentNumber: { type: String, required: true, unique: true },
-  
+
   programId: { type: String, required: true }, // Reference to Program
   batchId: { type: String }, // Reference to Batch
   currentSemester: { type: Number, required: true, default: 1 },
   admissionDate: { type: String },
-  
+
   category: { type: String }, // OPEN, SEBC, SC, ST, etc.
-  shift: { 
-    type: String, 
-    enum: ['Morning', 'Afternoon', 'Evening'], 
+  shift: {
+    type: String,
+    enum: ['Morning', 'Afternoon', 'Evening'],
   },
-  
+
   isComplete: { type: Boolean, default: false },
   termClose: { type: Boolean, default: false },
   isCancel: { type: Boolean, default: false },
   isPassAll: { type: Boolean, default: false },
-  
+
   // Semester status tracking
   sem1Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
   sem2Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
@@ -802,7 +802,7 @@ const studentSchema = new Schema<IStudent>({
   sem4Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
   sem5Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
   sem6Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
-  
+
   // Personal Information
   fullNameGtuFormat: { type: String },
   firstName: { type: String },
@@ -812,13 +812,13 @@ const studentSchema = new Schema<IStudent>({
   dateOfBirth: { type: String },
   bloodGroup: { type: String },
   aadharNumber: { type: String },
-  
+
   // Contact Information
   personalEmail: { type: String },
   instituteEmail: { type: String, required: true },
   contactNumber: { type: String },
   address: { type: String },
-  
+
   // Guardian Details
   guardianDetails: {
     name: { type: String },
@@ -827,20 +827,20 @@ const studentSchema = new Schema<IStudent>({
     occupation: { type: String },
     annualIncome: { type: Number }
   },
-  
-  status: { 
-    type: String, 
-    enum: ['active', 'inactive', 'graduated', 'dropped'], 
-    required: true, 
-    default: 'active' 
+
+  status: {
+    type: String,
+    enum: ['active', 'inactive', 'graduated', 'dropped'],
+    required: true,
+    default: 'active'
   },
   convocationYear: { type: Number },
   academicRemarks: { type: String },
-  
+
   instituteId: { type: String },
   photoURL: { type: String },
   isActive: { type: Boolean, default: true },
-  
+
   // LinkedIn-like Profile Sections
   profileSummary: { type: String },
   education: [{
@@ -943,7 +943,7 @@ const studentSchema = new Schema<IStudent>({
     proficiency: { type: String, enum: ['native', 'fluent', 'conversational', 'basic'], default: 'basic' },
     order: { type: Number, default: 0 }
   }],
-  
+
   // Additional Professional Sections
   volunteerWork: [{
     id: { type: String },
@@ -985,7 +985,7 @@ const studentSchema = new Schema<IStudent>({
     certificateUrl: { type: String },
     order: { type: Number, default: 0 }
   }],
-  
+
   // Profile Settings
   profileVisibility: { type: String, enum: ['public', 'private', 'institute_only'], default: 'institute_only' },
   profileSettings: {
@@ -1003,13 +1003,13 @@ const studentSchema = new Schema<IStudent>({
     allowPrint: { type: Boolean, default: true },
     customUrl: { type: String }
   },
-  
+
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1019,7 +1019,7 @@ const studentSchema = new Schema<IStudent>({
   }
 });
 
-studentSchema.pre('save', function(next) {
+studentSchema.pre('save', function (next) {
   this.updatedAt = new Date().toISOString();
   next();
 });
@@ -1032,10 +1032,10 @@ interface IFaculty extends Omit<Faculty, 'id'>, Document {
 const facultySchema = new Schema<IFaculty>({
   id: { type: String, unique: true, sparse: true }, // Custom ID field
   userId: { type: String }, // Reference to User model
-  
+
   staffCode: { type: String, required: true, unique: true },
   employeeId: { type: String },
-  
+
   title: { type: String },
   firstName: { type: String },
   middleName: { type: String },
@@ -1044,20 +1044,20 @@ const facultySchema = new Schema<IFaculty>({
   personalEmail: { type: String },
   instituteEmail: { type: String, required: true },
   contactNumber: { type: String },
-  
+
   department: { type: String, required: true },
   designation: { type: String },
-  jobType: { 
-    type: String, 
+  jobType: {
+    type: String,
     enum: ['Regular', 'Adhoc', 'Contractual', 'Visiting', 'Other']
   },
-  staffCategory: { 
-    type: String, 
+  staffCategory: {
+    type: String,
     enum: ['Teaching', 'Clerical', 'Technical', 'Support', 'Administrative', 'Other'],
     default: 'Teaching'
   },
-  category: { 
-    type: String, 
+  category: {
+    type: String,
     enum: ['Teaching', 'Clerical', 'Technical', 'Support', 'Administrative', 'Other']
   }, // Alias for staffCategory for compatibility
   instType: { type: String },
@@ -1072,7 +1072,7 @@ const facultySchema = new Schema<IFaculty>({
   }],
   qualification: { type: String }, // Single qualification field for compatibility
   experienceYears: { type: String }, // Years of experience as string for compatibility
-  
+
   // LinkedIn-like Profile Sections
   profileSummary: { type: String },
   education: [{
@@ -1186,10 +1186,10 @@ const facultySchema = new Schema<IFaculty>({
     proficiency: { type: String, enum: ['native', 'fluent', 'conversational', 'basic'], default: 'basic' },
     order: { type: Number, default: 0 }
   }],
-  
+
   dateOfBirth: { type: String },
   joiningDate: { type: String },
-  
+
   // Additional fields for compatibility
   gtuFacultyId: { type: String },
   fullName: { type: String },
@@ -1198,7 +1198,7 @@ const facultySchema = new Schema<IFaculty>({
   isPrincipal: { type: Boolean, default: false },
   researchInterests: [{ type: String }], // Array of strings to match TypeScript interface
   subjects: [{ type: String }], // Array of subjects taught by the faculty
-  
+
   gender: { type: String, enum: ['Male', 'Female', 'Other'] },
   maritalStatus: { type: String },
   aadharNumber: { type: String },
@@ -1207,26 +1207,26 @@ const facultySchema = new Schema<IFaculty>({
   placeOfBirth: { type: String },
   nationality: { type: String },
   knownAs: { type: String },
-  
+
   // Profile Settings
   profileVisibility: { type: String, enum: ['public', 'private', 'institute_only'], default: 'institute_only' },
-  
-  status: { 
-    type: String, 
+
+  status: {
+    type: String,
     enum: ['active', 'inactive', 'retired', 'resigned', 'on_leave'],
     required: true,
     default: 'active'
   },
-  
+
   instituteId: { type: String },
   photoURL: { type: String },
-  
+
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1236,7 +1236,7 @@ const facultySchema = new Schema<IFaculty>({
   }
 });
 
-facultySchema.pre('save', function(next) {
+facultySchema.pre('save', function (next) {
   (this as any).updatedAt = new Date().toISOString();
   next();
 });
@@ -1278,10 +1278,10 @@ const facultyPreferenceSchema = new Schema<IFacultyPreference>({
   maxHoursPerWeek: { type: Number, required: true, default: 18, min: 1, max: 50 },
   maxConsecutiveHours: { type: Number, required: true, default: 4, min: 1, max: 8 },
   unavailableSlots: [timeSlotSchema],
-  workingDays: [{ 
-    type: String, 
+  workingDays: [{
+    type: String,
     enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-    required: true 
+    required: true
   }],
   priority: { type: Number, required: true, default: 5, min: 1, max: 10 }, // Based on seniority, 1-10
   createdAt: { type: String, default: () => new Date().toISOString() },
@@ -1289,7 +1289,7 @@ const facultyPreferenceSchema = new Schema<IFacultyPreference>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1302,7 +1302,7 @@ const facultyPreferenceSchema = new Schema<IFacultyPreference>({
 // Add compound index for uniqueness (one preference per faculty per academic term and semester)
 facultyPreferenceSchema.index({ facultyId: 1, academicYear: 1, semester: 1 }, { unique: true });
 
-facultyPreferenceSchema.pre('save', function(next) {
+facultyPreferenceSchema.pre('save', function (next) {
   (this as IFacultyPreference).updatedAt = new Date().toISOString();
   next();
 });
@@ -1314,14 +1314,14 @@ interface IProjectTeam extends Omit<ProjectTeam, 'id'>, Document {
 
 const projectTeamSchema = new Schema<IProjectTeam>({
   id: { type: String, unique: true, sparse: true }, // Custom ID field
-  
+
   name: { type: String, required: true },
   description: { type: String },
   department: { type: String, required: true },
   eventId: { type: String, required: true },
   maxMembers: { type: Number },
   status: { type: String, enum: ['active', 'inactive', 'completed'], default: 'active' },
-  
+
   members: [{
     userId: { type: String, required: true },
     name: { type: String, required: true },
@@ -1330,16 +1330,16 @@ const projectTeamSchema = new Schema<IProjectTeam>({
     isLeader: { type: Boolean, required: true, default: false },
     joinedAt: { type: String, default: () => new Date().toISOString() }
   }],
-  
+
   createdBy: { type: String },
   updatedBy: { type: String },
-  
+
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1349,7 +1349,7 @@ const projectTeamSchema = new Schema<IProjectTeam>({
   }
 });
 
-projectTeamSchema.pre('save', function(next) {
+projectTeamSchema.pre('save', function (next) {
   (this as IProjectTeam).updatedAt = new Date().toISOString();
   next();
 });
@@ -1361,21 +1361,21 @@ interface IProjectEvent extends Omit<ProjectEvent, 'id'>, Document {
 
 const projectEventSchema = new Schema<IProjectEvent>({
   id: { type: String, unique: true, sparse: true }, // Custom ID field
-  
+
   name: { type: String, required: true },
   description: { type: String },
   academicYear: { type: String, required: true },
   eventDate: { type: String, required: true }, // ISO date string
   registrationStartDate: { type: String, required: true }, // ISO date string
   registrationEndDate: { type: String, required: true }, // ISO date string
-  status: { 
-    type: String, 
-    enum: ['upcoming', 'ongoing', 'completed', 'cancelled'], 
-    required: true 
+  status: {
+    type: String,
+    enum: ['upcoming', 'ongoing', 'completed', 'cancelled'],
+    required: true
   },
   isActive: { type: Boolean, required: true, default: true },
   publishResults: { type: Boolean, default: false },
-  
+
   schedule: [{
     time: { type: String, required: true },
     activity: { type: String, required: true },
@@ -1386,18 +1386,18 @@ const projectEventSchema = new Schema<IProjectEvent>({
     },
     notes: { type: String }
   }],
-  
+
   departments: [{ type: String }],
-  
+
   createdBy: { type: String },
   updatedBy: { type: String },
-  
+
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1407,7 +1407,7 @@ const projectEventSchema = new Schema<IProjectEvent>({
   }
 });
 
-projectEventSchema.pre('save', function(next) {
+projectEventSchema.pre('save', function (next) {
   (this as IProjectEvent).updatedAt = new Date().toISOString();
   next();
 });
@@ -1419,35 +1419,35 @@ interface IProject extends Omit<Project, 'id'>, Document {
 
 const projectSchema = new Schema<IProject>({
   id: { type: String, unique: true, sparse: true }, // Custom ID field
-  
+
   title: { type: String, required: true },
   category: { type: String, required: true },
   abstract: { type: String, required: true },
   department: { type: String, required: true },
-  status: { 
-    type: String, 
-    enum: ['draft', 'submitted', 'approved', 'rejected', 'completed', 'evaluated'], 
-    required: true 
+  status: {
+    type: String,
+    enum: ['draft', 'submitted', 'approved', 'rejected', 'completed', 'evaluated'],
+    required: true
   },
-  
+
   requirements: {
     power: { type: Boolean, required: true },
     internet: { type: Boolean, required: true },
     specialSpace: { type: Boolean, required: true },
     otherRequirements: { type: String }
   },
-  
+
   guide: {
     userId: { type: String, required: true },
     name: { type: String, required: true },
     department: { type: String, required: true },
     contactNumber: { type: String }
   },
-  
+
   teamId: { type: String, required: true },
   eventId: { type: String, required: true },
   locationId: { type: String },
-  
+
   deptEvaluation: {
     completed: { type: Boolean, required: true },
     score: { type: Number },
@@ -1460,7 +1460,7 @@ const projectSchema = new Schema<IProject>({
       comments: { type: String }
     }]
   },
-  
+
   centralEvaluation: {
     completed: { type: Boolean, required: true },
     score: { type: Number },
@@ -1473,20 +1473,20 @@ const projectSchema = new Schema<IProject>({
       comments: { type: String }
     }]
   },
-  
+
   rank: { type: Number },
   prize: { type: String },
   certificateUrl: { type: String },
-  
+
   createdBy: { type: String },
   updatedBy: { type: String },
-  
+
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1496,7 +1496,7 @@ const projectSchema = new Schema<IProject>({
   }
 });
 
-projectSchema.pre('save', function(next) {
+projectSchema.pre('save', function (next) {
   (this as IProject).updatedAt = new Date().toISOString();
   next();
 });
@@ -1508,15 +1508,15 @@ interface IAssessment extends Omit<Assessment, 'id'>, Document {
 
 const assessmentSchema = new Schema<IAssessment>({
   id: { type: String, unique: true, sparse: true }, // Custom ID field
-  
+
   name: { type: String, required: true },
   courseId: { type: String, required: true },
   programId: { type: String, required: true },
   batchId: { type: String },
-  type: { 
-    type: String, 
-    enum: ['Quiz', 'Midterm', 'Final Exam', 'Assignment', 'Project', 'Lab Work', 'Presentation', 'Other'], 
-    required: true 
+  type: {
+    type: String,
+    enum: ['Quiz', 'Midterm', 'Final Exam', 'Assignment', 'Project', 'Lab Work', 'Presentation', 'Other'],
+    required: true
   },
   description: { type: String },
   maxMarks: { type: Number, required: true },
@@ -1524,20 +1524,20 @@ const assessmentSchema = new Schema<IAssessment>({
   weightage: { type: Number },
   assessmentDate: { type: String },
   dueDate: { type: String },
-  status: { 
-    type: String, 
-    enum: ['Draft', 'Published', 'Ongoing', 'Completed', 'Cancelled'], 
-    required: true 
+  status: {
+    type: String,
+    enum: ['Draft', 'Published', 'Ongoing', 'Completed', 'Cancelled'],
+    required: true
   },
   instructions: { type: String },
   facultyId: { type: String },
-  
+
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1547,7 +1547,7 @@ const assessmentSchema = new Schema<IAssessment>({
   }
 });
 
-assessmentSchema.pre('save', function(next) {
+assessmentSchema.pre('save', function (next) {
   (this as IAssessment).updatedAt = new Date().toISOString();
   next();
 });
@@ -1608,7 +1608,7 @@ const resultSchema = new Schema<IResult>({
   timestamps: false,
   _id: true, // Let MongoDB handle _id generation
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Keep _id as is for Results (compatibility with existing code)
       delete ret.__v;
       return ret;
@@ -1616,7 +1616,7 @@ const resultSchema = new Schema<IResult>({
   }
 });
 
-resultSchema.pre('save', function(next) {
+resultSchema.pre('save', function (next) {
   (this as IResult).updatedAt = new Date().toISOString();
   next();
 });
@@ -1628,13 +1628,13 @@ interface IEnrollment extends Omit<Enrollment, 'id'>, Document {
 
 const enrollmentSchema = new Schema<IEnrollment>({
   id: { type: String, unique: true, sparse: true }, // Custom ID field
-  
+
   studentId: { type: String, required: true },
   courseOfferingId: { type: String, required: true },
-  status: { 
-    type: String, 
-    enum: ['requested', 'enrolled', 'withdrawn', 'completed', 'failed', 'incomplete', 'rejected'], 
-    required: true 
+  status: {
+    type: String,
+    enum: ['requested', 'enrolled', 'withdrawn', 'completed', 'failed', 'incomplete', 'rejected'],
+    required: true
   },
   internalMarks: { type: Number },
   externalMarks: { type: Number },
@@ -1642,13 +1642,13 @@ const enrollmentSchema = new Schema<IEnrollment>({
   attendancePercentage: { type: Number },
   enrolledAt: { type: String },
   completedAt: { type: String },
-  
+
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1658,7 +1658,7 @@ const enrollmentSchema = new Schema<IEnrollment>({
   }
 });
 
-enrollmentSchema.pre('save', function(next) {
+enrollmentSchema.pre('save', function (next) {
   (this as IEnrollment).updatedAt = new Date().toISOString();
   next();
 });
@@ -1674,15 +1674,15 @@ const courseOfferingSchema = new Schema<ICourseOffering>({
   academicTermId: { type: String, required: true }, // New primary field
   facultyIds: [{ type: String }],
   roomIds: [{ type: String }],
-  status: { 
-    type: String, 
-    enum: ['scheduled', 'ongoing', 'completed', 'cancelled'], 
-    required: true, 
-    default: 'scheduled' 
+  status: {
+    type: String,
+    enum: ['scheduled', 'ongoing', 'completed', 'cancelled'],
+    required: true,
+    default: 'scheduled'
   },
   currentEnrollments: { type: Number, default: 0 },
   description: { type: String },
-  
+
   // Legacy fields for backward compatibility (optional)
   batchId: { type: String },
   academicYear: { type: String },
@@ -1691,13 +1691,13 @@ const courseOfferingSchema = new Schema<ICourseOffering>({
   endDate: { type: String },
   programId: { type: String },
   maxEnrollments: { type: Number },
-  
+
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1707,7 +1707,7 @@ const courseOfferingSchema = new Schema<ICourseOffering>({
   }
 });
 
-courseOfferingSchema.pre('save', function(next) {
+courseOfferingSchema.pre('save', function (next) {
   (this as unknown as ICourseOffering).updatedAt = new Date().toISOString();
   next();
 });
@@ -1721,10 +1721,10 @@ const notificationSchema = new Schema<INotification>({
   id: { type: String, unique: true, sparse: true }, // Custom ID field
   userId: { type: String, required: true },
   message: { type: String, required: true },
-  type: { 
-    type: String, 
-    enum: ['info', 'success', 'warning', 'error', 'update', 'reminder', 'assignment_new', 'assignment_graded', 'enrollment_request', 'enrollment_approved', 'enrollment_rejected'], 
-    required: true 
+  type: {
+    type: String,
+    enum: ['info', 'success', 'warning', 'error', 'update', 'reminder', 'assignment_new', 'assignment_graded', 'enrollment_request', 'enrollment_approved', 'enrollment_rejected'],
+    required: true
   },
   isRead: { type: Boolean, required: true, default: false },
   link: { type: String },
@@ -1735,7 +1735,7 @@ const notificationSchema = new Schema<INotification>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1745,7 +1745,7 @@ const notificationSchema = new Schema<INotification>({
   }
 });
 
-notificationSchema.pre('save', function(next) {
+notificationSchema.pre('save', function (next) {
   (this as INotification).updatedAt = new Date().toISOString();
   next();
 });
@@ -1777,7 +1777,7 @@ const studentAssessmentScoreSchema = new Schema<IStudentAssessmentScore>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1787,7 +1787,7 @@ const studentAssessmentScoreSchema = new Schema<IStudentAssessmentScore>({
   }
 });
 
-studentAssessmentScoreSchema.pre('save', function(next) {
+studentAssessmentScoreSchema.pre('save', function (next) {
   (this as IStudentAssessmentScore).updatedAt = new Date().toISOString();
   next();
 });
@@ -1802,10 +1802,10 @@ const courseMaterialSchema = new Schema<ICourseMaterial>({
   courseOfferingId: { type: String, required: true },
   title: { type: String, required: true },
   description: { type: String },
-  fileType: { 
-    type: String, 
+  fileType: {
+    type: String,
     enum: ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'txt', 'zip', 'link', 'video', 'image', 'other'],
-    required: true 
+    required: true
   },
   filePathOrUrl: { type: String, required: true },
   fileName: { type: String },
@@ -1816,7 +1816,7 @@ const courseMaterialSchema = new Schema<ICourseMaterial>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1826,7 +1826,7 @@ const courseMaterialSchema = new Schema<ICourseMaterial>({
   }
 });
 
-courseMaterialSchema.pre('save', function(next) {
+courseMaterialSchema.pre('save', function (next) {
   (this as ICourseMaterial).updatedAt = new Date().toISOString();
   next();
 });
@@ -1841,10 +1841,10 @@ const attendanceRecordSchema = new Schema<IAttendanceRecord>({
   studentId: { type: String, required: true },
   courseOfferingId: { type: String, required: true },
   date: { type: String, required: true },
-  status: { 
-    type: String, 
+  status: {
+    type: String,
     enum: ['present', 'absent', 'late', 'excused'],
-    required: true 
+    required: true
   },
   markedBy: { type: String, required: true },
   remarks: { type: String },
@@ -1853,7 +1853,7 @@ const attendanceRecordSchema = new Schema<IAttendanceRecord>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1863,7 +1863,7 @@ const attendanceRecordSchema = new Schema<IAttendanceRecord>({
   }
 });
 
-attendanceRecordSchema.pre('save', function(next) {
+attendanceRecordSchema.pre('save', function (next) {
   (this as IAttendanceRecord).updatedAt = new Date().toISOString();
   next();
 });
@@ -1882,10 +1882,10 @@ const timetableEntrySchema = new Schema({
   courseName: { type: String },
   facultyId: { type: String, required: true },
   roomId: { type: String, required: true },
-  entryType: { 
-    type: String, 
-    enum: ['lecture', 'lab', 'tutorial', 'break', 'other'], 
-    required: true 
+  entryType: {
+    type: String,
+    enum: ['lecture', 'lab', 'tutorial', 'break', 'other'],
+    required: true
   },
   notes: { type: String }
 }, { _id: false });
@@ -1898,10 +1898,10 @@ const timetableSchema = new Schema<ITimetable>({
   programId: { type: String, required: true },
   batchId: { type: String },
   version: { type: String, required: true },
-  status: { 
-    type: String, 
-    enum: ['draft', 'published', 'archived'], 
-    required: true 
+  status: {
+    type: String,
+    enum: ['draft', 'published', 'archived'],
+    required: true
   },
   effectiveDate: { type: String, required: true },
   entries: [timetableEntrySchema],
@@ -1910,7 +1910,7 @@ const timetableSchema = new Schema<ITimetable>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1920,7 +1920,7 @@ const timetableSchema = new Schema<ITimetable>({
   }
 });
 
-timetableSchema.pre('save', function(next) {
+timetableSchema.pre('save', function (next) {
   (this as ITimetable).updatedAt = new Date().toISOString();
   next();
 });
@@ -1947,7 +1947,7 @@ const projectLocationSchema = new Schema<IProjectLocation>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       // Use custom id if available, otherwise use _id
       ret.id = ret.id || ret._id;
       delete ret._id;
@@ -1957,7 +1957,7 @@ const projectLocationSchema = new Schema<IProjectLocation>({
   }
 });
 
-projectLocationSchema.pre('save', function(next) {
+projectLocationSchema.pre('save', function (next) {
   (this as IProjectLocation).updatedAt = new Date().toISOString();
   next();
 });
@@ -2161,8 +2161,13 @@ const feedbackAnalysisSchema = new Schema<IFeedbackAnalysis>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
-      ret.id = ret._id;
+    transform: function (doc, ret: any) {
+      // Use custom id if available, otherwise use _id
+      if (ret.id && typeof ret.id === 'string' && ret.id !== ret._id.toString()) {
+        // Keep the custom id
+      } else {
+        ret.id = ret._id;
+      }
       delete ret._id;
       delete ret.__v;
       return ret;
@@ -2217,7 +2222,7 @@ interface IAllocationSession extends Document {
   status: 'draft' | 'in_progress' | 'completed' | 'archived';
   createdBy: string; // User ID
   allocationMethod: 'preference_based' | 'manual' | 'hybrid';
-  
+
   // Algorithm parameters
   algorithmSettings: {
     prioritizeSeniority: boolean;
@@ -2226,7 +2231,7 @@ interface IAllocationSession extends Document {
     workloadBalanceWeightage: number; // 0-1
     minimizeConflicts: boolean;
   };
-  
+
   // Statistics
   statistics: {
     totalCourses: number;
@@ -2237,7 +2242,7 @@ interface IAllocationSession extends Document {
     conflictsDetected: number;
     averageSatisfactionScore: number;
   };
-  
+
   // Session metadata
   startedAt?: string;
   completedAt?: string;
@@ -2251,28 +2256,28 @@ interface ICourseAllocation extends Document {
   sessionId: string; // Reference to AllocationSession
   courseOfferingId: string; // Reference to CourseOffering
   facultyId: string; // Assigned faculty
-  
+
   // Assignment details
   assignmentType: 'theory' | 'lab' | 'tutorial' | 'project';
   hoursPerWeek: number;
-  
+
   // Assignment metadata
   allocationScore: number; // Algorithm-calculated score (0-100)
   preferenceMatch: 'high' | 'medium' | 'low' | 'none'; // How well it matches faculty preference
   expertiseLevel: number; // Faculty expertise for this course (1-10)
   conflictLevel: 'none' | 'minor' | 'major'; // Conflict assessment
-  
+
   // Manual adjustments
   isManualAssignment: boolean;
   originalFacultyId?: string; // If manually reassigned
   reassignmentReason?: string;
-  
+
   // Approval workflow
   status: 'pending' | 'approved' | 'rejected' | 'needs_review';
   reviewedBy?: string; // HOD or admin user ID
   reviewedAt?: string;
   reviewComments?: string;
-  
+
   // Timestamps
   createdAt: string;
   updatedAt: string;
@@ -2281,25 +2286,25 @@ interface ICourseAllocation extends Document {
 interface IAllocationConflict extends Document {
   id: string;
   sessionId: string;
-  conflictType: 
-    | 'time_overlap' 
-    | 'overload' 
-    | 'underload' 
-    | 'expertise_mismatch' 
-    | 'preference_violation'
-    | 'department_mismatch'
-    | 'room_conflict'
-    | 'consecutive_hours_violation'
-    | 'unavailable_time_slot'
-    | 'prerequisite_conflict'
-    | 'capacity_exceeded';
+  conflictType:
+  | 'time_overlap'
+  | 'overload'
+  | 'underload'
+  | 'expertise_mismatch'
+  | 'preference_violation'
+  | 'department_mismatch'
+  | 'room_conflict'
+  | 'consecutive_hours_violation'
+  | 'unavailable_time_slot'
+  | 'prerequisite_conflict'
+  | 'capacity_exceeded';
   severity: 'low' | 'medium' | 'high' | 'critical';
-  
+
   // Conflict details
   facultyId?: string;
   courseOfferingIds: string[];
   description: string;
-  
+
   // Resolution
   status: 'unresolved' | 'resolved' | 'ignored' | 'in_progress';
   resolutionSuggestions?: string[];
@@ -2315,7 +2320,7 @@ interface IAllocationConflict extends Document {
     impact: 'low' | 'medium' | 'high';
     feasibility: 'easy' | 'moderate' | 'difficult';
   }[];
-  
+
   createdAt: string;
   updatedAt: string;
 }
@@ -2327,8 +2332,8 @@ const allocationSessionSchema = new Schema<IAllocationSession>({
   academicYear: { type: String, required: true },
   semesters: [{ type: Number, required: true, min: 1, max: 6 }],
   targetPrograms: [{ type: String, required: true }],
-  status: { 
-    type: String, 
+  status: {
+    type: String,
     enum: ['draft', 'in_progress', 'completed', 'archived'],
     default: 'draft'
   },
@@ -2338,7 +2343,7 @@ const allocationSessionSchema = new Schema<IAllocationSession>({
     enum: ['preference_based', 'manual', 'hybrid'],
     default: 'preference_based'
   },
-  
+
   algorithmSettings: {
     prioritizeSeniority: { type: Boolean, default: true },
     expertiseWeightage: { type: Number, default: 0.4, min: 0, max: 1 },
@@ -2346,7 +2351,7 @@ const allocationSessionSchema = new Schema<IAllocationSession>({
     workloadBalanceWeightage: { type: Number, default: 0.2, min: 0, max: 1 },
     minimizeConflicts: { type: Boolean, default: true }
   },
-  
+
   statistics: {
     totalCourses: { type: Number, default: 0 },
     totalFaculty: { type: Number, default: 0 },
@@ -2356,7 +2361,7 @@ const allocationSessionSchema = new Schema<IAllocationSession>({
     conflictsDetected: { type: Number, default: 0 },
     averageSatisfactionScore: { type: Number, default: 0 }
   },
-  
+
   startedAt: { type: String },
   completedAt: { type: String },
   createdAt: { type: String, default: () => new Date().toISOString() },
@@ -2365,7 +2370,7 @@ const allocationSessionSchema = new Schema<IAllocationSession>({
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
@@ -2380,14 +2385,14 @@ const courseAllocationSchema = new Schema<ICourseAllocation>({
   sessionId: { type: String, required: true },
   courseOfferingId: { type: String, required: true },
   facultyId: { type: String, required: true },
-  
+
   assignmentType: {
     type: String,
     enum: ['theory', 'lab', 'tutorial', 'project'],
     default: 'theory'
   },
   hoursPerWeek: { type: Number, required: true, min: 1, max: 20 },
-  
+
   allocationScore: { type: Number, default: 0, min: 0, max: 100 },
   preferenceMatch: {
     type: String,
@@ -2400,11 +2405,11 @@ const courseAllocationSchema = new Schema<ICourseAllocation>({
     enum: ['none', 'minor', 'major'],
     default: 'none'
   },
-  
+
   isManualAssignment: { type: Boolean, default: false },
   originalFacultyId: { type: String },
   reassignmentReason: { type: String },
-  
+
   status: {
     type: String,
     enum: ['pending', 'approved', 'rejected', 'needs_review'],
@@ -2413,13 +2418,13 @@ const courseAllocationSchema = new Schema<ICourseAllocation>({
   reviewedBy: { type: String },
   reviewedAt: { type: String },
   reviewComments: { type: String },
-  
+
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
@@ -2435,10 +2440,10 @@ const allocationConflictSchema = new Schema<IAllocationConflict>({
   conflictType: {
     type: String,
     enum: [
-      'time_overlap', 
-      'overload', 
-      'underload', 
-      'expertise_mismatch', 
+      'time_overlap',
+      'overload',
+      'underload',
+      'expertise_mismatch',
       'preference_violation',
       'department_mismatch',
       'room_conflict',
@@ -2454,11 +2459,11 @@ const allocationConflictSchema = new Schema<IAllocationConflict>({
     enum: ['low', 'medium', 'high', 'critical'],
     default: 'medium'
   },
-  
+
   facultyId: { type: String },
   courseOfferingIds: [{ type: String, required: true }],
   description: { type: String, required: true },
-  
+
   status: {
     type: String,
     enum: ['unresolved', 'resolved', 'ignored', 'in_progress'],
@@ -2477,24 +2482,24 @@ const allocationConflictSchema = new Schema<IAllocationConflict>({
   alternativeSolutions: [{
     action: { type: String, required: true },
     description: { type: String, required: true },
-    impact: { 
-      type: String, 
+    impact: {
+      type: String,
       enum: ['low', 'medium', 'high'],
-      required: true 
+      required: true
     },
-    feasibility: { 
-      type: String, 
+    feasibility: {
+      type: String,
       enum: ['easy', 'moderate', 'difficult'],
-      required: true 
+      required: true
     }
   }],
-  
+
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
 }, {
   timestamps: false,
   toJSON: {
-    transform: function(doc, ret: any) {
+    transform: function (doc, ret: any) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
