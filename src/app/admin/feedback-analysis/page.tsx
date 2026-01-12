@@ -1,4 +1,3 @@
-// src/app/admin/feedback-analysis/page.tsx
 "use client";
 
 import React, { useState, ChangeEvent } from "react";
@@ -10,22 +9,30 @@ import { Loader2, Sparkles, UploadCloud } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
-import FeedbackReport from '@/components/admin/FeedbackReport'; // New component
+import FeedbackReport from '@/components/admin/FeedbackReport';
 import type { AnalysisResult } from '@/types/feedback';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function FeedbackAnalysisPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [progress, setProgress] = useState(0); // For simulated progress
+  const [progress, setProgress] = useState(0);
+  const [reportType, setReportType] = useState<string>('Comprehensive');
   const { toast } = useToast();
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setSelectedFile(event.target.files[0]);
-      setError(null); // Clear previous errors
-      setAnalysisResult(null); // Clear previous results
+      setError(null);
+      setAnalysisResult(null);
     }
   };
 
@@ -53,6 +60,7 @@ export default function FeedbackAnalysisPage() {
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
+      formData.append('reportType', reportType);
 
       const response = await fetch('/api/feedback/analyze', {
         method: 'POST',
@@ -71,8 +79,8 @@ export default function FeedbackAnalysisPage() {
         // Fetch the full report using the ID
         const reportResponse = await fetch(`/api/feedback/report/${result.reportId}`);
         if (!reportResponse.ok) {
-            const reportErrorData = await reportResponse.json().catch(() => ({error: "Failed to fetch report details"}));
-            throw new Error(reportErrorData.error || `Failed to fetch report details with status ${reportResponse.status}`);
+          const reportErrorData = await reportResponse.json().catch(() => ({ error: "Failed to fetch report details" }));
+          throw new Error(reportErrorData.error || `Failed to fetch report details with status ${reportResponse.status}`);
         }
         const fullReport: AnalysisResult = await reportResponse.json();
         setAnalysisResult(fullReport);
@@ -116,8 +124,26 @@ export default function FeedbackAnalysisPage() {
               />
             </div>
             {selectedFile && <p className="text-xs text-muted-foreground mt-1">Selected: {selectedFile.name}</p>}
+
+            <div className="mt-6">
+              <Label htmlFor="reportType" className="text-lg font-medium">Report Type</Label>
+              <div className="mt-2">
+                <Select value={reportType} onValueChange={setReportType}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Report Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Comprehensive">Comprehensive Report (All data)</SelectItem>
+                    <SelectItem value="Faculty">Faculty Wise Report (Space for Comments)</SelectItem>
+                    <SelectItem value="Branch">Branch Wise Report</SelectItem>
+                    <SelectItem value="Subject">Subject Wise Detailed Report</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
             <p className="text-xs text-muted-foreground mt-2">
-                Required CSV columns: Year, Term, Branch, Sem, Term_Start, Term_End, Subject_Code, Subject_FullName, Faculty_Name, Q1, Q2, ..., Q12.
+              Required CSV columns: Year, Term, Branch, Sem, Term_Start, Term_End, Subject_Code, Subject_FullName, Faculty_Name, Q1, Q2, ..., Q12.
             </p>
           </div>
 
