@@ -17,7 +17,7 @@ interface FeedbackReportProps {
 const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
   const { toast } = useToast();
 
-  const downloadReport = async (type: 'markdown' | 'excel' | 'pdf' | 'latex' | 'puppeteer' | 'latex-native' | 'latex-native-pdf', reportId: string) => {
+  const downloadReport = async (type: 'markdown' | 'excel' | 'pdf' | 'latex' | 'puppeteer' | 'latex-native' | 'latex-native-pdf' | 'wkhtml', reportId: string) => {
     try {
       let effectiveType = type;
       let fileExtension: string = type;
@@ -25,6 +25,9 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
       if (type === 'pdf' || type === 'puppeteer' || type === 'latex' || type === 'latex-native-pdf') { // Default PDF to puppeteer for direct generation
         effectiveType = type === 'pdf' ? 'puppeteer' : type;
         fileExtension = 'pdf';
+      } else if (type === 'wkhtml') {
+        // The API returns a Markdown file with instructions for these types
+        fileExtension = 'md';
       } else if (type === 'excel') {
         effectiveType = 'excel';
         fileExtension = 'xlsx';
