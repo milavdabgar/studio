@@ -173,6 +173,11 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
         <div className="prose prose-sm dark:prose-invert max-w-none max-h-[600px] overflow-y-auto p-4 border rounded-md bg-background dark:border-gray-700">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
+            urlTransform={(uri) => {
+              if (uri.startsWith('data:')) return uri;
+              // Default behavior for other protocols (simplified)
+              return uri;
+            }}
             components={{
               img: ({ node, ...props }) => {
                 if (!props.src) return null;
