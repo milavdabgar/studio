@@ -223,12 +223,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     } else if (type === 'latex-native') {
       filename = `feedback_report_${id}.tex`;
       contentType = 'application/x-latex; charset=utf-8';
-      bufferContent = generateNativeLatex(analysisResult);
+      bufferContent = await generateNativeLatex(analysisResult);
     } else if (type === 'latex-native-pdf') {
       filename = `feedback_report_${id}.pdf`;
       contentType = 'application/pdf';
       try {
-        const latexSource = generateNativeLatex(analysisResult);
+        const latexSource = await generateNativeLatex(analysisResult);
         const converter = new ContentConverterV2();
         bufferContent = await converter.compileLatex(latexSource);
       } catch (err) {

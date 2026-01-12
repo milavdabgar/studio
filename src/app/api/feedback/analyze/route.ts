@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { FeedbackDataRow, AnalysisResult, SubjectScore, FacultyScore, SemesterScore, BranchScore, TermYearScore } from '@/types/feedback';
 import { parse } from 'papaparse';
 import mongoose from 'mongoose';
+import { generateChartBase64 } from '@/lib/services/chartGenerator';
 import { FeedbackAnalysisModel } from '@/lib/models';
 
 const getFacultyInitial = (name: string): string => {
@@ -209,7 +210,7 @@ function calculateGenericScores<T extends { scores: { [key: string]: number }, c
 }
 
 
-const generateMarkdownReport = (result: Omit<AnalysisResult, 'id' | 'markdownReport' | 'analysisDate' | 'originalFileName' | 'rawFeedbackData'>): string => {
+const generateMarkdownReport = async (result: Omit<AnalysisResult, 'id' | 'markdownReport' | 'analysisDate' | 'originalFileName' | 'rawFeedbackData'>): Promise<string> => {
     const formatFloat = (x: number): string => x.toFixed(2);
 
     let report = `# Student Feedback Analysis Report\n\n`;
@@ -262,6 +263,16 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id' | 'markdownRep
         { title: "Faculty Analysis", data: result.faculty_scores, keys: ["Faculty_Name", "Faculty_Initial", "Score"] },
     ];
 
+    // Helper for Local Chart
+    const generateLocalChart = async (config: any) => {
+        try {
+            return await generateChartBase64(config);
+        } catch (e) {
+            console.error('Failed to generate local chart', e);
+            return '';
+        }
+    };
+
     const sectionDescriptions: Record<string, string> = {
         "Branch Analysis": "This section analyzes the feedback performance across different branches to identify departmental strengths and areas for improvement.",
         "Term-Year Analysis": "This section evaluates the feedback based on academic terms and years, providing insights into temporal performance trends.",
@@ -275,11 +286,90 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id' | 'markdownRep
         "Faculty Analysis (Parameter-wise)": "This section details the performance across specific feedback parameters (Q1-Q12) for each faculty member."
     };
 
-    overallSections.forEach((section) => {
+    // Use for...of to allow await
+    for (const section of overallSections) {
         report += `### ${section.title}\n\n`;
         if (sectionDescriptions[section.title]) {
             report += `${sectionDescriptions[section.title]}\n\n`;
         }
+
+        // Add Charts
+        if (section.title === 'Branch Analysis' && section.data && section.data.length > 0) {
+            const labels = section.data.map(d => d.Branch);
+            const data = section.data.map(d => d.Score.toFixed(2));
+            const chartConfig: any = {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Feedback Score',
+                        data: data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgb(54, 162, 235)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: { y: { beginAtZero: false, min: 1, max: 5 } },
+                    plugins: { legend: { display: false }, title: { display: true, text: 'Branch Performance' } }
+                }
+            };
+            const url = await generateLocalChart(chartConfig);
+            if (url) report += `![Branch Performance](${url})\n\n`;
+        }
+
+        if (section.title === 'Semester Analysis' && section.data && section.data.length > 0) {
+            // Sort by semester if possible? Usually default order is numeric string 1, 3, 5...
+            // Data is likely already somewhat calculated.
+            const labels = section.data.map(d => d.Sem);
+            const data = section.data.map(d => d.Score.toFixed(2));
+            const chartConfig: any = {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Semester Score',
+                        data: data,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: { y: { beginAtZero: false, min: 1, max: 5 } },
+                    plugins: { legend: { display: false }, title: { display: true, text: 'Semester Trend' } }
+                }
+            };
+            const url = await generateLocalChart(chartConfig);
+            if (url) report += `![Semester Trend](${url})\n\n`;
+        }
+
+        // Term-Year Analysis Chart
+        if (section.title === 'Term-Year Analysis' && section.data && section.data.length > 0) {
+            const labels = section.data.map(d => `${d.Term} ${d.Year}`);
+            const data = section.data.map(d => d.Score.toFixed(2));
+            const chartConfig: any = {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Score',
+                        data: data,
+                        backgroundColor: 'rgba(255, 159, 64, 0.5)',
+                        borderColor: 'rgb(255, 159, 64)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: { y: { beginAtZero: false, min: 1, max: 5 } },
+                    plugins: { legend: { display: false }, title: { display: true, text: 'Term Performance' } }
+                }
+            };
+            const url = await generateLocalChart(chartConfig);
+            if (url) report += `![Term Performance](${url})\n\n`;
+        }
+
+
         if (section.data && section.data.length > 0) {
             // Add a specific caption marker that our latex generator can identify
             report += `<caption>${section.title}</caption>\n\n`;
@@ -297,7 +387,7 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id' | 'markdownRep
             report += `_No data available for ${section.title}._\n`;
         }
         report += '\n';
-    });
+    }
 
     report += `## Parameter-wise Feedback Analysis\n\n`;
     const parameterKeys = Array.from({ length: 12 }, (_, i) => `Q${i + 1}`);
@@ -435,7 +525,7 @@ export async function POST(request: NextRequest) {
             term_year_scores: termYearScores,
         };
 
-        const markdownReport = generateMarkdownReport(analysisPayloadForReport);
+        const markdownReport = await generateMarkdownReport(analysisPayloadForReport);
 
         const resultId = `analysis_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
         const analysisResult: AnalysisResult = {
