@@ -17,10 +17,26 @@ const getFacultyInitial = (name: string): string => {
 
 const getSubjectShortForm = (fullName: string): string => {
     if (!fullName) return '';
-    const commonWords = ['of', 'and', 'in', 'to', 'the', 'for', '&', 'a', 'an', 'engineering', 'technology', 'science', 'studies', 'application', 'system', 'management', 'design', 'development', 'introduction', 'advanced', 'basic', 'principles', 'workshop', 'practice'];
-    return fullName.split(' ')
-        .filter(word => word.length > 0 && !commonWords.includes(word.toLowerCase().replace(/[^\w\s]/gi, '')))
-        .map(word => word[0]?.toUpperCase())
+    // Minimal stop words: only articles, prepositions, and conjunctions.
+    // We removed 'engineering', 'technology', 'system', 'design', etc. to ensure they contribute to the acronym (e.g. SE, WD, ES).
+    const stopWords = ['of', 'and', 'in', 'to', 'the', 'for', 'with', 'by', 'on', 'at', 'from', 'a', 'an', '&', 'is', 'are'];
+
+    return fullName.split(/\s+/)
+        .map(word => {
+            const clean = word.toLowerCase().replace(/[^a-z0-9]/g, '');
+            // Skip stop words or empty strings
+            if (clean.length === 0 || stopWords.includes(clean)) return '';
+
+            // Check if the word is already an acronym (All Caps, at least 2 chars, e.g. "VLSI", "IOT")
+            // We strip non-alphanumeric to check, but return the cleaned acronym
+            const pureWord = word.replace(/[^a-zA-Z0-9]/g, '');
+            if (/^[A-Z0-9]{2,}$/.test(pureWord)) {
+                return pureWord;
+            }
+
+            // Otherwise return the first alphanumeric character
+            return pureWord[0]?.toUpperCase() || '';
+        })
         .filter(Boolean)
         .join('');
 };
@@ -246,8 +262,24 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id' | 'markdownRep
         { title: "Faculty Analysis", data: result.faculty_scores, keys: ["Faculty_Name", "Faculty_Initial", "Score"] },
     ];
 
+    const sectionDescriptions: Record<string, string> = {
+        "Branch Analysis": "This section analyzes the feedback performance across different branches to identify departmental strengths and areas for improvement.",
+        "Term-Year Analysis": "This section evaluates the feedback based on academic terms and years, providing insights into temporal performance trends.",
+        "Semester Analysis": "This section breaks down the feedback scores by semester for each branch, highlighting performance at different stages of the curriculum.",
+        "Subject Analysis": "This section provides a detailed performance review for each subject, helping to pinpoint specific courses that may need attention.",
+        "Faculty Analysis": "This section assesses the overall feedback scores for each faculty member, summarizing their teaching effectiveness across all subjects.",
+        "Branch Analysis (Parameter-wise)": "This section details the performance across specific feedback parameters (Q1-Q12) for each branch.",
+        "Term-Year Analysis (Parameter-wise)": "This section details the performance across specific feedback parameters (Q1-Q12) for each term year.",
+        "Semester Analysis (Parameter-wise)": "This section details the performance across specific feedback parameters (Q1-Q12) for each semester.",
+        "Subject Analysis (Parameter-wise)": "This section details the performance across specific feedback parameters (Q1-Q12) for each subject.",
+        "Faculty Analysis (Parameter-wise)": "This section details the performance across specific feedback parameters (Q1-Q12) for each faculty member."
+    };
+
     overallSections.forEach((section) => {
         report += `### ${section.title}\n\n`;
+        if (sectionDescriptions[section.title]) {
+            report += `${sectionDescriptions[section.title]}\n\n`;
+        }
         if (section.data && section.data.length > 0) {
             // Add a specific caption marker that our latex generator can identify
             report += `<caption>${section.title}</caption>\n\n`;
@@ -279,6 +311,9 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id' | 'markdownRep
 
     parameterSections.forEach(section => {
         report += `### ${section.title}\n\n`;
+        if (sectionDescriptions[section.title]) {
+            report += `${sectionDescriptions[section.title]}\n\n`;
+        }
         if (section.data && section.data.length > 0) {
             report += `<caption>${section.title}</caption>\n\n`;
 
@@ -302,6 +337,7 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id' | 'markdownRep
 
     report += `## Misc Feedback Analysis\n\n`;
     report += `### Faculty-Subject Correlation Matrix\n\n`;
+    report += `This matrix highlights the correlation between faculty members and the subjects they teach, showing the average score for each faculty-subject pair.\n\n`;
 
     if (result.subject_scores && result.faculty_scores && result.subject_scores.length > 0 && result.faculty_scores.length > 0) {
         report += `<caption>Faculty-Subject Correlation Matrix</caption>\n\n`;
