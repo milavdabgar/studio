@@ -370,6 +370,62 @@ const generateMarkdownReport = async (result: Omit<AnalysisResult, 'id' | 'markd
         }
 
 
+        if (section.title === 'Subject Analysis' && section.data && section.data.length > 0) {
+            const labels = section.data.map(d => d.Subject_ShortForm || d.Subject_Code);
+            const data = section.data.map(d => d.Score.toFixed(2));
+            const chartConfig: any = {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Overall Score',
+                        data: data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgb(75, 192, 192)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: { y: { beginAtZero: false, min: 1, max: 5 } },
+                    plugins: { legend: { display: false }, title: { display: true, text: 'Subject Performance' } }
+                }
+            };
+            const url = await generateLocalChart(chartConfig);
+            if (url) report += `![Subject Performance](${url})\n\n`;
+        }
+
+        if (section.title === 'Faculty Analysis' && section.data && section.data.length > 0) {
+            const labels = section.data.map(d => d.Faculty_Initial);
+            const data = section.data.map(d => d.Score.toFixed(2));
+            const chartConfig: any = {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Overall Score',
+                        data: data,
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                        borderColor: 'rgb(153, 102, 255)',
+                        pointBackgroundColor: 'rgb(153, 102, 255)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            angleLines: { display: true },
+                            suggestedMin: 1,
+                            suggestedMax: 5
+                        }
+                    },
+                    plugins: { legend: { display: false }, title: { display: true, text: 'Faculty Performance' } }
+                }
+            };
+            const url = await generateLocalChart(chartConfig);
+            if (url) report += `![Faculty Performance](${url})\n\n`;
+        }
+
+
         if (section.data && section.data.length > 0) {
             // Add a specific caption marker that our latex generator can identify
             report += `<caption>${section.title}</caption>\n\n`;
@@ -390,6 +446,39 @@ const generateMarkdownReport = async (result: Omit<AnalysisResult, 'id' | 'markd
     }
 
     report += `## Parameter-wise Feedback Analysis\n\n`;
+
+    // Add Overall Parameter Analysis Chart
+    if (result.subject_scores && result.subject_scores.length > 0) {
+        const paramAvgData = Array.from({ length: 12 }, (_, i) => {
+            const qKey = `Q${i + 1}`;
+            const scores = result.subject_scores.map((s: any) => (s[qKey] as number) || 0);
+            const average = scores.reduce((a, b) => a + b, 0) / (scores.length || 1);
+            return average.toFixed(2);
+        });
+
+        const chartConfig: any = {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: 12 }, (_, i) => `Q${i + 1}`),
+                datasets: [{
+                    label: 'Average Score per Question',
+                    data: paramAvgData,
+                    borderColor: 'rgb(54, 162, 235)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    pointBackgroundColor: 'rgb(54, 162, 235)',
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: { y: { beginAtZero: false, min: 1, max: 5 } },
+                plugins: { legend: { display: false }, title: { display: true, text: 'Overall Parameter Analysis' } }
+            }
+        };
+        const url = await generateLocalChart(chartConfig);
+        if (url) report += `![Overall Parameter Analysis](${url})\n\n`;
+    }
+
     const parameterKeys = Array.from({ length: 12 }, (_, i) => `Q${i + 1}`);
     const parameterSections = [
         { title: "Branch Analysis (Parameter-wise)", data: result.branch_scores, baseKeys: ["Branch"], scoreKeys: parameterKeys, overallScoreKey: "Score" },
@@ -399,11 +488,100 @@ const generateMarkdownReport = async (result: Omit<AnalysisResult, 'id' | 'markd
         { title: "Faculty Analysis (Parameter-wise)", data: result.faculty_scores, baseKeys: ["Faculty_Initial"], scoreKeys: parameterKeys, overallScoreKey: "Score" },
     ];
 
-    parameterSections.forEach(section => {
+    const colors = [
+        'rgba(54, 162, 235, 0.7)', // Blue
+        'rgba(255, 99, 132, 0.7)', // Red
+        'rgba(75, 192, 192, 0.7)', // Teal
+        'rgba(255, 206, 86, 0.7)', // Yellow
+        'rgba(153, 102, 255, 0.7)', // Purple
+        'rgba(255, 159, 64, 0.7)',  // Orange
+    ];
+
+    for (const section of parameterSections) {
         report += `### ${section.title}\n\n`;
         if (sectionDescriptions[section.title]) {
             report += `${sectionDescriptions[section.title]}\n\n`;
         }
+
+        // --- Visualizations for Parameter Sections ---
+        if (section.data && section.data.length > 0) {
+            const qLabels = parameterKeys;
+            let chartConfig: any = null;
+            let chartTitle = section.title;
+
+            // Limit data for visualization to avoid clutter
+            const vizData = section.data.slice(0, 10);
+            const isPartial = section.data.length > 10;
+            const suffix = isPartial ? ' (Top 10)' : '';
+
+            if (section.title.includes('Branch')) {
+                // Radar Chart for Branches
+                chartConfig = {
+                    type: 'radar',
+                    data: {
+                        labels: qLabels,
+                        datasets: vizData.map((item: any, idx: number) => ({
+                            label: item.Branch,
+                            data: parameterKeys.map(k => item[k]),
+                            backgroundColor: colors[idx % colors.length].replace('0.7)', '0.2)'),
+                            borderColor: colors[idx % colors.length],
+                            pointBackgroundColor: colors[idx % colors.length],
+                            borderWidth: 2,
+                            fill: true
+                        }))
+                    },
+                    options: {
+                        scales: { r: { suggestedMin: 1, suggestedMax: 5 } },
+                        plugins: { legend: { display: true }, title: { display: true, text: `Branch Parameter Comparison${suffix}` } }
+                    }
+                };
+            } else if (section.title.includes('Semester')) {
+                // Line Chart for Semesters
+                chartConfig = {
+                    type: 'line',
+                    data: {
+                        labels: qLabels,
+                        datasets: vizData.map((item: any, idx: number) => ({
+                            label: `Sem ${item.Sem}`,
+                            data: parameterKeys.map(k => item[k]),
+                            borderColor: colors[idx % colors.length],
+                            backgroundColor: colors[idx % colors.length],
+                            tension: 0.1,
+                            fill: false
+                        }))
+                    },
+                    options: {
+                        scales: { y: { min: 1, max: 5 } },
+                        plugins: { legend: { display: true }, title: { display: true, text: `Semester Parameter Trends${suffix}` } }
+                    }
+                };
+            } else if (section.title.includes('Term-Year')) {
+                // Bar Chart for Term-Year
+                chartConfig = {
+                    type: 'bar',
+                    data: {
+                        labels: qLabels,
+                        datasets: vizData.map((item: any, idx: number) => ({
+                            label: `${item.Term} ${item.Year}`,
+                            data: parameterKeys.map(k => item[k]),
+                            backgroundColor: colors[idx % colors.length],
+                            borderColor: colors[idx % colors.length],
+                            borderWidth: 1
+                        }))
+                    },
+                    options: {
+                        scales: { y: { min: 1, max: 5 } },
+                        plugins: { legend: { display: true }, title: { display: true, text: `Term Parameter Comparison${suffix}` } }
+                    }
+                };
+            }
+
+            if (chartConfig) {
+                const url = await generateLocalChart(chartConfig);
+                if (url) report += `![${chartTitle}](${url})\n\n`;
+            }
+        }
+
         if (section.data && section.data.length > 0) {
             report += `<caption>${section.title}</caption>\n\n`;
 
@@ -423,13 +601,14 @@ const generateMarkdownReport = async (result: Omit<AnalysisResult, 'id' | 'markd
             report += `_No data available for ${section.title}._\n`;
         }
         report += '\n';
-    });
+    }
 
     report += `## Misc Feedback Analysis\n\n`;
     report += `### Faculty-Subject Correlation Matrix\n\n`;
     report += `This matrix highlights the correlation between faculty members and the subjects they teach, showing the average score for each faculty-subject pair.\n\n`;
 
     if (result.subject_scores && result.faculty_scores && result.subject_scores.length > 0 && result.faculty_scores.length > 0) {
+
         report += `<caption>Faculty-Subject Correlation Matrix</caption>\n\n`;
         const facultyInitials = result.faculty_scores.map(f => f.Faculty_Initial).sort();
         const uniqueSubjectInfos = Array.from(new Map(result.subject_scores.map(s => [`${s.Subject_Code}-${s.Subject_ShortForm}`, { code: s.Subject_Code, shortForm: s.Subject_ShortForm }])).values());
