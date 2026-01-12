@@ -220,21 +220,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         bufferContent = `## Instructions for PDF Generation via LaTeX\n\n(Server-side conversion failed: ${err instanceof Error ? err.message : String(err)})\n\nThis Markdown file contains your feedback report. To generate a PDF using LaTeX, please use Pandoc on your local machine.\n\n\`\`\`bash\npandoc -s feedback_report_${id}.md -o feedback_report_${id}.pdf --pdf-engine=xelatex\n\`\`\`\n\n---\n\n${analysisResult.markdownReport}`;
       }
 
-    } else if (type === 'wkhtml') {
-      filename = `feedback_report_for_${type}_conversion_${id}.md`;
-      contentType = 'text/markdown; charset=utf-8';
-      bufferContent = `## Instructions for PDF Generation via ${type.toUpperCase()}
- 
- This Markdown file contains your feedback report. To generate a PDF using ${type.toUpperCase()}, please use Pandoc or a similar tool on your local machine.
- 
- **Example Pandoc command (for wkhtmltopdf):**
- \`\`\`bash
- pandoc -s ${filename} -o feedback_report_${id}.pdf --pdf-engine=wkhtmltopdf --css=path/to/your/github.css --toc -N --shift-heading-level-by=-1
- \`\`\`
- 
- ---
- 
- ${analysisResult.markdownReport}`;
     } else {
       return NextResponse.json({ error: 'Invalid download type requested' }, { status: 400 });
     }
