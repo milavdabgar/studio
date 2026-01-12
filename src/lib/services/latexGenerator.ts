@@ -1,8 +1,158 @@
 import { marked, Token, Tokens } from 'marked';
 import type { AnalysisResult } from '@/types/feedback';
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
+import crypto from 'crypto';
+import { pipeline } from 'stream';
+import { promisify } from 'util';
+import https from 'https';
 
-export function generateNativeLatex(analysisResult: AnalysisResult): string {
-    const { markdownReport, originalFileName, analysisDate } = analysisResult;
+const streamPipeline = promisify(pipeline);
+
+async function downloadImages(markdown: string): Promise<{ newMarkdown: string, tempDir: string }> {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'latex-images-'));
+    // Regex matches http(s) URLs OR data URIs
+    // Data URIs can be very long, so we ensure we capture them.
+    // We assume the URL/DataURI ends with the closing parenthesis of the markdown link.
+    const imageRegex = /!\[([^\]]*)\]\(((?:https?:\/\/|data:image\/)[^)]+)\)/g;
+    let match;
+    const downloads: Promise<void>[] = [];
+    const replacements: { originalFullMatch: string, originalUrl: string, newPath: string, isError?: boolean }[] = [];
+
+    // Find all matches
+    const matches: RegExpExecArray[] = [];
+    while ((match = imageRegex.exec(markdown)) !== null) {
+        matches.push(match);
+    }
+
+    // Process unique URLs
+    const processedUrls = new Set<string>();
+
+    for (const m of matches) {
+        const fullMatch = m[0];
+        const alt = m[1];
+        const url = m[2];
+
+        // We need to handle multiple occurrences of the same URL.
+        if (processedUrls.has(url)) {
+            const existingEntry = replacements.find(r => r.originalUrl === url);
+            if (existingEntry) {
+                replacements.push({
+                    originalFullMatch: fullMatch,
+                    originalUrl: url,
+                    newPath: existingEntry.newPath,
+                    isError: existingEntry.isError
+                });
+            }
+            continue;
+        }
+        processedUrls.add(url);
+
+        const hash = crypto.createHash('md5').update(url).digest('hex');
+        // Determine extension
+        let ext = '.png';
+        if (url.startsWith('data:image/')) {
+            const mime = url.substring(5, url.indexOf(';'));
+            if (mime === 'image/jpeg') ext = '.jpg';
+            // default png
+        } else {
+            ext = path.extname(new URL(url).pathname) || '.png';
+        }
+
+        const filename = `${hash}${ext}`;
+        const localPath = path.join(tempDir, filename);
+
+        const replacementEntry = {
+            originalFullMatch: fullMatch,
+            originalUrl: url,
+            newPath: localPath,
+            isError: false
+        };
+        replacements.push(replacementEntry);
+
+        if (url.startsWith('data:')) {
+            // Handle Data URI immediately (sync or async wrapper)
+            downloads.push((async () => {
+                try {
+                    const base64Data = url.split(',')[1];
+                    if (!base64Data) throw new Error('Invalid data URI');
+                    await fs.promises.writeFile(localPath, Buffer.from(base64Data, 'base64'));
+                } catch (err) {
+                    console.error('Error writing data URI image:', err);
+                    replacementEntry.isError = true;
+                }
+            })());
+        } else {
+            // Handle Remote URL
+            downloads.push(new Promise<void>((resolve) => {
+                const req = https.get(url, { rejectUnauthorized: false }, (res) => {
+                    if (res.statusCode !== 200) {
+                        console.error(`Failed to fetch ${url}: Status ${res.statusCode}`);
+                        replacementEntry.isError = true;
+                        res.resume();
+                        resolve();
+                        return;
+                    }
+
+                    const fileStream = fs.createWriteStream(localPath);
+                    res.pipe(fileStream);
+
+                    fileStream.on('finish', () => {
+                        fileStream.close();
+                        resolve();
+                    });
+
+                    fileStream.on('error', (err) => {
+                        console.error(`Error writing file ${localPath}:`, err);
+                        replacementEntry.isError = true;
+                        resolve();
+                    });
+                });
+
+                req.on('error', (err) => {
+                    console.error(`Error downloading image ${url}:`, err);
+                    replacementEntry.isError = true;
+                    resolve();
+                });
+            }));
+        }
+    }
+
+    await Promise.all(downloads);
+
+    let newMarkdown = markdown;
+    const finalReplacements = new Map<string, string>();
+
+    for (const r of replacements) {
+        if (r.isError) {
+            finalReplacements.set(r.originalFullMatch, `**[Chart generation failed]**`);
+        } else {
+            const altText = r.originalFullMatch.match(/!\[([^\]]*)\]/)?.[1] || '';
+            // We escape the path for LaTeX? No, just use local path. 
+            // BUT: path on windows has backslashes. LaTeX hates backslashes in paths sometimes?
+            // Actually this is running on Mac/Linux usually? User is on Mac.
+            // Paths are /tmp/... safe.
+            finalReplacements.set(r.originalFullMatch, `![${altText}](${r.newPath})`);
+        }
+    }
+
+    const sortedOriginalMatches = Array.from(finalReplacements.keys()).sort((a, b) => b.length - a.length);
+
+    for (const originalMatch of sortedOriginalMatches) {
+        const replacementText = finalReplacements.get(originalMatch);
+        const escapedOriginalMatch = originalMatch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        newMarkdown = newMarkdown.replace(new RegExp(escapedOriginalMatch, 'g'), replacementText!);
+    }
+
+    return { newMarkdown, tempDir };
+}
+
+export async function generateNativeLatex(analysisResult: AnalysisResult): Promise<string> {
+    const { markdownReport: originalMarkdown, originalFileName, analysisDate } = analysisResult;
+
+    // Pre-process: Download images
+    const { newMarkdown, tempDir } = await downloadImages(originalMarkdown);
 
     // 1. Preamble
     const preamble = `\\documentclass{article}
@@ -58,8 +208,9 @@ export function generateNativeLatex(analysisResult: AnalysisResult): string {
 
 `;
 
-    // 2. Body Generation (Parse Markdown)
-    const tokens = marked.lexer(markdownReport);
+
+    // 2. Body Generation    // 2. Parse Markdown
+    const tokens = marked.lexer(newMarkdown);
     const body = parseTokens(tokens);
 
     // 3. Footer
@@ -188,7 +339,16 @@ function parseInline(text: string): string {
     // 3. Italic: *italic* or _italic_
     out = out.replace(/(\*|_)(.*?)\1/g, (match, sep, content) => `\\textit{${parseInline(content)}}`);
 
-    // 4. Links: [text](url) -> \href{url}{text}
+    // 4. Images: ![alt](url) -> \includegraphics
+    // We assume images are block-level for this report generally, but we use adjustbox 'valign=c' just in case.
+    out = out.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, url) => {
+        if (url === 'NO_IMAGE_AVAILABLE') {
+            return `\\begin{center}\\textbf{[Chart generation failed: Connection error]}\\end{center}`;
+        }
+        return `\\begin{center}\\includegraphics[width=0.85\\linewidth]{${url}}\\end{center}`;
+    });
+
+    // 5. Links: [text](url) -> \href{url}{text}
     out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, txt, url) => `\\href{${url}}{${parseInline(txt)}}`);
 
     // We need to escape special characters in the "text" parts, but ignoring the LaTeX commands we just inserted?
