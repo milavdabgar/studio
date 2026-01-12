@@ -17,17 +17,20 @@ interface FeedbackReportProps {
 const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
   const { toast } = useToast();
 
-  const downloadReport = async (type: 'markdown' | 'excel' | 'pdf' | 'latex' | 'puppeteer', reportId: string) => {
+  const downloadReport = async (type: 'markdown' | 'excel' | 'pdf' | 'latex' | 'puppeteer' | 'latex-native' | 'latex-native-pdf', reportId: string) => {
     try {
       let effectiveType = type;
       let fileExtension: string = type;
 
-      if (type === 'pdf' || type === 'puppeteer' || type === 'latex') { // Default PDF to puppeteer for direct generation
+      if (type === 'pdf' || type === 'puppeteer' || type === 'latex' || type === 'latex-native-pdf') { // Default PDF to puppeteer for direct generation
         effectiveType = type === 'pdf' ? 'puppeteer' : type;
         fileExtension = 'pdf';
       } else if (type === 'excel') {
         effectiveType = 'excel';
-        fileExtension = 'excel';
+        fileExtension = 'xlsx';
+      } else if (type === 'latex-native') {
+        effectiveType = 'latex-native';
+        fileExtension = 'tex';
       }
 
 
@@ -150,8 +153,16 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
             <Download className="mr-2 h-4 w-4" /> Download PDF (Puppeteer)
           </Button>
 
-          <Button onClick={() => downloadReport('latex', analysisResult.id)} variant="outline" title="Downloads Markdown version for LaTeX conversion">
-            <Download className="mr-2 h-4 w-4" /> For PDF (LaTeX)
+          <Button onClick={() => downloadReport('latex', analysisResult.id)} variant="outline" title="Downloads PDF generated from LaTeX">
+            <Download className="mr-2 h-4 w-4" /> Download PDF (LaTeX)
+          </Button>
+
+          <Button onClick={() => downloadReport('latex-native', analysisResult.id)} variant="outline" title="Downloads Native LaTeX Source (.tex)">
+            <Download className="mr-2 h-4 w-4" /> Download LaTeX Source
+          </Button>
+
+          <Button onClick={() => downloadReport('latex-native-pdf', analysisResult.id)} variant="outline" title="Downloads PDF generated from Native LaTeX Source">
+            <Download className="mr-2 h-4 w-4" /> Download PDF (Native)
           </Button>
         </div>
         <p className="text-xs text-muted-foreground mt-4 text-center">Note: PDF generation via wkhtmltopdf/LaTeX might provide a Markdown file if server-side conversion tools are not fully configured.</p>

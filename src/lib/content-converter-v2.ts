@@ -410,6 +410,64 @@ export class ContentConverterV2 {
         }
     }
 
+    /**
+     * Compile raw LaTeX content to PDF using XeLaTeX
+     */
+    async compileLatex(latexContent: string): Promise<Buffer> {
+        const basename = `native-latex-${Date.now()}`;
+        const texFile = path.join(this.tempDir, `${basename}.tex`);
+        const pdfFile = path.join(this.tempDir, `${basename}.pdf`);
+
+        try {
+            fs.writeFileSync(texFile, latexContent);
+
+            // Command to compile
+            // -interaction=nonstopmode prevents hanging on errors
+            const command = `xelatex -interaction=nonstopmode -output-directory="${this.tempDir}" "${texFile}"`;
+
+            try {
+                // Run compilation twice for TOC/References resolution
+                await execAsync(command);
+                await execAsync(command);
+            } catch (error) {
+                // If compilation "fails" (non-zero exit code), it might still produce a PDF (e.g. minor warnings interpreted as error if simplified exec)
+                // But typically xelatex returns error on actual error.
+                // We'll check for PDF existence below.
+                console.warn('XeLaTeX compilation executed with errors/warnings:', error);
+            }
+
+            if (!fs.existsSync(pdfFile)) {
+                // Try to read log file for compilation details
+                const logFile = path.join(this.tempDir, `${basename}.log`);
+                let logContent = 'No log file generated';
+                if (fs.existsSync(logFile)) {
+                    logContent = fs.readFileSync(logFile, 'utf8').slice(-1000); // Last 1000 chars
+                }
+                throw new Error(`PDF Output not found after compilation. Log tail: ${logContent}`);
+            }
+
+            const buffer = fs.readFileSync(pdfFile);
+
+            // Cleanup
+            const exts = ['.tex', '.pdf', '.aux', '.log', '.toc', '.out'];
+            exts.forEach(ext => {
+                const f = path.join(this.tempDir, `${basename}${ext}`);
+                if (fs.existsSync(f)) fs.unlinkSync(f);
+            });
+
+            return buffer;
+
+        } catch (error) {
+            // Cleanup generated files on error
+            const exts = ['.tex', '.pdf', '.aux', '.log', '.toc', '.out'];
+            exts.forEach(ext => {
+                const f = path.join(this.tempDir, `${basename}${ext}`);
+                if (fs.existsSync(f)) fs.unlinkSync(f);
+            });
+            throw error;
+        }
+    }
+
     private async convertToHtml(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): Promise<string> {
         // Process code blocks with syntax highlighting first
         let processedContent = await this.processCodeBlocks(content);
