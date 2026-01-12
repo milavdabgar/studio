@@ -7,6 +7,8 @@ import type { AnalysisResult, FacultyScore, SubjectScore } from '@/types/feedbac
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface FeedbackReportProps {
   analysisResult: AnalysisResult;
@@ -158,7 +160,9 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
       <div className="mt-12 p-6 rounded-lg shadow-lg border bg-card dark:border-gray-700">
         <h3 className="text-xl font-semibold mb-4 text-card-foreground">Generated Markdown Report Preview</h3>
         <div className="prose prose-sm dark:prose-invert max-w-none max-h-[600px] overflow-y-auto p-4 border rounded-md bg-background dark:border-gray-700">
-          <pre className="whitespace-pre-wrap">{analysisResult.markdownReport}</pre>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {analysisResult.markdownReport}
+          </ReactMarkdown>
         </div>
       </div>
 
