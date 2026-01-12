@@ -11,6 +11,7 @@ import path from 'path';
 import mongoose from 'mongoose';
 import { FeedbackAnalysisModel } from '@/lib/models';
 import { ContentConverterV2 } from '@/lib/content-converter-v2';
+import { generateNativeLatex } from '@/lib/services/latexGenerator';
 
 interface RouteParams {
   params: Promise<{
@@ -219,7 +220,23 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         contentType = 'text/markdown; charset=utf-8';
         bufferContent = `## Instructions for PDF Generation via LaTeX\n\n(Server-side conversion failed: ${err instanceof Error ? err.message : String(err)})\n\nThis Markdown file contains your feedback report. To generate a PDF using LaTeX, please use Pandoc on your local machine.\n\n\`\`\`bash\npandoc -s feedback_report_${id}.md -o feedback_report_${id}.pdf --pdf-engine=xelatex\n\`\`\`\n\n---\n\n${analysisResult.markdownReport}`;
       }
-
+    } else if (type === 'latex-native') {
+      filename = `feedback_report_${id}.tex`;
+      contentType = 'application/x-latex; charset=utf-8';
+      bufferContent = generateNativeLatex(analysisResult);
+    } else if (type === 'latex-native-pdf') {
+      filename = `feedback_report_${id}.pdf`;
+      contentType = 'application/pdf';
+      try {
+        const latexSource = generateNativeLatex(analysisResult);
+        const converter = new ContentConverterV2();
+        bufferContent = await converter.compileLatex(latexSource);
+      } catch (err) {
+        console.error('Native LaTeX compilation failed:', err);
+        filename = `error_log_${id}.txt`;
+        contentType = 'text/plain';
+        bufferContent = `Failed to generate PDF from native LaTeX.\nError: ${err instanceof Error ? err.message : String(err)}`;
+      }
     } else {
       return NextResponse.json({ error: 'Invalid download type requested' }, { status: 400 });
     }
