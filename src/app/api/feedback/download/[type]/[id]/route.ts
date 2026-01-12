@@ -237,21 +237,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         contentType = 'text/plain';
         bufferContent = `Failed to generate PDF from native LaTeX.\nError: ${err instanceof Error ? err.message : String(err)}`;
       }
-    } else if (type === 'wkhtml') {
-      filename = `feedback_report_for_${type}_conversion_${id}.md`;
-      contentType = 'text/markdown; charset=utf-8';
-      bufferContent = `## Instructions for PDF Generation via ${type.toUpperCase()}
- 
- This Markdown file contains your feedback report. To generate a PDF using ${type.toUpperCase()}, please use Pandoc or a similar tool on your local machine.
- 
- **Example Pandoc command (for wkhtmltopdf):**
- \`\`\`bash
- pandoc -s ${filename} -o feedback_report_${id}.pdf --pdf-engine=wkhtmltopdf --css=path/to/your/github.css --toc -N --shift-heading-level-by=-1
- \`\`\`
- 
- ---
- 
- ${analysisResult.markdownReport}`;
     } else {
       return NextResponse.json({ error: 'Invalid download type requested' }, { status: 400 });
     }
