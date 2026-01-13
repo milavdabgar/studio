@@ -116,7 +116,6 @@ export class ReportGenerator {
         report += `## Feedback Analysis (Overall)\n\n`;
         const overallSections = [
             { title: "Branch Analysis", data: result.branch_scores, keys: ["Branch", "Score"] },
-            { title: "Term-Year Analysis", data: result.term_year_scores, keys: ["Year", "Term", "Score"] },
             { title: "Semester Analysis", data: result.semester_scores, keys: ["Branch", "Sem", "Score"] },
             { title: "Subject Analysis", data: result.subject_scores, keys: ["Subject_Code", "Subject_ShortForm", "Subject_FullName", "Faculty_Initial", "Score"] },
             { title: "Faculty Analysis", data: result.faculty_scores, keys: ["Faculty_Name", "Faculty_Initial", "Score"] },
@@ -197,7 +196,6 @@ export class ReportGenerator {
         const parameterSections = [
             { title: "Branch Analysis (Parameter-wise)", data: result.branch_scores, baseKeys: ["Branch"] },
             { title: "Semester Analysis (Parameter-wise)", data: result.semester_scores, baseKeys: ["Branch", "Sem"] },
-            { title: "Term-Year Analysis (Parameter-wise)", data: result.term_year_scores, baseKeys: ["Year", "Term"] },
             { title: "Subject Analysis (Parameter-wise)", data: result.subject_scores, baseKeys: ["Subject_Code", "Subject_ShortForm", "Faculty_Initial"] },
             { title: "Faculty Analysis (Parameter-wise)", data: result.faculty_scores, baseKeys: ["Faculty_Initial"] },
         ];
@@ -222,11 +220,11 @@ export class ReportGenerator {
                     data: { labels: parameterKeys, datasets: vizData.map((item: any, idx: number) => ({ label: `Sem ${item.Sem}`, data: parameterKeys.map(k => item[k]), borderColor: colors[idx % colors.length], tension: 0.1, fill: false })) },
                     options: { scales: { y: { min: 1, max: 5 } }, plugins: { legend: { display: true }, title: { display: true, text: `Semester Parameters` } } }
                 };
-            } else if (section.title.includes("Term")) {
+            } else if (section.title.includes("Semester")) {
                 chartConfig = {
-                    type: 'bar',
-                    data: { labels: parameterKeys, datasets: vizData.map((item: any, idx: number) => ({ label: `${item.Term}`, data: parameterKeys.map(k => item[k]), backgroundColor: colors[idx % colors.length] })) },
-                    options: { scales: { y: { min: 1, max: 5 } }, plugins: { legend: { display: true }, title: { display: true, text: `Term Parameters` } } }
+                    type: 'line',
+                    data: { labels: parameterKeys, datasets: vizData.map((item: any, idx: number) => ({ label: `Sem ${item.Sem}`, data: parameterKeys.map(k => item[k]), borderColor: colors[idx % colors.length], tension: 0.1, fill: false })) },
+                    options: { scales: { y: { min: 1, max: 5 } }, plugins: { legend: { display: true }, title: { display: true, text: `Semester Parameters` } } }
                 };
             }
 
