@@ -268,6 +268,7 @@ export async function POST(request: NextRequest) {
             semester_scores: semesterScores,
             branch_scores: branchScores,
             term_year_scores: termYearScores,
+            rawFeedbackData: fileContent,
         };
 
         const markdownReport = await ReportGenerator.generate(analysisPayloadForReport, reportType);
