@@ -105,12 +105,143 @@ export class ReportGenerator {
         }
     }
 
-    private static async generateComprehensiveReport(result: AnalysisPayload): Promise<string> {
-        let report = `# Student Feedback Analysis Report\n\n`;
-        report += `**Overview:** Comprehensive Report\n\n`;
+    private static generateAcademicHeaderTable(result: AnalysisPayload): string {
+        try {
+            if (!result.semester_scores || result.semester_scores.length === 0) return "";
 
-        // 1. Assessment Parameters (Shared content)
-        report += this.getAssessmentParametersSection();
+            // Get Year and Term from the first available score (assuming consistent for the file)
+            const baseScore = result.semester_scores[0];
+            const yearStr = baseScore.Year;
+            const term = baseScore.Term || "Odd";
+
+            const year = parseInt(yearStr);
+            if (isNaN(year)) return ""; // Fail gracefully if Year is not a number
+
+            // Calculate Academic Year and GTU Exam
+            const isOdd = term.toLowerCase().includes('odd') || term.toLowerCase().includes('winter');
+
+            let academicYear = "";
+            let gtuExam = "";
+
+            if (isOdd) {
+                academicYear = `${year}-${(year + 1).toString().slice(-2)}`;
+                gtuExam = `Winter ${year}`;
+            } else {
+                academicYear = `${year - 1}-${year.toString().slice(-2)}`;
+                gtuExam = `Summer ${year}`;
+            }
+
+            // Extract Dates per (Branch, Sem) from raw CSV if available
+            // Key: "Branch-Sem" -> { start, end }
+            const semDates: Record<string, { start: string, end: string }> = {};
+            if (result.rawFeedbackData) {
+                const lines = result.rawFeedbackData.split('\n');
+                // CSV Header: Year,Term,Branch,Sem,Responce_Count,Term_Start,Term_End, ...
+                // Expected Indices: Branch=2, Sem=3, Term_Start=5, Term_End=6
+                const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                const branchIdx = headers.indexOf('Branch');
+                const semIdx = headers.indexOf('Sem');
+                const startIdx = headers.indexOf('Term_Start');
+                const endIdx = headers.indexOf('Term_End');
+
+                if (branchIdx !== -1 && semIdx !== -1 && startIdx !== -1 && endIdx !== -1) {
+                    for (let i = 1; i < lines.length; i++) {
+                        const cols = lines[i].split(',').map(c => c.trim().replace(/"/g, ''));
+                        if (cols.length < endIdx) continue;
+
+                        const branch = cols[branchIdx];
+                        const sem = cols[semIdx];
+                        const key = `${branch}-${sem}`;
+
+                        if (branch && sem && !semDates[key]) {
+                            semDates[key] = { start: cols[startIdx], end: cols[endIdx] };
+                        }
+                        if (Object.keys(semDates).length > 50) break;
+                    }
+                }
+            }
+
+            // Identify unique combinations from semester_scores [Year, Term, Branch, Sem]
+            // We want to list: Branch | Semester | dates
+            // Filter unique objects by stringifying
+            const comboMap = new Map();
+            result.semester_scores.forEach(s => {
+                const key = `${s.Branch}-${s.Sem}`;
+                if (!comboMap.has(key)) {
+                    comboMap.set(key, { branch: s.Branch, sem: s.Sem });
+                }
+            });
+
+            const combos = Array.from(comboMap.values()).sort((a, b) => {
+                if (a.branch !== b.branch) return a.branch.localeCompare(b.branch);
+                return parseInt(a.sem) - parseInt(b.sem);
+            });
+
+            // Build Table
+            let table = `| Academic Year | Term | GTU Exam | Branch | Semester | Term Start Date | Term End Date |\n`;
+            table += `| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n`;
+
+            if (combos.length === 0) {
+                table += `| ${academicYear} | ${term} | ${gtuExam} | All | All | - | - |\n`;
+            } else {
+                for (const item of combos) {
+                    const key = `${item.branch}-${item.sem}`;
+                    const dates = semDates[key] || { start: '-', end: '-' };
+                    table += `| ${academicYear} | ${term} | ${gtuExam} | ${item.branch} | ${item.sem} | ${dates.start} | ${dates.end} |\n`;
+                }
+            }
+
+            return table + "\n";
+        } catch (error) {
+            console.error("Error generating academic header:", error);
+            return "";
+        }
+    }
+
+    private static async generateComprehensiveReport(result: AnalysisPayload): Promise<string> {
+        // Deriving Academic Term from data
+        const headerTable = this.generateAcademicHeaderTable(result);
+
+        // Derive Title
+        let titleTerm = "Student Feedback";
+        if (result.semester_scores && result.semester_scores.length > 0) {
+            const sample = result.semester_scores[0];
+            if (sample.Year && sample.Term) {
+                const isOdd = sample.Term.toLowerCase().includes('odd') || sample.Term.toLowerCase().includes('winter');
+                titleTerm = isOdd ? `Winter ${sample.Year}` : `Summer ${sample.Year}`;
+            }
+        }
+
+        let report = `# ${titleTerm} Feedback Analysis Report\n\n`;
+
+        // 1. Overview Section
+        report += `## Overview\n\n`;
+
+        // 1.1 Report Overview & Term Details
+        report += `### Report Overview & Term Details\n\n`;
+        report += `This Comprehensive Feedback Analysis Report provides an in-depth evaluation of the academic feedback collected for ${titleTerm}. It synthesizes data across various dimensions—Faculty, Subjects, Branches, and Semesters—to offer actionable insights for academic enhancement.\n\n`;
+        report += headerTable;
+
+        // 1.2 Assessment Parameters & Rating Scale
+        report += `### Assessment Parameters & Rating Scale\n\n`;
+
+        // 1.2.1 Assessment Parameters
+        report += `#### Assessment Parameters\n\n`;
+        report += `The feedback is collected based on the following 12 key parameters, designed to comprehensively assess teaching effectiveness:\n\n`;
+        for (let i = 1; i <= 12; i++) {
+            const key = `Q${i}`;
+            report += `- **${key}**: ${questionDescriptions[key]}\n`;
+        }
+        report += `\n`;
+
+        // 1.2.2 Rating Scale (Adding if not already present or creating it)
+        report += `#### Rating Scale\n\n`;
+        report += `Feedback is quantified using a 5-point Likert scale:\n\n`;
+        report += `- **5 - Excellent**: Outstanding performance/Strongly Agree.\n`;
+        report += `- **4 - Very Good**: Above average performance/Agree.\n`;
+        report += `- **3 - Good**: Average performance/Neutral.\n`;
+        report += `- **2 - Average**: Below average performance/Disagree.\n`;
+        report += `- **1 - Poor**: Needs significant improvement/Strongly Disagree.\n\n`;
 
         // 2. General Analysis (Using existing logic)
         report += `## Feedback Analysis (Overall)\n\n`;
@@ -289,7 +420,20 @@ export class ReportGenerator {
     }
 
     private static async generateFacultyReport(result: AnalysisPayload): Promise<string> {
-        let report = `# Faculty Performance Report\n\n`;
+        const headerTable = this.generateAcademicHeaderTable(result);
+        let titleTerm = "Faculty Performance";
+
+        // Logic to get title term from semester_scores if available
+        if (result.semester_scores && result.semester_scores.length > 0) {
+            const sample = result.semester_scores[0];
+            if (sample.Year && sample.Term) {
+                const isOdd = sample.Term.toLowerCase().includes('odd') || sample.Term.toLowerCase().includes('winter');
+                titleTerm = isOdd ? `Winter ${sample.Year}` : `Summer ${sample.Year}`;
+            }
+        }
+
+        let report = `# ${titleTerm} Faculty Performance Report\n\n`;
+        report += headerTable;
         report += `**Overview:** Individual Faculty Analysis with HOD Comments Section\n\n`;
 
         if (!result.faculty_scores || result.faculty_scores.length === 0) {
@@ -436,7 +580,7 @@ export class ReportGenerator {
             // HOD Comments Box
             report += `### HOD / Principal Comments\n`;
             report += `> [!NOTE] Remarks\n`;
-            report += `> \n> \n> \n> \n> \n> \n> \n> \n> \n> \n\n`; // Increased space
+            report += `> \n> \n> \n> \n> \n> \n> \n> \n> \n\n`; // Increased space
 
             report += `<!-- SIGNATURES -->\n\n`;
 
@@ -447,7 +591,18 @@ export class ReportGenerator {
     }
 
     private static async generateBranchReport(result: AnalysisPayload): Promise<string> {
-        let report = `# Branch Performance Report\n\n`;
+        const headerTable = this.generateAcademicHeaderTable(result);
+
+        let titleTerm = "Branch Performance";
+        if (result.semester_scores && result.semester_scores.length > 0) { // Prefer semester_scores for metadata
+            const sample = result.semester_scores[0];
+            if (sample.Year && sample.Term) {
+                const isOdd = sample.Term.toLowerCase().includes('odd') || sample.Term.toLowerCase().includes('winter');
+                titleTerm = isOdd ? `Winter ${sample.Year}` : `Summer ${sample.Year}`;
+            }
+        }
+        let report = `# ${titleTerm} Branch Performance Report\n\n`;
+        report += headerTable;
         if (!result.branch_scores) return report + "No data.";
 
         for (const branch of result.branch_scores) {
@@ -479,7 +634,18 @@ export class ReportGenerator {
     }
 
     private static async generateSubjectReport(result: AnalysisPayload): Promise<string> {
-        let report = `# Detailed Subject Report\n\n`;
+        const headerTable = this.generateAcademicHeaderTable(result);
+
+        let titleTerm = "Subject Performance";
+        if (result.semester_scores && result.semester_scores.length > 0) { // Prefer semester_scores for metadata
+            const sample = result.semester_scores[0];
+            if (sample.Year && sample.Term) {
+                const isOdd = sample.Term.toLowerCase().includes('odd') || sample.Term.toLowerCase().includes('winter');
+                titleTerm = isOdd ? `Winter ${sample.Year}` : `Summer ${sample.Year}`;
+            }
+        }
+        let report = `# ${titleTerm} Subject Performance Report\n\n`;
+        report += headerTable;
         if (!result.subject_scores) return report + "No data.";
 
         for (const subject of result.subject_scores) {
