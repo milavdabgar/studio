@@ -36,8 +36,8 @@ const nextConfig: NextConfig = {
   // Set metadataBase to fix the metadataBase warning
   experimental: {
     // Add any experimental features here
-    serverComponentsExternalPackages: ['rimraf', 'canvas', 'chartjs-node-canvas'],
   },
+  serverExternalPackages: ['rimraf', 'canvas', 'chartjs-node-canvas'],
 };
 
 export default nextConfig;
