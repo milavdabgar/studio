@@ -37,7 +37,8 @@ const nextConfig: NextConfig = {
   experimental: {
     // Add any experimental features here
   },
-  serverExternalPackages: ['rimraf', 'canvas', 'chartjs-node-canvas'],
+  transpilePackages: ['rimraf'],
+  serverExternalPackages: ['canvas', 'chartjs-node-canvas'],
 };
 
 export default nextConfig;
