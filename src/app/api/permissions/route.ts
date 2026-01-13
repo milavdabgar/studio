@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { RateLimiterMemory, RateLimiterRes } from 'rate-limiter-flexible';
+// @ts-ignore
+import RateLimiterMemory from 'rate-limiter-flexible/lib/RateLimiterMemory';
+// @ts-ignore
+import RateLimiterRes from 'rate-limiter-flexible/lib/RateLimiterRes';
 import { z } from 'zod';
 import { connectMongoose } from '@/lib/mongodb';
 import { PermissionModel } from '@/lib/models';
@@ -37,7 +40,7 @@ export async function GET(request: NextRequest) {
 
   try {
     await connectMongoose();
-    
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
@@ -45,13 +48,13 @@ export async function GET(request: NextRequest) {
       return getPermission(id);
     } else {
       const permissions = await PermissionModel.find({}).lean();
-      
+
       // Format permissions to ensure proper id field
       const permissionsWithId = permissions.map(permission => ({
         ...permission,
         id: permission.id || (permission as { _id: { toString(): string } })._id.toString()
       }));
-      
+
       return NextResponse.json(permissionsWithId);
     }
   } catch (error) {
@@ -68,7 +71,7 @@ export async function POST(request: NextRequest) {
 
   try {
     await connectMongoose();
-    
+
     const body = await request.json();
 
     const validationResult = permissionSchema.safeParse(body);
@@ -92,7 +95,7 @@ export async function PUT(request: NextRequest) {
 
   try {
     await connectMongoose();
-    
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
@@ -123,14 +126,14 @@ export async function DELETE(request: NextRequest) {
 
   try {
     await connectMongoose();
-    
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
     if (!id) {
       return NextResponse.json({ message: 'Permission ID is required' }, { status: 400 });
     }
-    
+
     return deletePermission(id);
   } catch (error) {
     console.error("Error in DELETE /api/permissions:", error);
@@ -141,19 +144,19 @@ export async function DELETE(request: NextRequest) {
 async function createPermission(data: z.infer<typeof permissionSchema>) {
   // Check for existing permission with same code
   const existingPermission = await PermissionModel.findOne({ code: data.code });
-  
+
   if (existingPermission) {
     return NextResponse.json({ message: `Permission with code '${data.code}' already exists.` }, { status: 409 });
   }
-  
+
   const newPermissionData = {
     id: generatePermissionId(),
     ...data
   };
-  
+
   const newPermission = new PermissionModel(newPermissionData);
   await newPermission.save();
-  
+
   return NextResponse.json(newPermission.toJSON(), { status: 201 });
 }
 
@@ -165,11 +168,11 @@ async function getPermission(id: string) {
   } else {
     permission = await PermissionModel.findOne({ id });
   }
-  
+
   if (!permission) {
     return NextResponse.json({ message: 'Permission not found' }, { status: 404 });
   }
-  
+
   return NextResponse.json(permission.toJSON());
 }
 
@@ -182,14 +185,14 @@ async function updatePermission(id: string, data: z.infer<typeof permissionSchem
   } else {
     permission = await PermissionModel.findOne({ id });
   }
-  
+
   if (!permission) {
     return NextResponse.json({ message: 'Permission not found' }, { status: 404 });
   }
 
   // Check for duplicate code if code is being updated
   if (data.code && data.code !== permission.code) {
-    const existingPermission = await PermissionModel.findOne({ 
+    const existingPermission = await PermissionModel.findOne({
       code: data.code,
       _id: { $ne: permission._id }
     });
@@ -215,13 +218,13 @@ async function deletePermission(id: string) {
   } else {
     permission = await PermissionModel.findOne({ id });
   }
-  
+
   if (!permission) {
     return NextResponse.json({ message: 'Permission not found' }, { status: 404 });
   }
 
   const deletedPermission = permission.toJSON();
   await PermissionModel.findByIdAndDelete(permission._id);
-  
+
   return NextResponse.json(deletedPermission);
 }

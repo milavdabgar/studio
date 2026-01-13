@@ -6,7 +6,6 @@ import type {
 
 // Institute Schema
 interface IInstitute extends Omit<Institute, 'id'>, Document {
-  _id: string;
 }
 
 const instituteSchema = new Schema<IInstitute>({
@@ -43,7 +42,6 @@ const instituteSchema = new Schema<IInstitute>({
 
 // Building Schema
 interface IBuilding extends Omit<Building, 'id'>, Document {
-  _id: string;
 }
 
 const buildingSchema = new Schema<IBuilding>({
@@ -73,7 +71,6 @@ const buildingSchema = new Schema<IBuilding>({
 
 // Room Schema
 interface IRoom extends Omit<Room, 'id'>, Document {
-  _id: string;
 }
 
 const roomSchema = new Schema<IRoom>({
@@ -127,7 +124,6 @@ const roomSchema = new Schema<IRoom>({
 
 // Committee Schema
 interface ICommittee extends Omit<Committee, 'id'>, Document {
-  _id: string;
 }
 
 const committeeSchema = new Schema<ICommittee>({
@@ -183,7 +179,6 @@ const committeeSchema = new Schema<ICommittee>({
 
 // Academic Term Schema
 interface IAcademicTerm extends Omit<AcademicTerm, 'id'>, Document {
-  _id: string;
 }
 
 // Program-semester-date entry sub-schema
@@ -304,7 +299,6 @@ academicTermSchema.pre('save', function (next) {
 
 // User Schema
 interface IUser extends Omit<User, 'id'>, Document {
-  _id: string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -369,7 +363,6 @@ const userSchema = new Schema<IUser>({
 
 // Role Schema
 interface IRole extends Omit<Role, 'id'>, Document {
-  _id: string;
 }
 
 const roleSchema = new Schema<IRole>({
@@ -412,7 +405,6 @@ const roleSchema = new Schema<IRole>({
 
 // Permission Schema
 interface IPermission extends Omit<Permission, 'id'>, Document {
-  _id: string;
 }
 
 const permissionSchema = new Schema<IPermission>({
@@ -436,7 +428,6 @@ const permissionSchema = new Schema<IPermission>({
 
 // Department Schema
 interface IDepartment extends Omit<Department, 'id'>, Document {
-  _id: string;
 }
 
 const departmentSchema = new Schema<IDepartment>({
@@ -464,7 +455,6 @@ const departmentSchema = new Schema<IDepartment>({
 
 // Course Schema
 interface ICourse extends Omit<Course, 'id'>, Document {
-  _id: string;
 }
 
 const courseSchema = new Schema<ICourse>({
@@ -511,7 +501,6 @@ const courseSchema = new Schema<ICourse>({
 
 // Batch Schema
 interface IBatch extends Omit<Batch, 'id'>, Document {
-  _id: string;
 }
 
 const batchSchema = new Schema<IBatch>({
@@ -539,7 +528,6 @@ const batchSchema = new Schema<IBatch>({
 
 // Program Schema
 interface IProgram extends Omit<Program, 'id'>, Document {
-  _id: string;
 }
 
 const intakeCapacityRangeSchema = new Schema({
@@ -587,7 +575,6 @@ const programSchema = new Schema<IProgram>({
 
 // Curriculum Schema
 interface ICurriculum extends Omit<Curriculum, 'id'>, Document {
-  _id: string;
 }
 
 const curriculumSchema = new Schema<ICurriculum>({
@@ -680,7 +667,6 @@ curriculumSchema.pre('save', function (next) {
 
 // Room Allocation Schema
 interface IRoomAllocation extends Omit<RoomAllocation, 'id'>, Document {
-  _id: string;
 }
 
 const roomAllocationSchema = new Schema<IRoomAllocation>({
@@ -720,7 +706,6 @@ roomAllocationSchema.pre('save', function (next) {
 
 // Examination Schema
 interface IExamination extends Omit<Examination, 'id'>, Document {
-  _id: string;
 }
 
 const examinationTimeTableEntrySchema = new Schema({
@@ -770,7 +755,6 @@ examinationSchema.pre('save', function (next) {
 
 // Student Schema
 interface IStudent extends Omit<Student, 'id'>, Document {
-  _id: string;
 }
 
 const studentSchema = new Schema<IStudent>({
@@ -1026,7 +1010,6 @@ studentSchema.pre('save', function (next) {
 
 // Faculty Schema
 interface IFaculty extends Omit<Faculty, 'id'>, Document {
-  _id: string;
 }
 
 const facultySchema = new Schema<IFaculty>({
@@ -1243,7 +1226,6 @@ facultySchema.pre('save', function (next) {
 
 // FacultyPreference Schema
 interface IFacultyPreference extends Omit<FacultyPreference, 'id'>, Document {
-  _id: string;
 }
 
 const coursePreferenceSchema = new Schema({
@@ -1309,7 +1291,6 @@ facultyPreferenceSchema.pre('save', function (next) {
 
 // ProjectTeam Schema
 interface IProjectTeam extends Omit<ProjectTeam, 'id'>, Document {
-  _id: string;
 }
 
 const projectTeamSchema = new Schema<IProjectTeam>({
@@ -1356,7 +1337,6 @@ projectTeamSchema.pre('save', function (next) {
 
 // ProjectEvent Schema
 interface IProjectEvent extends Omit<ProjectEvent, 'id'>, Document {
-  _id: string;
 }
 
 const projectEventSchema = new Schema<IProjectEvent>({
@@ -1414,7 +1394,6 @@ projectEventSchema.pre('save', function (next) {
 
 // Project Schema
 interface IProject extends Omit<Project, 'id'>, Document {
-  _id: string;
 }
 
 const projectSchema = new Schema<IProject>({
@@ -1503,7 +1482,6 @@ projectSchema.pre('save', function (next) {
 
 // Assessment Schema
 interface IAssessment extends Omit<Assessment, 'id'>, Document {
-  _id: string;
 }
 
 const assessmentSchema = new Schema<IAssessment>({
@@ -1554,7 +1532,6 @@ assessmentSchema.pre('save', function (next) {
 
 // Result Schema
 interface IResult extends Omit<Result, '_id'>, Document {
-  _id: string;
 }
 
 const resultSubjectSchema = new Schema({
@@ -1623,7 +1600,6 @@ resultSchema.pre('save', function (next) {
 
 // Enrollment Schema
 interface IEnrollment extends Omit<Enrollment, 'id'>, Document {
-  _id: string;
 }
 
 const enrollmentSchema = new Schema<IEnrollment>({
@@ -1665,7 +1641,6 @@ enrollmentSchema.pre('save', function (next) {
 
 // CourseOffering Schema
 interface ICourseOffering extends Omit<CourseOffering, 'id'>, Document {
-  _id: string;
 }
 
 const courseOfferingSchema = new Schema<ICourseOffering>({
@@ -1714,7 +1689,6 @@ courseOfferingSchema.pre('save', function (next) {
 
 // Notification Schema
 interface INotification extends Omit<Notification, 'id'>, Document {
-  _id: string;
 }
 
 const notificationSchema = new Schema<INotification>({
@@ -1752,7 +1726,6 @@ notificationSchema.pre('save', function (next) {
 
 // StudentAssessmentScore Schema
 interface IStudentAssessmentScore extends Omit<StudentAssessmentScore, 'id'>, Document {
-  _id: string;
 }
 
 const studentAssessmentScoreSchema = new Schema<IStudentAssessmentScore>({
@@ -1794,7 +1767,6 @@ studentAssessmentScoreSchema.pre('save', function (next) {
 
 // CourseMaterial Schema
 interface ICourseMaterial extends Omit<CourseMaterial, 'id'>, Document {
-  _id: string;
 }
 
 const courseMaterialSchema = new Schema<ICourseMaterial>({
@@ -1833,7 +1805,6 @@ courseMaterialSchema.pre('save', function (next) {
 
 // AttendanceRecord Schema
 interface IAttendanceRecord extends Omit<AttendanceRecord, 'id'>, Document {
-  _id: string;
 }
 
 const attendanceRecordSchema = new Schema<IAttendanceRecord>({
@@ -1870,7 +1841,6 @@ attendanceRecordSchema.pre('save', function (next) {
 
 // Timetable Schema
 interface ITimetable extends Omit<Timetable, 'id'>, Document {
-  _id: string;
 }
 
 const timetableEntrySchema = new Schema({
@@ -1927,7 +1897,6 @@ timetableSchema.pre('save', function (next) {
 
 // ProjectLocation Schema
 interface IProjectLocation extends Omit<ProjectLocation, 'id'>, Document {
-  _id: string;
 }
 
 const projectLocationSchema = new Schema<IProjectLocation>({
@@ -1964,7 +1933,6 @@ projectLocationSchema.pre('save', function (next) {
 
 // FeedbackAnalysis Schema
 interface IFeedbackAnalysis extends Document {
-  _id: string;
   id: string;
   originalFileName: string;
   analysisDate: string;
