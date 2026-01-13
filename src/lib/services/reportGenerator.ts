@@ -671,6 +671,8 @@ export class ReportGenerator {
 
             report += `<!-- SIGNATURES -->\n\n`;
 
+            report += `<!-- SIGNATURES -->\n\n`;
+
             // Page Break for PDF generation tools (standard markdown page break or latex command)
             report += `<!-- NEWPAGE -->\n\n`;
         }
