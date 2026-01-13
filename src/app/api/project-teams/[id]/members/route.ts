@@ -1,6 +1,6 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { ProjectTeamMember } from '@/types/entities'; 
+import type { ProjectTeamMember } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { ProjectTeamModel, UserModel, type IProjectTeam, type IUser } from '@/lib/models';
 
@@ -12,7 +12,7 @@ interface RouteParams {
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id: teamId } = await params;
-  
+
   try {
     await connectMongoose();
 
@@ -31,22 +31,22 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       team.members.map(async (member: ProjectTeamMember & { _id?: string }) => {
         // Check if userId is a valid MongoDB ObjectId
         const isValidUserObjectId = /^[0-9a-fA-F]{24}$/.test(member.userId);
-        
-        const userQuery = isValidUserObjectId 
+
+        const userQuery = isValidUserObjectId
           ? { $or: [{ id: member.userId }, { _id: member.userId }] }
           : { id: member.userId };
-          
+
         const user = await UserModel.findOne(userQuery).lean() as IUser | null;
-        
+
         return {
           id: member._id,
           userId: member.userId,
-          name: user?.displayName || member.name || 'Unknown User', 
+          name: user?.displayName || member.name || 'Unknown User',
           enrollmentNo: member.enrollmentNo,
           role: member.role,
           isLeader: member.isLeader,
           joinedAt: member.joinedAt,
-          email: user?.email, 
+          email: user?.email,
         };
       })
     );
@@ -67,7 +67,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 export async function POST(request: NextRequest, { params }: RouteParams) {
   const { id: teamId } = await params;
-  
+
   try {
     await connectMongoose();
 
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     if (!userId || !name || !enrollmentNo) {
       return NextResponse.json({ message: 'User ID, name, and enrollment number are required for a new member.' }, { status: 400 });
     }
-    
+
     // Check maximum members limit (use team's maxMembers or default to 4)
     const maxMembers = team.maxMembers || 4;
     if (team.members.length >= maxMembers) {
@@ -100,13 +100,13 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     // Verify user exists - check database first, then fall back to mock test users
     const isValidUserObjectId = /^[0-9a-fA-F]{24}$/.test(userId);
-    
-    const userQuery = isValidUserObjectId 
+
+    const userQuery = isValidUserObjectId
       ? { $or: [{ id: userId }, { _id: userId }] }
       : { id: userId };
-      
+
     let userExists = await UserModel.findOne(userQuery).lean() as IUser | null;
-    
+
     // If user not found in database, check if it's a test user
     if (!userExists && userId === '686171e4df30c00c8e476ea6') {
       userExists = {
@@ -123,11 +123,11 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         departmentId: 'dept_ce',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
-      } as IUser;
+      } as unknown as IUser;
     }
-    
+
     if (!userExists) {
-      return NextResponse.json({ message: `User with ID ${userId} not found.`}, {status: 404});
+      return NextResponse.json({ message: `User with ID ${userId} not found.` }, { status: 404 });
     }
 
     const newMember: ProjectTeamMember = {
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     team.members.push(newMember);
     team.updatedAt = new Date().toISOString();
-    team.updatedBy = "user_admin_placeholder_member_add"; 
+    team.updatedBy = "user_admin_placeholder_member_add";
 
     await team.save();
 

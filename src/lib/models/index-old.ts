@@ -5,7 +5,6 @@ import type {
 
 // User Schema
 interface IUser extends Omit<User, 'id'>, Document {
-  _id: string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -66,7 +65,6 @@ const userSchema = new Schema<IUser>({
 
 // Role Schema
 interface IRole extends Omit<Role, 'id'>, Document {
-  _id: string;
 }
 
 const roleSchema = new Schema<IRole>({
@@ -105,7 +103,6 @@ const roleSchema = new Schema<IRole>({
 
 // Permission Schema
 interface IPermission extends Omit<Permission, 'id'>, Document {
-  _id: string;
 }
 
 const permissionSchema = new Schema<IPermission>({
@@ -129,7 +126,6 @@ const permissionSchema = new Schema<IPermission>({
 
 // Department Schema
 interface IDepartment extends Omit<Department, 'id'>, Document {
-  _id: string;
 }
 
 const departmentSchema = new Schema<IDepartment>({
@@ -155,7 +151,6 @@ const departmentSchema = new Schema<IDepartment>({
 
 // Course Schema
 interface ICourse extends Omit<Course, 'id'>, Document {
-  _id: string;
 }
 
 const courseSchema = new Schema<ICourse>({
@@ -196,7 +191,6 @@ const courseSchema = new Schema<ICourse>({
 
 // Batch Schema
 interface IBatch extends Omit<Batch, 'id'>, Document {
-  _id: string;
 }
 
 const batchSchema = new Schema<IBatch>({
@@ -222,7 +216,6 @@ const batchSchema = new Schema<IBatch>({
 
 // Program Schema
 interface IProgram extends Omit<Program, 'id'>, Document {
-  _id: string;
 }
 
 const programSchema = new Schema<IProgram>({
