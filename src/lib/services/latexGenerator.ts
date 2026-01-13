@@ -267,8 +267,16 @@ function parseTokens(tokens: Token[]): string {
                 const p = token as Tokens.Paragraph;
                 // Check if paragraph is actually a caption marker
                 const captionMatch = p.text.match(/^\s*<caption>(.*?)<\/caption>\s*$/);
+
+                // Check if paragraph is a Image (Standalone Figure)
+                const imageMatch = p.text.match(/^\s*!\[(.*?)\]\((.*?)\)\s*$/);
+
                 if (captionMatch) {
                     pendingCaption = captionMatch[1];
+                } else if (imageMatch) {
+                    const alt = imageMatch[1];
+                    const url = imageMatch[2];
+                    latex += `\\begin{figure}[H]\n\\centering\n\\includegraphics[width=0.85\\linewidth]{${url}}\n\\caption{${parseInline(alt)}}\n\\end{figure}\n\n`;
                 } else {
                     latex += `${parseInline(p.text)}\n\n`;
                 }

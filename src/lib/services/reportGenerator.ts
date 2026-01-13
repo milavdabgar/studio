@@ -15,6 +15,7 @@ export interface AnalysisPayload {
     semester_scores: SemesterScore[];
     branch_scores: BranchScore[];
     term_year_scores: TermYearScore[];
+    rawFeedbackData?: string;
 }
 
 interface ReportSection {
@@ -138,7 +139,7 @@ export class ReportGenerator {
                 const lines = result.rawFeedbackData.split('\n');
                 // CSV Header: Year,Term,Branch,Sem,Responce_Count,Term_Start,Term_End, ...
                 // Expected Indices: Branch=2, Sem=3, Term_Start=5, Term_End=6
-                const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                const headers = lines[0].split(',').map((h: string) => h.trim().replace(/"/g, ''));
                 const branchIdx = headers.indexOf('Branch');
                 const semIdx = headers.indexOf('Sem');
                 const startIdx = headers.indexOf('Term_Start');
@@ -146,7 +147,7 @@ export class ReportGenerator {
 
                 if (branchIdx !== -1 && semIdx !== -1 && startIdx !== -1 && endIdx !== -1) {
                     for (let i = 1; i < lines.length; i++) {
-                        const cols = lines[i].split(',').map(c => c.trim().replace(/"/g, ''));
+                        const cols = lines[i].split(',').map((c: string) => c.trim().replace(/"/g, ''));
                         if (cols.length < endIdx) continue;
 
                         const branch = cols[branchIdx];
@@ -178,7 +179,8 @@ export class ReportGenerator {
             });
 
             // Build Table
-            let table = `| Academic Year | Term | GTU Exam | Branch | Semester | Term Start Date | Term End Date |\n`;
+            let table = `<caption>Academic Details</caption>\n\n`;
+            table += `| Academic Year | Term | GTU Exam | Branch | Semester | Term Start Date | Term End Date |\n`;
             table += `| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n`;
 
             if (combos.length === 0) {
