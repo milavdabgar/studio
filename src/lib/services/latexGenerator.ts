@@ -334,7 +334,7 @@ function parseTokens(tokens: Token[]): string {
                 if (isNote) {
                     // Use tcolorbox for Notes/Remarks
                     // height=6cm to ensure space for comments
-                    latex += `\\begin{tcolorbox}[title=${parseInline(alertTitle)}, colback=white, colframe=black, height=3cm]\n`;
+                    latex += `\\begin{tcolorbox}[title=${parseInline(alertTitle)}, colback=white, colframe=black, height=2.5cm]\n`;
                     latex += parseTokens(b.tokens);
                     latex += `\\end{tcolorbox}\n\n`;
                 } else {

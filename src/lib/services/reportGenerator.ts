@@ -423,8 +423,9 @@ export class ReportGenerator {
         report += '\n';
 
         // 4. Faculty Strength & Weakness Analysis
-        report += `<!-- NEWPAGE -->\n\n`;
         report += `## Faculty Strength & Weakness Analysis\n\n`;
+        report += `This section presents a detailed, individual analysis for each faculty member, identifying their top strengths and areas for improvement based on student feedback. It also provides space for HOD comments and signatures.\n\n`;
+        report += `<!-- NEWPAGE -->\n\n`;
 
         if (result.faculty_scores && result.faculty_scores.length > 0) {
             for (const faculty of result.faculty_scores) {
@@ -493,7 +494,7 @@ export class ReportGenerator {
                 }
 
                 // HOD Comments
-                report += `#### HOD / Principal Comments\n`;
+                report += `#### HOD Comments\n`;
                 report += `> [!NOTE] Remarks\n`;
                 report += `> \n> \n> \n> \n> \n> \n> \n> \n> \n\n`;
 
@@ -664,7 +665,7 @@ export class ReportGenerator {
             }
 
             // HOD Comments Box
-            report += `### HOD / Principal Comments\n`;
+            report += `### HOD Comments\n`;
             report += `> [!NOTE] Remarks\n`;
             report += `> \n> \n> \n> \n> \n> \n> \n> \n> \n\n`; // Increased space
 
