@@ -52,6 +52,21 @@ const headerMap: { [key: string]: string } = {
     "Q9": "Q9", "Q10": "Q10", "Q11": "Q11", "Q12": "Q12"
 };
 
+const questionDescriptions: { [key: string]: string } = {
+    "Q1": "Syllabus Coverage: Has the Teacher covered the entire syllabus?",
+    "Q2": "Topics Beyond Syllabus: Has the Teacher covered relevant topics beyond?",
+    "Q3": "Pace of Teaching: Pace at which contents were covered?",
+    "Q4": "Practical Demo: Support for development of skill (Practical)",
+    "Q5": "Hands-on Training: Support for development of skill (Hands-on)",
+    "Q6": "Technical Skills: Effectiveness in Technical skills",
+    "Q7": "Communication Skills: Effectiveness in Communication skills",
+    "Q8": "Doubt Clarification: Clarity of expectations",
+    "Q9": "Use of Teaching Tools: Use of teaching aids",
+    "Q10": "Motivation: Motivation and inspiration",
+    "Q11": "Helpfulness: Willingness to offer help",
+    "Q12": "Student Progress: Feedback on student's progress"
+};
+
 const formatFloat = (num: number) => num.toFixed(2);
 
 const generateLocalChart = async (config: any) => {
@@ -318,11 +333,43 @@ export class ReportGenerator {
                 report += `\n`;
             }
 
+            // Top 3 and Bottom 3 Parameters
+            const questionScores = result.faculty_scores.find(f => f.Faculty_Initial === faculty.Faculty_Initial) as any;
+            const paramScores: { key: string; score: number }[] = [];
+            for (let i = 1; i <= 12; i++) {
+                const key = `Q${i}`;
+                if (typeof questionScores[key] === 'number') {
+                    paramScores.push({ key, score: questionScores[key] });
+                }
+            }
+            // Sort by score descending
+            paramScores.sort((a, b) => b.score - a.score);
+            const top3 = paramScores.slice(0, 3);
+            const bottom3 = paramScores.slice(-3).reverse(); // Bottom 3, shown lowest first
+
+            if (top3.length > 0) {
+                report += `### Strengths (Top 3 Parameters)\n`;
+                top3.forEach(p => {
+                    report += `- **${p.key}** (${formatFloat(p.score)}): ${questionDescriptions[p.key]}\n`;
+                });
+                report += `\n`;
+            }
+
+            if (bottom3.length > 0) {
+                report += `### Areas for Improvement (Lowest 3 Parameters)\n`;
+                bottom3.forEach(p => {
+                    report += `- **${p.key}** (${formatFloat(p.score)}): ${questionDescriptions[p.key]}\n`;
+                });
+                report += `\n`;
+            }
+
             // HOD Comments Box
             report += `### HOD / Principal Comments\n`;
             report += `> [!NOTE] Remarks\n`;
-            report += `> \n> \n> \n> \n\n`; // Empty lines for manual writing
-            report += `---\n\n`;
+            report += `> \n> \n> \n> \n> \n> \n> \n> \n> \n> \n\n`; // Increased space
+
+            // Page Break for PDF generation tools (standard markdown page break or latex command)
+            report += `<!-- NEWPAGE -->\n\n`;
         }
         return report;
     }
@@ -392,18 +439,7 @@ export class ReportGenerator {
     private static getAssessmentParametersSection(): string {
         return `## Assessment Parameters & Rating Scale
 ### Assessment Parameters
-- **Q1 Syllabus Coverage**: Has the Teacher covered the entire syllabus?
-- **Q2 Topics Beyond Syllabus**: Has the Teacher covered relevant topics beyond?
-- **Q3 Pace of Teaching**: Pace at which contents were covered?
-- **Q4 Practical Demo**: Support for development of skill (Practical)
-- **Q5 Hands-on Training**: Support for development of skill (Hands-on)
-- **Q6 Technical Skills**: Effectiveness in Technical skills
-- **Q7 Communication Skills**: Effectiveness in Communication skills
-- **Q8 Doubt Clarification**: Clarity of expectations
-- **Q9 Use of Teaching Tools**: Use of teaching aids
-- **Q10 Motivation**: Motivation and inspiration
-- **Q11 Helpfulness**: Willingness to offer help
-- **Q12 Student Progress**: Feedback on student's progress
+${Object.entries(questionDescriptions).map(([key, desc]) => `- **${key} ${desc.split(':')[0]}**: ${desc.split(':')[1].trim()}`).join('\n')}
 
 ### Rating Scale
 | Rating | Description |

@@ -173,6 +173,7 @@ export async function generateNativeLatex(analysisResult: AnalysisResult): Promi
 \\usepackage{float}
 \\usepackage[export]{adjustbox}
 \\usepackage{makecell}
+\\usepackage{tcolorbox}
 \\renewcommand\\theadfont{\\bfseries}
 
 % Colors
@@ -274,7 +275,37 @@ function parseTokens(tokens: Token[]): string {
             }
             case 'blockquote': {
                 const b = token as Tokens.Blockquote;
-                latex += `\\begin{quote}\n${parseTokens(b.tokens)}\n\\end{quote}\n\n`;
+                // Check for GFM Alert syntax in the first token
+                let isNote = false;
+                let alertTitle = '';
+
+                if (b.tokens.length > 0 && b.tokens[0].type === 'paragraph') {
+                    const FirstPara = b.tokens[0] as Tokens.Paragraph;
+                    const text = FirstPara.text;
+                    const match = text.match(/^\[!NOTE\]\s*(.*)$/);
+                    if (match) {
+                        isNote = true;
+                        alertTitle = match[1] || 'Note';
+                        // Remove the marker from the first token's text for rendering
+                        // We must clone or modify carefully. 
+                        // Actually, let's just parse tokens, but skip the "[!NOTE] Title" part of the first paragraph?
+                        // Simpler: Just render normally, but wrap in tcolorbox.
+                        // But we want to remove "[!NOTE] Remarks" from the body text if it's the title.
+                        // Let's rely on string replacement in the rendered output of the first paragraph? 
+                        // Or better, modify the token text temporarily.
+                        FirstPara.text = FirstPara.text.replace(/^\[!NOTE\]\s*.*(\n|$)/, '').trim();
+                    }
+                }
+
+                if (isNote) {
+                    // Use tcolorbox for Notes/Remarks
+                    // height=6cm to ensure space for comments
+                    latex += `\\begin{tcolorbox}[title=${parseInline(alertTitle)}, colback=white, colframe=black, height=5cm]\n`;
+                    latex += parseTokens(b.tokens);
+                    latex += `\\end{tcolorbox}\n\n`;
+                } else {
+                    latex += `\\begin{quote}\n${parseTokens(b.tokens)}\n\\end{quote}\n\n`;
+                }
                 break;
             }
             case 'space':
@@ -296,6 +327,11 @@ function parseTokens(tokens: Token[]): string {
                 const captionMatch = h.text.match(/^\s*<caption>(.*?)<\/caption>\s*$/);
                 if (captionMatch) {
                     pendingCaption = captionMatch[1];
+                }
+
+                // Handle Page Break
+                if (h.text.includes('<!-- NEWPAGE -->')) {
+                    latex += '\\newpage\n';
                 }
                 break;
             }
