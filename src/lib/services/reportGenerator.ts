@@ -247,6 +247,7 @@ export class ReportGenerator {
 
         // 2. General Analysis (Using existing logic)
         report += `## Feedback Analysis (Overall)\n\n`;
+        report += `This section provides a high-level summary of feedback scores aggregated by Branch, Semester, Subject, and Faculty.\n\n`;
         const overallSections = [
             { title: "Branch Analysis", data: result.branch_scores, keys: ["Branch", "Score"] },
             { title: "Semester Analysis", data: result.semester_scores, keys: ["Branch", "Sem", "Score"] },
@@ -312,6 +313,7 @@ export class ReportGenerator {
 
         // 3. Parameter-wise Analysis
         report += `## Parameter-wise Feedback Analysis\n\n`;
+        report += `This section breaks down performance across the 12 feedback parameters (Q1-Q12) to identify specific strengths and areas for improvement.\n\n`;
         // Overall Param Chart
         const paramAvgData = Array.from({ length: 12 }, (_, i) => {
             const qKey = `Q${i + 1}`;
@@ -335,6 +337,7 @@ export class ReportGenerator {
 
         for (const section of parameterSections) {
             report += `### ${section.title}\n\n`;
+            if (sectionDescriptions[section.title]) report += `${sectionDescriptions[section.title]}\n\n`;
             // Visualizations (Radar/Line/Bar) logic from route.ts
             // Simplified for brevity in this generator, but keeping core logic
             let chartConfig: any = null;
@@ -378,6 +381,7 @@ export class ReportGenerator {
         }
 
         report += `## Misc Feedback Analysis\n\n`;
+        report += `This section contains additional analytical matrices and correlations.\n\n`;
         report += `### Faculty-Subject Correlation Matrix\n\n`;
         report += `This matrix highlights the correlation between faculty members and the subjects they teach, showing the average score for each faculty-subject pair.\n\n`;
 
@@ -417,6 +421,86 @@ export class ReportGenerator {
             report += `_Faculty-Subject Correlation Matrix data cannot be generated (no subject or faculty scores)._\n`;
         }
         report += '\n';
+
+        // 4. Faculty Strength & Weakness Analysis
+        report += `<!-- NEWPAGE -->\n\n`;
+        report += `## Faculty Strength & Weakness Analysis\n\n`;
+
+        if (result.faculty_scores && result.faculty_scores.length > 0) {
+            for (const faculty of result.faculty_scores) {
+                report += `### ${faculty.Faculty_Name} (${faculty.Faculty_Initial})\n\n`;
+                report += `**Overall Score:** ${formatFloat(faculty.Score)} / 5.0\n\n`;
+
+                // Radar Chart
+                const parameterKeys = Array.from({ length: 12 }, (_, i) => `Q${i + 1}`);
+                const chartConfig = {
+                    type: 'radar',
+                    data: {
+                        labels: parameterKeys,
+                        datasets: [{
+                            label: faculty.Faculty_Initial,
+                            data: parameterKeys.map(k => (faculty as any)[k]),
+                            borderColor: 'rgb(54, 162, 235)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            pointBackgroundColor: 'rgb(54, 162, 235)',
+                            fill: true
+                        }]
+                    },
+                    options: { scales: { r: { suggestedMin: 1, suggestedMax: 5 } }, plugins: { legend: { display: false } } }
+                };
+                const url = await generateLocalChart(chartConfig);
+                if (url) report += `![${faculty.Faculty_Initial} Profile](${url})\n\n`;
+
+                // Subjects Taught
+                const subjects = result.subject_scores.filter(s => s.Faculty_Initial === faculty.Faculty_Initial);
+                if (subjects.length > 0) {
+                    report += `#### Subjects Taught\n`;
+                    report += `<caption>Subjects Taught - ${faculty.Faculty_Initial}</caption>\n\n`;
+                    report += `| Subject | Code | Score | \n|---|---|---|\n`;
+                    subjects.forEach(s => {
+                        report += `| ${s.Subject_ShortForm} | ${s.Subject_Code} | ${formatFloat(s.Score)} |\n`;
+                    });
+                    report += `\n`;
+                }
+
+                // Strengths & Weaknesses
+                const questionScores = result.faculty_scores.find(f => f.Faculty_Initial === faculty.Faculty_Initial) as any;
+                const paramScores: { key: string; score: number }[] = [];
+                for (let i = 1; i <= 12; i++) {
+                    const key = `Q${i}`;
+                    if (typeof questionScores[key] === 'number') {
+                        paramScores.push({ key, score: questionScores[key] });
+                    }
+                }
+                paramScores.sort((a, b) => b.score - a.score);
+                const top3 = paramScores.slice(0, 3);
+                const bottom3 = paramScores.slice(-3).reverse();
+
+                if (top3.length > 0) {
+                    report += `#### Strengths (Top 3 Parameters)\n`;
+                    top3.forEach(p => {
+                        report += `- **${p.key}** (${formatFloat(p.score)}): ${questionDescriptions[p.key]}\n`;
+                    });
+                    report += `\n`;
+                }
+
+                if (bottom3.length > 0) {
+                    report += `#### Areas for Improvement (Lowest 3 Parameters)\n`;
+                    bottom3.forEach(p => {
+                        report += `- **${p.key}** (${formatFloat(p.score)}): ${questionDescriptions[p.key]}\n`;
+                    });
+                    report += `\n`;
+                }
+
+                // HOD Comments
+                report += `#### HOD / Principal Comments\n`;
+                report += `> [!NOTE] Remarks\n`;
+                report += `> \n> \n> \n> \n> \n> \n> \n> \n> \n\n`;
+
+                report += `<!-- SIGNATURES -->\n\n`;
+                report += `<!-- NEWPAGE -->\n\n`;
+            }
+        }
 
         return report;
     }
