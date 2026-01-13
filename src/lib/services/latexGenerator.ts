@@ -300,7 +300,7 @@ function parseTokens(tokens: Token[]): string {
                 if (isNote) {
                     // Use tcolorbox for Notes/Remarks
                     // height=6cm to ensure space for comments
-                    latex += `\\begin{tcolorbox}[title=${parseInline(alertTitle)}, colback=white, colframe=black, height=5cm]\n`;
+                    latex += `\\begin{tcolorbox}[title=${parseInline(alertTitle)}, colback=white, colframe=black, height=3cm]\n`;
                     latex += parseTokens(b.tokens);
                     latex += `\\end{tcolorbox}\n\n`;
                 } else {
@@ -332,6 +332,19 @@ function parseTokens(tokens: Token[]): string {
                 // Handle Page Break
                 if (h.text.includes('<!-- NEWPAGE -->')) {
                     latex += '\\newpage\n';
+                }
+
+                // Handle Signatures
+                if (h.text.includes('<!-- SIGNATURES -->')) {
+                    latex += `
+\\vspace{1cm}
+\\noindent
+\\begin{tabular}{@{}p{0.4\\linewidth} p{0.2\\linewidth} p{0.4\\linewidth}@{}}
+    \\hrulefill & & \\hrulefill \\\\
+    \\centering (Faculty Signature) & & \\centering (HOD Signature) \\\\
+\\end{tabular}
+\\vspace{0.5cm}
+`;
                 }
                 break;
             }

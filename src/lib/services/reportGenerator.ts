@@ -298,6 +298,78 @@ export class ReportGenerator {
             return report + "No faculty data available.";
         }
 
+        // --- EXECUTIVE SUMMARY START ---
+        report += `## Executive Summary\n\n`;
+
+        // 1. Overall Faculty Performance
+        report += `### Faculty Performance (Overall)\n\n`;
+        const facScores = result.faculty_scores;
+        // Chart
+        const chartConfig = {
+            type: 'radar',
+            data: {
+                labels: facScores.map((d: any) => d.Faculty_Initial),
+                datasets: [{ label: 'Score', data: facScores.map((d: any) => d.Score.toFixed(2)), backgroundColor: 'rgba(153, 102, 255, 0.2)', borderColor: 'rgb(153, 102, 255)', pointBackgroundColor: 'rgb(153, 102, 255)', borderWidth: 2, fill: false }]
+            },
+            options: { scales: { r: { suggestedMin: 1, suggestedMax: 5 } }, plugins: { legend: { display: false }, title: { display: true, text: `Faculty Performance` } } }
+        };
+        const url = await generateLocalChart(chartConfig);
+        if (url) report += `![Faculty Performance Chart](${url})\n\n`;
+
+        // Table
+        report += `<caption>Faculty Performance</caption>\n\n`;
+        report += `| Faculty Name | Faculty | Score |\n`;
+        report += `|--------------|---------|-------|\n`;
+        facScores.forEach(f => {
+            report += `| ${f.Faculty_Name} | ${f.Faculty_Initial} | ${formatFloat(f.Score)} |\n`;
+        });
+        report += `\n`;
+
+        // 2. Faculty Parameter-wise Analysis (Table only)
+        report += `### Faculty Parameter-wise Performance\n\n`;
+        report += `<caption>Faculty Parameter-wise Performance</caption>\n\n`;
+        const parameterKeys = Array.from({ length: 12 }, (_, i) => `Q${i + 1}`);
+        const tableKeys = ["Faculty_Initial", ...parameterKeys, 'Score'];
+        report += `| ${tableKeys.map(k => headerMap[k] || k).join(' | ')} |\n`;
+        report += `|${tableKeys.map(() => '------').join('|')}|\n`;
+        facScores.forEach((item: any) => {
+            report += `| ${tableKeys.map(k => (typeof item[k] === 'number' ? formatFloat(item[k]) : (item[k] || '-'))).join(' | ')} |\n`;
+        });
+        report += `\n`;
+
+        // 3. Faculty-Subject Correlation Matrix
+        report += `### Faculty-Subject Correlation Matrix\n\n`;
+        if (result.subject_scores && result.faculty_scores && result.subject_scores.length > 0) {
+            report += `<caption>Faculty-Subject Correlation Matrix</caption>\n\n`;
+            const facultyInitials = [...result.faculty_scores].sort((a, b) => a.Faculty_Initial.localeCompare(b.Faculty_Initial)).map(f => f.Faculty_Initial);
+            const uniqueSubjectInfos = Array.from(new Map(result.subject_scores.map(s => [`${s.Subject_Code}-${s.Subject_ShortForm}`, { code: s.Subject_Code, shortForm: s.Subject_ShortForm }])).values());
+
+            report += `| Subject Code | Subject Short | ${facultyInitials.join(' | ')} | Subject Avg |\n`;
+            report += `|--------------|---------------|${facultyInitials.map(() => '------').join('|')}|-------------|\n`;
+
+            uniqueSubjectInfos.forEach(subjectInfo => {
+                let row = `| ${subjectInfo.code} | ${subjectInfo.shortForm} |`;
+                const subjectScoresForAvg: number[] = [];
+                facultyInitials.forEach(facultyInitial => {
+                    const scoreEntry = result.subject_scores!.find(s => s.Subject_Code === subjectInfo.code && s.Faculty_Initial === facultyInitial);
+                    const score = scoreEntry ? scoreEntry.Score : undefined;
+                    row += ` ${score !== undefined ? formatFloat(score) : '-'} |`;
+                    if (score !== undefined) subjectScoresForAvg.push(score);
+                });
+                const subjectAvg = subjectScoresForAvg.length > 0 ? subjectScoresForAvg.reduce((a, b) => a + b, 0) / subjectScoresForAvg.length : 0;
+                row += ` ${formatFloat(subjectAvg)} |\n`;
+                report += row;
+            });
+            report += `| **Faculty Avg** | -          |`;
+            facultyInitials.forEach(facultyInitial => {
+                const facultyOverallScore = result.faculty_scores!.find(f => f.Faculty_Initial === facultyInitial)?.Score;
+                report += ` **${facultyOverallScore !== undefined ? formatFloat(facultyOverallScore) : '-'}** |`;
+            });
+            report += ` - |\n`;
+        }
+        report += `\n<!-- NEWPAGE -->\n\n`;
+        // --- EXECUTIVE SUMMARY END ---
+
         for (const faculty of result.faculty_scores) {
             report += `## ${faculty.Faculty_Name} (${faculty.Faculty_Initial})\n\n`;
             report += `**Overall Score:** ${formatFloat(faculty.Score)} / 5.0\n\n`;
@@ -367,6 +439,8 @@ export class ReportGenerator {
             report += `### HOD / Principal Comments\n`;
             report += `> [!NOTE] Remarks\n`;
             report += `> \n> \n> \n> \n> \n> \n> \n> \n> \n> \n\n`; // Increased space
+
+            report += `<!-- SIGNATURES -->\n\n`;
 
             // Page Break for PDF generation tools (standard markdown page break or latex command)
             report += `<!-- NEWPAGE -->\n\n`;
