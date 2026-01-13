@@ -2333,6 +2333,7 @@ ${presentationContent}`;
 
 % Pandoc compatibility
 \\providecommand{\\tightlist}{\\setlength{\\itemsep}{0pt}\\setlength{\\parskip}{0pt}}
+\\providecommand{\\pandocbounded}[1]{#1}
 
 % Code block formatting
 \\usepackage{listings}
